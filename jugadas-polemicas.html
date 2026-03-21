@@ -777,14 +777,39 @@ textarea{
 }
 
 @media (max-width: 768px){
+    .cabecera{
+        height:96px;
+        background-size:cover;
+        background-position:center;
+    }
+
     .menu{
-        gap:18px;
-        padding:0 12px;
+        top:96px;
+        height:auto;
+        min-height:44px;
+        gap:8px;
+        padding:8px 10px;
+        justify-content:flex-start;
+        overflow-x:auto;
+        overflow-y:hidden;
+        white-space:nowrap;
+        -webkit-overflow-scrolling:touch;
+    }
+
+    .menu::after{
+        display:none;
     }
 
     .menu a{
+        flex:0 0 auto;
         font-size:11px;
+        padding:8px 10px;
         text-align:center;
+        white-space:nowrap;
+    }
+
+    .contenido{
+        margin-top:140px;
     }
 
     .titulo-seccion h1{
@@ -823,8 +848,7 @@ textarea{
         height:32px;
         font-size:13px;
     }
-}
-@media (max-width: 650px){
+}@media (max-width: 650px){
     .filtros-jugadas{
         grid-template-columns:1fr;
     }

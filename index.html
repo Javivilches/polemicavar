@@ -774,22 +774,38 @@ textarea{
 
 @media (max-width: 768px){
     .cabecera{
-        height:130px;
+        height:96px;
+        background-size:cover;
+        background-position:center;
     }
 
     .menu{
-        top:130px;
-        height:42px;
-        gap:18px;
-        padding:0 10px;
+        top:96px;
+        height:auto;
+        min-height:44px;
+        padding:8px 10px;
+        gap:8px;
+        justify-content:flex-start;
+        overflow-x:auto;
+        overflow-y:hidden;
+        white-space:nowrap;
+        -webkit-overflow-scrolling:touch;
+    }
+
+    .menu::after{
+        display:none;
     }
 
     .menu a{
+        flex:0 0 auto;
         font-size:11px;
+        padding:8px 10px;
+        border-radius:8px;
+        white-space:nowrap;
     }
 
     .contenido{
-        margin-top:172px;
+        margin-top:140px;
         padding:16px 0 50px;
     }
 
@@ -841,10 +857,121 @@ textarea{
     }
 
     .marcador-wrap{
-        padding:14px 12px 8px;
+        padding:12px 8px 8px;
+    }
+
+    #marcadorGlobalContainer{
+        width:100%;
+        overflow-x:hidden;
+    }
+
+    #marcadorGlobalContainer .marcador-global{
+        width:100%;
+        max-width:100%;
+        border-radius:18px;
+    }
+
+    #marcadorGlobalContainer .marcador-grid{
+        grid-template-columns:1fr;
+        gap:14px;
+        padding:14px 10px 16px;
+        min-height:auto;
+    }
+
+    #marcadorGlobalContainer .equipo-panel.barca,
+    #marcadorGlobalContainer .equipo-panel.madrid{
+        align-items:center;
+        text-align:center;
+    }
+
+    #marcadorGlobalContainer .equipo-panel.madrid .equipo-head{
+        flex-direction:row;
+    }
+
+    #marcadorGlobalContainer .equipo-head{
+        gap:10px;
+    }
+
+    #marcadorGlobalContainer .equipo-nombre{
+        font-size:24px;
+    }
+
+    #marcadorGlobalContainer .escudo{
+        width:56px;
+    }
+
+    #marcadorGlobalContainer .subdatos{
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+        width:100%;
+        max-width:280px;
+        gap:8px;
+        justify-content:center;
+    }
+
+    #marcadorGlobalContainer .mini-dato{
+        width:100%;
+        min-width:0;
+        padding:6px 4px 5px;
+    }
+
+    #marcadorGlobalContainer .mini-dato .et{
+        font-size:11px;
+    }
+
+    #marcadorGlobalContainer .mini-dato .vl{
+        font-size:22px;
+    }
+
+    #marcadorGlobalContainer .total-global-wrap{
+        width:100%;
+        max-width:280px;
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+        gap:8px;
+    }
+
+    #marcadorGlobalContainer .total-global{
+        width:100%;
+        min-width:0;
+        padding:9px 8px;
+    }
+
+    #marcadorGlobalContainer .total-global .et{
+        font-size:11px;
+    }
+
+    #marcadorGlobalContainer .total-global .vl{
+        font-size:28px;
+    }
+
+    #marcadorGlobalContainer .marcador-centro{
+        gap:8px;
+        padding-top:0;
+    }
+
+    #marcadorGlobalContainer .marcador-titulo{
+        font-size:16px;
+    }
+
+    #marcadorGlobalContainer .score-box{
+        padding:10px 12px;
+        gap:10px;
+        border-radius:18px;
+    }
+
+    #marcadorGlobalContainer .score{
+        font-size:52px;
+    }
+
+    #marcadorGlobalContainer .score-sep{
+        font-size:32px;
+    }
+
+    #marcadorGlobalContainer .score-leyenda{
+        max-width:260px;
+        font-size:12px;
+        line-height:1.2;
     }
 }
-
 .aviso-legal{
     margin:18px 22px 24px;
     padding:12px 14px;

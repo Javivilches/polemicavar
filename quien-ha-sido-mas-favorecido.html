@@ -899,69 +899,163 @@ h1,h2,h3,h4{
 }
 
 @media (max-width: 768px){
-    .cabecera{ height:130px; }
-
-    .menu{
-        top:130px;
-        height:42px;
-        gap:18px;
-        padding:0 10px;
+    .cabecera{
+        height:96px;
+        background-size:cover;
+        background-position:center;
     }
 
-    .menu a{ font-size:11px; }
+    .menu{
+        top:96px;
+        height:auto;
+        min-height:44px;
+        gap:8px;
+        padding:8px 10px;
+        justify-content:flex-start;
+        overflow-x:auto;
+        overflow-y:hidden;
+        white-space:nowrap;
+        -webkit-overflow-scrolling:touch;
+    }
+
+    .menu::after{
+        display:none;
+    }
+
+    .menu a{
+        flex:0 0 auto;
+        font-size:11px;
+        padding:8px 10px;
+        white-space:nowrap;
+    }
 
     .contenido{
-        margin-top:172px;
+        margin-top:140px;
         padding:16px 0 50px;
     }
 
-    .wrap{ width:96%; }
+    .wrap{
+        width:96%;
+    }
 
-    .cabecera-resultados{ padding:18px; }
+    .cabecera-resultados{
+        padding:18px;
+    }
 
-    .cabecera-resultados h1{ font-size:26px; }
+    .cabecera-resultados h1{
+        font-size:26px;
+    }
 
-    .marcador-wrap{ padding:14px 12px 8px; }
+    .marcador-wrap{
+        padding:12px 8px 8px;
+    }
+
+    .marcador-global{
+        width:100%;
+        max-width:100%;
+        border-radius:18px;
+    }
 
     .marcador-grid{
-        padding:16px;
+        grid-template-columns:1fr;
+        gap:14px;
+        padding:14px 10px 16px;
         min-height:auto;
     }
 
-    .equipo-nombre{ font-size:27px; }
-
-    .escudo{ width:64px; }
-
-    .score{ font-size:68px; }
-
-    .score-sep{ font-size:38px; }
-
-    .mini-dato{
-        width:130px;
-        min-width:130px;
+    .equipo-panel.barca,
+    .equipo-panel.madrid{
+        align-items:center;
+        text-align:center;
     }
 
-    .mini-dato .et{ font-size:12px; }
+    .equipo-panel.madrid .equipo-head{
+        flex-direction:row;
+    }
 
-    .mini-dato .vl{ font-size:25px; }
+    .equipo-head{
+        gap:10px;
+    }
+
+    .equipo-nombre{
+        font-size:24px;
+    }
+
+    .escudo{
+        width:56px;
+    }
 
     .subdatos{
-        grid-template-columns:130px 130px;
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+        width:100%;
+        max-width:280px;
+        gap:8px;
+        justify-content:center;
+    }
+
+    .mini-dato{
+        width:100%;
+        min-width:0;
+        padding:6px 4px 5px;
+    }
+
+    .mini-dato .et{
+        font-size:11px;
+    }
+
+    .mini-dato .vl{
+        font-size:22px;
     }
 
     .total-global-wrap{
-        width:270px;
-        grid-template-columns:130px 130px;
+        width:100%;
+        max-width:280px;
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+        gap:8px;
     }
 
     .total-global{
-        width:130px;
-        padding:9px 10px 8px;
+        width:100%;
+        min-width:0;
+        padding:9px 8px;
     }
 
-    .total-global .et{ font-size:12px; }
+    .total-global .et{
+        font-size:11px;
+    }
 
-    .total-global .vl{ font-size:30px; }
+    .total-global .vl{
+        font-size:28px;
+    }
+
+    .marcador-centro{
+        gap:8px;
+        padding-top:0;
+    }
+
+    .marcador-titulo{
+        font-size:16px;
+    }
+
+    .score-box{
+        padding:10px 12px;
+        gap:10px;
+        border-radius:18px;
+    }
+
+    .score{
+        font-size:52px;
+    }
+
+    .score-sep{
+        font-size:32px;
+    }
+
+    .score-leyenda{
+        max-width:260px;
+        font-size:12px;
+        line-height:1.2;
+    }
 
     .tarjeta-top{
         font-size:24px;
@@ -978,7 +1072,9 @@ h1,h2,h3,h4{
         padding:9px 14px;
     }
 
-    .tarjeta-body{ padding:12px; }
+    .tarjeta-body{
+        padding:12px;
+    }
 
     .grafico-simple-titulo{
         font-size:18px;
@@ -1016,46 +1112,7 @@ h1,h2,h3,h4{
         display:block;
         width:100%;
     }
-}
-
-html{
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-    text-rendering:optimizeLegibility;
-}
-
-.cabecera-resultados p,
-.grafico-jornadas-nota,
-.nota,
-.leyenda-item,
-.score-leyenda{
-    font-family:Inter, Arial, Helvetica, sans-serif;
-}
-
-.tarjeta-top,
-.grafico-simple-titulo,
-.tarjeta-vertical h3,
-.tarjeta-jornadas h3,
-.marcador-titulo,
-.equipo-nombre,
-.score,
-.score-sep,
-.valor-final,
-.mini-dato .et,
-.mini-dato .vl,
-.total-global .et,
-.total-global .vl,
-.btnModo{
-    font-family:"Barlow Condensed", sans-serif;
-}
-
-.score-leyenda{
-    max-width:260px;
-    font-size:14px;
-    line-height:1.2;
-    text-align:center;
-}
-</style>
+}</style>
 </head>
 
 <body>

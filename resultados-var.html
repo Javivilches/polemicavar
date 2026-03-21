@@ -840,22 +840,37 @@ thead .pregunta-arbitro{
 
 @media (max-width: 768px){
     .cabecera{
-        height:130px;
+        height:96px;
+        background-size:cover;
+        background-position:center;
     }
 
     .menu{
-        top:130px;
-        height:42px;
-        gap:18px;
-        padding:0 10px;
+        top:96px;
+        height:auto;
+        min-height:44px;
+        gap:8px;
+        padding:8px 10px;
+        justify-content:flex-start;
+        overflow-x:auto;
+        overflow-y:hidden;
+        white-space:nowrap;
+        -webkit-overflow-scrolling:touch;
+    }
+
+    .menu::after{
+        display:none;
     }
 
     .menu a{
+        flex:0 0 auto;
         font-size:11px;
+        padding:8px 10px;
+        white-space:nowrap;
     }
 
     .contenido{
-        margin-top:172px;
+        margin-top:140px;
         padding:16px 0 50px;
     }
 
@@ -872,63 +887,114 @@ thead .pregunta-arbitro{
     }
 
     .marcador-wrap{
-        padding:14px 12px 8px;
+        padding:12px 8px 8px;
+    }
+
+    .marcador-global{
+        width:100%;
+        max-width:100%;
+        border-radius:18px;
     }
 
     .marcador-grid{
-        padding:16px;
+        grid-template-columns:1fr;
+        gap:14px;
+        padding:14px 10px 16px;
         min-height:auto;
     }
 
+    .equipo-panel.barca,
+    .equipo-panel.madrid{
+        align-items:center;
+        text-align:center;
+    }
+
+    .equipo-panel.madrid .equipo-head{
+        flex-direction:row;
+    }
+
+    .equipo-head{
+        gap:10px;
+    }
+
     .equipo-nombre{
-        font-size:27px;
+        font-size:24px;
     }
 
     .escudo{
-        width:64px;
-    }
-
-    .score{
-        font-size:68px;
-    }
-
-    .score-sep{
-        font-size:38px;
-    }
-
-    .mini-dato{
-        width:130px;
-        min-width:130px;
-    }
-
-    .mini-dato .et{
-        font-size:12px;
-    }
-
-    .mini-dato .vl{
-        font-size:25px;
+        width:56px;
     }
 
     .subdatos{
-        grid-template-columns:130px 130px;
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+        width:100%;
+        max-width:280px;
+        gap:8px;
+        justify-content:center;
+    }
+
+    .mini-dato{
+        width:100%;
+        min-width:0;
+        padding:6px 4px 5px;
+    }
+
+    .mini-dato .et{
+        font-size:11px;
+    }
+
+    .mini-dato .vl{
+        font-size:22px;
     }
 
     .total-global-wrap{
-        width:270px;
-        grid-template-columns:130px 130px;
+        width:100%;
+        max-width:280px;
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+        gap:8px;
     }
 
     .total-global{
-        min-width:126px;
-        padding:9px 10px 8px;
+        width:100%;
+        min-width:0;
+        padding:9px 8px;
     }
 
     .total-global .et{
-        font-size:12px;
+        font-size:11px;
     }
 
     .total-global .vl{
-        font-size:30px;
+        font-size:28px;
+    }
+
+    .marcador-centro{
+        gap:8px;
+        padding-top:0;
+    }
+
+    .marcador-titulo{
+        font-size:16px;
+    }
+
+    .score-box{
+        padding:10px 12px;
+        gap:10px;
+        border-radius:18px;
+    }
+
+    .score{
+        font-size:52px;
+    }
+
+    .score-sep{
+        font-size:32px;
+    }
+
+    .score-leyenda{
+        max-width:260px;
+        font-size:12px;
+        line-height:1.2;
     }
 
     .columnas-equipos{

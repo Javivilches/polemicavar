@@ -470,25 +470,37 @@ textarea{
     body{ zoom:1; }
 
     .cabecera{
-        height:130px;
+        height:96px;
+        background-size:cover;
+        background-position:center;
     }
 
     .menu{
-        top:130px;
-        height:42px;
-        gap:12px;
-        padding:0 8px;
+        top:96px;
+        height:auto;
+        min-height:44px;
+        gap:8px;
+        padding:8px 10px;
         justify-content:flex-start;
         overflow-x:auto;
+        overflow-y:hidden;
+        white-space:nowrap;
+        -webkit-overflow-scrolling:touch;
+    }
+
+    .menu::after{
+        display:none;
     }
 
     .menu a{
-        font-size:13px;
+        flex:0 0 auto;
+        font-size:11px;
+        padding:8px 10px;
         white-space:nowrap;
     }
 
     .contenido{
-        margin-top:172px;
+        margin-top:140px;
         padding:16px 0 50px;
     }
 
@@ -538,8 +550,7 @@ textarea{
         margin:12px;
         margin-top:0;
     }
-}
-</style>
+}</style>
 </head>
 <body>
 
