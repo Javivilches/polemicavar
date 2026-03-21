@@ -777,39 +777,14 @@ textarea{
 }
 
 @media (max-width: 768px){
-    .cabecera{
-        height:96px;
-        background-size:cover;
-        background-position:center;
-    }
-
     .menu{
-        top:96px;
-        height:auto;
-        min-height:44px;
-        gap:8px;
-        padding:8px 10px;
-        justify-content:flex-start;
-        overflow-x:auto;
-        overflow-y:hidden;
-        white-space:nowrap;
-        -webkit-overflow-scrolling:touch;
-    }
-
-    .menu::after{
-        display:none;
+        gap:18px;
+        padding:0 12px;
     }
 
     .menu a{
-        flex:0 0 auto;
         font-size:11px;
-        padding:8px 10px;
         text-align:center;
-        white-space:nowrap;
-    }
-
-    .contenido{
-        margin-top:140px;
     }
 
     .titulo-seccion h1{
@@ -848,7 +823,8 @@ textarea{
         height:32px;
         font-size:13px;
     }
-}@media (max-width: 650px){
+}
+@media (max-width: 650px){
     .filtros-jugadas{
         grid-template-columns:1fr;
     }
@@ -1001,13 +977,12 @@ function obtenerDelimitadorCSV(texto){
 }
 
 function parsearLineaCSV(linea, delimitador){
-
-    // 🔥 AÑADE ESTO
     if(delimitador === "\t"){
         return linea.split("\t").map(c => c.trim());
     }
 
-    const resultado = [];    let actual = "";
+    const resultado = [];
+    let actual = "";
     let dentroComillas = false;
 
     for(let i = 0; i < linea.length; i++){
@@ -1072,26 +1047,25 @@ function extraerNumeroJornada(valor){
 }
 
 function rutasImagenSlug(jornada, slug){
-    const j = extraerNumeroJornada(jornada);
-    if(!slug) return [];
+    const j = String(extraerNumeroJornada(jornada)).trim();
+    const s = String(slug || "").trim();
+    if(!j || !s) return [];
+
     return [
-        `imagenes/jornada-${j}/${slug}.png`,
-        `imagenes/jornada ${j}/${slug}.png`,
-        `imagenes/jornada-${j}/${slug}.jpg`,
-        `imagenes/jornada ${j}/${slug}.jpg`,
-        `imagenes/jornada-${j}/${slug}.jpeg`,
-        `imagenes/jornada ${j}/${slug}.jpeg`,
-        `imagenes/jornada-${j}/${slug}.webp`,
-        `imagenes/jornada ${j}/${slug}.webp`
+        `./imagenes/jornada-${j}/${s}.png`,
+        `./imagenes/jornada-${j}/${s}.jpg`,
+        `./imagenes/jornada-${j}/${s}.jpeg`,
+        `./imagenes/jornada-${j}/${s}.webp`
     ];
 }
 
 function rutasVideoTxt(jornada, slug){
-    const j = extraerNumeroJornada(jornada);
-    if(!slug) return [];
+    const j = String(extraerNumeroJornada(jornada)).trim();
+    const s = String(slug || "").trim();
+    if(!j || !s) return [];
+
     return [
-        `videos/jornada-${j}/${slug}.txt`,
-        `videos/jornada ${j}/${slug}.txt`
+        `./videos/jornada-${j}/${s}.txt`
     ];
 }
 
@@ -1271,23 +1245,23 @@ function construirNodoVideo(url){
     }
 
     if(lower.includes("tiktok.com")){
-    return `
-        <div class="video-principal-wrap" style="display:flex;align-items:center;justify-content:center;padding:22px;box-sizing:border-box;background:linear-gradient(135deg,#0e1a2c,#1d3761);">
-            <div style="text-align:center;color:#ffffff;max-width:420px;">
-                <div style="font-family:'Barlow Condensed', sans-serif;font-size:26px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;">
-                    Vídeo alojado en TikTok
+        return `
+            <div class="video-principal-wrap" style="display:flex;align-items:center;justify-content:center;padding:22px;box-sizing:border-box;background:linear-gradient(135deg,#0e1a2c,#1d3761);">
+                <div style="text-align:center;color:#ffffff;max-width:420px;">
+                    <div style="font-family:'Barlow Condensed', sans-serif;font-size:26px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;">
+                        Vídeo alojado en TikTok
+                    </div>
+                    <div style="font-size:14px;line-height:1.45;color:#dbe6ff;margin-bottom:16px;">
+                        Por compatibilidad, este vídeo se abrirá directamente en TikTok para poder verlo correctamente.
+                    </div>
+                    <a href="${escaparHtml(limpia)}" target="_blank" rel="noopener noreferrer"
+                       style="display:inline-block;padding:11px 18px;border-radius:10px;background:linear-gradient(90deg,#9b0f2e,#c61d44);color:#fff;text-decoration:none;font-weight:700;font-size:14px;box-shadow:0 8px 16px rgba(0,0,0,0.22);">
+                       Ver vídeo en TikTok
+                    </a>
                 </div>
-                <div style="font-size:14px;line-height:1.45;color:#dbe6ff;margin-bottom:16px;">
-                    Por compatibilidad, este vídeo se abrirá directamente en TikTok para poder verlo correctamente.
-                </div>
-                <a href="${escaparHtml(limpia)}" target="_blank" rel="noopener noreferrer"
-                   style="display:inline-block;padding:11px 18px;border-radius:10px;background:linear-gradient(90deg,#9b0f2e,#c61d44);color:#fff;text-decoration:none;font-weight:700;font-size:14px;box-shadow:0 8px 16px rgba(0,0,0,0.22);">
-                   Ver vídeo en TikTok
-                </a>
             </div>
-        </div>
-    `;
-}
+        `;
+    }
 
     return `
         <div class="video-principal-wrap" style="display:flex;align-items:center;justify-content:center;color:white;padding:20px;box-sizing:border-box;text-align:center;">
@@ -2054,18 +2028,12 @@ async function cargarJugadasDesdeCSV(){
                 });
             });
 
-                        if(mediaItems.length === 0){
+            if(mediaItems.length === 0){
                 mediaItems.push({
                     tipo:"imagen",
                     rutas:[]
                 });
             }
-
-            console.log("JUGADA:", jugada.id, jugada.partido);
-            console.log("JORNADA:", jugada.jornada);
-            console.log("SLUG IMAGENES:", jugada.slugImagen, jugada.slugImagen2, jugada.slugImagen3, jugada.slugImagen4, jugada.slugImagen5);
-            console.log("SLUG VIDEOS:", jugada.slugVideo, jugada.slugVideo2);
-            console.log("MEDIA ITEMS:", mediaItems);
 
             article.cargarMedia(mediaItems);
             contenedorJugadas.appendChild(article);
