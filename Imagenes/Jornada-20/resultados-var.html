@@ -1,0 +1,2207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resultados VAR</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+
+<style>
+body{
+    margin:0;
+    font-family:Inter, Arial, Helvetica, sans-serif;
+    background:#111;
+    zoom:0.90;
+}
+
+h1,h2,h3,h4{
+    font-family:"Barlow Condensed", sans-serif;
+    letter-spacing:.5px;
+    margin:0;
+}
+
+/* CABECERA */
+.cabecera{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:170px;
+    background-image:url("cabecera.png");
+    background-size:100% 100%;
+    background-position:center;
+    background-repeat:no-repeat;
+    z-index:1000;
+}
+
+/* MENÚ */
+.menu{
+    position:fixed;
+    top:170px;
+    left:0;
+    width:100%;
+    height:46px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:44px;
+    z-index:999;
+    overflow:hidden;
+    background:linear-gradient(
+        90deg,
+        #0b2d6b 0%,
+        #123f8c 18%,
+        #5b1232 42%,
+        #c7ccd3 52%,
+        #e3e7ec 72%,
+        #f3f5f7 88%,
+        #ffffff 100%
+    );
+}
+
+.menu::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:50%;
+    height:100%;
+    background:linear-gradient(90deg, rgba(0,0,0,0.18), rgba(0,0,0,0.05));
+    pointer-events:none;
+}
+
+.menu::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:5px;
+    transform:translateX(-50%);
+    width:2px;
+    height:34px;
+    background:linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.10),
+        rgba(255,255,255,0.80),
+        rgba(255,255,255,0.10)
+    );
+    pointer-events:none;
+}
+
+.menu a{
+    position:relative;
+    z-index:2;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:700;
+    text-transform:uppercase;
+    padding:6px 10px;
+    border-radius:6px;
+    transition:all .2s ease;
+}
+
+.menu a:hover{
+    background:rgba(255,255,255,0.15);
+}
+
+/* Inicio + Resultados VAR en blanco */
+.menu a:nth-child(1),
+.menu a:nth-child(3){
+    color:white;
+}
+
+/* Jugadas polémicas (lo dejamos como estaba) */
+.menu a:nth-child(2){
+    color:white;
+}
+
+/* Quién ha sido más favorecido + Árbitros en tono azul */
+.menu a:nth-child(4),
+.menu a:nth-child(5){
+    color:#0a2f6b;
+}
+
+/* CONTENIDO */
+.contenido{
+    margin-top:216px;
+    background:linear-gradient(
+        90deg,
+        #081b48 0%,
+        #113b86 16%,
+        #5f0f32 34%,
+        #1f2430 50%,
+        #9ca7b3 67%,
+        #e7ebef 84%,
+        #ffffff 100%
+    );
+    padding:30px 0 85px;
+    min-height:calc(100vh - 216px);
+}
+
+.wrap{
+    width:min(1380px, 93%);
+    margin:auto;
+}
+
+.bloque-resultados{
+    background:rgba(8,12,20,0.72);
+    border-radius:24px;
+    overflow:hidden;
+    box-shadow:0 14px 30px rgba(0,0,0,0.28);
+}
+
+.cabecera-resultados{
+    padding:24px 28px 18px;
+    background:linear-gradient(90deg,#163b78,#2a5fb0);
+    color:white;
+}
+
+.cabecera-resultados h1{
+    font-size:32px;
+    margin-bottom:6px;
+}
+
+.cabecera-resultados p{
+    margin:0;
+    font-size:15px;
+    color:#dfe8f3;
+}
+
+/* MARCADOR */
+.marcador-wrap{
+    padding:22px 22px 12px;
+    display:flex;
+    justify-content:center;
+}
+
+#marcadorGlobalContainer{
+    width:100%;
+    display:flex;
+    justify-content:center;
+}
+
+.caja-cargando,
+.caja-error{
+    padding:22px 26px;
+    color:white;
+    font-size:15px;
+}
+
+.marcador-global{
+    width:1100px;
+    max-width:95%;
+    position:relative;
+    border-radius:26px;
+    overflow:hidden;
+    box-shadow:
+        0 16px 34px rgba(0,0,0,0.22),
+        inset 3px 0 0 #1d5fd1,
+        inset -3px 0 0 #ffffff;
+    border:1px solid rgba(255,255,255,0.09);
+    background:linear-gradient(90deg, rgba(14,44,106,0.88) 0%, rgba(24,89,190,0.68) 20%, rgba(95,15,50,0.78) 45%, rgba(72,78,88,0.68) 54%, rgba(238,241,245,0.84) 78%, rgba(255,255,255,0.95) 100%);
+}
+
+.marcador-global::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+        linear-gradient(rgba(5,12,22,0.25), rgba(5,12,22,0.38)),
+        url("campnou.jpg") left center / 50% 100% no-repeat,
+        url("bernabeu.jpg") right center / 50% 100% no-repeat;
+    opacity:0.58;
+    pointer-events:none;
+}
+
+.marcador-grid{
+    position:relative;
+    z-index:2;
+    display:grid;
+    grid-template-columns:1fr 230px 1fr;
+    align-items:start;
+    gap:10px;
+    padding:12px 22px 14px;
+    min-height:190px;
+}
+
+.equipo-panel{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.equipo-panel.barca{
+    align-items:flex-start;
+    text-align:left;
+}
+
+.equipo-panel.madrid{
+    align-items:flex-end;
+    text-align:right;
+}
+
+.equipo-head{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.equipo-panel.madrid .equipo-head{
+    flex-direction:row-reverse;
+}
+
+.escudo{
+    width:78px;
+    height:auto;
+    display:block;
+    filter:drop-shadow(0 6px 12px rgba(0,0,0,0.22));
+}
+
+.equipo-nombre{
+    font-family:"Barlow Condensed", sans-serif;
+    font-size:34px;
+    font-weight:700;
+    color:#fff;
+    text-shadow:0 3px 12px rgba(0,0,0,0.30);
+    letter-spacing:.3px;
+}
+
+.subdatos{
+    display:grid;
+    grid-template-columns:repeat(2, 148px);
+    gap:10px;
+}
+
+.equipo-panel.barca .subdatos{
+    justify-content:start;
+}
+
+.equipo-panel.madrid .subdatos{
+    justify-content:end;
+}
+
+.subdatos .mini-dato:nth-child(3){
+    grid-column:1 / span 2;
+    justify-self:center;
+}
+
+.mini-dato{
+    width:148px;
+    min-width:148px;
+    background:rgba(255,255,255,0.96);
+    border:1px solid rgba(0,0,0,0.04);
+    box-shadow:0 3px 8px rgba(0,0,0,0.08);
+    border-radius:14px;
+    padding:4px 4px 3px;
+    text-align:center;
+    backdrop-filter:blur(2px);
+    box-sizing:border-box;
+}
+
+.mini-dato .et{
+    display:block;
+    font-family:"Barlow Condensed", sans-serif;
+    font-size:14px;
+    font-weight:700;
+    color:#526981;
+    margin-bottom:2px;
+    text-transform:uppercase;
+    line-height:1.05;
+    letter-spacing:.3px;
+}
+
+.mini-dato .vl{
+    display:block;
+    font-family:"Barlow Condensed", sans-serif;
+    font-size:32px;
+    font-weight:800;
+    line-height:1;
+    color:#000;
+}
+
+.total-global-wrap{
+    width:306px;
+    margin-top:6px;
+    display:grid;
+    grid-template-columns:148px 148px;
+    gap:10px;
+    justify-content:center;
+}
+
+.total-global{
+    min-width:148px;
+    grid-column:1 / span 2;
+    justify-self:center;
+    background:linear-gradient(180deg, rgba(10,18,34,0.92), rgba(6,11,22,0.96));
+    border:1px solid rgba(255,255,255,0.14);
+    box-shadow:
+        0 10px 22px rgba(0,0,0,0.24),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    border-radius:16px;
+    padding:11px 13px 10px;
+    text-align:center;
+}
+
+.total-global .et{
+    display:block;
+    font-family:"Barlow Condensed", sans-serif;
+    font-size:14px;
+    font-weight:700;
+    color:#dce5f1;
+    margin-bottom:4px;
+    text-transform:uppercase;
+    line-height:1.05;
+    letter-spacing:.4px;
+}
+
+.total-global .vl{
+    display:block;
+    font-family:"Barlow Condensed", sans-serif;
+    font-size:36px;
+    font-weight:800;
+    line-height:1;
+    color:#ffffff;
+}
+
+.marcador-centro{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    padding-top:6px;
+}
+
+.marcador-titulo{
+    font-family:"Barlow Condensed", sans-serif;
+    font-size:18px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:#ffffff;
+    text-shadow:0 2px 8px rgba(0,0,0,0.30);
+}
+
+.score-box{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    width:100%;
+    padding:14px 18px;
+    border-radius:24px;
+    background:rgba(8,14,24,0.78);
+    border:1px solid rgba(255,255,255,0.10);
+    box-shadow:0 14px 24px rgba(0,0,0,0.24);
+}
+
+.score{
+    font-family:"Barlow Condensed", sans-serif;
+    font-size:84px;
+    line-height:.9;
+    font-weight:800;
+    text-shadow:0 3px 12px rgba(0,0,0,0.34);
+    color:#ffffff;
+}
+
+.score-sep{
+    color:#ffffff;
+    font-size:48px;
+    font-weight:900;
+    transform:translateY(-2px);
+}
+
+.score-leyenda{
+    font-family:"Barlow Condensed", sans-serif;
+    font-size:15px;
+    font-weight:700;
+    color:#dce5f1;
+    text-transform:uppercase;
+    letter-spacing:.8px;
+    text-align:center;
+    line-height:1.15;
+}
+
+/* COLUMNAS */
+.columnas-equipos{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+    padding:10px 18px 22px;
+    align-items:start;
+}
+
+.columna-equipo{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.tarjeta-equipo{
+    border-radius:22px;
+    overflow:hidden;
+    box-shadow:0 14px 28px rgba(0,0,0,0.22);
+}
+
+.tarjeta-top{
+    padding:14px 18px;
+    text-align:center;
+    font-weight:900;
+    font-size:28px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    font-family:"Barlow Condensed", sans-serif;
+}
+
+.tabla-madrid{
+    background:linear-gradient(145deg, rgba(247,249,252,0.98), rgba(226,232,239,0.98));
+    border:1px solid rgba(0,0,0,0.08);
+}
+
+.tabla-madrid .tarjeta-top{
+    color:#17324d;
+    background:linear-gradient(90deg,#ffffff 0%, #f1f4f8 30%, #dbe1e8 68%, #c9d0d8 100%);
+    box-shadow:inset 0 -1px 0 rgba(0,0,0,0.08);
+}
+
+.tabla-barca{
+    background:linear-gradient(145deg, rgba(24,26,55,0.96), rgba(49,16,52,0.95));
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+.tabla-barca .tarjeta-top{
+    color:#fff;
+    background:linear-gradient(90deg,#133f97 0%, #1d5dc0 25%, #6d123c 68%, #8e153f 100%);
+    box-shadow:inset 0 -1px 0 rgba(255,255,255,0.12);
+}
+
+.tarjeta-body{
+    padding:14px;
+}
+
+.bloques-categoria{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+.bloque-categoria{
+    border-radius:16px;
+    overflow:hidden;
+}
+
+.tabla-madrid .bloque-categoria{
+    background:rgba(255,255,255,0.48);
+    border:1px solid rgba(0,0,0,0.08);
+}
+
+.tabla-barca .bloque-categoria{
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+.categoria-titulo{
+    padding:12px 16px;
+    font-size:22px;
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    text-align:left;
+    font-family:"Barlow Condensed", sans-serif;
+}
+
+.tabla-madrid .categoria-titulo{
+    color:#17324d;
+    background:linear-gradient(90deg, rgba(220,228,236,0.95), rgba(203,214,224,0.95));
+}
+
+.tabla-barca .categoria-titulo{
+    color:white;
+    background:linear-gradient(90deg, rgba(20,63,151,0.92), rgba(130,21,61,0.92));
+}
+
+.tabla-wrap{
+    overflow-x:auto;
+    display:flex;
+    justify-content:center;
+    padding:0;
+}
+
+.resumen-table{
+    width:100%;
+    border-collapse:collapse;
+    table-layout:auto;
+    min-width:0;
+    margin:0 auto;
+}
+
+.resumen-table th,
+.resumen-table td{
+    padding:13px 14px;
+    border:1px solid transparent;
+    text-align:center;
+    vertical-align:middle;
+    font-size:15px;
+    line-height:1.18;
+}
+
+.tabla-madrid .resumen-table th,
+.tabla-madrid .resumen-table td{
+    border-color:rgba(0,0,0,0.08);
+    color:#17324d;
+}
+
+.tabla-barca .resumen-table th,
+.tabla-barca .resumen-table td{
+    border-color:rgba(255,255,255,0.10);
+    color:#eef3fa;
+}
+
+.resumen-table thead th{
+    font-size:14px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.35px;
+}
+
+.tabla-madrid .resumen-table thead th{
+    background:rgba(18,42,66,0.08);
+}
+
+.tabla-barca .resumen-table thead th{
+    background:rgba(255,255,255,0.07);
+}
+
+thead .pregunta-arbitro{
+    font-size:14px;
+    letter-spacing:.35px;
+    border-bottom:1px solid rgba(0,0,0,0.10);
+}
+
+.tabla-barca thead .pregunta-arbitro{
+    border-bottom:1px solid rgba(255,255,255,0.12);
+}
+
+.col-concepto{
+    width:58%;
+    text-align:left !important;
+    font-weight:700;
+    font-size:15px;
+    padding-left:14px !important;
+    white-space:normal;
+}
+
+.col-total,.col-si,.col-no,.col-balance{
+    width:10.5%;
+    font-weight:800;
+    white-space:nowrap;
+}
+
+.fila-total-bloque td{
+    font-weight:900;
+    font-size:16px;
+}
+
+.tabla-madrid .fila-total-bloque td{
+    background:rgba(23,50,77,0.08);
+}
+
+.tabla-barca .fila-total-bloque td{
+    background:rgba(255,255,255,0.08);
+}
+
+.total-label{
+    text-align:right !important;
+    padding-right:16px !important;
+    letter-spacing:.4px;
+}
+
+.fila-hover:hover td{
+    filter:brightness(1.03);
+}
+
+/* COLORES */
+.valor-pos{
+    color:#18b35a !important;
+    font-weight:900;
+}
+
+.valor-neg{
+    color:#df3b34 !important;
+    font-weight:900;
+}
+
+.valor-neutro{
+    color:#173f7a !important;
+    font-weight:900;
+}
+
+.blanco{
+    color:#ffffff !important;
+}
+
+.rojo{
+    color:#ff2145 !important;
+}
+
+.tabla-barca .valor-neutro{
+    color:#8fc0ff !important;
+}
+
+/* COMENTARIOS */
+.seccion-comentarios{
+    margin:0 18px 18px;
+    background:white;
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 8px 18px rgba(0,0,0,0.16);
+}
+
+.cabecera-comentarios{
+    padding:8px 12px;
+    border-bottom:1px solid #eee;
+}
+
+.cabecera-comentarios h3{
+    margin:0 0 4px;
+    font-size:18px;
+    color:#17324d;
+}
+
+.cabecera-comentarios p{
+    margin:0;
+    font-size:13px;
+    color:#666;
+}
+
+.cuerpo-comentarios{
+    padding:10px 12px;
+}
+
+.textarea-comentario{
+    width:100%;
+    padding:8px;
+    border-radius:8px;
+    border:1px solid #d0d7e2;
+    resize:vertical;
+    min-height:55px;
+    box-sizing:border-box;
+    font-size:13px;
+    font-family:Inter, Arial, Helvetica, sans-serif;
+}
+
+.boton-comentar,
+.btn-mostrar-inicial{
+    margin-top:8px;
+    padding:8px 14px;
+    border:none;
+    border-radius:8px;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    font-size:13px;
+}
+
+.boton-comentar{
+    background:#1f4fb0;
+}
+
+.btn-mostrar-inicial{
+    background:#444;
+    margin-left:8px;
+}
+
+.lista-comentarios{
+    margin-top:14px;
+}
+
+.comentario-item{
+    display:none;
+    padding:10px;
+    background:#f6f8fc;
+    border-left:4px solid #1f4fb0;
+    border-radius:8px;
+    margin-bottom:8px;
+    font-size:14px;
+}
+
+.comentario-item.visible{
+    display:block;
+}
+
+.comentario-cabecera-item{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    align-items:center;
+    margin-bottom:6px;
+}
+
+.comentario-autor{
+    font-weight:700;
+    color:#17324d;
+}
+
+.comentario-fecha{
+    font-size:12px;
+    color:#6c7a91;
+}
+
+.comentario-texto{
+    color:#253750;
+    line-height:1.45;
+    white-space:pre-wrap;
+}
+
+.mostrar-mas-wrap,
+.ocultar-wrap{
+    text-align:center;
+    margin-top:10px;
+}
+
+.btn-mostrar-mas,
+.btn-ocultar{
+    border:none;
+    padding:7px 14px;
+    border-radius:8px;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    font-size:13px;
+}
+
+.btn-mostrar-mas{
+    background:#1f4fb0;
+}
+
+.btn-ocultar{
+    background:#777;
+}
+
+/* AVISO LEGAL */
+.aviso-legal{
+    margin:0 18px 18px;
+    padding:14px 16px;
+    font-size:12px;
+    color:#d7dfef;
+    background:rgba(255,255,255,0.06);
+    border-radius:14px;
+    line-height:1.45;
+    text-align:center;
+    box-shadow:0 8px 18px rgba(0,0,0,0.16);
+}
+
+@media (max-width: 1450px){
+    body{
+        zoom:1;
+    }
+
+    .resumen-table th,
+    .resumen-table td{
+        padding:11px 10px;
+        font-size:14px;
+    }
+
+    .col-concepto{
+        font-size:14px;
+    }
+}
+
+@media (max-width: 1200px){
+    .marcador-grid{
+        grid-template-columns:1fr;
+        gap:18px;
+    }
+
+    .equipo-panel.barca,
+    .equipo-panel.madrid{
+        align-items:center;
+        text-align:center;
+    }
+
+    .equipo-panel.madrid .equipo-head{
+        flex-direction:row;
+    }
+
+    .equipo-panel.madrid .subdatos{
+        justify-content:center;
+    }
+
+    .total-global-wrap{
+        align-self:center;
+    }
+}
+
+@media (max-width: 1100px){
+    .columnas-equipos{
+        grid-template-columns:1fr;
+    }
+}
+
+@media (max-width: 768px){
+    .cabecera{
+        height:130px;
+    }
+
+    .menu{
+        top:130px;
+        height:42px;
+        gap:18px;
+        padding:0 10px;
+    }
+
+    .menu a{
+        font-size:11px;
+    }
+
+    .contenido{
+        margin-top:172px;
+        padding:16px 0 50px;
+    }
+
+    .wrap{
+        width:96%;
+    }
+
+    .cabecera-resultados{
+        padding:18px;
+    }
+
+    .cabecera-resultados h1{
+        font-size:26px;
+    }
+
+    .marcador-wrap{
+        padding:14px 12px 8px;
+    }
+
+    .marcador-grid{
+        padding:16px;
+        min-height:auto;
+    }
+
+    .equipo-nombre{
+        font-size:27px;
+    }
+
+    .escudo{
+        width:64px;
+    }
+
+    .score{
+        font-size:68px;
+    }
+
+    .score-sep{
+        font-size:38px;
+    }
+
+    .mini-dato{
+        width:130px;
+        min-width:130px;
+    }
+
+    .mini-dato .et{
+        font-size:12px;
+    }
+
+    .mini-dato .vl{
+        font-size:25px;
+    }
+
+    .subdatos{
+        grid-template-columns:130px 130px;
+    }
+
+    .total-global-wrap{
+        width:270px;
+        grid-template-columns:130px 130px;
+    }
+
+    .total-global{
+        min-width:126px;
+        padding:9px 10px 8px;
+    }
+
+    .total-global .et{
+        font-size:12px;
+    }
+
+    .total-global .vl{
+        font-size:30px;
+    }
+
+    .columnas-equipos{
+        padding:8px 12px 16px;
+        gap:14px;
+    }
+
+    .tarjeta-top{
+        font-size:23px;
+        padding:14px 12px;
+    }
+
+    .tarjeta-body{
+        padding:10px;
+    }
+
+    .categoria-titulo{
+        font-size:18px;
+    }
+
+    .tabla-wrap{
+        justify-content:flex-start;
+    }
+
+    .resumen-table th,
+    .resumen-table td{
+        font-size:12px;
+        padding:9px 7px;
+    }
+
+    .col-concepto{
+        font-size:12px;
+    }
+
+    .btn-mostrar-inicial{
+        margin-left:0;
+        display:block;
+        width:100%;
+    }
+}
+
+
+/* ===== AJUSTES EXTRA MOVIL ===== */
+@media (max-width: 768px){
+    .cabecera{
+        height:78px !important;
+        background-size:cover !important;
+        background-position:center center !important;
+        background-repeat:no-repeat !important;
+    }
+
+    .menu{
+        top:78px !important;
+        height:auto !important;
+        min-height:44px !important;
+        padding:6px 8px !important;
+        gap:8px !important;
+        justify-content:flex-start !important;
+        overflow-x:auto !important;
+        overflow-y:hidden !important;
+        flex-wrap:nowrap !important;
+        white-space:nowrap !important;
+        -webkit-overflow-scrolling:touch;
+        scrollbar-width:none;
+    }
+
+    .menu::-webkit-scrollbar{
+        display:none;
+    }
+
+    .menu a{
+        flex:0 0 auto !important;
+        display:inline-flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        min-height:32px !important;
+        padding:7px 10px !important;
+        font-size:11px !important;
+        line-height:1.05 !important;
+        white-space:nowrap !important;
+        border-radius:8px !important;
+    }
+
+    .contenido{
+        margin-top:132px !important;
+    }
+
+    .wrap{
+        width:96% !important;
+    }
+}
+
+@media (max-width: 768px){
+    .marcador-wrap{
+        padding:10px 6px 6px !important;
+    }
+
+    #marcadorGlobalContainer,
+    .marcador-global{
+        width:100% !important;
+        max-width:100% !important;
+        overflow:hidden !important;
+        border-radius:18px !important;
+    }
+
+    #marcadorGlobalContainer .marcador-grid,
+    .marcador-grid{
+        grid-template-columns:1fr !important;
+        gap:12px !important;
+        min-height:auto !important;
+        padding:14px 10px 16px !important;
+    }
+
+    #marcadorGlobalContainer .equipo-panel,
+    .equipo-panel{
+        align-items:center !important;
+        text-align:center !important;
+    }
+
+    #marcadorGlobalContainer .equipo-head,
+    .equipo-head{
+        gap:10px !important;
+        justify-content:center !important;
+        flex-direction:row !important;
+    }
+
+    #marcadorGlobalContainer .equipo-nombre,
+    .equipo-nombre{
+        font-size:17px !important;
+        line-height:1.05 !important;
+    }
+
+    #marcadorGlobalContainer .escudo,
+    .escudo{
+        width:40px !important;
+        height:auto !important;
+    }
+
+    #marcadorGlobalContainer .subdatos,
+    .subdatos{
+        width:100% !important;
+        max-width:240px !important;
+        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+        gap:8px !important;
+        justify-content:center !important;
+        margin:0 auto !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato,
+    .mini-dato{
+        width:100% !important;
+        min-width:0 !important;
+        padding:6px 6px 5px !important;
+        border-radius:10px !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato .et,
+    .mini-dato .et{
+        font-size:10px !important;
+        line-height:1.1 !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato .vl,
+    .mini-dato .vl{
+        font-size:17px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .total-global-wrap,
+    .total-global-wrap{
+        width:100% !important;
+        max-width:240px !important;
+        grid-template-columns:1fr !important;
+        gap:8px !important;
+        margin:0 auto !important;
+    }
+
+    #marcadorGlobalContainer .total-global,
+    .total-global{
+        width:100% !important;
+        min-width:0 !important;
+        padding:8px 8px !important;
+        border-radius:16px !important;
+    }
+
+    #marcadorGlobalContainer .total-global .et,
+    .total-global .et{
+        font-size:10px !important;
+    }
+
+    #marcadorGlobalContainer .total-global .vl,
+    .total-global .vl{
+        font-size:22px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .marcador-centro,
+    .marcador-centro{
+        gap:8px !important;
+        padding-top:2px !important;
+    }
+
+    #marcadorGlobalContainer .marcador-titulo,
+    .marcador-titulo{
+        font-size:13px !important;
+        line-height:1.15 !important;
+    }
+
+    #marcadorGlobalContainer .score-box,
+    .score-box{
+        width:100% !important;
+        max-width:280px !important;
+        margin:0 auto !important;
+        padding:12px 10px !important;
+        gap:8px !important;
+        border-radius:18px !important;
+    }
+
+    #marcadorGlobalContainer .score,
+    .score{
+        font-size:34px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .score-sep,
+    .score-sep{
+        font-size:22px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .score-leyenda,
+    .score-leyenda{
+        max-width:260px !important;
+        margin:0 auto !important;
+        font-size:10px !important;
+        line-height:1.2 !important;
+    }
+}
+
+@media (max-width: 768px){
+    .cabecera-resultados{
+        padding:16px 14px !important;
+    }
+
+    .cabecera-resultados h1{
+        font-size:22px !important;
+    }
+
+    .columnas-equipos{
+        padding:8px 10px 14px !important;
+        gap:12px !important;
+    }
+
+    .tarjeta-top{
+        font-size:20px !important;
+        padding:12px 10px !important;
+    }
+
+    .tarjeta-body{
+        padding:10px !important;
+    }
+
+    .resumen-table th,
+    .resumen-table td{
+        font-size:12px !important;
+        padding:8px 6px !important;
+    }
+}
+
+
+
+/* ===== AJUSTE FINAL MOVIL MENU + MARCADOR ===== */
+@media (max-width: 768px){
+    .menu{
+        top:80px !important;
+        height:58px !important;
+        min-height:58px !important;
+        padding:0 !important;
+        gap:0 !important;
+        display:grid !important;
+        grid-template-columns:repeat(5, minmax(0, 1fr)) !important;
+        align-items:stretch !important;
+        justify-content:stretch !important;
+        overflow:hidden !important;
+        white-space:normal !important;
+    }
+
+    .menu::before,
+    .menu::after{
+        display:none !important;
+    }
+
+    .menu a{
+        min-width:0 !important;
+        width:100% !important;
+        height:58px !important;
+        padding:4px 3px !important;
+        border-radius:0 !important;
+        display:flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        text-align:center !important;
+        font-size:9.5px !important;
+        line-height:1.02 !important;
+        letter-spacing:0 !important;
+        white-space:normal !important;
+        word-break:keep-all !important;
+        overflow-wrap:normal !important;
+        box-sizing:border-box !important;
+    }
+
+    .menu a span{
+        display:block !important;
+    }
+
+    .contenido{
+        margin-top:138px !important;
+        min-height:calc(100vh - 138px) !important;
+    }
+}
+
+@media (max-width: 430px){
+    .menu{
+        height:56px !important;
+        min-height:56px !important;
+    }
+
+    .menu a{
+        height:56px !important;
+        font-size:8.6px !important;
+        padding:4px 2px !important;
+    }
+
+    .contenido{
+        margin-top:136px !important;
+        min-height:calc(100vh - 136px) !important;
+    }
+}
+
+@media (max-width: 768px){
+    #marcadorGlobalContainer,
+    .marcador-global{
+        width:100% !important;
+        max-width:100% !important;
+    }
+
+    #marcadorGlobalContainer .marcador-grid,
+    .marcador-grid{
+        grid-template-columns:minmax(0, 1fr) 108px minmax(0, 1fr) !important;
+        gap:10px !important;
+        padding:10px 10px 12px !important;
+        align-items:start !important;
+    }
+
+    #marcadorGlobalContainer .equipo-panel.barca,
+    #marcadorGlobalContainer .equipo-panel.madrid,
+    .equipo-panel.barca,
+    .equipo-panel.madrid{
+        align-items:center !important;
+        text-align:center !important;
+    }
+
+    #marcadorGlobalContainer .equipo-panel.barca .equipo-head,
+    .equipo-panel.barca .equipo-head{
+        flex-direction:row-reverse !important;
+        gap:6px !important;
+        justify-content:center !important;
+    }
+
+    #marcadorGlobalContainer .equipo-head,
+    .equipo-head{
+        gap:6px !important;
+        justify-content:center !important;
+    }
+
+    #marcadorGlobalContainer .equipo-panel.madrid .equipo-head,
+    .equipo-panel.madrid .equipo-head{
+        flex-direction:row !important;
+    }
+
+    #marcadorGlobalContainer .escudo,
+    .escudo{
+        width:40px !important;
+    }
+
+    #marcadorGlobalContainer .equipo-nombre,
+    .equipo-nombre{
+        font-size:13px !important;
+        line-height:1 !important;
+        letter-spacing:0 !important;
+    }
+
+    #marcadorGlobalContainer .subdatos,
+    .subdatos{
+        width:100% !important;
+        max-width:100% !important;
+        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+        gap:5px !important;
+        justify-content:stretch !important;
+    }
+
+    #marcadorGlobalContainer .subdatos .mini-dato:nth-child(3),
+    .subdatos .mini-dato:nth-child(3){
+        grid-column:1 / span 2 !important;
+        justify-self:stretch !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato,
+    .mini-dato{
+        width:100% !important;
+        min-width:0 !important;
+        border-radius:10px !important;
+        padding:4px 3px 3px !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato .et,
+    .mini-dato .et{
+        font-size:9px !important;
+        line-height:1 !important;
+        margin-bottom:1px !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato .vl,
+    .mini-dato .vl{
+        font-size:18px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .total-global-wrap,
+    .total-global-wrap{
+        width:100% !important;
+        grid-template-columns:1fr !important;
+        gap:5px !important;
+        margin-top:4px !important;
+    }
+
+    #marcadorGlobalContainer .total-global,
+    .total-global{
+        grid-column:1 !important;
+        min-width:0 !important;
+        width:100% !important;
+        padding:7px 6px !important;
+        border-radius:14px !important;
+    }
+
+    #marcadorGlobalContainer .total-global .et,
+    .total-global .et{
+        font-size:9px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .total-global .vl,
+    .total-global .vl{
+        font-size:22px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .marcador-centro,
+    .marcador-centro{
+        gap:5px !important;
+        justify-content:center !important;
+        align-self:center !important;
+        padding-top:16px !important;
+    }
+
+    #marcadorGlobalContainer .marcador-titulo,
+    .marcador-titulo{
+        font-size:10px !important;
+        line-height:1.05 !important;
+    }
+
+    #marcadorGlobalContainer .score-box,
+    .score-box{
+        width:100% !important;
+        padding:9px 6px !important;
+        border-radius:16px !important;
+        gap:4px !important;
+    }
+
+    #marcadorGlobalContainer .score,
+    .score{
+        font-size:34px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .score-sep,
+    .score-sep{
+        font-size:20px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .score-leyenda,
+    .score-leyenda{
+        font-size:8px !important;
+        line-height:1.02 !important;
+        letter-spacing:0 !important;
+        max-width:108px !important;
+        margin:0 auto !important;
+    }
+}
+
+
+@media (max-width: 768px){
+
+    .marcador-centro{
+        transform: translateX(-8px);
+    }
+
+    .marcador-titulo,
+    .score-leyenda{
+        transform: translateX(6px);
+    }
+
+}
+
+</style>
+</head>
+<body>
+
+<div class="cabecera"></div>
+
+<nav class="menu">
+    <a href="index.html"><span>INICIO</span></a>
+    <a href="jugadas-polemicas.html"><span>JUGADAS<br>POLÉMICAS</span></a>
+    <a href="resultados-var.html"><span>RESULTADOS</span></a>
+    <a href="quien-ha-sido-mas-favorecido.html"><span>EQUIPO MÁS<br>FAVORECIDO</span></a>
+    <a href="arbitros-mas-influyentes.html"><span>ÁRBITROS MÁS<br>INFLUYENTES</span></a>
+</nav>
+
+<div class="contenido">
+    <div class="wrap">
+
+        <section class="bloque-resultados">
+            <div class="cabecera-resultados">
+                <h1>Resultados VAR</h1>
+                <p>Resumen acumulado de decisiones polémicas con una visualización clara y compacta.</p>
+            </div>
+
+            <div class="marcador-wrap">
+                <div id="marcadorGlobalContainer">
+                    <div class="caja-cargando">Cargando marcador global...</div>
+                </div>
+            </div>
+
+            <div class="columnas-equipos">
+
+                <div class="columna-equipo">
+                    <article class="tarjeta-equipo tabla-barca">
+                        <div class="tarjeta-top">FC Barcelona</div>
+                        <div class="tarjeta-body">
+                            <div class="bloques-categoria">
+
+                                <section class="bloque-categoria">
+                                    <div class="categoria-titulo">Penaltis</div>
+                                    <div class="tabla-wrap">
+                                        <table class="resumen-table">
+                                            <thead>
+                                                <tr>
+                                                    <th class="col-concepto"></th>
+                                                    <th class="col-total"></th>
+                                                    <th colspan="2" class="pregunta-arbitro">¿SE ARBITRÓ BIEN?</th>
+                                                    <th class="col-balance"></th>
+                                                </tr>
+                                                <tr>
+                                                    <th class="col-concepto"></th>
+                                                    <th class="col-total">TOTAL</th>
+                                                    <th class="col-si">SÍ</th>
+                                                    <th class="col-no">NO</th>
+                                                    <th class="col-balance">BALANCE</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="fila-hover">
+                                                    <td class="col-concepto">PENALTIS POLÉMICOS PITADOS A FAVOR</td>
+                                                    <td id="barcelona-penalti-pitado_favor-total">0</td>
+                                                    <td id="barcelona-penalti-pitado_favor-si">0</td>
+                                                    <td id="barcelona-penalti-pitado_favor-no">0</td>
+                                                    <td id="barcelona-penalti-pitado_favor-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                                <tr class="fila-hover">
+                                                    <td class="col-concepto">PENALTIS POLÉMICOS PITADOS EN CONTRA</td>
+                                                    <td id="barcelona-penalti-pitado_contra-total">0</td>
+                                                    <td id="barcelona-penalti-pitado_contra-si">0</td>
+                                                    <td id="barcelona-penalti-pitado_contra-no">0</td>
+                                                    <td id="barcelona-penalti-pitado_contra-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                                <tr class="fila-hover">
+                                                    <td class="col-concepto">PENALTIS POLÉMICOS NO PITADOS A FAVOR</td>
+                                                    <td id="barcelona-penalti-no_pitado_favor-total">0</td>
+                                                    <td id="barcelona-penalti-no_pitado_favor-si">0</td>
+                                                    <td id="barcelona-penalti-no_pitado_favor-no">0</td>
+                                                    <td id="barcelona-penalti-no_pitado_favor-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                                <tr class="fila-hover">
+                                                    <td class="col-concepto">PENALTIS POLÉMICOS NO PITADOS EN CONTRA</td>
+                                                    <td id="barcelona-penalti-no_pitado_contra-total">0</td>
+                                                    <td id="barcelona-penalti-no_pitado_contra-si">0</td>
+                                                    <td id="barcelona-penalti-no_pitado_contra-no">0</td>
+                                                    <td id="barcelona-penalti-no_pitado_contra-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                                <tr class="fila-total-bloque">
+                                                    <td class="total-label">TOTAL PENALTIS CON POLÉMICA</td>
+                                                    <td id="barcelona-penalti-total-total">0</td>
+                                                    <td id="barcelona-penalti-total-si">0</td>
+                                                    <td id="barcelona-penalti-total-no">0</td>
+                                                    <td id="barcelona-penalti-total-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </section>
+
+                                <section class="bloque-categoria total-goles">
+                                    <div class="categoria-titulo">Goles</div>
+                                    <div class="tabla-wrap">
+                                        <table class="resumen-table">
+                                            <thead>
+                                                <tr>
+                                                    <th class="col-concepto"></th>
+                                                    <th class="col-total"></th>
+                                                    <th colspan="2" class="pregunta-arbitro">¿SE ARBITRÓ BIEN?</th>
+                                                    <th class="col-balance"></th>
+                                                </tr>
+                                                <tr>
+                                                    <th class="col-concepto"></th>
+                                                    <th class="col-total">TOTAL</th>
+                                                    <th class="col-si">SÍ</th>
+                                                    <th class="col-no">NO</th>
+                                                    <th class="col-balance">BALANCE</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="fila-hover">
+                                                    <td class="col-concepto">GOLES POLÉMICOS CONCEDIDOS A FAVOR</td>
+                                                    <td id="barcelona-gol-concedido_favor-total">0</td>
+                                                    <td id="barcelona-gol-concedido_favor-si">0</td>
+                                                    <td id="barcelona-gol-concedido_favor-no">0</td>
+                                                    <td id="barcelona-gol-concedido_favor-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                                <tr class="fila-hover">
+                                                    <td class="col-concepto">GOLES POLÉMICOS CONCEDIDOS EN CONTRA</td>
+                                                    <td id="barcelona-gol-concedido_contra-total">0</td>
+                                                    <td id="barcelona-gol-concedido_contra-si">0</td>
+                                                    <td id="barcelona-gol-concedido_contra-no">0</td>
+                                                    <td id="barcelona-gol-concedido_contra-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                                <tr class="fila-hover">
+                                                    <td class="col-concepto">GOLES POLÉMICOS ANULADOS A FAVOR</td>
+                                                    <td id="barcelona-gol-anulado_favor-total">0</td>
+                                                    <td id="barcelona-gol-anulado_favor-si">0</td>
+                                                    <td id="barcelona-gol-anulado_favor-no">0</td>
+                                                    <td id="barcelona-gol-anulado_favor-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                                <tr class="fila-hover">
+                                                    <td class="col-concepto">GOLES POLÉMICOS ANULADOS EN CONTRA</td>
+                                                    <td id="barcelona-gol-anulado_contra-total">0</td>
+                                                    <td id="barcelona-gol-anulado_contra-si">0</td>
+                                                    <td id="barcelona-gol-anulado_contra-no">0</td>
+                                                    <td id="barcelona-gol-anulado_contra-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                                <tr class="fila-total-bloque">
+                                                    <td class="total-label">TOTAL GOLES CON POLÉMICA</td>
+                                                    <td id="barcelona-gol-total-total">0</td>
+                                                    <td id="barcelona-gol-total-si">0</td>
+                                                    <td id="barcelona-gol-total-no">0</td>
+                                                    <td id="barcelona-gol-total-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </section>
+
+                                <section class="bloque-categoria">
+                                    <div class="categoria-titulo">Rojas</div>
+                                    <div class="tabla-wrap">
+                                        <table class="resumen-table">
+                                            <thead>
+                                                <tr>
+                                                    <th class="col-concepto"></th>
+                                                    <th class="col-total"></th>
+                                                    <th colspan="2" class="pregunta-arbitro">¿SE ARBITRÓ BIEN?</th>
+                                                    <th class="col-balance"></th>
+                                                </tr>
+                                                <tr>
+                                                    <th class="col-concepto"></th>
+                                                    <th class="col-total">TOTAL</th>
+                                                    <th class="col-si">SÍ</th>
+                                                    <th class="col-no">NO</th>
+                                                    <th class="col-balance">BALANCE</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="fila-hover">
+                                                    <td class="col-concepto">ROJAS POLÉMICAS SACADAS AL BARCELONA</td>
+                                                    <td id="barcelona-roja-sacada_equipo-total">0</td>
+                                                    <td id="barcelona-roja-sacada_equipo-si">0</td>
+                                                    <td id="barcelona-roja-sacada_equipo-no">0</td>
+                                                    <td id="barcelona-roja-sacada_equipo-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                                <tr class="fila-hover">
+                                                    <td class="col-concepto">ROJAS POLÉMICAS NO SACADAS AL BARCELONA</td>
+                                                    <td id="barcelona-roja-no_sacada_equipo-total">0</td>
+                                                    <td id="barcelona-roja-no_sacada_equipo-si">0</td>
+                                                    <td id="barcelona-roja-no_sacada_equipo-no">0</td>
+                                                    <td id="barcelona-roja-no_sacada_equipo-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                                <tr class="fila-hover">
+                                                    <td class="col-concepto">ROJAS POLÉMICAS SACADAS AL RIVAL</td>
+                                                    <td id="barcelona-roja-sacada_rival-total">0</td>
+                                                    <td id="barcelona-roja-sacada_rival-si">0</td>
+                                                    <td id="barcelona-roja-sacada_rival-no">0</td>
+                                                    <td id="barcelona-roja-sacada_rival-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                                <tr class="fila-hover">
+                                                    <td class="col-concepto">ROJAS POLÉMICAS NO SACADAS AL RIVAL</td>
+                                                    <td id="barcelona-roja-no_sacada_rival-total">0</td>
+                                                    <td id="barcelona-roja-no_sacada_rival-si">0</td>
+                                                    <td id="barcelona-roja-no_sacada_rival-no">0</td>
+                                                    <td id="barcelona-roja-no_sacada_rival-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                                <tr class="fila-total-bloque">
+                                                    <td class="total-label">TOTAL ROJAS CON POLÉMICA</td>
+                                                    <td id="barcelona-roja-total-total">0</td>
+                                                    <td id="barcelona-roja-total-si">0</td>
+                                                    <td id="barcelona-roja-total-no">0</td>
+                                                    <td id="barcelona-roja-total-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </section>
+
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="columna-equipo">
+                    <article class="tarjeta-equipo tabla-madrid">
+                        <div class="tarjeta-top">Real Madrid</div>
+                        <div class="tarjeta-body">
+                            <div class="bloques-categoria">
+
+                                <section class="bloque-categoria">
+                                    <div class="categoria-titulo">Penaltis</div>
+                                    <div class="tabla-wrap">
+                                        <table class="resumen-table">
+                                            <thead>
+                                                <tr>
+                                                    <th class="col-concepto"></th>
+                                                    <th class="col-total"></th>
+                                                    <th colspan="2" class="pregunta-arbitro">¿SE ARBITRÓ BIEN?</th>
+                                                    <th class="col-balance"></th>
+                                                </tr>
+                                                <tr>
+                                                    <th class="col-concepto"></th>
+                                                    <th class="col-total">TOTAL</th>
+                                                    <th class="col-si">SÍ</th>
+                                                    <th class="col-no">NO</th>
+                                                    <th class="col-balance">BALANCE</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="fila-hover">
+                                                    <td class="col-concepto">PENALTIS POLÉMICOS PITADOS A FAVOR</td>
+                                                    <td id="madrid-penalti-pitado_favor-total">0</td>
+                                                    <td id="madrid-penalti-pitado_favor-si">0</td>
+                                                    <td id="madrid-penalti-pitado_favor-no">0</td>
+                                                    <td id="madrid-penalti-pitado_favor-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                                <tr class="fila-hover">
+                                                    <td class="col-concepto">PENALTIS POLÉMICOS PITADOS EN CONTRA</td>
+                                                    <td id="madrid-penalti-pitado_contra-total">0</td>
+                                                    <td id="madrid-penalti-pitado_contra-si">0</td>
+                                                    <td id="madrid-penalti-pitado_contra-no">0</td>
+                                                    <td id="madrid-penalti-pitado_contra-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                                <tr class="fila-hover">
+                                                    <td class="col-concepto">PENALTIS POLÉMICOS NO PITADOS A FAVOR</td>
+                                                    <td id="madrid-penalti-no_pitado_favor-total">0</td>
+                                                    <td id="madrid-penalti-no_pitado_favor-si">0</td>
+                                                    <td id="madrid-penalti-no_pitado_favor-no">0</td>
+                                                    <td id="madrid-penalti-no_pitado_favor-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                                <tr class="fila-hover">
+                                                    <td class="col-concepto">PENALTIS POLÉMICOS NO PITADOS EN CONTRA</td>
+                                                    <td id="madrid-penalti-no_pitado_contra-total">0</td>
+                                                    <td id="madrid-penalti-no_pitado_contra-si">0</td>
+                                                    <td id="madrid-penalti-no_pitado_contra-no">0</td>
+                                                    <td id="madrid-penalti-no_pitado_contra-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                                <tr class="fila-total-bloque">
+                                                    <td class="total-label">TOTAL PENALTIS CON POLÉMICA</td>
+                                                    <td id="madrid-penalti-total-total">0</td>
+                                                    <td id="madrid-penalti-total-si">0</td>
+                                                    <td id="madrid-penalti-total-no">0</td>
+                                                    <td id="madrid-penalti-total-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </section>
+
+                                <section class="bloque-categoria total-goles">
+                                    <div class="categoria-titulo">Goles</div>
+                                    <div class="tabla-wrap">
+                                        <table class="resumen-table">
+                                            <thead>
+                                                <tr>
+                                                    <th class="col-concepto"></th>
+                                                    <th class="col-total"></th>
+                                                    <th colspan="2" class="pregunta-arbitro">¿SE ARBITRÓ BIEN?</th>
+                                                    <th class="col-balance"></th>
+                                                </tr>
+                                                <tr>
+                                                    <th class="col-concepto"></th>
+                                                    <th class="col-total">TOTAL</th>
+                                                    <th class="col-si">SÍ</th>
+                                                    <th class="col-no">NO</th>
+                                                    <th class="col-balance">BALANCE</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="fila-hover">
+                                                    <td class="col-concepto">GOLES POLÉMICOS CONCEDIDOS A FAVOR</td>
+                                                    <td id="madrid-gol-concedido_favor-total">0</td>
+                                                    <td id="madrid-gol-concedido_favor-si">0</td>
+                                                    <td id="madrid-gol-concedido_favor-no">0</td>
+                                                    <td id="madrid-gol-concedido_favor-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                                <tr class="fila-hover">
+                                                    <td class="col-concepto">GOLES POLÉMICOS CONCEDIDOS EN CONTRA</td>
+                                                    <td id="madrid-gol-concedido_contra-total">0</td>
+                                                    <td id="madrid-gol-concedido_contra-si">0</td>
+                                                    <td id="madrid-gol-concedido_contra-no">0</td>
+                                                    <td id="madrid-gol-concedido_contra-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                                <tr class="fila-hover">
+                                                    <td class="col-concepto">GOLES POLÉMICOS ANULADOS A FAVOR</td>
+                                                    <td id="madrid-gol-anulado_favor-total">0</td>
+                                                    <td id="madrid-gol-anulado_favor-si">0</td>
+                                                    <td id="madrid-gol-anulado_favor-no">0</td>
+                                                    <td id="madrid-gol-anulado_favor-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                                <tr class="fila-hover">
+                                                    <td class="col-concepto">GOLES POLÉMICOS ANULADOS EN CONTRA</td>
+                                                    <td id="madrid-gol-anulado_contra-total">0</td>
+                                                    <td id="madrid-gol-anulado_contra-si">0</td>
+                                                    <td id="madrid-gol-anulado_contra-no">0</td>
+                                                    <td id="madrid-gol-anulado_contra-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                                <tr class="fila-total-bloque">
+                                                    <td class="total-label">TOTAL GOLES CON POLÉMICA</td>
+                                                    <td id="madrid-gol-total-total">0</td>
+                                                    <td id="madrid-gol-total-si">0</td>
+                                                    <td id="madrid-gol-total-no">0</td>
+                                                    <td id="madrid-gol-total-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </section>
+
+                                <section class="bloque-categoria">
+                                    <div class="categoria-titulo">Rojas</div>
+                                    <div class="tabla-wrap">
+                                        <table class="resumen-table">
+                                            <thead>
+                                                <tr>
+                                                    <th class="col-concepto"></th>
+                                                    <th class="col-total"></th>
+                                                    <th colspan="2" class="pregunta-arbitro">¿SE ARBITRÓ BIEN?</th>
+                                                    <th class="col-balance"></th>
+                                                </tr>
+                                                <tr>
+                                                    <th class="col-concepto"></th>
+                                                    <th class="col-total">TOTAL</th>
+                                                    <th class="col-si">SÍ</th>
+                                                    <th class="col-no">NO</th>
+                                                    <th class="col-balance">BALANCE</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="fila-hover">
+                                                    <td class="col-concepto">ROJAS POLÉMICAS SACADAS AL MADRID</td>
+                                                    <td id="madrid-roja-sacada_equipo-total">0</td>
+                                                    <td id="madrid-roja-sacada_equipo-si">0</td>
+                                                    <td id="madrid-roja-sacada_equipo-no">0</td>
+                                                    <td id="madrid-roja-sacada_equipo-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                                <tr class="fila-hover">
+                                                    <td class="col-concepto">ROJAS POLÉMICAS NO SACADAS AL MADRID</td>
+                                                    <td id="madrid-roja-no_sacada_equipo-total">0</td>
+                                                    <td id="madrid-roja-no_sacada_equipo-si">0</td>
+                                                    <td id="madrid-roja-no_sacada_equipo-no">0</td>
+                                                    <td id="madrid-roja-no_sacada_equipo-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                                <tr class="fila-hover">
+                                                    <td class="col-concepto">ROJAS POLÉMICAS SACADAS AL RIVAL</td>
+                                                    <td id="madrid-roja-sacada_rival-total">0</td>
+                                                    <td id="madrid-roja-sacada_rival-si">0</td>
+                                                    <td id="madrid-roja-sacada_rival-no">0</td>
+                                                    <td id="madrid-roja-sacada_rival-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                                <tr class="fila-hover">
+                                                    <td class="col-concepto">ROJAS POLÉMICAS NO SACADAS AL RIVAL</td>
+                                                    <td id="madrid-roja-no_sacada_rival-total">0</td>
+                                                    <td id="madrid-roja-no_sacada_rival-si">0</td>
+                                                    <td id="madrid-roja-no_sacada_rival-no">0</td>
+                                                    <td id="madrid-roja-no_sacada_rival-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                                <tr class="fila-total-bloque">
+                                                    <td class="total-label">TOTAL ROJAS CON POLÉMICA</td>
+                                                    <td id="madrid-roja-total-total">0</td>
+                                                    <td id="madrid-roja-total-si">0</td>
+                                                    <td id="madrid-roja-total-no">0</td>
+                                                    <td id="madrid-roja-total-balance" class="valor-neutro">0</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </section>
+
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+            </div>
+
+            <section class="seccion-comentarios" id="seccionComentariosResultadosVar">
+                <div class="cabecera-comentarios">
+                    <h3>Comentarios</h3>
+                    <p id="contadorComentariosResultadosVar">0 comentarios</p>
+                </div>
+                <div class="cuerpo-comentarios">
+                    <textarea id="textoComentarioResultadosVar" class="textarea-comentario" placeholder="Escribe tu comentario sobre los resultados VAR..."></textarea>
+                    <br>
+                    <button id="btnPublicarComentarioResultadosVar" class="boton-comentar" type="button">Publicar comentario</button>
+                    <button id="btnMostrarComentariosResultadosVar" class="btn-mostrar-inicial" type="button">Mostrar comentarios</button>
+
+                    <div id="listaComentariosResultadosVar" class="lista-comentarios"></div>
+
+                    <div class="mostrar-mas-wrap">
+                        <button id="btnMostrarMasResultadosVar" class="btn-mostrar-mas" type="button">Mostrar más comentarios</button>
+                    </div>
+                    <div class="ocultar-wrap">
+                        <button id="btnOcultarComentariosResultadosVar" class="btn-ocultar" type="button">Ocultar comentarios</button>
+                    </div>
+                </div>
+            </section>
+
+            <div class="aviso-legal">
+                Decisión VAR es una plataforma independiente y neutral cuyo objetivo es analizar jugadas polémicas a través de la opinión de los usuarios.
+                Los contenidos audiovisuales mostrados pertenecen a sus respectivos autores y son compartidos desde plataformas públicas. Esta web no almacena ni modifica dichos contenidos.
+            </div>
+
+        </section>
+
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const marcadorContainer = document.getElementById("marcadorGlobalContainer");
+
+    function copiarEstilosMarcador(doc){
+        if(document.getElementById("estilos-marcador-copiados")) return;
+
+        const bloque = document.createElement("div");
+        bloque.id = "estilos-marcador-copiados";
+
+        doc.querySelectorAll('link[rel="stylesheet"], style').forEach(el => {
+            bloque.appendChild(el.cloneNode(true));
+        });
+
+        document.head.appendChild(bloque);
+    }
+
+    fetch("quien-ha-sido-mas-favorecido.html")
+        .then(res => {
+            if(!res.ok) throw new Error("No se pudo abrir quien-ha-sido-mas-favorecido.html");
+            return res.text();
+        })
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
+
+            copiarEstilosMarcador(doc);
+
+            const marcador = doc.querySelector("#marcadorGlobal");
+
+            if(!marcador){
+                throw new Error("Marcador no encontrado");
+            }
+
+            marcadorContainer.innerHTML = marcador.outerHTML;
+        })
+        .catch((error) => {
+            marcadorContainer.innerHTML = `
+                <div class="caja-error">
+                    No se pudo cargar el marcador global automáticamente.<br>
+                    ${error.message}
+                </div>
+            `;
+        });
+
+    function crearResumenVacio(){
+        return {
+            barcelona: {
+                penalti: {
+                    pitado_favor:{total:0,si:0,no:0,balance:0},
+                    pitado_contra:{total:0,si:0,no:0,balance:0},
+                    no_pitado_favor:{total:0,si:0,no:0,balance:0},
+                    no_pitado_contra:{total:0,si:0,no:0,balance:0}
+                },
+                gol: {
+                    concedido_favor:{total:0,si:0,no:0,balance:0},
+                    concedido_contra:{total:0,si:0,no:0,balance:0},
+                    anulado_favor:{total:0,si:0,no:0,balance:0},
+                    anulado_contra:{total:0,si:0,no:0,balance:0}
+                },
+                roja: {
+                    sacada_equipo:{total:0,si:0,no:0,balance:0},
+                    no_sacada_equipo:{total:0,si:0,no:0,balance:0},
+                    sacada_rival:{total:0,si:0,no:0,balance:0},
+                    no_sacada_rival:{total:0,si:0,no:0,balance:0}
+                }
+            },
+            madrid: {
+                penalti: {
+                    pitado_favor:{total:0,si:0,no:0,balance:0},
+                    pitado_contra:{total:0,si:0,no:0,balance:0},
+                    no_pitado_favor:{total:0,si:0,no:0,balance:0},
+                    no_pitado_contra:{total:0,si:0,no:0,balance:0}
+                },
+                gol: {
+                    concedido_favor:{total:0,si:0,no:0,balance:0},
+                    concedido_contra:{total:0,si:0,no:0,balance:0},
+                    anulado_favor:{total:0,si:0,no:0,balance:0},
+                    anulado_contra:{total:0,si:0,no:0,balance:0}
+                },
+                roja: {
+                    sacada_equipo:{total:0,si:0,no:0,balance:0},
+                    no_sacada_equipo:{total:0,si:0,no:0,balance:0},
+                    sacada_rival:{total:0,si:0,no:0,balance:0},
+                    no_sacada_rival:{total:0,si:0,no:0,balance:0}
+                }
+            }
+        };
+    }
+
+    function leerResumenVAR(){
+        try{
+            const guardado = localStorage.getItem("resumenVAR");
+            if(!guardado) return crearResumenVacio();
+            return JSON.parse(guardado);
+        }catch{
+            return crearResumenVacio();
+        }
+    }
+
+    function formatearBalance(valor){
+        if(valor > 0) return `+${valor}`;
+        return `${valor}`;
+    }
+
+    function pintarBalance(id, valor){
+        const el = document.getElementById(id);
+        if(!el) return;
+
+        el.textContent = formatearBalance(valor);
+        el.classList.remove("valor-pos", "valor-neg", "valor-neutro");
+
+        if(valor > 0){
+            el.classList.add("valor-pos");
+        }else if(valor < 0){
+            el.classList.add("valor-neg");
+        }else{
+            el.classList.add("valor-neutro");
+        }
+    }
+
+    function ponerTexto(id, valor){
+        const el = document.getElementById(id);
+        if(el) el.textContent = valueOrZero(valor);
+    }
+
+    function valueOrZero(valor){
+        return Number.isFinite(valor) ? valor : 0;
+    }
+
+    function rellenarFila(equipo, categoria, subtipo, datos){
+        ponerTexto(`${equipo}-${categoria}-${subtipo}-total`, datos.total);
+        ponerTexto(`${equipo}-${categoria}-${subtipo}-si`, datos.si);
+        ponerTexto(`${equipo}-${categoria}-${subtipo}-no`, datos.no);
+        pintarBalance(`${equipo}-${categoria}-${subtipo}-balance`, datos.balance);
+    }
+
+    function sumarBloques(...bloques){
+        return bloques.reduce((acc, bloque) => {
+            acc.total += valueOrZero(bloque.total);
+            acc.si += valueOrZero(bloque.si);
+            acc.no += valueOrZero(bloque.no);
+            acc.balance += valueOrZero(bloque.balance);
+            return acc;
+        }, { total:0, si:0, no:0, balance:0 });
+    }
+
+    function renderCategoria(equipo, categoria, resumenEquipoCategoria, subtipos){
+        subtipos.forEach(subtipo => {
+            rellenarFila(equipo, categoria, subtipo, resumenEquipoCategoria[subtipo]);
+        });
+
+        const total = sumarBloques(...subtipos.map(subtipo => resumenEquipoCategoria[subtipo]));
+        ponerTexto(`${equipo}-${categoria}-total-total`, total.total);
+        ponerTexto(`${equipo}-${categoria}-total-si`, total.si);
+        ponerTexto(`${equipo}-${categoria}-total-no`, total.no);
+        pintarBalance(`${equipo}-${categoria}-total-balance`, total.balance);
+    }
+
+    function renderResultadosVAR(){
+        const resumen = leerResumenVAR();
+
+        renderCategoria("barcelona", "penalti", resumen.barcelona.penalti, [
+            "pitado_favor",
+            "pitado_contra",
+            "no_pitado_favor",
+            "no_pitado_contra"
+        ]);
+
+        renderCategoria("barcelona", "gol", resumen.barcelona.gol, [
+            "concedido_favor",
+            "concedido_contra",
+            "anulado_favor",
+            "anulado_contra"
+        ]);
+
+        renderCategoria("barcelona", "roja", resumen.barcelona.roja, [
+            "sacada_equipo",
+            "no_sacada_equipo",
+            "sacada_rival",
+            "no_sacada_rival"
+        ]);
+
+        renderCategoria("madrid", "penalti", resumen.madrid.penalti, [
+            "pitado_favor",
+            "pitado_contra",
+            "no_pitado_favor",
+            "no_pitado_contra"
+        ]);
+
+        renderCategoria("madrid", "gol", resumen.madrid.gol, [
+            "concedido_favor",
+            "concedido_contra",
+            "anulado_favor",
+            "anulado_contra"
+        ]);
+
+        renderCategoria("madrid", "roja", resumen.madrid.roja, [
+            "sacada_equipo",
+            "no_sacada_equipo",
+            "sacada_rival",
+            "no_sacada_rival"
+        ]);
+    }
+
+    renderResultadosVAR();
+
+    /* COMENTARIOS RESULTADOS VAR */
+    const CLAVE_COMENTARIOS_RESULTADOS_VAR = "decisionvar_comentarios_resultados_var";
+    const listaComentarios = document.getElementById("listaComentariosResultadosVar");
+    const contadorComentarios = document.getElementById("contadorComentariosResultadosVar");
+    const textoComentario = document.getElementById("textoComentarioResultadosVar");
+    const btnPublicar = document.getElementById("btnPublicarComentarioResultadosVar");
+    const btnMostrar = document.getElementById("btnMostrarComentariosResultadosVar");
+    const btnMostrarMas = document.getElementById("btnMostrarMasResultadosVar");
+    const btnOcultar = document.getElementById("btnOcultarComentariosResultadosVar");
+
+    let visibles = 0;
+
+    function leerComentariosResultadosVar(){
+        try{
+            return JSON.parse(localStorage.getItem(CLAVE_COMENTARIOS_RESULTADOS_VAR)) || [];
+        }catch(e){
+            return [];
+        }
+    }
+
+    function guardarComentariosResultadosVar(comentarios){
+        localStorage.setItem(CLAVE_COMENTARIOS_RESULTADOS_VAR, JSON.stringify(comentarios));
+    }
+
+    function escaparHtml(texto){
+        return (texto || "")
+            .toString()
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+    }
+
+    function formatearFecha(fechaIso){
+        try{
+            return new Date(fechaIso).toLocaleString("es-ES", {
+                day:"2-digit",
+                month:"2-digit",
+                year:"numeric",
+                hour:"2-digit",
+                minute:"2-digit"
+            });
+        }catch(e){
+            return "";
+        }
+    }
+
+    function renderComentariosResultadosVar(){
+        const comentarios = leerComentariosResultadosVar();
+        contadorComentarios.textContent = `${comentarios.length} comentarios`;
+        listaComentarios.innerHTML = "";
+
+        comentarios.slice(0, visibles).forEach(comentario => {
+            const div = document.createElement("div");
+            div.className = "comentario-item visible";
+            div.innerHTML = `
+                <div class="comentario-cabecera-item">
+                    <span class="comentario-autor">Usuario</span>
+                    <span class="comentario-fecha">${escaparHtml(formatearFecha(comentario.fecha))}</span>
+                </div>
+                <div class="comentario-texto">${escaparHtml(comentario.texto)}</div>
+            `;
+            listaComentarios.appendChild(div);
+        });
+
+        btnMostrar.style.display = comentarios.length > 0 && visibles === 0 ? "inline-block" : "none";
+        btnOcultar.style.display = visibles > 0 ? "inline-block" : "none";
+        btnMostrarMas.style.display = visibles > 0 && visibles < comentarios.length ? "inline-block" : "none";
+    }
+
+    btnPublicar.addEventListener("click", () => {
+        const texto = textoComentario.value.trim();
+        if(!texto) return;
+
+        const comentarios = leerComentariosResultadosVar();
+        comentarios.unshift({
+            texto,
+            fecha: new Date().toISOString()
+        });
+
+        guardarComentariosResultadosVar(comentarios);
+        textoComentario.value = "";
+        visibles = Math.max(visibles, 5);
+        renderComentariosResultadosVar();
+    });
+
+    btnMostrar.addEventListener("click", () => {
+        visibles = 5;
+        renderComentariosResultadosVar();
+    });
+
+    btnMostrarMas.addEventListener("click", () => {
+        visibles += 5;
+        renderComentariosResultadosVar();
+    });
+
+    btnOcultar.addEventListener("click", () => {
+        visibles = 0;
+        renderComentariosResultadosVar();
+    });
+
+    renderComentariosResultadosVar();
+});
+</script>
+
+</body>
+</html>
