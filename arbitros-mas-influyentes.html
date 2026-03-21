@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Árbitros más influyentes</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+
+<style>
+body{
+    margin:0;
+    font-family:Inter, Arial, Helvetica, sans-serif;
+    background:#111;
+    zoom:0.90;
+}
+
+h1,h2,h3,h4{
+    font-family:"Barlow Condensed", sans-serif;
+    letter-spacing:.5px;
+    margin:0;
+}
+
+/* CABECERA */
+.cabecera{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:170px;
+    background-image:url("cabecera.png");
+    background-size:100% 100%;
+    background-position:center;
+    background-repeat:no-repeat;
+    z-index:1000;
+}
+
+/* MENÚ */
+.menu{
+    position:fixed;
+    top:170px;
+    left:0;
+    width:100%;
+    height:46px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:32px;
+    z-index:999;
+    overflow:hidden;
+    background:linear-gradient(
+        90deg,
+        #0b2d6b 0%,
+        #123f8c 18%,
+        #5b1232 42%,
+        #c7ccd3 52%,
+        #e3e7ec 72%,
+        #f3f5f7 88%,
+        #ffffff 100%
+    );
+}
+
+.menu::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:50%;
+    height:100%;
+    background:linear-gradient(90deg, rgba(0,0,0,0.18), rgba(0,0,0,0.05));
+    pointer-events:none;
+}
+
+.menu::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:5px;
+    transform:translateX(-50%);
+    width:2px;
+    height:34px;
+    background:linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.10),
+        rgba(255,255,255,0.80),
+        rgba(255,255,255,0.10)
+    );
+    pointer-events:none;
+}
+
+.menu a{
+    position:relative;
+    z-index:2;
+    text-decoration:none;
+    font-size:13px;
+    font-weight:700;
+    text-transform:uppercase;
+    padding:6px 10px;
+    border-radius:6px;
+    transition:all .2s ease;
+}
+
+.menu a:hover{
+    background:rgba(255,255,255,0.15);
+}
+
+/* Inicio + Resultados VAR en blanco */
+.menu a:nth-child(1),
+.menu a:nth-child(3){
+    color:white;
+}
+
+/* Jugadas polémicas (lo dejamos como estaba) */
+.menu a:nth-child(2){
+    color:white;
+}
+
+/* Quién ha sido más favorecido + Árbitros en tono azul */
+.menu a:nth-child(4),
+.menu a:nth-child(5){
+    color:#0a2f6b;
+}
+
+/* CONTENIDO */
+.contenido{
+    margin-top:216px;
+    background:linear-gradient(
+        90deg,
+        #081b48 0%,
+        #113b86 16%,
+        #5f0f32 34%,
+        #1f2430 50%,
+        #9ca7b3 67%,
+        #e7ebef 84%,
+        #ffffff 100%
+    );
+    padding:30px 0 85px;
+    min-height:calc(100vh - 216px);
+}
+
+.wrap{
+    width:min(1380px, 93%);
+    margin:auto;
+}
+
+.bloque-principal{
+    background:rgba(8,12,20,0.72);
+    border-radius:24px;
+    overflow:hidden;
+    box-shadow:0 14px 30px rgba(0,0,0,0.28);
+}
+
+.cabecera-seccion{
+    padding:24px 28px 18px;
+    background:linear-gradient(90deg,#163b78,#2a5fb0);
+    color:white;
+}
+
+.cabecera-seccion h1{
+    font-size:34px;
+    margin-bottom:6px;
+}
+
+.cabecera-seccion p{
+    margin:0;
+    font-size:15px;
+    color:#dfe8f3;
+}
+
+.panel-tabla{
+    padding:16px;
+}
+
+.tarjeta-arbitros{
+    border-radius:22px;
+    overflow:hidden;
+    box-shadow:0 14px 28px rgba(0,0,0,0.22);
+    border:1px solid rgba(255,255,255,0.08);
+    background:linear-gradient(145deg, rgba(14,18,30,0.94), rgba(18,22,36,0.92));
+}
+
+.tarjeta-arbitros-top{
+    padding:13px 16px;
+    text-align:center;
+    font-weight:900;
+    font-size:24px;
+    letter-spacing:.8px;
+    text-transform:uppercase;
+    font-family:"Barlow Condensed", sans-serif;
+    color:#fff;
+    background:linear-gradient(90deg,#153e93 0%, #1d5dc0 25%, #641537 58%, #dfe5eb 78%, #f4f7fa 100%);
+    box-shadow:inset 0 -1px 0 rgba(255,255,255,0.12);
+}
+
+.tarjeta-arbitros-body{
+    padding:10px;
+}
+
+.tabla-arbitros-wrap{
+    overflow-x:auto;
+    display:flex;
+    justify-content:center;
+}
+
+.tabla-arbitros{
+    width:auto;
+    border-collapse:collapse;
+    min-width:920px;
+    max-width:100%;
+    margin:0 auto;
+}
+
+.tabla-arbitros th,
+.tabla-arbitros td{
+    padding:9px 8px;
+    border:1px solid rgba(255,255,255,0.10);
+    text-align:center;
+    vertical-align:middle;
+    font-size:13px;
+    line-height:1.1;
+}
+
+.tabla-arbitros thead th{
+    font-size:13.5px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.25px;
+}
+
+.tabla-arbitros thead tr:first-child th{
+    background:rgba(255,255,255,0.06);
+}
+
+.tabla-arbitros thead tr:nth-child(2) th{
+    background:rgba(255,255,255,0.04);
+}
+
+.th-arbitro{
+    width:24%;
+    min-width:200px;
+    text-align:left !important;
+    padding-left:12px !important;
+    background:rgba(255,255,255,0.06) !important;
+    color:#fff;
+}
+
+.grupo-madrid{
+    background:linear-gradient(90deg,#f7f9fc 0%, #e7edf3 100%) !important;
+    color:#17324d !important;
+}
+
+.grupo-barca{
+    background:linear-gradient(90deg,#153f96 0%, #76153d 100%) !important;
+    color:#fff !important;
+}
+
+.sub-madrid{
+    background:rgba(255,255,255,0.88) !important;
+    color:#17324d !important;
+}
+
+.sub-barca{
+    background:rgba(37,62,115,0.45) !important;
+    color:#eef3fa !important;
+}
+
+.tabla-arbitros tbody td{
+    color:#eef3fa;
+    background:rgba(255,255,255,0.02);
+}
+
+.tabla-arbitros tbody tr:nth-child(even) td{
+    background:rgba(255,255,255,0.04);
+}
+
+.celda-arbitro{
+    text-align:left !important;
+    font-weight:800;
+    padding-left:12px !important;
+    white-space:nowrap;
+    font-size:15px;
+    text-transform:uppercase;
+}
+
+.celda-madrid{
+    background:rgba(255,255,255,0.92) !important;
+    color:#17324d !important;
+    border-color:rgba(0,0,0,0.08) !important;
+}
+
+.celda-barca{
+    background:rgba(25,35,68,0.82) !important;
+    color:#eef3fa !important;
+}
+
+.fila-hover:hover td{
+    filter:brightness(1.04);
+}
+
+.valor-pos{
+    color:#18b35a !important;
+    font-weight:900;
+}
+
+.valor-neg{
+    color:#df3b34 !important;
+    font-weight:900;
+}
+
+.valor-neutro{
+    color:#173f7a !important;
+    font-weight:900;
+}
+
+.celda-barca.valor-neutro{
+    color:#8fc0ff !important;
+}
+
+.mensaje{
+    padding:18px;
+    color:white;
+    font-size:14px;
+}
+
+.info-claves{
+    margin-top:12px;
+    padding:12px 14px;
+    border-radius:14px;
+    background:rgba(255,255,255,0.06);
+    color:#e7eef8;
+    font-size:13px;
+    line-height:1.35;
+}
+
+.info-claves b{
+    color:#fff;
+}
+
+/* COMENTARIOS */
+.seccion-comentarios{
+    margin:16px;
+    margin-top:0;
+    background:white;
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 8px 18px rgba(0,0,0,0.16);
+}
+
+.cabecera-comentarios{
+    padding:8px 12px;
+    border-bottom:1px solid #eee;
+}
+
+.cabecera-comentarios h3{
+    margin:0 0 4px;
+    font-size:18px;
+    color:#1e2d47;
+}
+
+.cabecera-comentarios p{
+    margin:0;
+    font-size:13px;
+    color:#666;
+}
+
+.cuerpo-comentarios{
+    padding:10px 12px;
+}
+
+textarea{
+    width:100%;
+    padding:8px;
+    border-radius:8px;
+    border:1px solid #d0d7e2;
+    resize:vertical;
+    min-height:45px;
+    box-sizing:border-box;
+    font-size:13px;
+    font-family:Inter, Arial, Helvetica, sans-serif;
+}
+
+.boton-comentar,
+.btn-mostrar-inicial{
+    margin-top:8px;
+    padding:8px 14px;
+    border:none;
+    border-radius:8px;
+    color:white;
+    font-weight:700;
+    cursor:pointer;
+    font-size:13px;
+}
+
+.boton-comentar{
+    background:#1f4fb0;
+}
+
+.btn-mostrar-inicial{
+    background:#444;
+    margin-left:8px;
+}
+
+.lista-comentarios{
+    margin-top:14px;
+}
+
+.comentario{
+    display:none;
+    padding:10px;
+    background:#f6f8fc;
+    border-left:4px solid #1f4fb0;
+    border-radius:8px;
+    margin-bottom:8px;
+    font-size:14px;
+    color:#1f2f49;
+}
+
+.comentario.visible{
+    display:block;
+}
+
+.mostrar-mas-wrap,
+.ocultar-wrap{
+    text-align:center;
+    margin-top:10px;
+}
+
+.btn-mostrar-mas,
+.btn-ocultar{
+    border:none;
+    padding:7px 14px;
+    border-radius:8px;
+    color:white;
+    font-weight:700;
+    cursor:pointer;
+    font-size:13px;
+}
+
+.btn-mostrar-mas{
+    background:#1f4fb0;
+}
+
+.btn-ocultar{
+    background:#777;
+}
+
+.comentario-meta{
+    display:block;
+    font-size:12px;
+    color:#667791;
+    margin-bottom:4px;
+    font-weight:700;
+}
+
+/* AVISO LEGAL */
+.aviso-legal{
+    margin:16px;
+    margin-top:0;
+    padding:14px 16px;
+    font-size:12px;
+    color:#d7dfef;
+    background:rgba(255,255,255,0.06);
+    border-radius:14px;
+    line-height:1.45;
+    text-align:center;
+    box-shadow:0 8px 18px rgba(0,0,0,0.16);
+}
+
+@media (max-width: 900px){
+    body{ zoom:1; }
+
+    .cabecera{
+        height:130px;
+    }
+
+    .menu{
+        top:130px;
+        height:42px;
+        gap:12px;
+        padding:0 8px;
+        justify-content:flex-start;
+        overflow-x:auto;
+    }
+
+    .menu a{
+        font-size:13px;
+        white-space:nowrap;
+    }
+
+    .contenido{
+        margin-top:172px;
+        padding:16px 0 50px;
+    }
+
+    .cabecera-seccion{
+        padding:18px;
+    }
+
+    .cabecera-seccion h1{
+        font-size:27px;
+    }
+
+    .panel-tabla{
+        padding:12px;
+    }
+
+    .tarjeta-arbitros-top{
+        font-size:20px;
+    }
+
+    .tabla-arbitros{
+        min-width:840px;
+    }
+
+    .tabla-arbitros th,
+    .tabla-arbitros td{
+        padding:11px 10px;
+        font-size:15.5px;
+        line-height:1.25;
+    }
+
+    .th-arbitro{
+        min-width:145px;
+        padding-left:10px !important;
+    }
+
+    .celda-arbitro{
+        padding-left:10px !important;
+        font-size:13px;
+    }
+
+    .seccion-comentarios{
+        margin:12px;
+        margin-top:0;
+    }
+
+    .aviso-legal{
+        margin:12px;
+        margin-top:0;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="cabecera"></div>
+
+<nav class="menu">
+    <a href="index.html">Inicio</a>
+    <a href="jugadas-polemicas.html">Jugadas Polémicas</a>
+    <a href="resultados-var.html">Resultados VAR</a>
+    <a href="quien-ha-sido-mas-favorecido.html">¿Quién ha sido más favorecido?</a>
+    <a href="arbitros-mas-influyentes.html">Árbitros más influyentes</a>
+</nav>
+
+<div class="contenido">
+    <div class="wrap">
+        <section class="bloque-principal">
+            <div class="cabecera-seccion">
+                <h1>Árbitros más influyentes</h1>
+                <p>Balance construido a partir de los resultados de las encuestas de las jugadas polémicas.</p>
+            </div>
+
+            <div class="panel-tabla">
+                <article class="tarjeta-arbitros">
+                    <div class="tarjeta-arbitros-top">Estadísticas arbitrales</div>
+                    <div class="tarjeta-arbitros-body">
+                        <div class="tabla-arbitros-wrap">
+                            <table class="tabla-arbitros">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="2" class="th-arbitro">Árbitro</th>
+                                        <th colspan="3" class="grupo-madrid">Real Madrid</th>
+                                        <th colspan="3" class="grupo-barca">FC Barcelona</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="sub-madrid">Error a favor</th>
+                                        <th class="sub-madrid">Error en contra</th>
+                                        <th class="sub-madrid">Balance</th>
+                                        <th class="sub-barca">Error a favor</th>
+                                        <th class="sub-barca">Error en contra</th>
+                                        <th class="sub-barca">Balance</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaArbitrosBody">
+                                    <tr>
+                                        <td colspan="7" class="mensaje">Cargando datos...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="info-claves" id="infoClaves"></div>
+                    </div>
+                </article>
+            </div>
+
+            <section class="seccion-comentarios comentarios-box">
+                <div class="cabecera-comentarios">
+                    <h3>Comentarios</h3>
+                    <p><span id="contadorComentarios">0</span> comentarios</p>
+                </div>
+                <div class="cuerpo-comentarios">
+                    <textarea id="textareaComentarioArbitros" placeholder="Escribe tu comentario..."></textarea>
+                    <br>
+                    <button class="boton-comentar" type="button" id="btnPublicarComentarioArbitros">Publicar comentario</button>
+                    <button class="btn-mostrar-inicial" type="button" id="btnMostrarComentariosArbitros">Mostrar comentarios</button>
+
+                    <div class="lista-comentarios" id="listaComentariosArbitros"></div>
+
+                    <div class="mostrar-mas-wrap">
+                        <button class="btn-mostrar-mas" type="button" id="btnMostrarMasComentariosArbitros">Mostrar más comentarios</button>
+                    </div>
+
+                    <div class="ocultar-wrap">
+                        <button class="btn-ocultar" type="button" id="btnOcultarComentariosArbitros">Ocultar comentarios</button>
+                    </div>
+                </div>
+            </section>
+
+            <div class="aviso-legal">
+                Decisión VAR es una plataforma independiente y neutral cuyo objetivo es analizar jugadas polémicas a través de la opinión de los usuarios.
+                Los contenidos audiovisuales mostrados pertenecen a sus respectivos autores y son compartidos desde plataformas públicas. Esta web no almacena ni modifica dichos contenidos.
+            </div>
+        </section>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const tablaBody = document.getElementById("tablaArbitrosBody");
+    const infoClaves = document.getElementById("infoClaves");
+
+    const textareaComentario = document.getElementById("textareaComentarioArbitros");
+    const btnPublicarComentario = document.getElementById("btnPublicarComentarioArbitros");
+    const btnMostrarInicial = document.getElementById("btnMostrarComentariosArbitros");
+    const btnMostrarMas = document.getElementById("btnMostrarMasComentariosArbitros");
+    const btnOcultar = document.getElementById("btnOcultarComentariosArbitros");
+    const listaComentarios = document.getElementById("listaComentariosArbitros");
+    const contadorComentarios = document.getElementById("contadorComentarios");
+    const CLAVE_COMENTARIOS = "decisionvar_comentarios_arbitros";
+
+    function escaparHtml(texto){
+        return (texto || "")
+            .toString()
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+    }
+
+    function leerJugadasVAR(){
+        try{
+            const raw = localStorage.getItem("jugadasVAR");
+            if(!raw) return [];
+            const data = JSON.parse(raw);
+            return Array.isArray(data) ? data : [];
+        }catch{
+            return [];
+        }
+    }
+
+    function limpiar(txt){
+        return (txt || "")
+            .toString()
+            .trim()
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "");
+    }
+
+    function esMadrid(v){
+        const t = limpiar(v);
+        return t === "madrid" || t.includes("real madrid");
+    }
+
+    function esBarca(v){
+        const t = limpiar(v);
+        return t === "barcelona" || t === "barca" || t === "barça" || t.includes("fc barcelona");
+    }
+
+    function inicialArbitro(nombre){
+        return {
+            nombre,
+            madridFavor: 0,
+            madridContra: 0,
+            madridBalance: 0,
+            barcaFavor: 0,
+            barcaContra: 0,
+            barcaBalance: 0
+        };
+    }
+
+    function esErrorAFavorDelEquipo(subtipo){
+        return [
+            "pitado_favor",
+            "concedido_favor",
+            "anulado_contra",
+            "no_sacada_equipo"
+        ].includes(subtipo);
+    }
+
+    function esErrorEnContraDelEquipo(subtipo){
+        return [
+            "pitado_contra",
+            "no_pitado_favor",
+            "concedido_contra",
+            "anulado_favor",
+            "sacada_equipo",
+            "sacada_rival",
+            "no_sacada_rival",
+            "no_pitado_contra"
+        ].includes(subtipo);
+    }
+
+    function actualizarBalance(reg){
+        reg.madridBalance = reg.madridFavor - reg.madridContra;
+        reg.barcaBalance = reg.barcaFavor - reg.barcaContra;
+    }
+
+    function construirEstadisticas(jugadas){
+        const mapa = new Map();
+        let ignoradas = 0;
+
+        for(const j of jugadas){
+            const arbitro = (j.arbitro || "").toString().trim();
+            const equipo = (j.equipo || "").toString().trim();
+            const subtipo = limpiar(j.subtipo);
+            const encuesta = limpiar(j.encuesta);
+
+            if(!arbitro || !equipo || !subtipo){
+                ignoradas++;
+                continue;
+            }
+
+            if(encuesta !== "no"){
+                continue;
+            }
+
+            if(!mapa.has(arbitro)){
+                mapa.set(arbitro, inicialArbitro(arbitro));
+            }
+
+            const reg = mapa.get(arbitro);
+
+            if(esMadrid(equipo)){
+                if(esErrorAFavorDelEquipo(subtipo)) reg.madridFavor++;
+                else if(esErrorEnContraDelEquipo(subtipo)) reg.madridContra++;
+                else ignoradas++;
+            }else if(esBarca(equipo)){
+                if(esErrorAFavorDelEquipo(subtipo)) reg.barcaFavor++;
+                else if(esErrorEnContraDelEquipo(subtipo)) reg.barcaContra++;
+                else ignoradas++;
+            }else{
+                ignoradas++;
+            }
+
+            actualizarBalance(reg);
+        }
+
+        const lista = Array.from(mapa.values()).sort((a, b) => {
+            const pesoA =
+                Math.abs(a.madridBalance) + Math.abs(a.barcaBalance) +
+                a.madridFavor + a.madridContra + a.barcaFavor + a.barcaContra;
+
+            const pesoB =
+                Math.abs(b.madridBalance) + Math.abs(b.barcaBalance) +
+                b.madridFavor + b.madridContra + b.barcaFavor + b.barcaContra;
+
+            return pesoB - pesoA;
+        });
+
+        return { lista, ignoradas };
+    }
+
+    function claseBalance(v){
+        if(v > 0) return "valor-pos";
+        if(v < 0) return "valor-neg";
+        return "valor-neutro";
+    }
+
+    function balanceTxt(v){
+        if(v > 0) return "+" + v;
+        return String(v);
+    }
+
+    function renderTabla(lista){
+        if(!lista.length){
+            tablaBody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="mensaje">
+                        No hay todavía errores arbitrales detectados con árbitro guardado en jugadasVAR.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tablaBody.innerHTML = lista.map(a => `
+            <tr class="fila-hover">
+                <td class="celda-arbitro">${escaparHtml(a.nombre)}</td>
+                <td class="celda-madrid">${a.madridFavor}</td>
+                <td class="celda-madrid">${a.madridContra}</td>
+                <td class="celda-madrid ${claseBalance(a.madridBalance)}">${balanceTxt(a.madridBalance)}</td>
+                <td class="celda-barca">${a.barcaFavor}</td>
+                <td class="celda-barca">${a.barcaContra}</td>
+                <td class="celda-barca ${claseBalance(a.barcaBalance)}">${balanceTxt(a.barcaBalance)}</td>
+            </tr>
+        `).join("");
+    }
+
+    function leerComentarios(){
+        try{
+            const raw = localStorage.getItem(CLAVE_COMENTARIOS);
+            const data = JSON.parse(raw || "[]");
+            return Array.isArray(data) ? data : [];
+        }catch{
+            return [];
+        }
+    }
+
+    function guardarComentarios(comentarios){
+        localStorage.setItem(CLAVE_COMENTARIOS, JSON.stringify(comentarios));
+    }
+
+    function fechaTexto(){
+        const ahora = new Date();
+        const d = String(ahora.getDate()).padStart(2, "0");
+        const m = String(ahora.getMonth() + 1).padStart(2, "0");
+        const y = ahora.getFullYear();
+        const h = String(ahora.getHours()).padStart(2, "0");
+        const min = String(ahora.getMinutes()).padStart(2, "0");
+        return `${d}/${m}/${y} ${h}:${min}`;
+    }
+
+    let visibles = 0;
+
+    function renderComentarios(){
+        const comentarios = leerComentarios();
+        contadorComentarios.textContent = comentarios.length;
+
+        if(!comentarios.length){
+            listaComentarios.innerHTML = "";
+            btnMostrarMas.style.display = "none";
+            btnOcultar.style.display = "none";
+            return;
+        }
+
+        listaComentarios.innerHTML = comentarios.map(c => `
+            <div class="comentario">
+                <span class="comentario-meta">${escaparHtml(c.fecha || "")}</span>
+                ${escaparHtml(c.texto || "")}
+            </div>
+        `).join("");
+
+        actualizarVisibilidadComentarios();
+    }
+
+    function actualizarVisibilidadComentarios(){
+        const comentarios = listaComentarios.querySelectorAll(".comentario");
+
+        comentarios.forEach((c, i) => {
+            c.classList.toggle("visible", i < visibles);
+        });
+
+        btnOcultar.style.display = visibles > 0 ? "inline-block" : "none";
+
+        if(comentarios.length === 0){
+            btnMostrarMas.style.display = "none";
+            return;
+        }
+
+        if(visibles === 0){
+            btnMostrarMas.style.display = "none";
+        }else if(visibles >= comentarios.length){
+            btnMostrarMas.style.display = "none";
+        }else{
+            btnMostrarMas.style.display = "inline-block";
+        }
+    }
+
+    btnPublicarComentario.addEventListener("click", () => {
+        const texto = textareaComentario.value.trim();
+        if(!texto) return;
+
+        const comentarios = leerComentarios();
+        comentarios.unshift({
+            texto,
+            fecha: fechaTexto()
+        });
+
+        guardarComentarios(comentarios);
+        textareaComentario.value = "";
+        renderComentarios();
+        visibles = Math.min(5, comentarios.length);
+        actualizarVisibilidadComentarios();
+    });
+
+    btnMostrarInicial.addEventListener("click", () => {
+        const comentarios = leerComentarios();
+        visibles = Math.min(5, comentarios.length);
+        actualizarVisibilidadComentarios();
+    });
+
+    btnMostrarMas.addEventListener("click", () => {
+        const comentarios = leerComentarios();
+        visibles = Math.min(visibles + 5, comentarios.length);
+        actualizarVisibilidadComentarios();
+    });
+
+    btnOcultar.addEventListener("click", () => {
+        visibles = 0;
+        actualizarVisibilidadComentarios();
+    });
+
+    const jugadas = leerJugadasVAR();
+    const calculo = construirEstadisticas(jugadas);
+
+    renderTabla(calculo.lista);
+
+    infoClaves.innerHTML = `
+        *Solo se cuentan jugadas cuyo resultado en la encuesta sea <b>NO</b>, es decir, jugadas consideradas mal arbitradas.
+    `;
+
+    renderComentarios();
+});
+</script>
+
+</body>
+</html>
