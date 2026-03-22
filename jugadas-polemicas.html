@@ -829,6 +829,288 @@ textarea{
         grid-template-columns:1fr;
     }
 }
+
+
+/* ===== AJUSTES EXTRA MOVIL ===== */
+@media (max-width: 768px){
+    .cabecera{
+        height:78px !important;
+        background-size:cover !important;
+        background-position:center center !important;
+        background-repeat:no-repeat !important;
+    }
+
+    .menu{
+        top:78px !important;
+        height:auto !important;
+        min-height:44px !important;
+        padding:6px 8px !important;
+        gap:8px !important;
+        justify-content:flex-start !important;
+        overflow-x:auto !important;
+        overflow-y:hidden !important;
+        flex-wrap:nowrap !important;
+        white-space:nowrap !important;
+        -webkit-overflow-scrolling:touch;
+        scrollbar-width:none;
+    }
+
+    .menu::-webkit-scrollbar{
+        display:none;
+    }
+
+    .menu a{
+        flex:0 0 auto !important;
+        display:inline-flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        min-height:32px !important;
+        padding:7px 10px !important;
+        font-size:11px !important;
+        line-height:1.05 !important;
+        white-space:nowrap !important;
+        border-radius:8px !important;
+    }
+
+    .contenido{
+        margin-top:132px !important;
+    }
+
+    .wrap{
+        width:96% !important;
+    }
+}
+
+@media (max-width: 768px){
+    .titulo-seccion h1{
+        font-size:22px !important;
+    }
+}
+
+
+
+/* ===== AJUSTE FINAL MOVIL MENU + MARCADOR ===== */
+@media (max-width: 768px){
+    .menu{
+        top:80px !important;
+        height:58px !important;
+        min-height:58px !important;
+        padding:0 !important;
+        gap:0 !important;
+        display:grid !important;
+        grid-template-columns:repeat(5, minmax(0, 1fr)) !important;
+        align-items:stretch !important;
+        justify-content:stretch !important;
+        overflow:hidden !important;
+        white-space:normal !important;
+    }
+
+    .menu::before,
+    .menu::after{
+        display:none !important;
+    }
+
+    .menu a{
+        min-width:0 !important;
+        width:100% !important;
+        height:58px !important;
+        padding:4px 3px !important;
+        border-radius:0 !important;
+        display:flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        text-align:center !important;
+        font-size:9.5px !important;
+        line-height:1.02 !important;
+        letter-spacing:0 !important;
+        white-space:normal !important;
+        word-break:keep-all !important;
+        overflow-wrap:normal !important;
+        box-sizing:border-box !important;
+    }
+
+    .menu a span{
+        display:block !important;
+    }
+
+    .contenido{
+        margin-top:138px !important;
+        min-height:calc(100vh - 138px) !important;
+    }
+}
+
+@media (max-width: 430px){
+    .menu{
+        height:56px !important;
+        min-height:56px !important;
+    }
+
+    .menu a{
+        height:56px !important;
+        font-size:8.6px !important;
+        padding:4px 2px !important;
+    }
+
+    .contenido{
+        margin-top:136px !important;
+        min-height:calc(100vh - 136px) !important;
+    }
+}
+
+@media (max-width: 768px){
+    #marcadorGlobalContainer,
+    .marcador-global{
+        width:100% !important;
+        max-width:100% !important;
+    }
+
+    #marcadorGlobalContainer .marcador-grid,
+    .marcador-grid{
+        grid-template-columns:minmax(0, 1fr) 118px minmax(0, 1fr) !important;
+        gap:8px !important;
+        padding:10px 10px 12px !important;
+        align-items:start !important;
+    }
+
+    #marcadorGlobalContainer .equipo-panel.barca,
+    #marcadorGlobalContainer .equipo-panel.madrid,
+    .equipo-panel.barca,
+    .equipo-panel.madrid{
+        align-items:center !important;
+        text-align:center !important;
+    }
+
+    #marcadorGlobalContainer .equipo-head,
+    .equipo-head{
+        gap:7px !important;
+        justify-content:center !important;
+    }
+
+    #marcadorGlobalContainer .equipo-panel.madrid .equipo-head,
+    .equipo-panel.madrid .equipo-head{
+        flex-direction:row !important;
+    }
+
+    #marcadorGlobalContainer .escudo,
+    .escudo{
+        width:42px !important;
+    }
+
+    #marcadorGlobalContainer .equipo-nombre,
+    .equipo-nombre{
+        font-size:14px !important;
+        line-height:1 !important;
+        letter-spacing:0 !important;
+    }
+
+    #marcadorGlobalContainer .subdatos,
+    .subdatos{
+        width:100% !important;
+        max-width:100% !important;
+        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+        gap:6px !important;
+        justify-content:stretch !important;
+    }
+
+    #marcadorGlobalContainer .subdatos .mini-dato:nth-child(3),
+    .subdatos .mini-dato:nth-child(3){
+        grid-column:1 / span 2 !important;
+        justify-self:stretch !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato,
+    .mini-dato{
+        width:100% !important;
+        min-width:0 !important;
+        border-radius:11px !important;
+        padding:5px 3px 4px !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato .et,
+    .mini-dato .et{
+        font-size:10px !important;
+        line-height:1 !important;
+        margin-bottom:1px !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato .vl,
+    .mini-dato .vl{
+        font-size:20px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .total-global-wrap,
+    .total-global-wrap{
+        width:100% !important;
+        grid-template-columns:1fr !important;
+        gap:6px !important;
+        margin-top:4px !important;
+    }
+
+    #marcadorGlobalContainer .total-global,
+    .total-global{
+        grid-column:1 !important;
+        min-width:0 !important;
+        width:100% !important;
+        padding:8px 6px !important;
+        border-radius:14px !important;
+    }
+
+    #marcadorGlobalContainer .total-global .et,
+    .total-global .et{
+        font-size:10px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .total-global .vl,
+    .total-global .vl{
+        font-size:24px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .marcador-centro,
+    .marcador-centro{
+        gap:6px !important;
+        justify-content:center !important;
+        align-self:center !important;
+        padding-top:18px !important;
+    }
+
+    #marcadorGlobalContainer .marcador-titulo,
+    .marcador-titulo{
+        font-size:11px !important;
+        line-height:1.05 !important;
+    }
+
+    #marcadorGlobalContainer .score-box,
+    .score-box{
+        width:100% !important;
+        padding:10px 6px !important;
+        border-radius:16px !important;
+        gap:4px !important;
+    }
+
+    #marcadorGlobalContainer .score,
+    .score{
+        font-size:36px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .score-sep,
+    .score-sep{
+        font-size:22px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .score-leyenda,
+    .score-leyenda{
+        font-size:9px !important;
+        line-height:1.08 !important;
+        max-width:118px !important;
+        margin:0 auto !important;
+    }
+}
+
 </style>
 </head>
 
@@ -837,11 +1119,11 @@ textarea{
 <div class="cabecera"></div>
 
 <nav class="menu">
-    <a href="index.html">Inicio</a>
-    <a href="jugadas-polemicas.html">Jugadas Polémicas</a>
-    <a href="resultados-var.html">Resultados VAR</a>
-    <a href="quien-ha-sido-mas-favorecido.html">¿Quién ha sido más favorecido?</a>
-    <a href="arbitros-mas-influyentes.html">Árbitros más influyentes</a>
+    <a href="index.html"><span>INICIO</span></a>
+    <a href="jugadas-polemicas.html"><span>JUGADAS<br>POLÉMICAS</span></a>
+    <a href="resultados-var.html"><span>RESULTADOS</span></a>
+    <a href="quien-ha-sido-mas-favorecido.html"><span>EQUIPO MÁS<br>FAVORECIDO</span></a>
+    <a href="arbitros-mas-influyentes.html"><span>ÁRBITROS MÁS<br>INFLUYENTES</span></a>
 </nav>
 
 <div class="contenido">
@@ -1046,27 +1328,60 @@ function extraerNumeroJornada(valor){
     return m ? m[0] : "";
 }
 
-function rutasImagenSlug(jornada, slug){
-    const j = String(extraerNumeroJornada(jornada)).trim();
-    const s = String(slug || "").trim();
-    if(!j || !s) return [];
+function limpiarSlug(valor){
+    return (valor || "").toString().trim().replace(/^["']|["']$/g, "");
+}
 
+function quitarDuplicados(lista){
+    return [...new Set(lista.filter(Boolean))];
+}
+
+function combinacionesCarpetaJornada(jornada){
+    const j = extraerNumeroJornada(jornada);
     return [
-        `./imagenes/jornada-${j}/${s}.png`,
-        `./imagenes/jornada-${j}/${s}.jpg`,
-        `./imagenes/jornada-${j}/${s}.jpeg`,
-        `./imagenes/jornada-${j}/${s}.webp`
+        `Jornada-${j}`,
+        `Jornada ${j}`,
+        `jornada-${j}`,
+        `jornada ${j}`
     ];
 }
 
-function rutasVideoTxt(jornada, slug){
-    const j = String(extraerNumeroJornada(jornada)).trim();
-    const s = String(slug || "").trim();
-    if(!j || !s) return [];
+function rutasImagenSlug(jornada, slug){
+    const s = limpiarSlug(slug);
+    if(!s) return [];
 
-    return [
-        `./videos/jornada-${j}/${s}.txt`
-    ];
+    const carpetasBase = ["Imagenes", "imagenes"];
+    const carpetasJornada = combinacionesCarpetaJornada(jornada);
+    const extensiones = ["png", "jpg", "jpeg", "webp", "PNG", "JPG", "JPEG", "WEBP"];
+    const rutas = [];
+
+    for(const base of carpetasBase){
+        for(const carpetaJ of carpetasJornada){
+            for(const ext of extensiones){
+                rutas.push(`${base}/${carpetaJ}/${encodeURIComponent(s)}.${ext}`);
+            }
+        }
+    }
+
+    return quitarDuplicados(rutas);
+}
+
+function rutasVideoTxt(jornada, slug){
+    const s = limpiarSlug(slug);
+    if(!s) return [];
+
+    const carpetasBase = ["Videos", "videos"];
+    const carpetasJornada = combinacionesCarpetaJornada(jornada);
+    const rutas = [];
+
+    for(const base of carpetasBase){
+        for(const carpetaJ of carpetasJornada){
+            rutas.push(`${base}/${carpetaJ}/${encodeURIComponent(s)}.txt`);
+            rutas.push(`${base}/${carpetaJ}/${encodeURIComponent(s)}.TXT`);
+        }
+    }
+
+    return quitarDuplicados(rutas);
 }
 
 async function primerTextoDisponible(rutas){
@@ -1095,7 +1410,7 @@ function asignarImagenConFallback(img, rutas){
                         <text x="50%" y="48%" dominant-baseline="middle" text-anchor="middle"
                         font-family="Arial" font-size="34" fill="#dbe6ff">Imagen pendiente</text>
                         <text x="50%" y="56%" dominant-baseline="middle" text-anchor="middle"
-                        font-family="Arial" font-size="20" fill="#a8b8d8">Sube la captura a la carpeta correspondiente</text>
+                        font-family="Arial" font-size="20" fill="#a8b8d8">Revisa nombre, ruta y mayúsculas/minúsculas</text>
                     </svg>
                 `);
             img.onerror = null;
@@ -1248,7 +1563,7 @@ function construirNodoVideo(url){
         return `
             <div class="video-principal-wrap" style="display:flex;align-items:center;justify-content:center;padding:22px;box-sizing:border-box;background:linear-gradient(135deg,#0e1a2c,#1d3761);">
                 <div style="text-align:center;color:#ffffff;max-width:420px;">
-                    <div style="font-family:'Barlow Condensed', sans-serif;font-size:26px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;">
+                    <div style="font-family:Arial, Helvetica, sans-serif;font-size:26px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;">
                         Vídeo alojado en TikTok
                     </div>
                     <div style="font-size:14px;line-height:1.45;color:#dbe6ff;margin-bottom:16px;">
@@ -1273,7 +1588,6 @@ function construirNodoVideo(url){
     `;
 }
 
-/* STORAGE VOTOS */
 const CLAVE_VOTOS_EXTRA = "decisionvar_votos_extra";
 const CLAVE_VOTOS_USUARIO = "decisionvar_votos_usuario";
 
@@ -1328,7 +1642,6 @@ const modalZoomMas = document.getElementById("modalZoomMas");
 const modalZoomMenos = document.getElementById("modalZoomMenos");
 const modalZoomReset = document.getElementById("modalZoomReset");
 
-/* MODAL ZOOM + ARRASTRE */
 let escalaModal = 1;
 let translateXModal = 0;
 let translateYModal = 0;
@@ -1669,13 +1982,8 @@ function inicializarVotacion(article){
         guardarDatosVAR();
     }
 
-    btnSi.addEventListener("click", () => {
-        cambiarVoto("si");
-    });
-
-    btnNo.addEventListener("click", () => {
-        cambiarVoto("no");
-    });
+    btnSi.addEventListener("click", () => cambiarVoto("si"));
+    btnNo.addEventListener("click", () => cambiarVoto("no"));
 
     actualizarUIVotacion(article);
 }
@@ -1907,12 +2215,10 @@ function guardarDatosVAR(){
             equipoVisible: jugada.dataset.equipo || "",
             competicion: jugada.dataset.competicion || "",
             tipoFiltro: jugada.dataset.tipo || "",
-
             equipo: jugada.dataset.resumenEquipo || "",
             categoria: jugada.dataset.resumenCategoria || "",
             subtipo: jugada.dataset.resumenSubtipo || "",
             encuesta: jugada.dataset.resumenEncuesta || "",
-
             arbitro: jugada.dataset.arbitro || "",
             var: jugada.dataset.var || "",
             partido: jugada.dataset.partido || "",
@@ -1929,10 +2235,8 @@ function guardarDatosVAR(){
         if(!bloque) return;
 
         bloque.total += 1;
-
         if(item.encuesta === "si") bloque.si += 1;
         if(item.encuesta === "no") bloque.no += 1;
-
         bloque.balance += obtenerImpacto(item.categoria, item.subtipo, item.encuesta);
     });
 
@@ -1999,19 +2303,13 @@ async function cargarJugadasDesdeCSV(){
 
         for(const jugada of jugadas){
             const article = crearBloqueHTML(jugada);
-
             const mediaItems = [];
 
             const urlVideo1 = await primerTextoDisponible(rutasVideoTxt(jugada.jornada, jugada.slugVideo));
             const urlVideo2 = await primerTextoDisponible(rutasVideoTxt(jugada.jornada, jugada.slugVideo2));
 
-            if(urlVideo1){
-                mediaItems.push({ tipo:"video", url:urlVideo1 });
-            }
-
-            if(urlVideo2){
-                mediaItems.push({ tipo:"video", url:urlVideo2 });
-            }
+            if(urlVideo1) mediaItems.push({ tipo:"video", url:urlVideo1 });
+            if(urlVideo2) mediaItems.push({ tipo:"video", url:urlVideo2 });
 
             [
                 jugada.slugImagen,
@@ -2068,6 +2366,5 @@ if(btnLimpiarFiltros){
 
 cargarJugadasDesdeCSV();
 </script>
-
 </body>
 </html>

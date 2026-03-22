@@ -899,163 +899,69 @@ h1,h2,h3,h4{
 }
 
 @media (max-width: 768px){
-    .cabecera{
-        height:96px;
-        background-size:cover;
-        background-position:center;
-    }
+    .cabecera{ height:130px; }
 
     .menu{
-        top:96px;
-        height:auto;
-        min-height:44px;
-        gap:8px;
-        padding:8px 10px;
-        justify-content:flex-start;
-        overflow-x:auto;
-        overflow-y:hidden;
-        white-space:nowrap;
-        -webkit-overflow-scrolling:touch;
+        top:130px;
+        height:42px;
+        gap:18px;
+        padding:0 10px;
     }
 
-    .menu::after{
-        display:none;
-    }
-
-    .menu a{
-        flex:0 0 auto;
-        font-size:11px;
-        padding:8px 10px;
-        white-space:nowrap;
-    }
+    .menu a{ font-size:11px; }
 
     .contenido{
-        margin-top:140px;
+        margin-top:172px;
         padding:16px 0 50px;
     }
 
-    .wrap{
-        width:96%;
-    }
+    .wrap{ width:96%; }
 
-    .cabecera-resultados{
-        padding:18px;
-    }
+    .cabecera-resultados{ padding:18px; }
 
-    .cabecera-resultados h1{
-        font-size:26px;
-    }
+    .cabecera-resultados h1{ font-size:26px; }
 
-    .marcador-wrap{
-        padding:12px 8px 8px;
-    }
-
-    .marcador-global{
-        width:100%;
-        max-width:100%;
-        border-radius:18px;
-    }
+    .marcador-wrap{ padding:14px 12px 8px; }
 
     .marcador-grid{
-        grid-template-columns:1fr;
-        gap:14px;
-        padding:14px 10px 16px;
+        padding:16px;
         min-height:auto;
     }
 
-    .equipo-panel.barca,
-    .equipo-panel.madrid{
-        align-items:center;
-        text-align:center;
-    }
+    .equipo-nombre{ font-size:27px; }
 
-    .equipo-panel.madrid .equipo-head{
-        flex-direction:row;
-    }
+    .escudo{ width:64px; }
 
-    .equipo-head{
-        gap:10px;
-    }
+    .score{ font-size:68px; }
 
-    .equipo-nombre{
-        font-size:24px;
-    }
-
-    .escudo{
-        width:56px;
-    }
-
-    .subdatos{
-        grid-template-columns:repeat(2, minmax(0, 1fr));
-        width:100%;
-        max-width:280px;
-        gap:8px;
-        justify-content:center;
-    }
+    .score-sep{ font-size:38px; }
 
     .mini-dato{
-        width:100%;
-        min-width:0;
-        padding:6px 4px 5px;
+        width:130px;
+        min-width:130px;
     }
 
-    .mini-dato .et{
-        font-size:11px;
-    }
+    .mini-dato .et{ font-size:12px; }
 
-    .mini-dato .vl{
-        font-size:22px;
+    .mini-dato .vl{ font-size:25px; }
+
+    .subdatos{
+        grid-template-columns:130px 130px;
     }
 
     .total-global-wrap{
-        width:100%;
-        max-width:280px;
-        grid-template-columns:repeat(2, minmax(0, 1fr));
-        gap:8px;
+        width:270px;
+        grid-template-columns:130px 130px;
     }
 
     .total-global{
-        width:100%;
-        min-width:0;
-        padding:9px 8px;
+        width:130px;
+        padding:9px 10px 8px;
     }
 
-    .total-global .et{
-        font-size:11px;
-    }
+    .total-global .et{ font-size:12px; }
 
-    .total-global .vl{
-        font-size:28px;
-    }
-
-    .marcador-centro{
-        gap:8px;
-        padding-top:0;
-    }
-
-    .marcador-titulo{
-        font-size:16px;
-    }
-
-    .score-box{
-        padding:10px 12px;
-        gap:10px;
-        border-radius:18px;
-    }
-
-    .score{
-        font-size:52px;
-    }
-
-    .score-sep{
-        font-size:32px;
-    }
-
-    .score-leyenda{
-        max-width:260px;
-        font-size:12px;
-        line-height:1.2;
-    }
+    .total-global .vl{ font-size:30px; }
 
     .tarjeta-top{
         font-size:24px;
@@ -1072,9 +978,7 @@ h1,h2,h3,h4{
         padding:9px 14px;
     }
 
-    .tarjeta-body{
-        padding:12px;
-    }
+    .tarjeta-body{ padding:12px; }
 
     .grafico-simple-titulo{
         font-size:18px;
@@ -1112,7 +1016,519 @@ h1,h2,h3,h4{
         display:block;
         width:100%;
     }
-}</style>
+}
+
+html{
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    text-rendering:optimizeLegibility;
+}
+
+.cabecera-resultados p,
+.grafico-jornadas-nota,
+.nota,
+.leyenda-item,
+.score-leyenda{
+    font-family:Inter, Arial, Helvetica, sans-serif;
+}
+
+.tarjeta-top,
+.grafico-simple-titulo,
+.tarjeta-vertical h3,
+.tarjeta-jornadas h3,
+.marcador-titulo,
+.equipo-nombre,
+.score,
+.score-sep,
+.valor-final,
+.mini-dato .et,
+.mini-dato .vl,
+.total-global .et,
+.total-global .vl,
+.btnModo{
+    font-family:"Barlow Condensed", sans-serif;
+}
+
+.score-leyenda{
+    max-width:260px;
+    font-size:14px;
+    line-height:1.2;
+    text-align:center;
+}
+
+
+/* ===== AJUSTES EXTRA MOVIL ===== */
+@media (max-width: 768px){
+    .cabecera{
+        height:78px !important;
+        background-size:cover !important;
+        background-position:center center !important;
+        background-repeat:no-repeat !important;
+    }
+
+    .menu{
+        top:78px !important;
+        height:auto !important;
+        min-height:44px !important;
+        padding:6px 8px !important;
+        gap:8px !important;
+        justify-content:flex-start !important;
+        overflow-x:auto !important;
+        overflow-y:hidden !important;
+        flex-wrap:nowrap !important;
+        white-space:nowrap !important;
+        -webkit-overflow-scrolling:touch;
+        scrollbar-width:none;
+    }
+
+    .menu::-webkit-scrollbar{
+        display:none;
+    }
+
+    .menu a{
+        flex:0 0 auto !important;
+        display:inline-flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        min-height:32px !important;
+        padding:7px 10px !important;
+        font-size:11px !important;
+        line-height:1.05 !important;
+        white-space:nowrap !important;
+        border-radius:8px !important;
+    }
+
+    .contenido{
+        margin-top:132px !important;
+    }
+
+    .wrap{
+        width:96% !important;
+    }
+}
+
+@media (max-width: 768px){
+    .marcador-wrap{
+        padding:10px 6px 6px !important;
+    }
+
+    #marcadorGlobalContainer,
+    .marcador-global{
+        width:100% !important;
+        max-width:100% !important;
+        overflow:hidden !important;
+        border-radius:18px !important;
+    }
+
+    #marcadorGlobalContainer .marcador-grid,
+    .marcador-grid{
+        grid-template-columns:1fr !important;
+        gap:12px !important;
+        min-height:auto !important;
+        padding:14px 10px 16px !important;
+    }
+
+    #marcadorGlobalContainer .equipo-panel,
+    .equipo-panel{
+        align-items:center !important;
+        text-align:center !important;
+    }
+
+    #marcadorGlobalContainer .equipo-head,
+    .equipo-head{
+        gap:10px !important;
+        justify-content:center !important;
+        flex-direction:row !important;
+    }
+
+    #marcadorGlobalContainer .equipo-nombre,
+    .equipo-nombre{
+        font-size:17px !important;
+        line-height:1.05 !important;
+    }
+
+    #marcadorGlobalContainer .escudo,
+    .escudo{
+        width:40px !important;
+        height:auto !important;
+    }
+
+    #marcadorGlobalContainer .subdatos,
+    .subdatos{
+        width:100% !important;
+        max-width:240px !important;
+        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+        gap:8px !important;
+        justify-content:center !important;
+        margin:0 auto !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato,
+    .mini-dato{
+        width:100% !important;
+        min-width:0 !important;
+        padding:6px 6px 5px !important;
+        border-radius:10px !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato .et,
+    .mini-dato .et{
+        font-size:10px !important;
+        line-height:1.1 !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato .vl,
+    .mini-dato .vl{
+        font-size:17px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .total-global-wrap,
+    .total-global-wrap{
+        width:100% !important;
+        max-width:240px !important;
+        grid-template-columns:1fr !important;
+        gap:8px !important;
+        margin:0 auto !important;
+    }
+
+    #marcadorGlobalContainer .total-global,
+    .total-global{
+        width:100% !important;
+        min-width:0 !important;
+        padding:8px 8px !important;
+        border-radius:16px !important;
+    }
+
+    #marcadorGlobalContainer .total-global .et,
+    .total-global .et{
+        font-size:10px !important;
+    }
+
+    #marcadorGlobalContainer .total-global .vl,
+    .total-global .vl{
+        font-size:22px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .marcador-centro,
+    .marcador-centro{
+        gap:8px !important;
+        padding-top:2px !important;
+    }
+
+    #marcadorGlobalContainer .marcador-titulo,
+    .marcador-titulo{
+        font-size:13px !important;
+        line-height:1.15 !important;
+    }
+
+    #marcadorGlobalContainer .score-box,
+    .score-box{
+        width:100% !important;
+        max-width:280px !important;
+        margin:0 auto !important;
+        padding:12px 10px !important;
+        gap:8px !important;
+        border-radius:18px !important;
+    }
+
+    #marcadorGlobalContainer .score,
+    .score{
+        font-size:34px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .score-sep,
+    .score-sep{
+        font-size:22px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .score-leyenda,
+    .score-leyenda{
+        max-width:260px !important;
+        margin:0 auto !important;
+        font-size:10px !important;
+        line-height:1.2 !important;
+    }
+}
+
+@media (max-width: 768px){
+    .cabecera-resultados{
+        padding:16px 14px !important;
+    }
+
+    .cabecera-resultados h1{
+        font-size:22px !important;
+    }
+
+    .tarjeta-top{
+        font-size:20px !important;
+        padding:12px 10px !important;
+    }
+
+    .modos-wrap{
+        gap:8px !important;
+        padding:12px 10px 4px !important;
+    }
+
+    .btnModo{
+        font-size:15px !important;
+        padding:8px 12px !important;
+    }
+
+    .tarjeta-body{
+        padding:10px !important;
+    }
+}
+
+
+
+/* ===== AJUSTE FINAL MOVIL MENU + MARCADOR ===== */
+@media (max-width: 768px){
+    .menu{
+        top:80px !important;
+        height:58px !important;
+        min-height:58px !important;
+        padding:0 !important;
+        gap:0 !important;
+        display:grid !important;
+        grid-template-columns:repeat(5, minmax(0, 1fr)) !important;
+        align-items:stretch !important;
+        justify-content:stretch !important;
+        overflow:hidden !important;
+        white-space:normal !important;
+    }
+
+    .menu::before,
+    .menu::after{
+        display:none !important;
+    }
+
+    .menu a{
+        min-width:0 !important;
+        width:100% !important;
+        height:58px !important;
+        padding:4px 3px !important;
+        border-radius:0 !important;
+        display:flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        text-align:center !important;
+        font-size:9.5px !important;
+        line-height:1.02 !important;
+        letter-spacing:0 !important;
+        white-space:normal !important;
+        word-break:keep-all !important;
+        overflow-wrap:normal !important;
+        box-sizing:border-box !important;
+    }
+
+    .menu a span{
+        display:block !important;
+    }
+
+    .contenido{
+        margin-top:138px !important;
+        min-height:calc(100vh - 138px) !important;
+    }
+}
+
+@media (max-width: 430px){
+    .menu{
+        height:56px !important;
+        min-height:56px !important;
+    }
+
+    .menu a{
+        height:56px !important;
+        font-size:8.6px !important;
+        padding:4px 2px !important;
+    }
+
+    .contenido{
+        margin-top:136px !important;
+        min-height:calc(100vh - 136px) !important;
+    }
+}
+
+@media (max-width: 768px){
+    #marcadorGlobalContainer,
+    .marcador-global{
+        width:100% !important;
+        max-width:100% !important;
+    }
+
+    #marcadorGlobalContainer .marcador-grid,
+    .marcador-grid{
+        grid-template-columns:minmax(0, 1fr) 108px minmax(0, 1fr) !important;
+        gap:10px !important;
+        padding:10px 10px 12px !important;
+        align-items:start !important;
+    }
+
+    #marcadorGlobalContainer .equipo-panel.barca,
+    #marcadorGlobalContainer .equipo-panel.madrid,
+    .equipo-panel.barca,
+    .equipo-panel.madrid{
+        align-items:center !important;
+        text-align:center !important;
+    }
+
+    #marcadorGlobalContainer .equipo-panel.barca .equipo-head,
+    .equipo-panel.barca .equipo-head{
+        flex-direction:row-reverse !important;
+        gap:6px !important;
+        justify-content:center !important;
+    }
+
+    #marcadorGlobalContainer .equipo-head,
+    .equipo-head{
+        gap:6px !important;
+        justify-content:center !important;
+    }
+
+    #marcadorGlobalContainer .equipo-panel.madrid .equipo-head,
+    .equipo-panel.madrid .equipo-head{
+        flex-direction:row !important;
+    }
+
+    #marcadorGlobalContainer .escudo,
+    .escudo{
+        width:40px !important;
+    }
+
+    #marcadorGlobalContainer .equipo-nombre,
+    .equipo-nombre{
+        font-size:13px !important;
+        line-height:1 !important;
+        letter-spacing:0 !important;
+    }
+
+    #marcadorGlobalContainer .subdatos,
+    .subdatos{
+        width:100% !important;
+        max-width:100% !important;
+        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+        gap:5px !important;
+        justify-content:stretch !important;
+    }
+
+    #marcadorGlobalContainer .subdatos .mini-dato:nth-child(3),
+    .subdatos .mini-dato:nth-child(3){
+        grid-column:1 / span 2 !important;
+        justify-self:stretch !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato,
+    .mini-dato{
+        width:100% !important;
+        min-width:0 !important;
+        border-radius:10px !important;
+        padding:4px 3px 3px !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato .et,
+    .mini-dato .et{
+        font-size:9px !important;
+        line-height:1 !important;
+        margin-bottom:1px !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato .vl,
+    .mini-dato .vl{
+        font-size:18px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .total-global-wrap,
+    .total-global-wrap{
+        width:100% !important;
+        grid-template-columns:1fr !important;
+        gap:5px !important;
+        margin-top:4px !important;
+    }
+
+    #marcadorGlobalContainer .total-global,
+    .total-global{
+        grid-column:1 !important;
+        min-width:0 !important;
+        width:100% !important;
+        padding:7px 6px !important;
+        border-radius:14px !important;
+    }
+
+    #marcadorGlobalContainer .total-global .et,
+    .total-global .et{
+        font-size:9px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .total-global .vl,
+    .total-global .vl{
+        font-size:22px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .marcador-centro,
+    .marcador-centro{
+        gap:5px !important;
+        justify-content:center !important;
+        align-self:center !important;
+        padding-top:16px !important;
+    }
+
+    #marcadorGlobalContainer .marcador-titulo,
+    .marcador-titulo{
+        font-size:10px !important;
+        line-height:1.05 !important;
+    }
+
+    #marcadorGlobalContainer .score-box,
+    .score-box{
+        width:100% !important;
+        padding:9px 6px !important;
+        border-radius:16px !important;
+        gap:4px !important;
+    }
+
+    #marcadorGlobalContainer .score,
+    .score{
+        font-size:34px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .score-sep,
+    .score-sep{
+        font-size:20px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .score-leyenda,
+    .score-leyenda{
+        font-size:8px !important;
+        line-height:1.02 !important;
+        letter-spacing:0 !important;
+        max-width:108px !important;
+        margin:0 auto !important;
+    }
+}
+
+@media (max-width: 768px){
+
+    .marcador-centro{
+        transform: translateX(-8px);
+    }
+
+    .marcador-titulo,
+    .score-leyenda{
+        transform: translateX(6px);
+    }
+
+}
+
+</style>
 </head>
 
 <body>
@@ -1120,11 +1536,11 @@ h1,h2,h3,h4{
 <div class="cabecera"></div>
 
 <nav class="menu">
-    <a href="index.html">Inicio</a>
-    <a href="jugadas-polemicas.html">Jugadas Polémicas</a>
-    <a href="resultados-var.html">Resultados VAR</a>
-    <a href="quien-ha-sido-mas-favorecido.html">¿Quién ha sido más favorecido?</a>
-    <a href="arbitros-mas-influyentes.html">Árbitros más influyentes</a>
+    <a href="index.html"><span>INICIO</span></a>
+    <a href="jugadas-polemicas.html"><span>JUGADAS<br>POLÉMICAS</span></a>
+    <a href="resultados-var.html"><span>RESULTADOS</span></a>
+    <a href="quien-ha-sido-mas-favorecido.html"><span>EQUIPO MÁS<br>FAVORECIDO</span></a>
+    <a href="arbitros-mas-influyentes.html"><span>ÁRBITROS MÁS<br>INFLUYENTES</span></a>
 </nav>
 
 <div class="contenido">

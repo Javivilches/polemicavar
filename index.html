@@ -774,38 +774,22 @@ textarea{
 
 @media (max-width: 768px){
     .cabecera{
-        height:96px;
-        background-size:cover;
-        background-position:center;
+        height:130px;
     }
 
     .menu{
-        top:96px;
-        height:auto;
-        min-height:44px;
-        padding:8px 10px;
-        gap:8px;
-        justify-content:flex-start;
-        overflow-x:auto;
-        overflow-y:hidden;
-        white-space:nowrap;
-        -webkit-overflow-scrolling:touch;
-    }
-
-    .menu::after{
-        display:none;
+        top:130px;
+        height:42px;
+        gap:18px;
+        padding:0 10px;
     }
 
     .menu a{
-        flex:0 0 auto;
         font-size:11px;
-        padding:8px 10px;
-        border-radius:8px;
-        white-space:nowrap;
     }
 
     .contenido{
-        margin-top:140px;
+        margin-top:172px;
         padding:16px 0 50px;
     }
 
@@ -857,121 +841,10 @@ textarea{
     }
 
     .marcador-wrap{
-        padding:12px 8px 8px;
-    }
-
-    #marcadorGlobalContainer{
-        width:100%;
-        overflow-x:hidden;
-    }
-
-    #marcadorGlobalContainer .marcador-global{
-        width:100%;
-        max-width:100%;
-        border-radius:18px;
-    }
-
-    #marcadorGlobalContainer .marcador-grid{
-        grid-template-columns:1fr;
-        gap:14px;
-        padding:14px 10px 16px;
-        min-height:auto;
-    }
-
-    #marcadorGlobalContainer .equipo-panel.barca,
-    #marcadorGlobalContainer .equipo-panel.madrid{
-        align-items:center;
-        text-align:center;
-    }
-
-    #marcadorGlobalContainer .equipo-panel.madrid .equipo-head{
-        flex-direction:row;
-    }
-
-    #marcadorGlobalContainer .equipo-head{
-        gap:10px;
-    }
-
-    #marcadorGlobalContainer .equipo-nombre{
-        font-size:24px;
-    }
-
-    #marcadorGlobalContainer .escudo{
-        width:56px;
-    }
-
-    #marcadorGlobalContainer .subdatos{
-        grid-template-columns:repeat(2, minmax(0, 1fr));
-        width:100%;
-        max-width:280px;
-        gap:8px;
-        justify-content:center;
-    }
-
-    #marcadorGlobalContainer .mini-dato{
-        width:100%;
-        min-width:0;
-        padding:6px 4px 5px;
-    }
-
-    #marcadorGlobalContainer .mini-dato .et{
-        font-size:11px;
-    }
-
-    #marcadorGlobalContainer .mini-dato .vl{
-        font-size:22px;
-    }
-
-    #marcadorGlobalContainer .total-global-wrap{
-        width:100%;
-        max-width:280px;
-        grid-template-columns:repeat(2, minmax(0, 1fr));
-        gap:8px;
-    }
-
-    #marcadorGlobalContainer .total-global{
-        width:100%;
-        min-width:0;
-        padding:9px 8px;
-    }
-
-    #marcadorGlobalContainer .total-global .et{
-        font-size:11px;
-    }
-
-    #marcadorGlobalContainer .total-global .vl{
-        font-size:28px;
-    }
-
-    #marcadorGlobalContainer .marcador-centro{
-        gap:8px;
-        padding-top:0;
-    }
-
-    #marcadorGlobalContainer .marcador-titulo{
-        font-size:16px;
-    }
-
-    #marcadorGlobalContainer .score-box{
-        padding:10px 12px;
-        gap:10px;
-        border-radius:18px;
-    }
-
-    #marcadorGlobalContainer .score{
-        font-size:52px;
-    }
-
-    #marcadorGlobalContainer .score-sep{
-        font-size:32px;
-    }
-
-    #marcadorGlobalContainer .score-leyenda{
-        max-width:260px;
-        font-size:12px;
-        line-height:1.2;
+        padding:14px 12px 8px;
     }
 }
+
 .aviso-legal{
     margin:18px 22px 24px;
     padding:12px 14px;
@@ -982,6 +855,461 @@ textarea{
     line-height:1.4;
     text-align:center;
 }
+
+
+/* ===== AJUSTES EXTRA MOVIL ===== */
+@media (max-width: 768px){
+    .cabecera{
+        height:78px !important;
+        background-size:cover !important;
+        background-position:center center !important;
+        background-repeat:no-repeat !important;
+    }
+
+    .menu{
+        top:78px !important;
+        height:auto !important;
+        min-height:44px !important;
+        padding:6px 8px !important;
+        gap:8px !important;
+        justify-content:flex-start !important;
+        overflow-x:auto !important;
+        overflow-y:hidden !important;
+        flex-wrap:nowrap !important;
+        white-space:nowrap !important;
+        -webkit-overflow-scrolling:touch;
+        scrollbar-width:none;
+    }
+
+    .menu::-webkit-scrollbar{
+        display:none;
+    }
+
+    .menu a{
+        flex:0 0 auto !important;
+        display:inline-flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        min-height:32px !important;
+        padding:7px 10px !important;
+        font-size:11px !important;
+        line-height:1.05 !important;
+        white-space:nowrap !important;
+        border-radius:8px !important;
+    }
+
+    .contenido{
+        margin-top:132px !important;
+    }
+
+    .wrap{
+        width:96% !important;
+    }
+}
+
+@media (max-width: 768px){
+    .marcador-wrap{
+        padding:10px 6px 6px !important;
+    }
+
+    #marcadorGlobalContainer,
+    .marcador-global{
+        width:100% !important;
+        max-width:100% !important;
+        overflow:hidden !important;
+        border-radius:18px !important;
+    }
+
+    #marcadorGlobalContainer .marcador-grid,
+    .marcador-grid{
+        grid-template-columns:1fr !important;
+        gap:12px !important;
+        min-height:auto !important;
+        padding:14px 10px 16px !important;
+    }
+
+    #marcadorGlobalContainer .equipo-panel,
+    .equipo-panel{
+        align-items:center !important;
+        text-align:center !important;
+    }
+
+    #marcadorGlobalContainer .equipo-head,
+    .equipo-head{
+        gap:10px !important;
+        justify-content:center !important;
+        flex-direction:row !important;
+    }
+
+    #marcadorGlobalContainer .equipo-nombre,
+    .equipo-nombre{
+        font-size:17px !important;
+        line-height:1.05 !important;
+    }
+
+    #marcadorGlobalContainer .escudo,
+    .escudo{
+        width:40px !important;
+        height:auto !important;
+    }
+
+    #marcadorGlobalContainer .subdatos,
+    .subdatos{
+        width:100% !important;
+        max-width:240px !important;
+        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+        gap:8px !important;
+        justify-content:center !important;
+        margin:0 auto !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato,
+    .mini-dato{
+        width:100% !important;
+        min-width:0 !important;
+        padding:6px 6px 5px !important;
+        border-radius:10px !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato .et,
+    .mini-dato .et{
+        font-size:10px !important;
+        line-height:1.1 !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato .vl,
+    .mini-dato .vl{
+        font-size:17px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .total-global-wrap,
+    .total-global-wrap{
+        width:100% !important;
+        max-width:240px !important;
+        grid-template-columns:1fr !important;
+        gap:8px !important;
+        margin:0 auto !important;
+    }
+
+    #marcadorGlobalContainer .total-global,
+    .total-global{
+        width:100% !important;
+        min-width:0 !important;
+        padding:8px 8px !important;
+        border-radius:16px !important;
+    }
+
+    #marcadorGlobalContainer .total-global .et,
+    .total-global .et{
+        font-size:10px !important;
+    }
+
+    #marcadorGlobalContainer .total-global .vl,
+    .total-global .vl{
+        font-size:22px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .marcador-centro,
+    .marcador-centro{
+        gap:8px !important;
+        padding-top:2px !important;
+    }
+
+    #marcadorGlobalContainer .marcador-titulo,
+    .marcador-titulo{
+        font-size:13px !important;
+        line-height:1.15 !important;
+    }
+
+    #marcadorGlobalContainer .score-box,
+    .score-box{
+        width:100% !important;
+        max-width:280px !important;
+        margin:0 auto !important;
+        padding:12px 10px !important;
+        gap:8px !important;
+        border-radius:18px !important;
+    }
+
+    #marcadorGlobalContainer .score,
+    .score{
+        font-size:34px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .score-sep,
+    .score-sep{
+        font-size:22px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .score-leyenda,
+    .score-leyenda{
+        max-width:260px !important;
+        margin:0 auto !important;
+        font-size:10px !important;
+        line-height:1.2 !important;
+    }
+}
+
+@media (max-width: 768px){
+    .cabecera-portada,
+    .cabecera-resultados{
+        padding:16px 14px !important;
+    }
+
+    .cabecera-portada h1,
+    .cabecera-resultados h1{
+        font-size:22px !important;
+    }
+}
+
+
+
+/* ===== AJUSTE FINAL MOVIL MENU + MARCADOR ===== */
+@media (max-width: 768px){
+    .menu{
+        top:80px !important;
+        height:58px !important;
+        min-height:58px !important;
+        padding:0 !important;
+        gap:0 !important;
+        display:grid !important;
+        grid-template-columns:repeat(5, minmax(0, 1fr)) !important;
+        align-items:stretch !important;
+        justify-content:stretch !important;
+        overflow:hidden !important;
+        white-space:normal !important;
+    }
+
+    .menu::before,
+    .menu::after{
+        display:none !important;
+    }
+
+    .menu a{
+        min-width:0 !important;
+        width:100% !important;
+        height:58px !important;
+        padding:4px 3px !important;
+        border-radius:0 !important;
+        display:flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        text-align:center !important;
+        font-size:9.5px !important;
+        line-height:1.02 !important;
+        letter-spacing:0 !important;
+        white-space:normal !important;
+        word-break:keep-all !important;
+        overflow-wrap:normal !important;
+        box-sizing:border-box !important;
+    }
+
+    .menu a span{
+        display:block !important;
+    }
+
+    .contenido{
+        margin-top:138px !important;
+        min-height:calc(100vh - 138px) !important;
+    }
+}
+
+@media (max-width: 430px){
+    .menu{
+        height:56px !important;
+        min-height:56px !important;
+    }
+
+    .menu a{
+        height:56px !important;
+        font-size:8.6px !important;
+        padding:4px 2px !important;
+    }
+
+    .contenido{
+        margin-top:136px !important;
+        min-height:calc(100vh - 136px) !important;
+    }
+}
+
+@media (max-width: 768px){
+    #marcadorGlobalContainer,
+    .marcador-global{
+        width:100% !important;
+        max-width:100% !important;
+    }
+
+    #marcadorGlobalContainer .marcador-grid,
+    .marcador-grid{
+        grid-template-columns:minmax(0, 1fr) 108px minmax(0, 1fr) !important;
+        gap:10px !important;
+        padding:10px 10px 12px !important;
+        align-items:start !important;
+    }
+
+    #marcadorGlobalContainer .equipo-panel.barca,
+    #marcadorGlobalContainer .equipo-panel.madrid,
+    .equipo-panel.barca,
+    .equipo-panel.madrid{
+        align-items:center !important;
+        text-align:center !important;
+    }
+
+    #marcadorGlobalContainer .equipo-panel.barca .equipo-head,
+    .equipo-panel.barca .equipo-head{
+        flex-direction:row-reverse !important;
+        gap:6px !important;
+        justify-content:center !important;
+    }
+
+    #marcadorGlobalContainer .equipo-head,
+    .equipo-head{
+        gap:6px !important;
+        justify-content:center !important;
+    }
+
+    #marcadorGlobalContainer .equipo-panel.madrid .equipo-head,
+    .equipo-panel.madrid .equipo-head{
+        flex-direction:row !important;
+    }
+
+    #marcadorGlobalContainer .escudo,
+    .escudo{
+        width:40px !important;
+    }
+
+    #marcadorGlobalContainer .equipo-nombre,
+    .equipo-nombre{
+        font-size:13px !important;
+        line-height:1 !important;
+        letter-spacing:0 !important;
+    }
+
+    #marcadorGlobalContainer .subdatos,
+    .subdatos{
+        width:100% !important;
+        max-width:100% !important;
+        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+        gap:5px !important;
+        justify-content:stretch !important;
+    }
+
+    #marcadorGlobalContainer .subdatos .mini-dato:nth-child(3),
+    .subdatos .mini-dato:nth-child(3){
+        grid-column:1 / span 2 !important;
+        justify-self:stretch !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato,
+    .mini-dato{
+        width:100% !important;
+        min-width:0 !important;
+        border-radius:10px !important;
+        padding:4px 3px 3px !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato .et,
+    .mini-dato .et{
+        font-size:9px !important;
+        line-height:1 !important;
+        margin-bottom:1px !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato .vl,
+    .mini-dato .vl{
+        font-size:18px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .total-global-wrap,
+    .total-global-wrap{
+        width:100% !important;
+        grid-template-columns:1fr !important;
+        gap:5px !important;
+        margin-top:4px !important;
+    }
+
+    #marcadorGlobalContainer .total-global,
+    .total-global{
+        grid-column:1 !important;
+        min-width:0 !important;
+        width:100% !important;
+        padding:7px 6px !important;
+        border-radius:14px !important;
+    }
+
+    #marcadorGlobalContainer .total-global .et,
+    .total-global .et{
+        font-size:9px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .total-global .vl,
+    .total-global .vl{
+        font-size:22px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .marcador-centro,
+    .marcador-centro{
+        gap:5px !important;
+        justify-content:center !important;
+        align-self:center !important;
+        padding-top:16px !important;
+    }
+
+    #marcadorGlobalContainer .marcador-titulo,
+    .marcador-titulo{
+        font-size:10px !important;
+        line-height:1.05 !important;
+    }
+
+    #marcadorGlobalContainer .score-box,
+    .score-box{
+        width:100% !important;
+        padding:9px 6px !important;
+        border-radius:16px !important;
+        gap:4px !important;
+    }
+
+    #marcadorGlobalContainer .score,
+    .score{
+        font-size:34px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .score-sep,
+    .score-sep{
+        font-size:20px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .score-leyenda,
+    .score-leyenda{
+        font-size:8px !important;
+        line-height:1.02 !important;
+        letter-spacing:0 !important;
+        max-width:108px !important;
+        margin:0 auto !important;
+    }
+}
+@media (max-width: 768px){
+
+    .marcador-centro{
+        transform: translateX(-8px);
+    }
+
+    .marcador-titulo,
+    .score-leyenda{
+        transform: translateX(6px);
+    }
+
+}
+
 </style>
 </head>
 
@@ -990,11 +1318,11 @@ textarea{
 <div class="cabecera"></div>
 
 <nav class="menu">
-    <a href="index.html">Inicio</a>
-    <a href="jugadas-polemicas.html">Jugadas Polémicas</a>
-    <a href="resultados-var.html">Resultados VAR</a>
-    <a href="quien-ha-sido-mas-favorecido.html">¿Quién ha sido más favorecido?</a>
-    <a href="arbitros-mas-influyentes.html">Árbitros más influyentes</a>
+    <a href="index.html"><span>INICIO</span></a>
+    <a href="jugadas-polemicas.html"><span>JUGADAS<br>POLÉMICAS</span></a>
+    <a href="resultados-var.html"><span>RESULTADOS</span></a>
+    <a href="quien-ha-sido-mas-favorecido.html"><span>EQUIPO MÁS<br>FAVORECIDO</span></a>
+    <a href="arbitros-mas-influyentes.html"><span>ÁRBITROS MÁS<br>INFLUYENTES</span></a>
 </nav>
 
 <div class="contenido">
