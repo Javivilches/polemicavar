@@ -1802,6 +1802,13 @@ function renderHorizontales(bloques){
         function line(val, cls, img){
             const width = Math.round(Math.abs(val) / max * 50);
             const left = val >= 0 ? 50 : 50 - width;
+            let pos = 'left:calc(50% - 14px);';
+
+            if(val > 0){
+                pos = `left:min(calc(100% - 34px), calc(${left + width}% + 8px));`;
+            }else if(val < 0){
+                pos = `left:max(0px, calc(${left}% - 38px));`;
+            }
 
             return `
                 <div class="linea-equipo">
@@ -1811,7 +1818,7 @@ function renderHorizontales(bloques){
                     <div class="pista">
                         <div class="cero"></div>
                         <div class="relleno ${cls}" style="left:${left}%;width:${width}%;"></div>
-                        <div class="valor-final ${val>0?'pos':(val<0?'neg':'neu')}" style="${val>=0?'left':'right'}:calc(${val>=0?left+width:left}% + 6px);">
+                        <div class="valor-final ${val>0?'pos':(val<0?'neg':'neu')}" style="${pos}">
                             ${val>0?'+':''}${val}
                         </div>
                     </div>
@@ -1828,38 +1835,6 @@ function renderHorizontales(bloques){
                 </div>
             </div>
         `;
-    });
-}
-
-function crearGraficoVertical(id, item){
-    const ctx = document.getElementById(id).getContext("2d");
-
-    return new Chart(ctx, {
-        type: "bar",
-        data: {
-            labels: [""],
-            datasets: [
-                {
-                    label: "FC Barcelona",
-                    data: [item.barca],
-                    backgroundColor: "#7d1d63"
-                },
-                {
-                    label: "Real Madrid",
-                    data: [item.madrid],
-                    backgroundColor: "#f3f6f8",
-                    borderColor: "#ccc",
-                    borderWidth: 1
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false }
-            }
-        }
     });
 }
 
@@ -1895,6 +1870,117 @@ const pluginValoresFinalBarraJornadas = {
         ctx.restore();
     }
 };
+
+const pluginVertical = {
+    id: "pluginVertical",
+    afterDatasetsDraw(chart){
+        const { ctx } = chart;
+        ctx.save();
+        ctx.font = '800 22px "Barlow Condensed", sans-serif';
+        ctx.textAlign = "center";
+
+        const meta = chart.getDatasetMeta(0);
+        const data = chart.data.datasets[0].data;
+
+        meta.data.forEach((bar, i) => {
+            const v = Number(data[i] || 0);
+            const txt = v > 0 ? `+${v}` : `${v}`;
+
+            ctx.fillStyle = v > 0 ? "#18c468" : (v < 0 ? "#ff4f4f" : "#ffffff");
+            ctx.shadowColor = "rgba(0,0,0,0.55)";
+            ctx.shadowBlur = 6;
+
+            let y;
+            if (v > 0) y = bar.y - 14;
+            else if (v < 0) y = bar.y + 18;
+            else y = bar.y - 14;
+
+            y = Math.max(18, Math.min(chart.height - 6, y));
+            ctx.fillText(txt, bar.x, y);
+        });
+
+        ctx.restore();
+    }
+};
+
+function crearGraficoVertical(id, item){
+    const old = Chart.getChart(id);
+    if(old) old.destroy();
+
+    const ctx = document.getElementById(id).getContext("2d");
+
+    return new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: ["FC Barcelona", "Real Madrid"],
+            datasets: [{
+                data: [item.barca, item.madrid],
+                backgroundColor: ["#7d1d63", "#f3f6f8"],
+                borderColor: ["#7d1d63", "#ccc"],
+                borderWidth: [0, 1]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    top: 28,
+                    bottom: 20,
+                    left: 8,
+                    right: 8
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        color: "#eef4ff",
+                        font: {
+                            size: 12,
+                            weight: "700"
+                        }
+                    },
+                    grid: {
+                        display: false
+                    },
+                    border: {
+                        color: "rgba(255,255,255,0.22)"
+                    }
+                },
+                y: {
+                    min: -4,
+                    max: 4,
+                    ticks: {
+                        stepSize: 1,
+                        color: "#eef4ff",
+                        font: {
+                            size: 12,
+                            weight: "700"
+                        }
+                    },
+                    grid: {
+                        color: "rgba(255,255,255,0.16)"
+                    },
+                    border: {
+                        color: "rgba(255,255,255,0.22)"
+                    }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context){
+                            const v = context.raw;
+                            return v > 0 ? `+${v}` : `${v}`;
+                        }
+                    }
+                }
+            }
+        },
+        plugins: [pluginVertical]
+    });
+}
 
 function crearGraficoJornadas(data){
     const canvas = document.getElementById("graficoJornadas");
@@ -2101,14 +2187,6 @@ async function initComments(){
 .pista{padding:0 42px !important;margin:0 4px;}
 .valor-final{max-width:none !important;min-width:32px;}
 </style>
-<script>
-(function(){
-function renderHorizontalesCorregido(bloques){ const cont=document.getElementById('bloquesHorizontales'); if(!cont) return; cont.innerHTML=''; bloques.forEach(item=>{ const max=Math.max(Math.abs(item.barca), Math.abs(item.madrid), 1); function line(val, cls, img){ const width=Math.round(Math.abs(val)/max*50); const left=val>=0?50:50-width; let pos='left:calc(50% - 14px);'; if(val>0) pos=`left:min(calc(100% - 34px), calc(${left+width}% + 8px));`; else if(val<0) pos=`left:max(0px, calc(${left}% - 38px));`; return `<div class="linea-equipo"><div class="escudo-linea-wrap"><img class="escudo-linea" src="${img}" alt=""></div><div class="pista"><div class="cero"></div><div class="relleno ${cls}" style="left:${left}%;width:${width}%;"></div><div class="valor-final ${val>0?'pos':(val<0?'neg':'neu')}" style="${pos}">${val>0?'+':''}${val}</div></div></div>`; } cont.innerHTML += `<div class="grafico-simple"><div class="grafico-simple-titulo">${item.key}</div><div class="lineas-equipos">${line(item.barca,'barca','escudo-barcelona.png')}${line(item.madrid,'madrid','escudo-madrid.png')}</div></div>`; }); }
-const pluginVertical = { id:'pluginVertical', afterDatasetsDraw(chart){ const {ctx}=chart; ctx.save(); ctx.font='800 22px "Barlow Condensed", sans-serif'; ctx.textAlign='center'; chart.data.datasets.forEach((ds,di)=>{ const meta=chart.getDatasetMeta(di); meta.data.forEach((bar,i)=>{ const v=Number(ds.data[i]||0); const txt=v>0?`+${v}`:`${v}`; ctx.fillStyle=v>0?'#18c468':(v<0?'#ff4f4f':'#ffffff'); ctx.shadowColor='rgba(0,0,0,0.55)'; ctx.shadowBlur=6; let y=v>=0?bar.y-14:bar.y+Math.abs(bar.base-bar.y)+18; y=Math.max(18, Math.min(chart.height-6, y)); ctx.fillText(txt, bar.x, y); }); }); ctx.restore(); } };
-function crearVertical(id,item){ const old=Chart.getChart(id); if(old) old.destroy(); const ctx=document.getElementById(id).getContext('2d'); return new Chart(ctx,{ type:'bar', data:{ labels:[''], datasets:[{label:'FC Barcelona', data:[item.barca], backgroundColor:'#7d1d63'},{label:'Real Madrid', data:[item.madrid], backgroundColor:'#f3f6f8', borderColor:'#ccc', borderWidth:1}] }, options:{ responsive:true, maintainAspectRatio:false, layout:{padding:{top:28,bottom:30,left:8,right:8}}, scales:{ x:{grid:{display:false},ticks:{display:false},border:{display:false}}, y:{min:-4,max:4,ticks:{stepSize:1,color:'#eef4ff',font:{size:12,weight:'700'}},grid:{color:'rgba(255,255,255,0.16)'},border:{color:'rgba(255,255,255,0.22)'}} }, plugins:{legend:{display:false}} }, plugins:[pluginVertical] }); }
-window.DecisionVarData.loadDataset().then(data=>{ renderHorizontalesCorregido(data.resumenBloques); crearVertical('graficoVerticalPenaltis', data.resumenBloques[0]); crearVertical('graficoVerticalGoles', data.resumenBloques[1]); crearVertical('graficoVerticalRojas', data.resumenBloques[2]); });
-})();
-</script>
 
 </body>
 </html>
