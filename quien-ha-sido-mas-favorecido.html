@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>¿Quién ha sido más favorecido?</title>
-<link rel="icon" href="Imagenes/favicon.png" type="image/png">
+<title>POLÉMICAVAR</title>
+<link rel="icon" href="favicon.ico">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -2259,8 +2261,8 @@ function crearGraficoJornadas(datosJornadas){
     const limite = Math.max(4, maxAbs);
 
     const canvas = document.getElementById("graficoJornadas");
-const heightPerRow = esMovil ? 72 : 56;
-canvas.height = Math.max(esMovil ? 680 : 480, jornadas.length * heightPerRow);
+   const heightPerRow = esMovil ? 82 : 56;
+canvas.height = Math.max(esMovil ? 760 : 480, jornadas.length * heightPerRow);
 
     const ctx = canvas.getContext("2d");
 
