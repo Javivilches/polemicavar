@@ -1516,7 +1516,40 @@ html{
     }
 }
 
+@media (max-width: 768px){
+    .grafico-jornadas-box{
+        padding:10px 8px 10px !important;
+        border-radius:14px !important;
+    }
 
+    .grafico-jornadas-scroll{
+        max-height:none !important;
+        overflow-y:visible !important;
+        overflow-x:hidden !important;
+        padding-right:0 !important;
+    }
+
+    .tarjeta-jornadas{
+        padding:12px 10px !important;
+    }
+
+    .tarjeta-jornadas h3{
+        font-size:20px !important;
+        margin-bottom:10px !important;
+    }
+
+    .grafico-jornadas-nota{
+        font-size:12px !important;
+        line-height:1.3 !important;
+        margin-top:10px !important;
+    }
+
+    #graficoJornadas{
+        width:100% !important;
+        max-width:100% !important;
+        display:block !important;
+    }
+}
 
 </style>
 </head>
@@ -2211,13 +2244,23 @@ function crearGraficoVertical(idCanvas, item){
 }
 
 function crearGraficoJornadas(datosJornadas){
-    const jornadas = datosJornadas.map(x => "Jornada " + x.jornada);
+    const esMovil = window.innerWidth <= 768;
+
+    const jornadas = datosJornadas.map(x => esMovil ? `J${x.jornada}` : `Jornada ${x.jornada}`);
     const balanceBarca = datosJornadas.map(x => x.barca);
     const balanceMadrid = datosJornadas.map(x => x.madrid);
 
+    const maxAbs = Math.max(
+        1,
+        ...balanceBarca.map(v => Math.abs(v)),
+        ...balanceMadrid.map(v => Math.abs(v))
+    );
+
+    const limite = Math.max(4, maxAbs);
+
     const canvas = document.getElementById("graficoJornadas");
-    const heightPerRow = 56;
-    canvas.height = Math.max(480, jornadas.length * heightPerRow);
+    const heightPerRow = esMovil ? 42 : 56;
+    canvas.height = Math.max(esMovil ? 320 : 480, jornadas.length * heightPerRow);
 
     const ctx = canvas.getContext("2d");
 
@@ -2232,7 +2275,7 @@ function crearGraficoJornadas(datosJornadas){
                     backgroundColor: (context) => getGradienteBarca(context.chart),
                     borderColor: "#2F7DFF",
                     borderWidth: 1.5,
-                    barThickness: 18,
+                    barThickness: esMovil ? 12 : 18,
                     borderRadius: 6
                 },
                 {
@@ -2241,7 +2284,7 @@ function crearGraficoJornadas(datosJornadas){
                     backgroundColor: (context) => getGradienteMadrid(context.chart),
                     borderColor: "#D7DFEA",
                     borderWidth: 1.5,
-                    barThickness: 18,
+                    barThickness: esMovil ? 12 : 18,
                     borderRadius: 6
                 }
             ]
@@ -2252,10 +2295,10 @@ function crearGraficoJornadas(datosJornadas){
             indexAxis: "y",
             layout: {
                 padding: {
-                    left: 8,
-                    right: 26,
-                    top: 8,
-                    bottom: 8
+                    left: esMovil ? 2 : 8,
+                    right: esMovil ? 10 : 26,
+                    top: esMovil ? 4 : 8,
+                    bottom: esMovil ? 4 : 8
                 }
             },
             plugins: {
@@ -2263,17 +2306,22 @@ function crearGraficoJornadas(datosJornadas){
                     position: "top",
                     labels: {
                         color: "#ffffff",
-                        boxWidth: 18,
-                        boxHeight: 10,
+                        boxWidth: esMovil ? 12 : 18,
+                        boxHeight: esMovil ? 8 : 10,
+                        padding: esMovil ? 10 : 16,
                         font: {
                             family: "Barlow Condensed",
-                            size: 14,
+                            size: esMovil ? 11 : 14,
                             weight: "700"
                         }
                     }
                 },
                 tooltip: {
                     callbacks: {
+                        title: function(context){
+                            const i = context[0].dataIndex;
+                            return `Jornada ${datosJornadas[i].jornada}`;
+                        },
                         label: function(context) {
                             const v = context.raw;
                             return `${context.dataset.label}: ${v > 0 ? "+" + v : v}`;
@@ -2292,7 +2340,7 @@ function crearGraficoJornadas(datosJornadas){
                         color: "#ffffff",
                         font: {
                             family: "Barlow Condensed",
-                            size: 14,
+                            size: esMovil ? 11 : 14,
                             weight: "700"
                         }
                     },
@@ -2304,14 +2352,14 @@ function crearGraficoJornadas(datosJornadas){
                     }
                 },
                 x: {
-                    min: -4,
-                    max: 4,
+                    min: -limite,
+                    max: limite,
                     ticks: {
                         stepSize: 1,
                         color: "#ffffff",
                         font: {
                             family: "Barlow Condensed",
-                            size: 13,
+                            size: esMovil ? 10 : 13,
                             weight: "700"
                         },
                         callback: function(value) {
@@ -2335,7 +2383,6 @@ function crearGraficoJornadas(datosJornadas){
         plugins: [pluginValoresEncima]
     });
 }
-
 function renderMarcador(resumen, resumenBloques){
     const barcaPenaltis = resumenBloques[0].barca;
     const madridPenaltis = resumenBloques[0].madrid;
