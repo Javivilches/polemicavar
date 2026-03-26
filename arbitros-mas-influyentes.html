@@ -203,28 +203,29 @@ h1,h2,h3,h4{
 }
 
 .tabla-arbitros{
-    width:auto;
+    width:100%;
     border-collapse:collapse;
-    min-width:920px;
+    table-layout:fixed;
+    min-width:980px;
     max-width:100%;
     margin:0 auto;
 }
 
 .tabla-arbitros th,
 .tabla-arbitros td{
-    padding:9px 8px;
+    padding:13px 14px;
     border:1px solid rgba(255,255,255,0.10);
     text-align:center;
     vertical-align:middle;
-    font-size:13px;
-    line-height:1.1;
+    font-size:15px;
+    line-height:1.18;
 }
 
 .tabla-arbitros thead th{
-    font-size:13.5px;
+    font-size:14px;
     font-weight:800;
     text-transform:uppercase;
-    letter-spacing:.25px;
+    letter-spacing:.35px;
 }
 
 .tabla-arbitros thead tr:first-child th{
@@ -237,11 +238,12 @@ h1,h2,h3,h4{
 
 .th-arbitro{
     width:24%;
-    min-width:200px;
+    min-width:220px;
     text-align:left !important;
-    padding-left:12px !important;
+    padding-left:14px !important;
     background:rgba(255,255,255,0.06) !important;
     color:#fff;
+    font-size:15px !important;
 }
 
 .grupo-madrid{
@@ -255,12 +257,12 @@ h1,h2,h3,h4{
 }
 
 .sub-madrid{
-    background:rgba(255,255,255,0.88) !important;
+    background:rgba(255,255,255,0.94) !important;
     color:#17324d !important;
 }
 
 .sub-barca{
-    background:rgba(37,62,115,0.45) !important;
+    background:rgba(37,62,115,0.72) !important;
     color:#eef3fa !important;
 }
 
@@ -276,21 +278,24 @@ h1,h2,h3,h4{
 .celda-arbitro{
     text-align:left !important;
     font-weight:800;
-    padding-left:12px !important;
+    padding-left:14px !important;
     white-space:nowrap;
-    font-size:15px;
+    font-size:16px;
     text-transform:uppercase;
+    color:#ffffff !important;
+    background:rgba(255,255,255,0.03) !important;
 }
 
 .celda-madrid{
-    background:rgba(255,255,255,0.92) !important;
+    background:rgba(255,255,255,0.96) !important;
     color:#17324d !important;
     border-color:rgba(0,0,0,0.08) !important;
 }
 
 .celda-barca{
-    background:rgba(25,35,68,0.82) !important;
+    background:rgba(25,35,68,0.92) !important;
     color:#eef3fa !important;
+    border-color:rgba(255,255,255,0.10) !important;
 }
 
 .fila-hover:hover td{
@@ -509,25 +514,25 @@ textarea{
     }
 
     .tabla-arbitros{
-        min-width:840px;
-    }
+    min-width:980px;
+}
 
-    .tabla-arbitros th,
-    .tabla-arbitros td{
-        padding:11px 10px;
-        font-size:15.5px;
-        line-height:1.25;
-    }
+.tabla-arbitros th,
+.tabla-arbitros td{
+    padding:12px 10px;
+    font-size:14px;
+    line-height:1.2;
+}
 
-    .th-arbitro{
-        min-width:145px;
-        padding-left:10px !important;
-    }
+.th-arbitro{
+    min-width:180px;
+    padding-left:10px !important;
+}
 
-    .celda-arbitro{
-        padding-left:10px !important;
-        font-size:13px;
-    }
+.celda-arbitro{
+    padding-left:10px !important;
+    font-size:14px;
+}
 
     .seccion-comentarios{
         margin:12px;
@@ -1067,7 +1072,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if(esMadrid(equipo)){
                 if(esErrorAFavorDelEquipo(subtipo)) reg.madridFavor++;
-                else if(esErrorEnContraDelEquipo(subtipo)) reg.madridContra++;
+                else if(esErrorEnCont	raDelEquipo(subtipo)) reg.madridContra++;
                 else ignoradas++;
             }else if(esBarca(equipo)){
                 if(esErrorAFavorDelEquipo(subtipo)) reg.barcaFavor++;
