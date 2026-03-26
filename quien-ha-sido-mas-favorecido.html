@@ -2259,8 +2259,8 @@ function crearGraficoJornadas(datosJornadas){
     const limite = Math.max(4, maxAbs);
 
     const canvas = document.getElementById("graficoJornadas");
-    const heightPerRow = esMovil ? 42 : 56;
-    canvas.height = Math.max(esMovil ? 320 : 480, jornadas.length * heightPerRow);
+const heightPerRow = esMovil ? 72 : 56;
+canvas.height = Math.max(esMovil ? 680 : 480, jornadas.length * heightPerRow);
 
     const ctx = canvas.getContext("2d");
 
