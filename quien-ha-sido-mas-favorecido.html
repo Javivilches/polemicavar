@@ -1831,35 +1831,134 @@ function renderHorizontales(bloques){
     });
 }
 
+const pluginValoresFinalVerticales = {
+    id: "pluginValoresFinalVerticales",
+    afterDatasetsDraw(chart){
+        const { ctx, scales: { y } } = chart;
+        ctx.save();
+        ctx.font = '800 18px "Barlow Condensed", sans-serif';
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        chart.data.datasets.forEach((dataset, datasetIndex) => {
+            const meta = chart.getDatasetMeta(datasetIndex);
+
+            meta.data.forEach((bar, index) => {
+                const valor = Number(dataset.data[index] || 0);
+                const texto = valor > 0 ? `+${valor}` : `${valor}`;
+
+                ctx.fillStyle = valor > 0 ? "#18c468" : (valor < 0 ? "#ff4f4f" : "#ffffff");
+                ctx.shadowColor = "rgba(0,0,0,0.55)";
+                ctx.shadowBlur = 6;
+
+                let yTexto;
+                if (valor > 0) {
+                    yTexto = bar.y - 14;
+                } else if (valor < 0) {
+                    yTexto = bar.y + 14;
+                } else {
+                    yTexto = y.getPixelForValue(0) - 14;
+                }
+
+                yTexto = Math.max(chart.chartArea.top + 12, Math.min(chart.chartArea.bottom - 12, yTexto));
+                ctx.fillText(texto, bar.x, yTexto);
+            });
+        });
+
+        ctx.restore();
+    }
+};
+
 function crearGraficoVertical(id, item){
+    const old = Chart.getChart(id);
+    if(old) old.destroy();
+
     const ctx = document.getElementById(id).getContext("2d");
 
     return new Chart(ctx, {
         type: "bar",
         data: {
-            labels: [""],
-            datasets: [
-                {
-                    label: "FC Barcelona",
-                    data: [item.barca],
-                    backgroundColor: "#7d1d63"
-                },
-                {
-                    label: "Real Madrid",
-                    data: [item.madrid],
-                    backgroundColor: "#f3f6f8",
-                    borderColor: "#ccc",
-                    borderWidth: 1
-                }
-            ]
+            labels: ["FC Barcelona", "Real Madrid"],
+            datasets: [{
+                data: [item.barca, item.madrid],
+                backgroundColor: ["#7d1d63", "#f3f6f8"],
+                borderColor: ["#7d1d63", "#ccc"],
+                borderWidth: [0, 1],
+                barThickness: 34,
+                maxBarThickness: 34,
+                categoryPercentage: 0.55,
+                barPercentage: 0.8,
+                borderRadius: 6
+            }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    top: 24,
+                    bottom: 8,
+                    left: 4,
+                    right: 4
+                }
+            },
             plugins: {
-                legend: { display: false }
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context){
+                            const v = context.raw;
+                            return v > 0 ? `+${v}` : `${v}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        color: "#eef4ff",
+                        font: {
+                            size: 12,
+                            weight: "700"
+                        }
+                    },
+                    grid: {
+                        display: false
+                    },
+                    border: {
+                        color: "rgba(255,255,255,0.22)"
+                    }
+                },
+                y: {
+                    min: -5,
+                    max: 5,
+                    ticks: {
+                        stepSize: 1,
+                        precision: 0,
+                        color: "#ffffff",
+                        font: {
+                            size: 12,
+                            weight: "700"
+                        },
+                        callback: function(value){
+                            return Number.isInteger(value) ? (value > 0 ? `+${value}` : `${value}`) : "";
+                        }
+                    },
+                    grid: {
+                        color: function(context){
+                            return context.tick.value === 0 ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.16)";
+                        },
+                        lineWidth: function(context){
+                            return context.tick.value === 0 ? 2 : 1;
+                        }
+                    },
+                    border: {
+                        color: "rgba(255,255,255,0.22)"
+                    }
+                }
             }
-        }
+        },
+        plugins: [pluginValoresFinalVerticales]
     });
 }
 
