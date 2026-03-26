@@ -112,16 +112,17 @@ h1,h2,h3,h4{
     color:white;
 }
 
-/* Jugadas polémicas (lo dejamos como estaba) */
+/* Jugadas polémicas */
 .menu a:nth-child(2){
     color:white;
 }
 
-/* Quién ha sido más favorecido + Árbitros en tono azul */
+/* Quién ha sido más favorecido + Árbitros */
 .menu a:nth-child(4),
 .menu a:nth-child(5){
     color:#0a2f6b;
 }
+
 /* CONTENIDO */
 .contenido{
     margin-top:216px;
@@ -671,9 +672,21 @@ h1,h2,h3,h4{
 }
 
 .grafico-jornadas-scroll{
-    max-height:980px;
-    overflow-y:auto;
-    padding-right:6px;
+    overflow-x:hidden;
+    overflow-y:visible;
+    padding-right:0;
+}
+
+.grafico-jornadas-canvas-wrap{
+    position:relative;
+    width:100%;
+    min-height:520px;
+}
+
+#graficoJornadas{
+    width:100% !important;
+    height:100% !important;
+    display:block;
 }
 
 .grafico-jornadas-nota{
@@ -1057,7 +1070,6 @@ html{
     text-align:center;
 }
 
-
 /* ===== AJUSTES EXTRA MOVIL ===== */
 @media (max-width: 768px){
     .cabecera{
@@ -1283,8 +1295,6 @@ html{
         padding:10px !important;
     }
 }
-
-
 
 /* ===== AJUSTE FINAL MOVIL MENU + MARCADOR ===== */
 @media (max-width: 768px){
@@ -1523,10 +1533,13 @@ html{
     }
 
     .grafico-jornadas-scroll{
-        max-height:none !important;
-        overflow-y:visible !important;
         overflow-x:hidden !important;
+        overflow-y:visible !important;
         padding-right:0 !important;
+    }
+
+    .grafico-jornadas-canvas-wrap{
+        min-height:420px !important;
     }
 
     .tarjeta-jornadas{
@@ -1550,7 +1563,6 @@ html{
         display:block !important;
     }
 }
-
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1697,7 +1709,9 @@ html{
                                 <h3>Balance jornada a jornada</h3>
                                 <div class="grafico-jornadas-box">
                                     <div class="grafico-jornadas-scroll">
-                                        <canvas id="graficoJornadas"></canvas>
+                                        <div class="grafico-jornadas-canvas-wrap" id="graficoJornadasWrap">
+                                            <canvas id="graficoJornadas"></canvas>
+                                        </div>
                                     </div>
                                     <div class="grafico-jornadas-nota">
                                         Comparativa de balance por jornada entre FC Barcelona y Real Madrid.
@@ -1750,17 +1764,337 @@ html{
     </div>
 </div>
 
-
 <script>
 const { loadDataset, getComments, addComment, escapeHtml, formatDate } = window.DecisionVarData;
-function setVal(id,v){ const el=document.getElementById(id); if(el) el.textContent=v; }
-function renderMarker(bloques){ const map={}; bloques.forEach(b=>map[b.key]=b); const tb=(map.penalti?.barca||0)+(map.gol?.barca||0)+(map.roja?.barca||0); const tm=(map.penalti?.madrid||0)+(map.gol?.madrid||0)+(map.roja?.madrid||0); [['barca','barca'],['madrid','madrid']].forEach(([p,k])=>{ setVal(`marcador-${p}-penaltis`,map.penalti?.[k]||0); setVal(`marcador-${p}-goles`,map.gol?.[k]||0); setVal(`marcador-${p}-rojas`,map.roja?.[k]||0); setVal(`marcador-${p}-total`,k==='barca'?tb:tm); }); setVal('marcador-score-barca',tb); setVal('marcador-score-madrid',tm); }
-function renderHorizontales(bloques){ const cont=document.getElementById('bloquesHorizontales'); if(!cont) return; cont.innerHTML=''; bloques.forEach(item=>{ const max=Math.max(Math.abs(item.barca),Math.abs(item.madrid),1); function line(label, val, cls, img){ const width=Math.round(Math.abs(val)/max*50); const left=val>=0?50:50-width; return `<div class="linea-equipo"><div class="escudo-linea-wrap"><img class="escudo-linea" src="${img}"></div><div class="pista"><div class="cero"></div><div class="relleno ${cls}" style="left:${left}%;width:${width}%;"></div><div class="valor-final ${val>0?'pos':(val<0?'neg':'neu')}" style="${val>=0?'left':'right'}:calc(${val>=0?left+width:left}% + 6px);">${val>0?'+':''}${val}</div></div></div>`; }
- cont.innerHTML += `<div class="grafico-simple"><div class="grafico-simple-titulo">${item.key}</div><div class="lineas-equipos">${line('FC Barcelona',item.barca,'barca','escudo-barcelona.png')}${line('Real Madrid',item.madrid,'madrid','escudo-madrid.png')}</div></div>`; }); }
-function crearGraficoVertical(id,item){ const ctx=document.getElementById(id).getContext('2d'); return new Chart(ctx,{type:'bar',data:{labels:[''],datasets:[{label:'FC Barcelona',data:[item.barca],backgroundColor:'#7d1d63'},{label:'Real Madrid',data:[item.madrid],backgroundColor:'#f3f6f8',borderColor:'#ccc',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}}); }
-function crearGraficoJornadas(data){ const ctx=document.getElementById('graficoJornadas').getContext('2d'); return new Chart(ctx,{type:'bar',data:{labels:data.map(x=>'J'+x.jornada),datasets:[{label:'FC Barcelona',data:data.map(x=>x.barca),backgroundColor:'#7d1d63'},{label:'Real Madrid',data:data.map(x=>x.madrid),backgroundColor:'#f3f6f8',borderColor:'#ccc',borderWidth:1}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true}}}}); }
-async function initComments(){ const list=document.getElementById('listaComentariosResultadosVar'); const count=document.getElementById('contadorComentariosResultadosVar'); const ta=document.getElementById('textoComentarioResultadosVar'); const btnPub=document.getElementById('btnPublicarComentarioResultadosVar'); const btnShow=document.getElementById('btnMostrarComentariosResultadosVar'); const btnMore=document.getElementById('btnMostrarMasResultadosVar'); const btnHide=document.getElementById('btnOcultarComentariosResultadosVar'); let visibles=0, comments=[]; async function reload(){ try{ comments=await getComments('favorecido',''); }catch(e){ comments=[]; } count.textContent=`${comments.length} comentarios`; list.innerHTML=''; comments.slice(0,visibles).forEach(c=>{ const div=document.createElement('div'); div.className='comentario-item visible'; div.innerHTML=`<div class="comentario-cabecera-item"><span class="comentario-autor">${escapeHtml(c.autor||'Usuario')}</span><span class="comentario-fecha">${escapeHtml(formatDate(c.created_at))}</span></div><div class="comentario-texto">${escapeHtml(c.texto||'')}</div>`; list.appendChild(div); }); btnShow.style.display=comments.length>0&&visibles===0?'inline-block':'none'; btnHide.style.display=visibles>0?'inline-block':'none'; btnMore.style.display=visibles>0&&visibles<comments.length?'inline-block':'none'; } btnPub.onclick=async()=>{ const txt=ta.value.trim(); if(!txt) return; await addComment('favorecido',txt,''); ta.value=''; visibles=Math.max(visibles,5); await reload();}; btnShow.onclick=()=>{ visibles=5; reload();}; btnMore.onclick=()=>{ visibles+=5; reload();}; btnHide.onclick=()=>{ visibles=0; reload();}; reload(); }
-(async()=>{ const data=await loadDataset(); renderMarker(data.resumenBloques); renderHorizontales(data.resumenBloques); crearGraficoVertical('graficoVerticalPenaltis',data.resumenBloques[0]); crearGraficoVertical('graficoVerticalGoles',data.resumenBloques[1]); crearGraficoVertical('graficoVerticalRojas',data.resumenBloques[2]); crearGraficoJornadas(data.jornadasData); document.getElementById('btnTotales').onclick=()=>{ document.getElementById('btnTotales').classList.add('activo'); document.getElementById('btnJornadas').classList.remove('activo'); document.getElementById('vistaTotales').classList.add('activa'); document.getElementById('vistaJornadas').classList.remove('activa');}; document.getElementById('btnJornadas').onclick=()=>{ document.getElementById('btnJornadas').classList.add('activo'); document.getElementById('btnTotales').classList.remove('activo'); document.getElementById('vistaJornadas').classList.add('activa'); document.getElementById('vistaTotales').classList.remove('activa');}; initComments(); })();
+
+function setVal(id, v){
+    const el = document.getElementById(id);
+    if(el) el.textContent = v;
+}
+
+function renderMarker(bloques){
+    const map = {};
+    bloques.forEach(b => map[b.key] = b);
+
+    const tb = (map.penalti?.barca || 0) + (map.gol?.barca || 0) + (map.roja?.barca || 0);
+    const tm = (map.penalti?.madrid || 0) + (map.gol?.madrid || 0) + (map.roja?.madrid || 0);
+
+    [["barca","barca"],["madrid","madrid"]].forEach(([p,k]) => {
+        setVal(`marcador-${p}-penaltis`, map.penalti?.[k] || 0);
+        setVal(`marcador-${p}-goles`, map.gol?.[k] || 0);
+        setVal(`marcador-${p}-rojas`, map.roja?.[k] || 0);
+        setVal(`marcador-${p}-total`, k === "barca" ? tb : tm);
+    });
+
+    setVal("marcador-score-barca", tb);
+    setVal("marcador-score-madrid", tm);
+}
+
+function renderHorizontales(bloques){
+    const cont = document.getElementById("bloquesHorizontales");
+    if(!cont) return;
+
+    cont.innerHTML = "";
+
+    bloques.forEach(item => {
+        const max = Math.max(Math.abs(item.barca), Math.abs(item.madrid), 1);
+
+        function line(val, cls, img){
+            const width = Math.round(Math.abs(val) / max * 50);
+            const left = val >= 0 ? 50 : 50 - width;
+
+            return `
+                <div class="linea-equipo">
+                    <div class="escudo-linea-wrap">
+                        <img class="escudo-linea" src="${img}" alt="">
+                    </div>
+                    <div class="pista">
+                        <div class="cero"></div>
+                        <div class="relleno ${cls}" style="left:${left}%;width:${width}%;"></div>
+                        <div class="valor-final ${val>0?'pos':(val<0?'neg':'neu')}" style="${val>=0?'left':'right'}:calc(${val>=0?left+width:left}% + 6px);">
+                            ${val>0?'+':''}${val}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        cont.innerHTML += `
+            <div class="grafico-simple">
+                <div class="grafico-simple-titulo">${item.key}</div>
+                <div class="lineas-equipos">
+                    ${line(item.barca, "barca", "escudo-barcelona.png")}
+                    ${line(item.madrid, "madrid", "escudo-madrid.png")}
+                </div>
+            </div>
+        `;
+    });
+}
+
+function crearGraficoVertical(id, item){
+    const ctx = document.getElementById(id).getContext("2d");
+
+    return new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: [""],
+            datasets: [
+                {
+                    label: "FC Barcelona",
+                    data: [item.barca],
+                    backgroundColor: "#7d1d63"
+                },
+                {
+                    label: "Real Madrid",
+                    data: [item.madrid],
+                    backgroundColor: "#f3f6f8",
+                    borderColor: "#ccc",
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+}
+
+const pluginValoresFinalBarraJornadas = {
+    id: "pluginValoresFinalBarraJornadas",
+    afterDatasetsDraw(chart){
+        const { ctx } = chart;
+        ctx.save();
+        ctx.font = '800 14px "Barlow Condensed", sans-serif';
+        ctx.textBaseline = "middle";
+
+        chart.data.datasets.forEach((dataset, datasetIndex) => {
+            const meta = chart.getDatasetMeta(datasetIndex);
+
+            meta.data.forEach((bar, index) => {
+                const valor = Number(dataset.data[index] || 0);
+                const texto = valor > 0 ? `+${valor}` : `${valor}`;
+
+                ctx.fillStyle = valor > 0 ? "#18c468" : (valor < 0 ? "#ff4f4f" : "#ffffff");
+                ctx.shadowColor = "rgba(0,0,0,0.55)";
+                ctx.shadowBlur = 6;
+
+                if (valor >= 0) {
+                    ctx.textAlign = "left";
+                    ctx.fillText(texto, bar.x + 8, bar.y);
+                } else {
+                    ctx.textAlign = "right";
+                    ctx.fillText(texto, bar.x - 8, bar.y);
+                }
+            });
+        });
+
+        ctx.restore();
+    }
+};
+
+function crearGraficoJornadas(data){
+    const canvas = document.getElementById("graficoJornadas");
+    const wrap = document.getElementById("graficoJornadasWrap");
+    const ctx = canvas.getContext("2d");
+
+    const totalJornadas = Math.max(data.length, 1);
+    const altoPorJornada = window.innerWidth <= 768 ? 52 : 42;
+    const altoFinal = Math.max(320, totalJornadas * altoPorJornada + 60);
+
+    wrap.style.height = `${altoFinal}px`;
+
+    return new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: data.map(x => "J" + x.jornada),
+            datasets: [
+                {
+                    label: "FC Barcelona",
+                    data: data.map(x => x.barca),
+                    backgroundColor: "#7d1d63"
+                },
+                {
+                    label: "Real Madrid",
+                    data: data.map(x => x.madrid),
+                    backgroundColor: "#f3f6f8",
+                    borderColor: "#ccc",
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            indexAxis: "y",
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    left: 26,
+                    right: 26,
+                    top: 6,
+                    bottom: 6
+                }
+            },
+            scales: {
+                x: {
+                    min: -4,
+                    max: 4,
+                    ticks: {
+                        stepSize: 1,
+                        color: "#eef4ff",
+                        font: {
+                            size: window.innerWidth <= 768 ? 10 : 12,
+                            weight: "700"
+                        }
+                    },
+                    grid: {
+                        color: "rgba(255,255,255,0.16)"
+                    },
+                    border: {
+                        color: "rgba(255,255,255,0.22)"
+                    }
+                },
+                y: {
+                    ticks: {
+                        autoSkip: false,
+                        color: "#ffffff",
+                        font: {
+                            size: window.innerWidth <= 768 ? 10 : 12,
+                            weight: "700"
+                        }
+                    },
+                    grid: {
+                        color: "rgba(255,255,255,0.10)"
+                    },
+                    border: {
+                        color: "rgba(255,255,255,0.22)"
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        color: "#eef4ff",
+                        boxWidth: 12,
+                        boxHeight: 12,
+                        font: {
+                            size: window.innerWidth <= 768 ? 10 : 12,
+                            weight: "700"
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context){
+                            const v = context.raw;
+                            return `${context.dataset.label}: ${v > 0 ? "+" + v : v}`;
+                        }
+                    }
+                }
+            }
+        },
+        plugins: [pluginValoresFinalBarraJornadas]
+    });
+}
+
+async function initComments(){
+    const list = document.getElementById("listaComentariosResultadosVar");
+    const count = document.getElementById("contadorComentariosResultadosVar");
+    const ta = document.getElementById("textoComentarioResultadosVar");
+    const btnPub = document.getElementById("btnPublicarComentarioResultadosVar");
+    const btnShow = document.getElementById("btnMostrarComentariosResultadosVar");
+    const btnMore = document.getElementById("btnMostrarMasResultadosVar");
+    const btnHide = document.getElementById("btnOcultarComentariosResultadosVar");
+
+    let visibles = 0;
+    let comments = [];
+
+    async function reload(){
+        try{
+            comments = await getComments("favorecido", "");
+        }catch(e){
+            comments = [];
+        }
+
+        count.textContent = `${comments.length} comentarios`;
+        list.innerHTML = "";
+
+        comments.slice(0, visibles).forEach(c => {
+            const div = document.createElement("div");
+            div.className = "comentario-item visible";
+            div.innerHTML = `
+                <div class="comentario-cabecera-item">
+                    <span class="comentario-autor">${escapeHtml(c.autor || "Usuario")}</span>
+                    <span class="comentario-fecha">${escapeHtml(formatDate(c.created_at))}</span>
+                </div>
+                <div class="comentario-texto">${escapeHtml(c.texto || "")}</div>
+            `;
+            list.appendChild(div);
+        });
+
+        btnShow.style.display = comments.length > 0 && visibles === 0 ? "inline-block" : "none";
+        btnHide.style.display = visibles > 0 ? "inline-block" : "none";
+        btnMore.style.display = visibles > 0 && visibles < comments.length ? "inline-block" : "none";
+    }
+
+    btnPub.onclick = async () => {
+        const txt = ta.value.trim();
+        if(!txt) return;
+        await addComment("favorecido", txt, "");
+        ta.value = "";
+        visibles = Math.max(visibles, 5);
+        await reload();
+    };
+
+    btnShow.onclick = () => {
+        visibles = 5;
+        reload();
+    };
+
+    btnMore.onclick = () => {
+        visibles += 5;
+        reload();
+    };
+
+    btnHide.onclick = () => {
+        visibles = 0;
+        reload();
+    };
+
+    reload();
+}
+
+(async () => {
+    const data = await loadDataset();
+
+    renderMarker(data.resumenBloques);
+    renderHorizontales(data.resumenBloques);
+
+    crearGraficoVertical("graficoVerticalPenaltis", data.resumenBloques[0]);
+    crearGraficoVertical("graficoVerticalGoles", data.resumenBloques[1]);
+    crearGraficoVertical("graficoVerticalRojas", data.resumenBloques[2]);
+    crearGraficoJornadas(data.jornadasData);
+
+    document.getElementById("btnTotales").onclick = () => {
+        document.getElementById("btnTotales").classList.add("activo");
+        document.getElementById("btnJornadas").classList.remove("activo");
+        document.getElementById("vistaTotales").classList.add("activa");
+        document.getElementById("vistaJornadas").classList.remove("activa");
+    };
+
+    document.getElementById("btnJornadas").onclick = () => {
+        document.getElementById("btnJornadas").classList.add("activo");
+        document.getElementById("btnTotales").classList.remove("activo");
+        document.getElementById("vistaJornadas").classList.add("activa");
+        document.getElementById("vistaTotales").classList.remove("activa");
+    };
+
+    initComments();
+})();
 </script>
 </body>
 </html>
