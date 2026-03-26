@@ -194,6 +194,7 @@ h1,h2,h3,h4{
     padding:10px;
 }
 
+/* TABLA ESCRITORIO */
 .tabla-arbitros-wrap{
     overflow-x:auto;
     display:block;
@@ -301,6 +302,75 @@ h1,h2,h3,h4{
     filter:brightness(1.04);
 }
 
+/* TABLA MÓVIL RESUMIDA */
+.tabla-arbitros-mobile-wrap{
+    display:none;
+}
+
+.tabla-arbitros-mobile{
+    width:100%;
+    border-collapse:collapse;
+    table-layout:fixed;
+    border:1px solid rgba(255,255,255,0.10);
+}
+
+.tabla-arbitros-mobile th,
+.tabla-arbitros-mobile td{
+    padding:12px 10px;
+    border:1px solid rgba(255,255,255,0.10);
+    text-align:center;
+    vertical-align:middle;
+    font-size:14px;
+    line-height:1.15;
+}
+
+.tabla-arbitros-mobile thead th{
+    font-size:12px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.25px;
+}
+
+.tabla-arbitros-mobile .th-arbitro-mobile{
+    width:42%;
+    text-align:left;
+    padding-left:12px;
+    background:rgba(255,255,255,0.06);
+    color:#fff;
+}
+
+.tabla-arbitros-mobile .th-balance-madrid{
+    background:linear-gradient(90deg,#f7f9fc 0%, #e7edf3 100%);
+    color:#17324d;
+}
+
+.tabla-arbitros-mobile .th-balance-barca{
+    background:linear-gradient(90deg,#153f96 0%, #76153d 100%);
+    color:#fff;
+}
+
+.tabla-arbitros-mobile .td-arbitro-mobile{
+    text-align:left;
+    padding-left:12px;
+    font-weight:800;
+    text-transform:uppercase;
+    color:#fff;
+    background:rgba(255,255,255,0.03);
+    word-break:break-word;
+}
+
+.tabla-arbitros-mobile .td-balance-madrid{
+    background:rgba(255,255,255,0.96);
+    color:#17324d;
+    font-weight:900;
+}
+
+.tabla-arbitros-mobile .td-balance-barca{
+    background:rgba(25,35,68,0.92);
+    color:#eef3fa;
+    font-weight:900;
+}
+
 .valor-pos{
     color:#18b35a !important;
     font-weight:900;
@@ -316,7 +386,8 @@ h1,h2,h3,h4{
     font-weight:900;
 }
 
-.celda-barca.valor-neutro{
+.celda-barca.valor-neutro,
+.td-balance-barca.valor-neutro{
     color:#8fc0ff !important;
 }
 
@@ -686,6 +757,30 @@ textarea{
         margin-top:138px !important;
         min-height:calc(100vh - 138px) !important;
     }
+
+    .tabla-arbitros-wrap{
+        display:none;
+    }
+
+    .tabla-arbitros-mobile-wrap{
+        display:block;
+    }
+
+    .tabla-arbitros-mobile th,
+    .tabla-arbitros-mobile td{
+        padding:11px 8px;
+        font-size:13px;
+    }
+
+    .tabla-arbitros-mobile .th-arbitro-mobile{
+        width:44%;
+        padding-left:10px;
+    }
+
+    .tabla-arbitros-mobile .td-arbitro-mobile{
+        padding-left:10px;
+        font-size:13px;
+    }
 }
 
 @media (max-width: 430px){
@@ -703,6 +798,12 @@ textarea{
     .contenido{
         margin-top:136px !important;
         min-height:calc(100vh - 136px) !important;
+    }
+
+    .tabla-arbitros-mobile th,
+    .tabla-arbitros-mobile td{
+        padding:10px 6px;
+        font-size:12px;
     }
 }
 
@@ -859,35 +960,6 @@ textarea{
         margin:0 auto !important;
     }
 }
-
-@media (max-width: 768px){
-
-    /* Oculta columnas innecesarias */
-    .tabla-arbitros th:nth-child(2),
-    .tabla-arbitros th:nth-child(3),
-    .tabla-arbitros th:nth-child(5),
-    .tabla-arbitros th:nth-child(6),
-    .tabla-arbitros td:nth-child(2),
-    .tabla-arbitros td:nth-child(3),
-    .tabla-arbitros td:nth-child(5),
-    .tabla-arbitros td:nth-child(6){
-        display:none;
-    }
-
-    /* Ajusta tamaño */
-    .tabla-arbitros{
-        min-width:100%;
-        font-size:14px;
-    }
-
-    .tabla-arbitros th,
-    .tabla-arbitros td{
-        padding:10px 6px;
-        text-align:center;
-    }
-
-}
-
 </style>
 </head>
 <body>
@@ -914,6 +986,7 @@ textarea{
                 <article class="tarjeta-arbitros">
                     <div class="tarjeta-arbitros-top">Estadísticas arbitrales</div>
                     <div class="tarjeta-arbitros-body">
+
                         <div class="tabla-arbitros-wrap">
                             <table class="tabla-arbitros">
                                 <thead>
@@ -934,6 +1007,23 @@ textarea{
                                 <tbody id="tablaArbitrosBody">
                                     <tr>
                                         <td colspan="7" class="mensaje">Cargando datos...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="tabla-arbitros-mobile-wrap">
+                            <table class="tabla-arbitros-mobile">
+                                <thead>
+                                    <tr>
+                                        <th class="th-arbitro-mobile">Árbitro</th>
+                                        <th class="th-balance-madrid">Balance errores R. Madrid</th>
+                                        <th class="th-balance-barca">Balance errores Barça</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaArbitrosMobileBody">
+                                    <tr>
+                                        <td colspan="3" class="mensaje">Cargando datos...</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -978,6 +1068,7 @@ textarea{
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
     const tablaBody = document.getElementById("tablaArbitrosBody");
+    const tablaMobileBody = document.getElementById("tablaArbitrosMobileBody");
     const infoClaves = document.getElementById("infoClaves");
 
     const textareaComentario = document.getElementById("textareaComentarioArbitros");
@@ -1290,6 +1381,27 @@ document.addEventListener("DOMContentLoaded", async () => {
         `).join("");
     }
 
+    function renderTablaMobile(lista){
+        if(!lista.length){
+            tablaMobileBody.innerHTML = `
+                <tr>
+                    <td colspan="3" class="mensaje">
+                        No hay datos suficientes para construir la tabla.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tablaMobileBody.innerHTML = lista.map(a => `
+            <tr>
+                <td class="td-arbitro-mobile">${escaparHtml(a.nombre)}</td>
+                <td class="td-balance-madrid ${claseBalance(a.madridBalance)}">${balanceTxt(a.madridBalance)}</td>
+                <td class="td-balance-barca ${claseBalance(a.barcaBalance)}">${balanceTxt(a.barcaBalance)}</td>
+            </tr>
+        `).join("");
+    }
+
     function leerComentarios(){
         try{
             const raw = localStorage.getItem(CLAVE_COMENTARIOS);
@@ -1398,10 +1510,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         const jugadas = await leerJugadas();
         const calculo = construirEstadisticas(jugadas);
         renderTabla(calculo.lista);
+        renderTablaMobile(calculo.lista);
     }catch(e){
         tablaBody.innerHTML = `
             <tr>
                 <td colspan="7" class="mensaje">No se pudieron cargar los datos.</td>
+            </tr>
+        `;
+        tablaMobileBody.innerHTML = `
+            <tr>
+                <td colspan="3" class="mensaje">No se pudieron cargar los datos.</td>
             </tr>
         `;
     }
