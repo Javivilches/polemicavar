@@ -859,6 +859,35 @@ textarea{
         margin:0 auto !important;
     }
 }
+
+@media (max-width: 768px){
+
+    /* Oculta columnas innecesarias */
+    .tabla-arbitros th:nth-child(2),
+    .tabla-arbitros th:nth-child(3),
+    .tabla-arbitros th:nth-child(5),
+    .tabla-arbitros th:nth-child(6),
+    .tabla-arbitros td:nth-child(2),
+    .tabla-arbitros td:nth-child(3),
+    .tabla-arbitros td:nth-child(5),
+    .tabla-arbitros td:nth-child(6){
+        display:none;
+    }
+
+    /* Ajusta tamaño */
+    .tabla-arbitros{
+        min-width:100%;
+        font-size:14px;
+    }
+
+    .tabla-arbitros th,
+    .tabla-arbitros td{
+        padding:10px 6px;
+        text-align:center;
+    }
+
+}
+
 </style>
 </head>
 <body>
