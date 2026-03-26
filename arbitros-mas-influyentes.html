@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Árbitros más influyentes</title>
+<link rel="icon" href="imagenes/favicon.png" type="image/png">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
 
@@ -104,18 +105,15 @@ h1,h2,h3,h4{
     background:rgba(255,255,255,0.15);
 }
 
-/* Inicio + Resultados VAR en blanco */
 .menu a:nth-child(1),
 .menu a:nth-child(3){
     color:white;
 }
 
-/* Jugadas polémicas (lo dejamos como estaba) */
 .menu a:nth-child(2){
     color:white;
 }
 
-/* Quién ha sido más favorecido + Árbitros en tono azul */
 .menu a:nth-child(4),
 .menu a:nth-child(5){
     color:#0a2f6b;
@@ -198,8 +196,9 @@ h1,h2,h3,h4{
 
 .tabla-arbitros-wrap{
     overflow-x:auto;
-    display:flex;
-    justify-content:center;
+    display:block;
+    width:100%;
+    -webkit-overflow-scrolling:touch;
 }
 
 .tabla-arbitros{
@@ -208,7 +207,7 @@ h1,h2,h3,h4{
     table-layout:fixed;
     min-width:980px;
     max-width:100%;
-    margin:0 auto;
+    margin:0;
 }
 
 .tabla-arbitros th,
@@ -514,25 +513,25 @@ textarea{
     }
 
     .tabla-arbitros{
-    min-width:980px;
-}
+        min-width:980px;
+    }
 
-.tabla-arbitros th,
-.tabla-arbitros td{
-    padding:12px 10px;
-    font-size:14px;
-    line-height:1.2;
-}
+    .tabla-arbitros th,
+    .tabla-arbitros td{
+        padding:12px 10px;
+        font-size:14px;
+        line-height:1.2;
+    }
 
-.th-arbitro{
-    min-width:180px;
-    padding-left:10px !important;
-}
+    .th-arbitro{
+        min-width:180px;
+        padding-left:10px !important;
+    }
 
-.celda-arbitro{
-    padding-left:10px !important;
-    font-size:14px;
-}
+    .celda-arbitro{
+        padding-left:10px !important;
+        font-size:14px;
+    }
 
     .seccion-comentarios{
         margin:12px;
@@ -545,8 +544,6 @@ textarea{
     }
 }
 
-
-/* ===== AJUSTES EXTRA MOVIL ===== */
 @media (max-width: 768px){
     .cabecera{
         height:78px !important;
@@ -642,9 +639,6 @@ textarea{
     }
 }
 
-
-
-/* ===== AJUSTE FINAL MOVIL MENU + MARCADOR ===== */
 @media (max-width: 768px){
     .menu{
         top:80px !important;
@@ -865,7 +859,6 @@ textarea{
         margin:0 auto !important;
     }
 }
-
 </style>
 </head>
 <body>
@@ -954,7 +947,7 @@ textarea{
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     const tablaBody = document.getElementById("tablaArbitrosBody");
     const infoClaves = document.getElementById("infoClaves");
 
@@ -974,17 +967,6 @@ document.addEventListener("DOMContentLoaded", () => {
             .replace(/</g, "&lt;")
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;");
-    }
-
-    function leerJugadasVAR(){
-        try{
-            const raw = localStorage.getItem("jugadasVAR");
-            if(!raw) return [];
-            const data = JSON.parse(raw);
-            return Array.isArray(data) ? data : [];
-        }catch{
-            return [];
-        }
     }
 
     function limpiar(txt){
@@ -1045,6 +1027,160 @@ document.addEventListener("DOMContentLoaded", () => {
         reg.barcaBalance = reg.barcaFavor - reg.barcaContra;
     }
 
+    function claseBalance(v){
+        if(v > 0) return "valor-pos";
+        if(v < 0) return "valor-neg";
+        return "valor-neutro";
+    }
+
+    function balanceTxt(v){
+        if(v > 0) return "+" + v;
+        return String(v);
+    }
+
+    function valorFila(obj, claves){
+        for(const clave of claves){
+            if(obj[clave] != null && String(obj[clave]).trim() !== ""){
+                return String(obj[clave]).trim();
+            }
+        }
+        return "";
+    }
+
+    function numeroSeguro(v){
+        const n = parseInt(String(v || "").replace(/[^\d-]/g, ""), 10);
+        return Number.isFinite(n) ? n : 0;
+    }
+
+    function parseCSVLine(linea, delimitador){
+        const out = [];
+        let actual = "";
+        let enComillas = false;
+
+        for(let i = 0; i < linea.length; i++){
+            const c = linea[i];
+            const next = linea[i + 1];
+
+            if(c === '"'){
+                if(enComillas && next === '"'){
+                    actual += '"';
+                    i++;
+                }else{
+                    enComillas = !enComillas;
+                }
+            }else if(c === delimitador && !enComillas){
+                out.push(actual);
+                actual = "";
+            }else{
+                actual += c;
+            }
+        }
+
+        out.push(actual);
+        return out.map(v => v.trim());
+    }
+
+    function obtenerDelimitadorCSV(texto){
+        const primeraLinea = texto.split(/\r?\n/).find(l => l.trim() !== "") || "";
+        const tabs = (primeraLinea.match(/\t/g) || []).length;
+        const comas = (primeraLinea.match(/,/g) || []).length;
+        const puntosComa = (primeraLinea.match(/;/g) || []).length;
+
+        if(tabs >= comas && tabs >= puntosComa && tabs > 0) return "\t";
+        if(puntosComa > comas) return ";";
+        return ",";
+    }
+
+    function parseCSV(texto){
+        const delimitador = obtenerDelimitadorCSV(texto);
+        const lineas = texto.split(/\r?\n/).filter(l => l.trim() !== "");
+        if(lineas.length < 2) return [];
+
+        const cabeceras = parseCSVLine(lineas[0], delimitador).map(c => limpiar(c));
+        const filas = [];
+
+        for(let i = 1; i < lineas.length; i++){
+            const valores = parseCSVLine(lineas[i], delimitador);
+            const fila = {};
+            cabeceras.forEach((cab, idx) => {
+                fila[cab] = (valores[idx] || "").trim();
+            });
+            filas.push(fila);
+        }
+
+        return filas;
+    }
+
+    function encuestaEsNoDesdeFila(fila){
+        const encuesta = limpiar(valorFila(fila, [
+            "encuesta",
+            "resultado encuesta",
+            "resultado de la encuesta",
+            "resultado",
+            "veredicto"
+        ]));
+
+        if(encuesta === "no") return true;
+        if(encuesta === "si" || encuesta === "sí") return false;
+
+        const votosNo = numeroSeguro(valorFila(fila, [
+            "votos no",
+            "votos iniciales no",
+            "votos_no",
+            "no",
+            "total no"
+        ]));
+
+        const votosSi = numeroSeguro(valorFila(fila, [
+            "votos si",
+            "votos sí",
+            "votos iniciales si",
+            "votos iniciales sí",
+            "votos_si",
+            "si",
+            "sí",
+            "total si",
+            "total sí"
+        ]));
+
+        if(votosNo === 0 && votosSi === 0) return false;
+        return votosNo > votosSi;
+    }
+
+    function normalizarFilaCSV(fila){
+        return {
+            arbitro: valorFila(fila, ["arbitro", "árbitro"]),
+            equipo: valorFila(fila, ["equipo", "equipo afectado"]),
+            subtipo: valorFila(fila, ["subtipo"]),
+            encuesta: encuestaEsNoDesdeFila(fila) ? "no" : "si"
+        };
+    }
+
+    function leerJugadasLocalStorage(){
+        try{
+            const raw = localStorage.getItem("jugadasVAR");
+            if(!raw) return [];
+            const data = JSON.parse(raw);
+            return Array.isArray(data) ? data : [];
+        }catch{
+            return [];
+        }
+    }
+
+    async function leerJugadas(){
+        try{
+            const resp = await fetch("jugadas.csv", { cache: "no-store" });
+            if(resp.ok){
+                const texto = await resp.text();
+                const filas = parseCSV(texto).map(normalizarFilaCSV);
+                if(filas.length) return filas;
+            }
+        }catch(e){
+        }
+
+        return leerJugadasLocalStorage();
+    }
+
     function construirEstadisticas(jugadas){
         const mapa = new Map();
         let ignoradas = 0;
@@ -1100,23 +1236,12 @@ document.addEventListener("DOMContentLoaded", () => {
         return { lista, ignoradas };
     }
 
-    function claseBalance(v){
-        if(v > 0) return "valor-pos";
-        if(v < 0) return "valor-neg";
-        return "valor-neutro";
-    }
-
-    function balanceTxt(v){
-        if(v > 0) return "+" + v;
-        return String(v);
-    }
-
     function renderTabla(lista){
         if(!lista.length){
             tablaBody.innerHTML = `
                 <tr>
                     <td colspan="7" class="mensaje">
-                        No hay todavía errores arbitrales detectados con árbitro guardado en jugadasVAR.
+                        No hay datos suficientes para construir la tabla.
                     </td>
                 </tr>
             `;
@@ -1240,10 +1365,17 @@ document.addEventListener("DOMContentLoaded", () => {
         actualizarVisibilidadComentarios();
     });
 
-    const jugadas = leerJugadasVAR();
-    const calculo = construirEstadisticas(jugadas);
-
-    renderTabla(calculo.lista);
+    try{
+        const jugadas = await leerJugadas();
+        const calculo = construirEstadisticas(jugadas);
+        renderTabla(calculo.lista);
+    }catch(e){
+        tablaBody.innerHTML = `
+            <tr>
+                <td colspan="7" class="mensaje">No se pudieron cargar los datos.</td>
+            </tr>
+        `;
+    }
 
     infoClaves.innerHTML = `
         *Solo se cuentan jugadas cuyo resultado en la encuesta sea <b>NO</b>, es decir, jugadas consideradas mal arbitradas.
