@@ -1485,27 +1485,56 @@ function extraerNumeroJornada(valor){
 }
 
 function rutasImagenSlug(jornada, slug){
+    const s = limpiarSlug(slug);
+    if(!s) return [];
+
+    const carpetasBase = ["Imagenes", "imagenes"];
+    const carpetasJornada = combinacionesCarpetaJornada(jornada);
+    const rutas = [];
+
+    for(const base of carpetasBase){
+        for(const carpetaJ of carpetasJornada){
+            rutas.push(`${base}/${carpetaJ}/${encodeURIComponent(s)}`);
+        }
+    }
+
+    return quitarDuplicados(rutas);
+}
+
+function limpiarSlug(valor){
+    return (valor || "").toString().trim().replace(/^["']|["']$/g, "");
+}
+
+function quitarDuplicados(lista){
+    return [...new Set(lista.filter(Boolean))];
+}
+
+function combinacionesCarpetaJornada(jornada){
     const j = extraerNumeroJornada(jornada);
-    if(!slug) return [];
     return [
-        `Imagenes/Jornada-${j}/${slug}.png`,
-        `Imagenes/jornada ${j}/${slug}.png`,
-        `Imagenes/Jornada-${j}/${slug}.jpg`,
-        `Imagenes/jornada ${j}/${slug}.jpg`,
-        `Imagenes/Jornada-${j}/${slug}.jpeg`,
-        `Imagenes/jornada ${j}/${slug}.jpeg`,
-        `Imagenes/Jornada-${j}/${slug}.webp`,
-        `Imagenes/jornada ${j}/${slug}.webp`
+        `Jornada-${j}`,
+        `Jornada ${j}`,
+        `jornada-${j}`,
+        `jornada ${j}`
     ];
 }
 
 function rutasVideoTxt(jornada, slug){
-    const j = extraerNumeroJornada(jornada);
-    if(!slug) return [];
-    return [
-        `videos/Jornada-${j}/${slug}.txt`,
-        `videos/Jornada ${j}/${slug}.txt`
-    ];
+    const s = limpiarSlug(slug);
+    if(!s) return [];
+
+    const carpetasBase = ["Videos", "videos"];
+    const carpetasJornada = combinacionesCarpetaJornada(jornada);
+    const rutas = [];
+
+    for(const base of carpetasBase){
+        for(const carpetaJ of carpetasJornada){
+            rutas.push(`${base}/${carpetaJ}/${encodeURIComponent(s)}.txt`);
+            rutas.push(`${base}/${carpetaJ}/${encodeURIComponent(s)}.TXT`);
+        }
+    }
+
+    return quitarDuplicados(rutas);
 }
 
 async function primerTextoDisponible(rutas){
