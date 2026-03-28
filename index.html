@@ -5,13 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Decisión VAR</title>
 <link rel="icon" href="Imagenes/favicon.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
 
 <style>
 body{
     margin:0;
-    font-family:Arial, Helvetica, sans-serif;
+    font-family:Inter, Arial, Helvetica, sans-serif;
     background:#111;
     zoom:0.90;
+}
+
+h1,h2,h3,h4{
+    font-family:"Barlow Condensed", sans-serif;
+    letter-spacing:.5px;
+    margin:0;
 }
 
 /* CABECERA */
@@ -649,6 +656,236 @@ textarea{
     display:flex;
     justify-content:center;
 }
+
+.marcador-global{
+    width:1100px;
+    max-width:95%;
+    position:relative;
+    border-radius:26px;
+    overflow:hidden;
+    box-shadow:
+        0 16px 34px rgba(0,0,0,0.22),
+        inset 3px 0 0 #1d5fd1,
+        inset -3px 0 0 #ffffff;
+    border:1px solid rgba(255,255,255,0.09);
+    background:linear-gradient(90deg, rgba(14,44,106,0.88) 0%, rgba(24,89,190,0.68) 20%, rgba(95,15,50,0.78) 45%, rgba(72,78,88,0.68) 54%, rgba(238,241,245,0.84) 78%, rgba(255,255,255,0.95) 100%);
+}
+
+.marcador-global::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+        linear-gradient(rgba(5,12,22,0.25), rgba(5,12,22,0.38)),
+        url("campnou.jpg") left center / 50% 100% no-repeat,
+        url("bernabeu.jpg") right center / 50% 100% no-repeat;
+    opacity:0.58;
+    pointer-events:none;
+}
+
+.marcador-grid{
+    position:relative;
+    z-index:2;
+    display:grid;
+    grid-template-columns:1fr 230px 1fr;
+    align-items:start;
+    gap:10px;
+    padding:12px 22px 14px;
+    min-height:190px;
+}
+
+.equipo-panel{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.equipo-panel.barca{
+    align-items:flex-start;
+    text-align:left;
+}
+
+.equipo-panel.madrid{
+    align-items:flex-end;
+    text-align:right;
+}
+
+.equipo-head{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.equipo-panel.madrid .equipo-head{
+    flex-direction:row-reverse;
+}
+
+.escudo{
+    width:78px;
+    height:auto;
+    display:block;
+    filter:drop-shadow(0 6px 12px rgba(0,0,0,0.22));
+}
+
+.equipo-nombre{
+    font-family:"Barlow Condensed", sans-serif;
+    font-size:34px;
+    font-weight:700;
+    color:#fff;
+    text-shadow:0 3px 12px rgba(0,0,0,0.30);
+    letter-spacing:.3px;
+}
+
+.subdatos{
+    display:grid;
+    grid-template-columns:148px 148px;
+    gap:10px;
+}
+
+.equipo-panel.barca .subdatos{
+    justify-content:start;
+}
+
+.equipo-panel.madrid .subdatos{
+    justify-content:end;
+}
+
+.mini-dato{
+    width:148px;
+    background:rgba(255,255,255,0.96);
+    border:1px solid rgba(0,0,0,0.04);
+    box-shadow:0 3px 8px rgba(0,0,0,0.08);
+    border-radius:14px;
+    padding:4px 4px 3px;
+    text-align:center;
+    backdrop-filter:blur(2px);
+    box-sizing:border-box;
+}
+
+.mini-dato .et{
+    display:block;
+    font-family:"Barlow Condensed", sans-serif;
+    font-size:14px;
+    font-weight:700;
+    color:#526981;
+    margin-bottom:1px;
+    text-transform:uppercase;
+    line-height:1.05;
+    letter-spacing:.3px;
+}
+
+.mini-dato .vl{
+    display:block;
+    font-family:"Barlow Condensed", sans-serif;
+    font-size:32px;
+    font-weight:800;
+    line-height:1;
+    color:#000;
+}
+
+.total-global-wrap{
+    width:306px;
+    margin-top:6px;
+    display:grid;
+    grid-template-columns:148px 148px;
+    gap:10px;
+    justify-content:center;
+}
+
+.total-global{
+    width:148px;
+    grid-column:1 / span 2;
+    justify-self:center;
+    background:linear-gradient(180deg, rgba(10,18,34,0.92), rgba(6,11,22,0.96));
+    border:1px solid rgba(255,255,255,0.14);
+    box-shadow:
+        0 10px 22px rgba(0,0,0,0.24),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    border-radius:16px;
+    padding:11px 13px 10px;
+    text-align:center;
+}
+
+.total-global .et{
+    display:block;
+    font-family:"Barlow Condensed", sans-serif;
+    font-size:14px;
+    font-weight:700;
+    color:#dce5f1;
+    margin-bottom:4px;
+    text-transform:uppercase;
+    line-height:1.05;
+    letter-spacing:.4px;
+}
+
+.total-global .vl{
+    display:block;
+    font-family:"Barlow Condensed", sans-serif;
+    font-size:36px;
+    font-weight:800;
+    line-height:1;
+    color:#ffffff;
+}
+
+.marcador-centro{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    padding-top:6px;
+}
+
+.marcador-titulo{
+    font-family:"Barlow Condensed", sans-serif;
+    font-size:18px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:#ffffff;
+    text-shadow:0 2px 8px rgba(0,0,0,0.30);
+}
+
+.score-box{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    width:100%;
+    padding:14px 18px;
+    border-radius:24px;
+    background:rgba(8,14,24,0.78);
+    border:1px solid rgba(255,255,255,0.10);
+    box-shadow:0 14px 24px rgba(0,0,0,0.24);
+}
+
+.score{
+    font-family:"Barlow Condensed", sans-serif;
+    font-size:84px;
+    line-height:.9;
+    font-weight:800;
+    text-shadow:0 3px 12px rgba(0,0,0,0.34);
+    color:#ffffff;
+}
+
+.score-sep{
+    color:#ffffff;
+    font-size:48px;
+    font-weight:900;
+    transform:translateY(-2px);
+}
+
+.score-leyenda{
+    max-width:260px;
+    font-family:Inter, Arial, Helvetica, sans-serif;
+    font-size:14px;
+    line-height:1.2;
+    text-align:center;
+    color:#dce5f1;
+    text-transform:uppercase;
+    letter-spacing:.8px;
+}
+
 
 /* MODAL IMAGEN */
 .modal-imagen{
@@ -1354,109 +1591,78 @@ textarea{
             </div>
 
             <div class="marcador-wrap">
-    <div class="marcador-global" id="marcadorGlobal">
-        <div class="marcador-grid">
-
-            <div class="equipo-panel barca">
-                <div class="equipo-head">
-                    <img src="escudo-barcelona.png" class="escudo">
-                    <div class="equipo-nombre">FC Barcelona</div>
+                <div id="marcadorGlobalContainer">
+                    <div class="caja-cargando">Cargando marcador global...</div>
                 </div>
 
-                <div class="subdatos">
-                    <div class="mini-dato">
-                        <span class="et">Total Penaltis</span>
-                        <span class="vl" id="marcador-barca-penaltis">0</span>
-                    </div>
-                    <div class="mini-dato">
-                        <span class="et">Total Rojas</span>
-                        <span class="vl" id="marcador-barca-rojas">0</span>
-                    </div>
-                    <div class="mini-dato" style="grid-column:1 / span 2;">
-                        <span class="et">Total Goles</span>
-                        <span class="vl" id="marcador-barca-goles">0</span>
-                    </div>
-                </div>
-
-                <div class="total-global-wrap">
-                    <div class="total-global">
-                        <span class="et">Total Global</span>
-                        <span class="vl" id="marcador-barca-total">0</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="marcador-centro">
-                <div class="marcador-titulo">Marcador global</div>
-                <div class="score-box">
-                    <div class="score" id="marcador-score-barca">0</div>
-                    <div class="score-sep">-</div>
-                    <div class="score" id="marcador-score-madrid">0</div>
-                </div>
-                <div class="score-leyenda">
-                    Balance global según resultados de las encuestas de las jugadas polémicas
-                </div>
-            </div>
-
-            <div class="equipo-panel madrid">
-                <div class="equipo-head">
-                    <img src="escudo-madrid.png" class="escudo">
-                    <div class="equipo-nombre">Real Madrid</div>
-                </div>
-
-                <div class="subdatos">
-                    <div class="mini-dato">
-                        <span class="et">Total Penaltis</span>
-                        <span class="vl" id="marcador-madrid-penaltis">0</span>
-                    </div>
-                    <div class="mini-dato">
-                        <span class="et">Total Rojas</span>
-                        <span class="vl" id="marcador-madrid-rojas">0</span>
-                    </div>
-                    <div class="mini-dato" style="grid-column:1 / span 2;">
-                        <span class="et">Total Goles</span>
-                        <span class="vl" id="marcador-madrid-goles">0</span>
-                    </div>
-                </div>
-
-                <div class="total-global-wrap">
-                    <div class="total-global">
-                        <span class="et">Total Global</span>
-                        <span class="vl" id="marcador-madrid-total">0</span>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-                            <div class="subdatos">
-                                <div class="mini-dato">
-                                    <span class="et">Total Penaltis</span>
-                                    <span class="vl" id="marcador-barca-penaltis">0</span>
+                                <div class="subdatos">
+                                    <div class="mini-dato">
+                                        <span class="et">Total Penaltis</span>
+                                        <span class="vl" id="marcador-barca-penaltis">0</span>
+                                    </div>
+                                    <div class="mini-dato">
+                                        <span class="et">Total Rojas</span>
+                                        <span class="vl" id="marcador-barca-rojas">0</span>
+                                    </div>
+                                    <div class="mini-dato" style="grid-column:1 / span 2; justify-self:center;">
+                                        <span class="et">Total Goles</span>
+                                        <span class="vl" id="marcador-barca-goles">0</span>
+                                    </div>
                                 </div>
-                                <div class="mini-dato">
-                                    <span class="et">Total Rojas</span>
-                                    <span class="vl" id="marcador-barca-rojas">0</span>
-                                </div>
-                                <div class="mini-dato" style="grid-column:1 / span 2; justify-self:center;">
-                                    <span class="et">Total Goles</span>
-                                    <span class="vl" id="marcador-barca-goles">0</span>
+
+                                <div class="total-global-wrap">
+                                    <div class="total-global">
+                                        <span class="et">Total Global</span>
+                                        <span class="vl" id="marcador-barca-total">0</span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="total-global-wrap">
-                                <div class="total-global">
-                                    <span class="et">Total Global</span>
-                                    <span class="vl" id="marcador-barca-total">0</span>
+                            <div class="marcador-centro">
+                                <div class="marcador-titulo">Marcador global</div>
+                                <div class="score-box">
+                                    <div class="score" id="marcador-score-barca">0</div>
+                                    <div class="score-sep">-</div>
+                                    <div class="score" id="marcador-score-madrid">0</div>
+                                </div>
+                                <div class="score-leyenda">Balance global según resultados de las encuestas de las jugadas polémicas</div>
+                            </div>
+
+                            <div class="equipo-panel madrid">
+                                <div class="equipo-head">
+                                    <img src="escudo-madrid.png" class="escudo" alt="Escudo Real Madrid">
+                                    <div class="equipo-nombre">Real Madrid</div>
+                                </div>
+
+                                <div class="subdatos">
+                                    <div class="mini-dato">
+                                        <span class="et">Total Penaltis</span>
+                                        <span class="vl" id="marcador-madrid-penaltis">0</span>
+                                    </div>
+                                    <div class="mini-dato">
+                                        <span class="et">Total Rojas</span>
+                                        <span class="vl" id="marcador-madrid-rojas">0</span>
+                                    </div>
+                                    <div class="mini-dato" style="grid-column:1 / span 2; justify-self:center;">
+                                        <span class="et">Total Goles</span>
+                                        <span class="vl" id="marcador-madrid-goles">0</span>
+                                    </div>
+                                </div>
+
+                                <div class="total-global-wrap">
+                                    <div class="total-global">
+                                        <span class="et">Total Global</span>
+                                        <span class="vl" id="marcador-madrid-total">0</span>
+                                    </div>
                                 </div>
                             </div>
+
                         </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="aviso-legal">
+<div class="aviso-legal">
                 Decisión VAR es una plataforma independiente y neutral cuyo objetivo es analizar jugadas polémicas a través de la opinión de los usuarios.
                 Los contenidos audiovisuales mostrados pertenecen a sus respectivos autores y son compartidos desde plataformas públicas. Esta web no almacena ni modifica dichos contenidos.
             </div>
@@ -1523,7 +1729,7 @@ function renderMarker(bloques){
     setVal('marcador-score-madrid',tm);
 }
 function setVal(id,v){ const el=document.getElementById(id); if(el) el.textContent=v; }
-(async()=>{ const data=await loadDataset(); const maxJ=Math.max(...data.jugadas.map(j=>parseInt(j.jornada)||0)); const latest=[...data.jugadas].filter(j=>(parseInt(j.jornada)||0)===maxJ).sort((a,b)=>(parseInt((b.minuto||'').match(/\d+/)?.[0]||0))-(parseInt((a.minuto||'').match(/\d+/)?.[0]||0))); ultimasJugadasContainer.innerHTML=''; for(const j of latest){ const a=createArticle(j); const media=[]; const v1=await primerTextoDisponible(rutasVideoTxt(j.jornada,j.slugVideo)); const v2=await primerTextoDisponible(rutasVideoTxt(j.jornada,j.slugVideo2)); if(v1) media.push({tipo:'video',url:v1}); if(v2) media.push({tipo:'video',url:v2}); [j.slugImagen,j.slugImagen2,j.slugImagen3,j.slugImagen4,j.slugImagen5].filter(Boolean).forEach(slug=>media.push({tipo:'imagen',rutas:rutasImagenSlug(j.jornada,slug)})); if(!media.length) media.push({tipo:'imagen',rutas:[]}); a.cargarMedia(media); ultimasJugadasContainer.appendChild(a); } renderMarker(data.resumenBloques); })();
+(async()=>{ const data=await loadDataset(); const maxJ=Math.max(...data.jugadas.map(j=>parseInt(j.jornada)||0)); const latest=[...data.jugadas].filter(j=>(parseInt(j.jornada)||0)===maxJ).sort((a,b)=>(parseInt((b.minuto||'').match(/\d+/)?.[0]||0))-(parseInt((a.minuto||'').match(/\d+/)?.[0]||0))); ultimasJugadasContainer.innerHTML=''; for(const j of latest){ const a=createArticle(j); const media=[]; const v1=await primerTextoDisponible(rutasVideoTxt(j.jornada,j.slugVideo)); const v2=await primerTextoDisponible(rutasVideoTxt(j.jornada,j.slugVideo2)); if(v1) media.push({tipo:'video',url:v1}); if(v2) media.push({tipo:'video',url:v2}); [j.slugImagen,j.slugImagen2,j.slugImagen3,j.slugImagen4,j.slugImagen5].filter(Boolean).forEach(slug=>media.push({tipo:'imagen',rutas:rutasImagenSlug(j.jornada,slug)})); if(!media.length) media.push({tipo:'imagen',rutas:[]}); a.cargarMedia(media); ultimasJugadasContainer.appendChild(a); } fetch('resultados-var.html').then(r=>r.text()).then(html=>{ const doc=new DOMParser().parseFromString(html,'text/html'); const marcador=doc.querySelector('#marcadorGlobal'); if(marcador) document.getElementById('marcadorGlobalContainer').innerHTML=marcador.outerHTML; renderMarker(data.resumenBloques); }).catch(()=>renderMarker(data.resumenBloques)); })();
 </script>
 </body>
 </html>
