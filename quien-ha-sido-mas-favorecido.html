@@ -169,11 +169,24 @@ h1,h2,h3,h4{
     color:#dfe8f3;
 }
 
-/* MARCADOR GLOBAL */
+/* MARCADOR */
 .marcador-wrap{
-    padding:22px 22px 8px;
+    padding:22px 22px 12px;
     display:flex;
     justify-content:center;
+}
+
+#marcadorGlobalContainer{
+    width:100%;
+    display:flex;
+    justify-content:center;
+}
+
+.caja-cargando,
+.caja-error{
+    padding:22px 26px;
+    color:white;
+    font-size:15px;
 }
 
 .marcador-global{
@@ -257,7 +270,7 @@ h1,h2,h3,h4{
 
 .subdatos{
     display:grid;
-    grid-template-columns:148px 148px;
+    grid-template-columns:repeat(2, 148px);
     gap:10px;
 }
 
@@ -269,8 +282,14 @@ h1,h2,h3,h4{
     justify-content:end;
 }
 
+.subdatos .mini-dato:nth-child(3){
+    grid-column:1 / span 2;
+    justify-self:center;
+}
+
 .mini-dato{
     width:148px;
+    min-width:148px;
     background:rgba(255,255,255,0.96);
     border:1px solid rgba(0,0,0,0.04);
     box-shadow:0 3px 8px rgba(0,0,0,0.08);
@@ -287,7 +306,7 @@ h1,h2,h3,h4{
     font-size:14px;
     font-weight:700;
     color:#526981;
-    margin-bottom:1px;
+    margin-bottom:2px;
     text-transform:uppercase;
     line-height:1.05;
     letter-spacing:.3px;
@@ -312,7 +331,7 @@ h1,h2,h3,h4{
 }
 
 .total-global{
-    width:148px;
+    min-width:148px;
     grid-column:1 / span 2;
     justify-self:center;
     background:linear-gradient(180deg, rgba(10,18,34,0.92), rgba(6,11,22,0.96));
@@ -404,6 +423,8 @@ h1,h2,h3,h4{
     text-align:center;
     line-height:1.15;
 }
+
+
 
 /* TARJETAS Y BOTONES */
 .secciones{
@@ -881,156 +902,9 @@ h1,h2,h3,h4{
     box-shadow:0 8px 18px rgba(0,0,0,0.16);
 }
 
-@media (max-width: 1200px){
-    body{ zoom:1; }
 
-    .marcador-grid{
-        grid-template-columns:1fr;
-        gap:18px;
-    }
 
-    .equipo-panel.barca,
-    .equipo-panel.madrid{
-        align-items:center;
-        text-align:center;
-    }
 
-    .equipo-panel.madrid .equipo-head{
-        flex-direction:row;
-    }
-
-    .equipo-panel.madrid .subdatos{
-        justify-content:center;
-    }
-
-    .total-global-wrap{
-        align-self:center;
-    }
-
-    .bloque-verticales{
-        grid-template-columns:1fr;
-    }
-}
-
-@media (max-width: 768px){
-    .cabecera{ height:130px; }
-
-    .menu{
-        top:130px;
-        height:42px;
-        gap:18px;
-        padding:0 10px;
-    }
-
-    .menu a{ font-size:11px; }
-
-    .contenido{
-        margin-top:172px;
-        padding:16px 0 50px;
-    }
-
-    .wrap{ width:96%; }
-
-    .cabecera-resultados{ padding:18px; }
-
-    .cabecera-resultados h1{ font-size:26px; }
-
-    .marcador-wrap{ padding:14px 12px 8px; }
-
-    .marcador-grid{
-        padding:16px;
-        min-height:auto;
-    }
-
-    .equipo-nombre{ font-size:27px; }
-
-    .escudo{ width:64px; }
-
-    .score{ font-size:68px; }
-
-    .score-sep{ font-size:38px; }
-
-    .mini-dato{
-        width:130px;
-        min-width:130px;
-    }
-
-    .mini-dato .et{ font-size:12px; }
-
-    .mini-dato .vl{ font-size:25px; }
-
-    .subdatos{
-        grid-template-columns:130px 130px;
-    }
-
-    .total-global-wrap{
-        width:270px;
-        grid-template-columns:130px 130px;
-    }
-
-    .total-global{
-        width:130px;
-        padding:9px 10px 8px;
-    }
-
-    .total-global .et{ font-size:12px; }
-
-    .total-global .vl{ font-size:30px; }
-
-    .tarjeta-top{
-        font-size:24px;
-        padding:14px 12px;
-    }
-
-    .modos-wrap{
-        gap:10px;
-        padding:14px 12px 4px;
-    }
-
-    .btnModo{
-        font-size:16px;
-        padding:9px 14px;
-    }
-
-    .tarjeta-body{ padding:12px; }
-
-    .grafico-simple-titulo{
-        font-size:18px;
-    }
-
-    .linea-equipo{
-        grid-template-columns:62px 1fr;
-        gap:10px;
-    }
-
-    .escudo-linea{
-        width:40px;
-        height:40px;
-    }
-
-    .valor-final{
-        font-size:23px;
-        max-width:42px;
-    }
-
-    .tarjeta-vertical h3{
-        font-size:18px;
-    }
-
-    .canvas-wrap{
-        height:260px;
-    }
-
-    .tarjeta-jornadas h3{
-        font-size:22px;
-    }
-
-    .btn-mostrar-inicial{
-        margin-left:0;
-        display:block;
-        width:100%;
-    }
-}
 
 html{
     -webkit-font-smoothing:antialiased;
@@ -1120,19 +994,309 @@ html{
     }
 }
 
+
+
+@media (max-width: 768px){
+    .cabecera-resultados{
+        padding:16px 14px !important;
+    }
+
+    .cabecera-resultados h1{
+        font-size:22px !important;
+    }
+
+    .tarjeta-top{
+        font-size:20px !important;
+        padding:12px 10px !important;
+    }
+
+    .modos-wrap{
+        gap:8px !important;
+        padding:12px 10px 4px !important;
+    }
+
+    .btnModo{
+        font-size:15px !important;
+        padding:8px 12px !important;
+    }
+
+    .tarjeta-body{
+        padding:10px !important;
+    }
+}
+
+/* ===== AJUSTE FINAL MOVIL MENU + MARCADOR ===== */
+@media (max-width: 768px){
+    .menu{
+        top:80px !important;
+        height:58px !important;
+        min-height:58px !important;
+        padding:0 !important;
+        gap:0 !important;
+        display:grid !important;
+        grid-template-columns:repeat(5, minmax(0, 1fr)) !important;
+        align-items:stretch !important;
+        justify-content:stretch !important;
+        overflow:hidden !important;
+        white-space:normal !important;
+    }
+
+    .menu::before,
+    .menu::after{
+        display:none !important;
+    }
+
+    .menu a{
+        min-width:0 !important;
+        width:100% !important;
+        height:58px !important;
+        padding:4px 3px !important;
+        border-radius:0 !important;
+        display:flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        text-align:center !important;
+        font-size:9.5px !important;
+        line-height:1.02 !important;
+        letter-spacing:0 !important;
+        white-space:normal !important;
+        word-break:keep-all !important;
+        overflow-wrap:normal !important;
+        box-sizing:border-box !important;
+    }
+
+    .menu a span{
+        display:block !important;
+    }
+
+    .contenido{
+        margin-top:138px !important;
+        min-height:calc(100vh - 138px) !important;
+    }
+}
+
+@media (max-width: 430px){
+    .menu{
+        height:56px !important;
+        min-height:56px !important;
+    }
+
+    .menu a{
+        height:56px !important;
+        font-size:8.6px !important;
+        padding:4px 2px !important;
+    }
+
+    .contenido{
+        margin-top:136px !important;
+        min-height:calc(100vh - 136px) !important;
+    }
+}
+
+
+
+@media (max-width: 768px){
+    .grafico-jornadas-box{
+        padding:10px 8px 10px !important;
+        border-radius:14px !important;
+    }
+
+    .grafico-jornadas-scroll{
+        overflow-x:hidden !important;
+        overflow-y:visible !important;
+        padding-right:0 !important;
+    }
+
+    .grafico-jornadas-canvas-wrap{
+        min-height:420px !important;
+    }
+
+    .tarjeta-jornadas{
+        padding:12px 10px !important;
+    }
+
+    .tarjeta-jornadas h3{
+        font-size:20px !important;
+        margin-bottom:10px !important;
+    }
+
+    .grafico-jornadas-nota{
+        font-size:12px !important;
+        line-height:1.3 !important;
+        margin-top:10px !important;
+    }
+
+    #graficoJornadas{
+        width:100% !important;
+        max-width:100% !important;
+        display:block !important;
+    }
+}
+
+
+@media (max-width: 1200px){
+    .marcador-grid{
+        grid-template-columns:1fr;
+        gap:18px;
+    }
+
+    .equipo-panel.barca,
+    .equipo-panel.madrid{
+        align-items:center;
+        text-align:center;
+    }
+
+    .equipo-panel.madrid .equipo-head{
+        flex-direction:row;
+    }
+
+    .equipo-panel.madrid .subdatos{
+        justify-content:center;
+    }
+
+    .total-global-wrap{
+        align-self:center;
+    }
+}
+
+@media (max-width: 768px){
+    .cabecera{
+        height:130px;
+    }
+
+    .menu{
+        top:130px;
+        height:42px;
+        gap:18px;
+        padding:0 10px;
+    }
+
+    .menu a{
+        font-size:11px;
+    }
+
+    .contenido{
+        margin-top:172px;
+        padding:16px 0 50px;
+    }
+
+    .wrap{
+        width:96%;
+    }
+
+    .cabecera-resultados{
+        padding:18px;
+    }
+
+    .cabecera-resultados h1{
+        font-size:26px;
+    }
+
+    .marcador-wrap{
+        padding:14px 12px 8px;
+    }
+
+    .marcador-grid{
+        padding:16px;
+        min-height:auto;
+    }
+
+    .equipo-nombre{
+        font-size:27px;
+    }
+
+    .escudo{
+        width:64px;
+    }
+
+    .score{
+        font-size:68px;
+    }
+
+    .score-sep{
+        font-size:38px;
+    }
+
+    .mini-dato{
+        width:130px;
+        min-width:130px;
+    }
+
+    .mini-dato .et{
+        font-size:12px;
+    }
+
+    .mini-dato .vl{
+        font-size:25px;
+    }
+
+    .subdatos{
+        grid-template-columns:130px 130px;
+    }
+
+    .total-global-wrap{
+        width:270px;
+        grid-template-columns:130px 130px;
+    }
+
+    .total-global{
+        min-width:126px;
+        padding:9px 10px 8px;
+    }
+
+    .total-global .et{
+        font-size:12px;
+    }
+
+    .total-global .vl{
+        font-size:30px;
+    }
+
+    .columnas-equipos{
+        padding:8px 12px 16px;
+        gap:14px;
+    }
+
+    .tarjeta-top{
+        font-size:23px;
+        padding:14px 12px;
+    }
+
+    .tarjeta-body{
+        padding:10px;
+    }
+
+    .categoria-titulo{
+        font-size:18px;
+    }
+
+    .tabla-wrap{
+        justify-content:flex-start;
+    }
+
+    .resumen-table th,
+    .resumen-table td{
+        font-size:12px;
+        padding:9px 7px;
+    }
+
+    .col-concepto{
+        font-size:12px;
+    }
+
+    .btn-mostrar-inicial{
+        margin-left:0;
+        display:block;
+        width:100%;
+    }
+}
+
 @media (max-width: 768px){
     .marcador-wrap{
         padding:10px 6px 6px !important;
     }
 
-    .caja-cargando,
-.caja-error{
-    padding:22px 26px;
-    color:white;
-    font-size:15px;
-}
-
-#marcadorGlobalContainer,
+    #marcadorGlobalContainer,
     .marcador-global{
         width:100% !important;
         max-width:100% !important;
@@ -1275,111 +1439,7 @@ html{
 }
 
 @media (max-width: 768px){
-    .cabecera-resultados{
-        padding:16px 14px !important;
-    }
-
-    .cabecera-resultados h1{
-        font-size:22px !important;
-    }
-
-    .tarjeta-top{
-        font-size:20px !important;
-        padding:12px 10px !important;
-    }
-
-    .modos-wrap{
-        gap:8px !important;
-        padding:12px 10px 4px !important;
-    }
-
-    .btnModo{
-        font-size:15px !important;
-        padding:8px 12px !important;
-    }
-
-    .tarjeta-body{
-        padding:10px !important;
-    }
-}
-
-/* ===== AJUSTE FINAL MOVIL MENU + MARCADOR ===== */
-@media (max-width: 768px){
-    .menu{
-        top:80px !important;
-        height:58px !important;
-        min-height:58px !important;
-        padding:0 !important;
-        gap:0 !important;
-        display:grid !important;
-        grid-template-columns:repeat(5, minmax(0, 1fr)) !important;
-        align-items:stretch !important;
-        justify-content:stretch !important;
-        overflow:hidden !important;
-        white-space:normal !important;
-    }
-
-    .menu::before,
-    .menu::after{
-        display:none !important;
-    }
-
-    .menu a{
-        min-width:0 !important;
-        width:100% !important;
-        height:58px !important;
-        padding:4px 3px !important;
-        border-radius:0 !important;
-        display:flex !important;
-        align-items:center !important;
-        justify-content:center !important;
-        text-align:center !important;
-        font-size:9.5px !important;
-        line-height:1.02 !important;
-        letter-spacing:0 !important;
-        white-space:normal !important;
-        word-break:keep-all !important;
-        overflow-wrap:normal !important;
-        box-sizing:border-box !important;
-    }
-
-    .menu a span{
-        display:block !important;
-    }
-
-    .contenido{
-        margin-top:138px !important;
-        min-height:calc(100vh - 138px) !important;
-    }
-}
-
-@media (max-width: 430px){
-    .menu{
-        height:56px !important;
-        min-height:56px !important;
-    }
-
-    .menu a{
-        height:56px !important;
-        font-size:8.6px !important;
-        padding:4px 2px !important;
-    }
-
-    .contenido{
-        margin-top:136px !important;
-        min-height:calc(100vh - 136px) !important;
-    }
-}
-
-@media (max-width: 768px){
-    .caja-cargando,
-.caja-error{
-    padding:22px 26px;
-    color:white;
-    font-size:15px;
-}
-
-#marcadorGlobalContainer,
+    #marcadorGlobalContainer,
     .marcador-global{
         width:100% !important;
         max-width:100% !important;
@@ -1541,41 +1601,16 @@ html{
 }
 
 @media (max-width: 768px){
-    .grafico-jornadas-box{
-        padding:10px 8px 10px !important;
-        border-radius:14px !important;
+
+    .marcador-centro{
+        transform: translateX(-8px);
     }
 
-    .grafico-jornadas-scroll{
-        overflow-x:hidden !important;
-        overflow-y:visible !important;
-        padding-right:0 !important;
+    .marcador-titulo,
+    .score-leyenda{
+        transform: translateX(6px);
     }
 
-    .grafico-jornadas-canvas-wrap{
-        min-height:420px !important;
-    }
-
-    .tarjeta-jornadas{
-        padding:12px 10px !important;
-    }
-
-    .tarjeta-jornadas h3{
-        font-size:20px !important;
-        margin-bottom:10px !important;
-    }
-
-    .grafico-jornadas-nota{
-        font-size:12px !important;
-        line-height:1.3 !important;
-        margin-top:10px !important;
-    }
-
-    #graficoJornadas{
-        width:100% !important;
-        max-width:100% !important;
-        display:block !important;
-    }
 }
 </style>
 
@@ -1605,39 +1640,14 @@ html{
             </div>
 
             <div class="marcador-wrap">
-                <div id="marcadorGlobalContainer">
-                    <div class="marcador-global" id="marcadorGlobal">
-                                            <div class="marcador-grid">
-                    
-                                                <div class="equipo-panel barca">
-                                                    <div class="equipo-head">
-                                                        <img src="escudo-barcelona.png" class="escudo" alt="Escudo FC Barcelona">
-                                                        <div class="equipo-nombre">FC Barcelona</div>
-                                                    </div>
-                    
-                                                    <div class="subdatos">
-                                                        <div class="mini-dato">
-                                                            <span class="et">Total Penaltis</span>
-                                                            <span class="vl" id="marcador-barca-penaltis">0</span>
-                                                        </div>
-                                                        <div class="mini-dato">
-                                                            <span class="et">Total Rojas</span>
-                                                            <span class="vl" id="marcador-barca-rojas">0</span>
-                                                        </div>
-                                                        <div class="mini-dato" style="grid-column:1 / span 2; justify-self:center;">
-                                                            <span class="et">Total Goles</span>
-                                                            <span class="vl" id="marcador-barca-goles">0</span>
-                                                        </div>
-                                                    </div>
-                    
-                                                    <div class="total-global-wrap">
-                                                        <div class="total-global">
-                                                            <span class="et">Total Global</span>
-                                                            <span class="vl" id="marcador-barca-total">0</span>
-                                                        </div>
-                                                    </div>
-                
-            </div>
+                <div class="marcador-global" id="marcadorGlobal">
+                    <div class="marcador-grid">
+
+                        <div class="equipo-panel barca">
+                            <div class="equipo-head">
+                                <img src="escudo-barcelona.png" class="escudo" alt="Escudo FC Barcelona">
+                                <div class="equipo-nombre">FC Barcelona</div>
+                            </div>
 
                             <div class="subdatos">
                                 <div class="mini-dato">
@@ -1705,7 +1715,9 @@ html{
                 </div>
             </div>
 
-            <div class="secciones">
+            
+
+<div class="secciones">
                 <section class="tarjeta">
                     <div class="tarjeta-top">Resultados frente a frente</div>
 
@@ -2135,7 +2147,5 @@ async function initComments(){
     initComments();
 })();
 </script>
-
-
 </body>
 </html>
