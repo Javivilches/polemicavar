@@ -35,7 +35,7 @@ h1,h2,h3,h4{
     z-index:1000;
 }
 
-/* MENÚ */
+/* MENU */
 .menu{
     position:fixed;
     top:170px;
@@ -95,6 +95,13 @@ h1,h2,h3,h4{
     font-size:14px;
     font-weight:700;
     text-transform:uppercase;
+    padding:6px 10px;
+    border-radius:6px;
+    transition:all .2s ease;
+}
+
+.menu a:hover{
+    background:rgba(255,255,255,0.15);
 }
 
 .menu a:nth-child(1),
@@ -130,6 +137,7 @@ h1,h2,h3,h4{
     margin:auto;
 }
 
+/* BLOQUES */
 .bloque-portada,
 .bloque-resultados{
     background:rgba(8,12,20,0.72);
@@ -862,7 +870,7 @@ textarea{
     text-align:center;
 }
 
-/* MODAL IMAGEN */
+/* MODAL */
 .modal-imagen{
     position:fixed;
     inset:0;
@@ -1012,7 +1020,6 @@ textarea{
     }
 }
 
-/* ===== AJUSTES EXTRA MOVIL ===== */
 @media (max-width: 768px){
     .cabecera{
         height:78px !important;
@@ -1021,48 +1028,6 @@ textarea{
         background-repeat:no-repeat !important;
     }
 
-    .menu{
-        top:78px !important;
-        height:auto !important;
-        min-height:44px !important;
-        padding:6px 8px !important;
-        gap:8px !important;
-        justify-content:flex-start !important;
-        overflow-x:auto !important;
-        overflow-y:hidden !important;
-        flex-wrap:nowrap !important;
-        white-space:nowrap !important;
-        -webkit-overflow-scrolling:touch;
-        scrollbar-width:none;
-    }
-
-    .menu::-webkit-scrollbar{
-        display:none;
-    }
-
-    .menu a{
-        flex:0 0 auto !important;
-        display:inline-flex !important;
-        align-items:center !important;
-        justify-content:center !important;
-        min-height:32px !important;
-        padding:7px 10px !important;
-        font-size:11px !important;
-        line-height:1.05 !important;
-        white-space:nowrap !important;
-        border-radius:8px !important;
-    }
-
-    .contenido{
-        margin-top:132px !important;
-    }
-
-    .wrap{
-        width:96% !important;
-    }
-}
-
-@media (max-width: 768px){
     .menu{
         top:80px !important;
         height:58px !important;
@@ -1109,27 +1074,7 @@ textarea{
         margin-top:138px !important;
         min-height:calc(100vh - 138px) !important;
     }
-}
 
-@media (max-width: 430px){
-    .menu{
-        height:56px !important;
-        min-height:56px !important;
-    }
-
-    .menu a{
-        height:56px !important;
-        font-size:8.6px !important;
-        padding:4px 2px !important;
-    }
-
-    .contenido{
-        margin-top:136px !important;
-        min-height:calc(100vh - 136px) !important;
-    }
-}
-
-@media (max-width: 768px){
     #marcadorGlobalContainer,
     .marcador-global{
         width:100% !important;
@@ -1306,7 +1251,7 @@ textarea{
         <section class="bloque-portada">
             <div class="cabecera-portada">
                 <h1>Última jornada con polémica</h1>
-                <p>Se muestran automáticamente todas las jugadas de la jornada más reciente.</p>
+                <p>En esta portada se muestran automáticamente todas las jugadas de la jornada más reciente registrada.</p>
             </div>
 
             <div id="ultimasJugadasContainer">
@@ -1658,41 +1603,56 @@ async function initComments(article, jugada){
 
     try{
         online=await getComments('jugada', jugada.id);
-    }catch(e){}
+    }catch(e){
+        online=[];
+    }
 
     let visibles=0;
     renderComments(article, [...online, ...initial], visibles);
 
-    article.querySelector('.boton-comentar').onclick=async()=>{
-        const ta=article.querySelector('textarea');
-        const txt=ta.value.trim();
-        if(!txt) return;
+    const btnPublicar = article.querySelector('.boton-comentar');
+    const btnInicial = article.querySelector('.btn-mostrar-inicial');
+    const btnMas = article.querySelector('.btn-mostrar-mas');
+    const btnOcultar = article.querySelector('.btn-ocultar');
 
-        try{
-            await addComment('jugada', txt, jugada.id);
-            ta.value='';
-            online=await getComments('jugada', jugada.id);
-            visibles=Math.max(visibles,5);
+    if(btnPublicar){
+        btnPublicar.onclick=async()=>{
+            const ta=article.querySelector('textarea');
+            const txt=ta.value.trim();
+            if(!txt) return;
+
+            try{
+                await addComment('jugada', txt, jugada.id);
+                ta.value='';
+                online=await getComments('jugada', jugada.id);
+                visibles=Math.max(visibles,5);
+                renderComments(article, [...online, ...initial], visibles);
+            }catch(e){
+                alert('No se pudo guardar el comentario');
+            }
+        };
+    }
+
+    if(btnInicial){
+        btnInicial.onclick=()=>{
+            visibles=5;
             renderComments(article, [...online, ...initial], visibles);
-        }catch(e){
-            alert('No se pudo guardar el comentario');
-        }
-    };
+        };
+    }
 
-    article.querySelector('.btn-mostrar-inicial').onclick=()=>{
-        visibles=5;
-        renderComments(article, [...online, ...initial], visibles);
-    };
+    if(btnMas){
+        btnMas.onclick=()=>{
+            visibles+=5;
+            renderComments(article, [...online, ...initial], visibles);
+        };
+    }
 
-    article.querySelector('.btn-mostrar-mas').onclick=()=>{
-        visibles+=5;
-        renderComments(article, [...online, ...initial], visibles);
-    };
-
-    article.querySelector('.btn-ocultar').onclick=()=>{
-        visibles=0;
-        renderComments(article, [...online, ...initial], visibles);
-    };
+    if(btnOcultar){
+        btnOcultar.onclick=()=>{
+            visibles=0;
+            renderComments(article, [...online, ...initial], visibles);
+        };
+    }
 }
 
 function updateVoteUI(article, jugada){
@@ -1702,8 +1662,12 @@ function updateVoteUI(article, jugada){
     const porcentajeSi=total?Math.round(votosSi*100/total):0;
     const porcentajeNo=total?100-porcentajeSi:0;
 
-    article.querySelector('.barra-incorrecto').style.width=`${porcentajeNo}%`;
-    article.querySelector('.barra-correcto').style.width=`${porcentajeSi}%`;
+    const barraIncorrecto = article.querySelector('.barra-incorrecto');
+    const barraCorrecto = article.querySelector('.barra-correcto');
+
+    if(barraIncorrecto) barraIncorrecto.style.width=`${porcentajeNo}%`;
+    if(barraCorrecto) barraCorrecto.style.width=`${porcentajeSi}%`;
+
     article.querySelector('.porcentaje-incorrecto').textContent=`${porcentajeNo}%`;
     article.querySelector('.porcentaje-correcto').textContent=`${porcentajeSi}%`;
     article.querySelector('.detalle-incorrecto').textContent=`${votosNo} de ${total} votos`;
@@ -1795,6 +1759,7 @@ function renderMarker(bloques){
 
         if(!jugadas.length){
             ultimasJugadasContainer.innerHTML = '<div class="caja-error">No hay jugadas disponibles.</div>';
+            renderMarker(data.resumenBloques || []);
             return;
         }
 
@@ -1804,21 +1769,27 @@ function renderMarker(bloques){
         ultimasJugadasContainer.innerHTML = '';
 
         for(const j of jugadasUltimaJornada){
-            const article=createArticle(j);
-            const media=[];
-            const v1=await primerTextoDisponible(rutasVideoTxt(j.jornada,j.slugVideo));
-            const v2=await primerTextoDisponible(rutasVideoTxt(j.jornada,j.slugVideo2));
+            const article = createArticle(j);
+            const media = [];
 
-            if(v1) media.push({tipo:'video',url:v1});
-            if(v2) media.push({tipo:'video',url:v2});
+            try{
+                const v1 = await primerTextoDisponible(rutasVideoTxt(j.jornada,j.slugVideo));
+                const v2 = await primerTextoDisponible(rutasVideoTxt(j.jornada,j.slugVideo2));
 
-            [j.slugImagen,j.slugImagen2,j.slugImagen3,j.slugImagen4,j.slugImagen5]
-                .filter(Boolean)
-                .forEach(slug=>media.push({tipo:'imagen',rutas:rutasImagenSlug(j.jornada,slug)}));
+                if(v1) media.push({tipo:'video',url:v1});
+                if(v2) media.push({tipo:'video',url:v2});
 
-            if(!media.length) media.push({tipo:'imagen',rutas:[]});
+                [j.slugImagen,j.slugImagen2,j.slugImagen3,j.slugImagen4,j.slugImagen5]
+                    .filter(Boolean)
+                    .forEach(slug=>media.push({tipo:'imagen',rutas:rutasImagenSlug(j.jornada,slug)}));
 
-            article.cargarMedia(media);
+                if(!media.length) media.push({tipo:'imagen',rutas:[]});
+
+                article.cargarMedia(media);
+            }catch(e){
+                article.cargarMedia([{tipo:'imagen',rutas:[]}]);
+            }
+
             ultimasJugadasContainer.appendChild(article);
         }
 
