@@ -1922,7 +1922,7 @@ async function initComments(){ const list=document.getElementById('listaComentar
         .catch(()=>renderMarker(data.resumenBloques));
 
     initComments();
-})(); fetch('quien-ha-sido-mas-favorecido.html').then(r=>r.text()).then(html=>{ const doc=new DOMParser().parseFromString(html,'text/html'); const marcador=doc.querySelector('#marcadorGlobal'); if(marcador) document.getElementById('marcadorGlobalContainer').innerHTML=marcador.outerHTML; renderMarker(data.resumenBloques); }).catch(()=>renderMarker(data.resumenBloques)); initComments(); })();
+})();
 </script>
 </body>
 </html>
