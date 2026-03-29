@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jugadas Polémicas - Decisión VAR</title>
+<title>Jugadas Polémicas - POLÉMICA VAR</title>
 <link rel="icon" href="Imagenes/favicon.png" type="image/png">
 
 <style>
@@ -1134,6 +1134,19 @@ textarea{
         <p>Ordenadas de la más reciente a la más antigua.</p>
     </section>
 
+<div style="text-align:center; margin:15px 0;">
+    <button id="btnLoginGoogle" onclick="DecisionVarData.loginConGoogle()" style="
+    padding:10px 18px;
+    font-weight:bold;
+    border:none;
+    border-radius:6px;
+    background:#ffffff;
+    cursor:pointer;
+">
+    Entrar con Google para votar
+</button>
+</div>
+<div id="bloqueUsuario" style="text-align:center; margin:10px 0 18px; color:white;"></div>
     <section class="filtros-jugadas">
         <div class="filtro-grupo">
             <label for="filtroJornada">Jornada</label>
@@ -1192,7 +1205,7 @@ textarea{
     <div id="contenedorJugadas"></div>
 
     <div class="aviso-legal">
-        Decisión VAR es una plataforma independiente y neutral cuyo objetivo es analizar jugadas polémicas a través de la opinión de los usuarios.
+        POLÉMICA VAR es una plataforma independiente y neutral cuyo objetivo es analizar jugadas polémicas a través de la opinión de los usuarios.
         Los contenidos audiovisuales mostrados pertenecen a sus respectivos autores y son compartidos desde plataformas públicas. Esta web no almacena ni modifica dichos contenidos.
     </div>
 
@@ -1214,7 +1227,19 @@ textarea{
 </div>
 
 <script>
-const { escapeHtml, loadDataset, getComments, addComment, addVote, getUserVote, setUserVote, formatDate } = window.DecisionVarData;
+const {
+    supabase,
+    escapeHtml,
+    loadDataset,
+    getComments,
+    addComment,
+    addVote,
+    formatDate,
+    getUsuarioActual,
+    getPerfilActual,
+    crearPerfil,
+    logout
+} = window.DecisionVarData;
 const filtroJornada = document.getElementById("filtroJornada");
 const filtroEquipo = document.getElementById("filtroEquipo");
 const filtroCompeticion = document.getElementById("filtroCompeticion");
@@ -1555,8 +1580,7 @@ function updateVoteUI(article, jugada){
     article.querySelector('.detalle-correcto').textContent=`${votosSi} de ${total} votos`;
     article.querySelector('.resultado-cabecera').textContent=total?`${total} votos totales`:'Sin votos todavía';
 
-    const prev=getUserVote(jugada.id);
-    article.querySelector('.mensaje-voto').textContent=prev?`Has votado que se arbitró ${prev==='si'?'bien':'mal'}.`:'Tu voto ya se guarda online.';
+    article.querySelector('.mensaje-voto').textContent='Debes iniciar sesión para votar.';
     article.dataset.resumenEncuesta = jugada.encuesta || '';
 }
 
@@ -1564,28 +1588,64 @@ async function initVote(article, jugada){
     updateVoteUI(article,jugada);
 
     async function send(v){
-        if(getUserVote(jugada.id)) {
-            alert('De momento solo se permite un voto por navegador en esta primera versión.');
-            return;
-        }
         try{
+            const user = await getUsuarioActual();
+
+            if(!user){
+                alert('Debes iniciar sesión con Google para votar.');
+                return;
+            }
+
+            const perfil = await getPerfilActual();
+
+            if(!perfil || !perfil.username){
+                alert('Antes de votar debes elegir un nombre de usuario.');
+                await pintarEstadoUsuario();
+                return;
+            }
+
             await addVote(jugada.id, v);
-            setUserVote(jugada.id,v);
-            const data=await loadDataset();
-            const actual=data.jugadas.find(x=>x.id===jugada.id);
+
+            const data = await loadDataset();
+            const actual = data.jugadas.find(x => x.id === jugada.id);
+
             if(actual){
                 Object.assign(jugada, actual);
-                updateVoteUI(article,jugada);
+                updateVoteUI(article, jugada);
             }
+
+            article.querySelector('.mensaje-voto').textContent =
+                `Has votado que se arbitró ${v === 'si' ? 'bien' : 'mal'}.`;
+
+            article.querySelector('.btn-voto-si').disabled = true;
+            article.querySelector('.btn-voto-no').disabled = true;
+            article.querySelector('.btn-voto-si').style.opacity = '0.65';
+            article.querySelector('.btn-voto-no').style.opacity = '0.65';
+            article.querySelector('.btn-voto-si').style.cursor = 'default';
+            article.querySelector('.btn-voto-no').style.cursor = 'default';
+
         }catch(e){
+            console.error(e);
+
+            if(e.code === '23505'){
+                alert('Ya has votado en esta jugada.');
+                article.querySelector('.mensaje-voto').textContent = 'Ya has votado en esta jugada.';
+                article.querySelector('.btn-voto-si').disabled = true;
+                article.querySelector('.btn-voto-no').disabled = true;
+                article.querySelector('.btn-voto-si').style.opacity = '0.65';
+                article.querySelector('.btn-voto-no').style.opacity = '0.65';
+                article.querySelector('.btn-voto-si').style.cursor = 'default';
+                article.querySelector('.btn-voto-no').style.cursor = 'default';
+                return;
+            }
+
             alert('No se pudo registrar el voto');
         }
     }
 
-    article.querySelector('.btn-voto-si').onclick=()=>send('si');
-    article.querySelector('.btn-voto-no').onclick=()=>send('no');
+    article.querySelector('.btn-voto-si').onclick = () => send('si');
+    article.querySelector('.btn-voto-no').onclick = () => send('no');
 }
-
 function createArticle(jugada){
     const cat=capitalizarCategoria(jugada.categoria);
     const commentsInitial=createInitialComments(jugada);
@@ -1606,6 +1666,93 @@ function createArticle(jugada){
     return article;
 }
 
+async function pintarEstadoUsuario() {
+    const bloque = document.getElementById("bloqueUsuario");
+    const btnLogin = document.getElementById("btnLoginGoogle");
+    if (!bloque) return;
+
+    try {
+        const user = await getUsuarioActual();
+
+        if (!user) {
+            bloque.innerHTML = '<span>No has iniciado sesión.</span>';
+            if (btnLogin) {
+                btnLogin.style.display = 'inline-block';
+                btnLogin.textContent = 'Entrar con Google para votar';
+            }
+            return;
+        }
+
+        const perfil = await getPerfilActual();
+
+     if (perfil && perfil.username) {
+    bloque.innerHTML = `
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:center;">
+            <span>Has iniciado sesión como <strong>${escapeHtml(perfil.username)}</strong>.</span>
+            <button id="btnLogoutUsuario" type="button" style="height:38px; padding:0 14px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">
+                Cerrar sesión
+            </button>
+        </div>
+    `;
+
+    if (btnLogin) {
+        btnLogin.textContent = 'Sesión iniciada con Google';
+        btnLogin.disabled = true;
+        btnLogin.style.opacity = '0.7';
+        btnLogin.style.cursor = 'default';
+    }
+
+    document.getElementById("btnLogoutUsuario").onclick = async () => {
+        try {
+            await logout();
+            window.location.reload();
+        } catch (e) {
+            console.error(e);
+            alert("No se pudo cerrar sesión");
+        }
+    };
+
+    return;
+}
+
+        if (btnLogin) {
+            btnLogin.textContent = 'Sesión iniciada con Google';
+            btnLogin.disabled = true;
+            btnLogin.style.opacity = '0.7';
+            btnLogin.style.cursor = 'default';
+        }
+
+        bloque.innerHTML = `
+            <div style="display:inline-flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:center;">
+                <input id="inputUsername" type="text" placeholder="Elige tu nombre de usuario" style="height:38px; padding:0 12px; border:none; border-radius:8px; min-width:240px;">
+                <button id="btnGuardarUsername" type="button" style="height:38px; padding:0 14px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">
+                    Guardar nombre
+                </button>
+            </div>
+        `;
+
+        document.getElementById("btnGuardarUsername").onclick = async () => {
+            const input = document.getElementById("inputUsername");
+            const username = input.value.trim();
+
+            if (!username) {
+                alert("Escribe un nombre de usuario");
+                return;
+            }
+
+            try {
+                await crearPerfil(username);
+                await pintarEstadoUsuario();
+            } catch (e) {
+                console.error(e);
+                alert("No se pudo guardar el nombre de usuario");
+            }
+        };
+    } catch (e) {
+        console.error(e);
+        bloque.innerHTML = '<span>No se pudo comprobar el usuario.</span>';
+    }
+}
 function aplicarFiltros(){
     const jornada=filtroJornada.value;
     const equipo=filtroEquipo.value;
@@ -1627,6 +1774,7 @@ function aplicarFiltros(){
 
 (async()=>{
     try{
+        await pintarEstadoUsuario();
         const data=await loadDataset();
         const jugadas=[...data.jugadas].sort((a,b)=>
             (parseInt(b.jornada)||0)-(parseInt(a.jornada)||0) ||
@@ -1661,6 +1809,14 @@ function aplicarFiltros(){
         sinResultados.style.display='block';
     }
 })();
+
+supabase.auth.onAuthStateChange(async () => {
+    try {
+        await pintarEstadoUsuario();
+    } catch (e) {
+        console.error(e);
+    }
+});
 
 [filtroJornada,filtroEquipo,filtroCompeticion,filtroTipo].forEach(f=>f&&f.addEventListener('change',aplicarFiltros));
 

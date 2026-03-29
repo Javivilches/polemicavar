@@ -453,15 +453,59 @@ window.DecisionVarData = (() => {
     }
   }
 
-  async function addVote(jugadaId, voto) {
-    const { error } = await supabase.from("votos").insert({
-      jugada_id: jugadaId,
-      voto
+ async function addVote(jugadaId, voto) {
+  const user = await getUsuarioActual();
+  if (!user) throw new Error("Debes iniciar sesión");
+
+  const { error } = await supabase
+    .from("votos")
+    .upsert(
+      {
+        jugada_id: jugadaId,
+        user_id: user.id,
+        voto
+      },
+      {
+        onConflict: "jugada_id,user_id"
+      }
+    );
+
+  if (error) throw error;
+}
+
+async function getUsuarioActual() {
+  const { data, error } = await supabase.auth.getUser();
+  if (error) throw error;
+  return data?.user || null;
+}
+
+async function getPerfilActual() {
+  const user = await getUsuarioActual();
+  if (!user) return null;
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id, username")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data || null;
+}
+
+async function crearPerfil(username) {
+  const user = await getUsuarioActual();
+  if (!user) throw new Error("No hay usuario autenticado");
+
+  const { error } = await supabase
+    .from("profiles")
+    .insert({
+      id: user.id,
+      username: String(username || "").trim()
     });
 
-    if (error) throw error;
-  }
-
+  if (error) throw error;
+}
  function formatDate(dateValue) {
   try {
     if (!dateValue) return "";
@@ -546,20 +590,44 @@ window.DecisionVarData = (() => {
     };
   }
 
-  return {
-    supabase,
-    normalize,
-    escapeHtml,
-    numeroSeguro,
-    loadDataset,
-    getComments,
-    addComment,
-    addVote,
-    getUserVote,
-    setUserVote,
-    formatDate,
-    obtenerImpacto,
-    buildSummaryBlocks,
-    buildJornadasData
-  };
+async function loginConGoogle() {
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: window.location.origin + window.location.pathname
+    }
+  });
+
+  if (error) {
+    alert('Error al iniciar sesión con Google');
+    console.error(error);
+  }
+}
+
+async function logout() {
+  const { error } = await supabase.auth.signOut();
+  if (error) throw error;
+}
+
+ return {
+  supabase,
+  normalize,
+  escapeHtml,
+  numeroSeguro,
+  loadDataset,
+  getComments,
+  addComment,
+  addVote,
+  getUserVote,
+  setUserVote,
+  formatDate,
+  obtenerImpacto,
+  buildSummaryBlocks,
+  buildJornadasData,
+  loginConGoogle,
+  logout,
+  getUsuarioActual,
+  getPerfilActual,
+  crearPerfil
+};
 })();
