@@ -35,7 +35,7 @@ h1,h2,h3,h4{
     z-index:1000;
 }
 
-/* MENU */
+/* MENÚ */
 .menu{
     position:fixed;
     top:170px;
@@ -95,22 +95,16 @@ h1,h2,h3,h4{
     font-size:14px;
     font-weight:700;
     text-transform:uppercase;
-    padding:6px 10px;
-    border-radius:6px;
-    transition:all .2s ease;
-}
-
-.menu a:hover{
-    background:rgba(255,255,255,0.15);
 }
 
 .menu a:nth-child(1),
-.menu a:nth-child(2){
+.menu a:nth-child(2),
+.menu a:nth-child(3){
     color:white;
 }
 
-.menu a:nth-child(3),
-.menu a:nth-child(4){
+.menu a:nth-child(4),
+.menu a:nth-child(5){
     color:#0a2f6b;
 }
 
@@ -136,8 +130,8 @@ h1,h2,h3,h4{
     margin:auto;
 }
 
-/* BLOQUE GENERAL */
-.bloque-portada{
+.bloque-portada,
+.bloque-resultados{
     background:rgba(8,12,20,0.72);
     border-radius:24px;
     overflow:hidden;
@@ -145,18 +139,21 @@ h1,h2,h3,h4{
     margin-bottom:28px;
 }
 
-.cabecera-portada{
+.cabecera-portada,
+.cabecera-resultados{
     padding:24px 28px;
     background:linear-gradient(90deg,#163b78,#2a5fb0);
     color:white;
 }
 
-.cabecera-portada h1{
+.cabecera-portada h1,
+.cabecera-resultados h1{
     font-size:32px;
     margin:0 0 6px;
 }
 
-.cabecera-portada p{
+.cabecera-portada p,
+.cabecera-resultados p{
     margin:0;
     font-size:15px;
     color:#dfe8f3;
@@ -217,12 +214,129 @@ h1,h2,h3,h4{
     padding:14px;
 }
 
-.imagen-jugada img{
+.imagen-jugada{
+    position:relative;
     width:100%;
-    height:250px;
-    object-fit:cover;
+    min-height:250px;
+    background:#162236;
     border-radius:12px;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:10px;
+    box-sizing:border-box;
+}
+
+.visor-media{
+    width:100%;
+    height:100%;
+    min-height:230px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:10px;
+    background:#23324b;
+    overflow:hidden;
+    position:relative;
+}
+
+.visor-media img{
+    width:100%;
+    height:100%;
+    max-height:480px;
+    object-fit:contain;
+    border-radius:10px;
+    background:#23324b;
+    transform-origin:center center;
+    transition:transform 0.22s ease;
+    cursor:zoom-in;
+    user-select:none;
     display:block;
+}
+
+.visor-media .video-principal-wrap{
+    width:100%;
+    height:100%;
+    aspect-ratio:16/9;
+    background:#000;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.visor-media iframe,
+.visor-media video,
+.visor-media blockquote{
+    width:100%;
+    height:100%;
+    border:none;
+    margin:0;
+    display:block;
+}
+
+.zoom-controles{
+    position:absolute;
+    right:12px;
+    bottom:12px;
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    z-index:5;
+}
+
+.zoom-btn{
+    border:none;
+    min-width:42px;
+    height:34px;
+    border-radius:8px;
+    background:rgba(8,12,20,0.84);
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    font-size:14px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.24);
+}
+
+.zoom-btn:hover{
+    background:rgba(24,38,66,0.96);
+}
+
+.zoom-btn.oculto{
+    display:none;
+}
+
+.galeria-miniaturas{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:8px;
+    margin-top:10px;
+}
+
+.miniatura{
+    width:100%;
+    height:72px;
+    object-fit:cover;
+    border-radius:8px;
+    cursor:pointer;
+    border:2px solid transparent;
+    background:#1a2438;
+}
+
+.miniatura-video{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#0e1a2c,#1d3761);
+    color:#fff;
+    font-weight:bold;
+    font-size:13px;
+    text-align:center;
+    padding:6px;
+    box-sizing:border-box;
+}
+
+.miniatura.activa{
+    border-color:#f5d47a;
 }
 
 .descripcion-jugada{
@@ -242,7 +356,7 @@ h1,h2,h3,h4{
 }
 
 .panel-votacion-top{
-    padding:12px;
+    padding:12px 12px 8px;
 }
 
 .panel-votacion-top h3{
@@ -272,28 +386,44 @@ h1,h2,h3,h4{
     font-weight:bold;
     cursor:pointer;
     font-size:14px;
+    text-decoration:none;
+    text-align:center;
+    transition:0.2s;
+}
+
+.btn-voto-si,
+.btn-voto-no{
+    background:#2e5db8;
+}
+
+.btn-voto-si:hover,
+.btn-voto-no:hover{
+    background:#244b95;
+}
+
+.mensaje-voto{
+    padding:0 12px 10px;
+    font-size:12px;
+    color:#55657f;
+    font-weight:bold;
 }
 
 .resultado-box{
     padding:12px;
     background:#eef2f8;
+    border-top:1px solid #dde4ef;
 }
 
-.resultado-porcentaje{
-    font-size:38px;
-    font-weight:bold;
+.resultado-cabecera{
     text-align:center;
-    color:#1f4fb0;
-}
-
-.resultado-texto{
-    text-align:center;
+    font-size:13px;
     font-weight:bold;
-    font-size:14px;
+    color:#32435f;
+    margin-bottom:10px;
 }
 
 .barra-resultado{
-    margin-top:8px;
+    margin-top:10px;
     height:18px;
     border-radius:100px;
     overflow:hidden;
@@ -301,21 +431,55 @@ h1,h2,h3,h4{
     display:flex;
 }
 
-.barra-si{
+.barra-resultado + .barra-resultado{
+    margin-top:8px;
+}
+
+.barra-si,
+.barra-no{
     background:#2e5db8;
     height:100%;
+    transition:width 0.25s ease, opacity 0.25s ease, filter 0.25s ease, box-shadow 0.25s ease;
+    opacity:0.45;
 }
 
-.barra-no{
-    background:#9aa3ad;
-    height:100%;
+.resumen-votos-bloques{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:10px;
 }
 
-.detalle-votos{
-    margin-top:8px;
-    font-size:12px;
-    display:flex;
-    justify-content:space-between;
+.resumen-voto-card{
+    border-radius:12px;
+    padding:12px;
+    background:white;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    border:1px solid #d8e0ec;
+}
+
+.resumen-voto-card.incorrecto,
+.resumen-voto-card.correcto{
+    border-left:6px solid #2e5db8;
+}
+
+.resumen-voto-porcentaje{
+    font-size:28px;
+    font-weight:bold;
+    line-height:1;
+    margin-bottom:6px;
+    color:#1f2f49;
+}
+
+.resumen-voto-texto{
+    font-size:14px;
+    font-weight:bold;
+    color:#32435f;
+}
+
+.resumen-voto-detalle{
+    margin-top:4px;
+    font-size:13px;
+    color:#667791;
 }
 
 /* COMENTARIOS */
@@ -397,31 +561,6 @@ textarea{
     display:block;
 }
 
-.autor{
-    font-weight:bold;
-}
-
-.texto{
-    margin:6px 0;
-}
-
-.like-wrap{
-    display:flex;
-    gap:6px;
-    align-items:center;
-}
-
-.btn-like{
-    border:none;
-    background:none;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-.btn-like.activo{
-    color:#1f4fb0;
-}
-
 .mostrar-mas-wrap,
 .ocultar-wrap{
     text-align:center;
@@ -447,129 +586,23 @@ textarea{
     background:#777;
 }
 
-/* BLOQUE MARCADOR */
-.bloque-resultados{
-    background:rgba(8,12,20,0.72);
-    border-radius:24px;
-    overflow:hidden;
-    box-shadow:0 14px 30px rgba(0,0,0,0.28);
+.badge-categoria{
+    display:inline-block;
+    margin-top:8px;
+    padding:5px 10px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:bold;
+    background:rgba(255,255,255,0.14);
+    color:#f3f7ff;
 }
 
-.cabecera-resultados{
-    padding:24px 28px;
-    background:linear-gradient(90deg,#163b78,#2a5fb0);
-    color:white;
+.meta-extra{
+    margin-top:8px;
+    color:#d8e1f1;
+    font-size:13px;
+    line-height:1.5;
 }
-
-.cabecera-resultados h1{
-    font-size:32px;
-    margin:0 0 6px;
-}
-
-.cabecera-resultados p{
-    margin:0;
-    font-size:15px;
-    color:#dfe8f3;
-}
-
-.marcador-wrap{
-    padding:22px 22px 12px;
-    display:flex;
-    justify-content:center;
-}
-
-#marcadorGlobalContainer{
-    width:100%;
-    display:flex;
-    justify-content:center;
-}
-
-@media (max-width: 1200px){
-    .marcador-grid{
-        grid-template-columns:1fr;
-        gap:18px;
-    }
-
-    .equipo-panel.barca,
-    .equipo-panel.madrid{
-        align-items:center;
-        text-align:center;
-    }
-
-    .equipo-panel.madrid .equipo-head{
-        flex-direction:row;
-    }
-}
-
-@media (max-width: 1100px){
-    body{
-        zoom:1;
-    }
-}
-
-@media (max-width: 980px){
-    .zona-superior{
-        grid-template-columns:1fr;
-    }
-
-    .imagen-jugada img{
-        height:220px;
-    }
-}
-
-@media (max-width: 768px){
-    .cabecera{
-        height:130px;
-    }
-
-    .menu{
-        top:130px;
-        height:42px;
-        gap:18px;
-        padding:0 10px;
-    }
-
-    .menu a{
-        font-size:11px;
-    }
-
-    .contenido{
-        margin-top:172px;
-        padding:16px 0 50px;
-    }
-
-    .wrap{
-        width:96%;
-    }
-
-    .cabecera-portada,
-    .cabecera-resultados{
-        padding:18px;
-    }
-
-    .cabecera-portada h1,
-    .cabecera-resultados h1{
-        font-size:26px;
-    }
-
-    .cabecera-jugada h2{
-        font-size:20px;
-    }
-
-    .zona-superior{
-        padding:12px;
-        gap:12px;
-    }
-
-    .imagen-jugada img{
-        height:200px;
-    }
-
-    .marcador-wrap{
-        padding:14px 12px 8px;
-    }
-}
-
 
 /* MARCADOR */
 .marcador-wrap{
@@ -582,13 +615,6 @@ textarea{
     width:100%;
     display:flex;
     justify-content:center;
-}
-
-.caja-cargando,
-.caja-error{
-    padding:22px 26px;
-    color:white;
-    font-size:15px;
 }
 
 .marcador-global{
@@ -826,309 +852,280 @@ textarea{
     line-height:1.15;
 }
 
+/* AVISO LEGAL */
+.aviso-legal{
+    margin:0;
+    padding:14px 16px 22px;
+    font-size:12px;
+    color:#d7dfef;
+    line-height:1.45;
+    text-align:center;
+}
 
+/* MODAL IMAGEN */
+.modal-imagen{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.92);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:5000;
+    padding:20px;
+    box-sizing:border-box;
+}
 
-@media (max-width: 1200px){
-    .marcador-grid{
+.modal-imagen.activo{
+    display:flex;
+}
+
+.modal-imagen-contenido{
+    position:relative;
+    width:min(1400px, 96vw);
+    height:min(92vh, 900px);
+    background:#0d1524;
+    border-radius:16px;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+    box-sizing:border-box;
+}
+
+.modal-imagen-lienzo{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:grab;
+    position:relative;
+}
+
+.modal-imagen-lienzo.arrastrando{
+    cursor:grabbing;
+}
+
+.modal-imagen img{
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
+    transform-origin:center center;
+    transition:transform 0.12s ease;
+    will-change:transform;
+    user-select:none;
+    -webkit-user-drag:none;
+}
+
+.cerrar-modal-imagen{
+    position:absolute;
+    top:14px;
+    right:14px;
+    width:42px;
+    height:42px;
+    border:none;
+    border-radius:50%;
+    background:rgba(255,255,255,0.12);
+    color:white;
+    font-size:24px;
+    cursor:pointer;
+    z-index:2;
+}
+
+.controles-modal-imagen{
+    position:absolute;
+    right:14px;
+    bottom:14px;
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    z-index:2;
+}
+
+@media (max-width: 980px){
+    .zona-superior{
         grid-template-columns:1fr;
-        gap:18px;
     }
 
-    .equipo-panel.barca,
-    .equipo-panel.madrid{
-        align-items:center;
-        text-align:center;
+    .imagen-jugada{
+        min-height:220px;
     }
 
-    .equipo-panel.madrid .equipo-head{
-        flex-direction:row;
+    .visor-media img{
+        max-height:420px;
     }
 
-    .equipo-panel.madrid .subdatos{
-        justify-content:center;
-    }
-
-    .total-global-wrap{
-        align-self:center;
+    .galeria-miniaturas{
+        grid-template-columns:repeat(5, 1fr);
     }
 }
 
 @media (max-width: 768px){
-    .cabecera{
-        height:130px;
-    }
-
     .menu{
-        top:130px;
-        height:42px;
         gap:18px;
-        padding:0 10px;
+        padding:0 12px;
     }
 
     .menu a{
         font-size:11px;
+        text-align:center;
     }
 
-    .contenido{
-        margin-top:172px;
-        padding:16px 0 50px;
-    }
-
-    .wrap{
-        width:96%;
-    }
-
-    .cabecera-resultados{
-        padding:18px;
-    }
-
+    .cabecera-portada h1,
     .cabecera-resultados h1{
         font-size:26px;
     }
 
-    .marcador-wrap{
-        padding:14px 12px 8px;
+    .cabecera-jugada h2{
+        font-size:20px;
     }
 
-    .marcador-grid{
-        padding:16px;
-        min-height:auto;
+    .zona-superior{
+        padding:12px;
+        gap:12px;
     }
 
-    .equipo-nombre{
-        font-size:27px;
+    .imagen-jugada{
+        min-height:200px;
+        padding:8px;
     }
 
-    .escudo{
-        width:64px;
+    .visor-media img{
+        max-height:320px;
     }
 
-    .score{
-        font-size:68px;
+    .galeria-miniaturas{
+        grid-template-columns:repeat(4, 1fr);
     }
 
-    .score-sep{
-        font-size:38px;
+    .zoom-controles{
+        right:8px;
+        bottom:8px;
     }
 
-    .mini-dato{
-        width:130px;
-        min-width:130px;
-    }
-
-    .mini-dato .et{
-        font-size:12px;
-    }
-
-    .mini-dato .vl{
-        font-size:25px;
-    }
-
-    .subdatos{
-        grid-template-columns:130px 130px;
-    }
-
-    .total-global-wrap{
-        width:270px;
-        grid-template-columns:130px 130px;
-    }
-
-    .total-global{
-        min-width:126px;
-        padding:9px 10px 8px;
-    }
-
-    .total-global .et{
-        font-size:12px;
-    }
-
-    .total-global .vl{
-        font-size:30px;
-    }
-
-    .columnas-equipos{
-        padding:8px 12px 16px;
-        gap:14px;
-    }
-
-    .tarjeta-top{
-        font-size:23px;
-        padding:14px 12px;
-    }
-
-    .tarjeta-body{
-        padding:10px;
-    }
-
-    .categoria-titulo{
-        font-size:18px;
-    }
-
-    .tabla-wrap{
-        justify-content:flex-start;
-    }
-
-    .resumen-table th,
-    .resumen-table td{
-        font-size:12px;
-        padding:9px 7px;
-    }
-
-    .col-concepto{
-        font-size:12px;
-    }
-
-    .btn-mostrar-inicial{
-        margin-left:0;
-        display:block;
-        width:100%;
+    .zoom-btn{
+        min-width:38px;
+        height:32px;
+        font-size:13px;
     }
 }
 
+/* ===== AJUSTES EXTRA MOVIL ===== */
 @media (max-width: 768px){
-    .marcador-wrap{
-        padding:10px 6px 6px !important;
+    .cabecera{
+        height:78px !important;
+        background-size:cover !important;
+        background-position:center center !important;
+        background-repeat:no-repeat !important;
     }
 
-    #marcadorGlobalContainer,
-    .marcador-global{
-        width:100% !important;
-        max-width:100% !important;
-        overflow:hidden !important;
-        border-radius:18px !important;
-    }
-
-    #marcadorGlobalContainer .marcador-grid,
-    .marcador-grid{
-        grid-template-columns:1fr !important;
-        gap:12px !important;
-        min-height:auto !important;
-        padding:14px 10px 16px !important;
-    }
-
-    #marcadorGlobalContainer .equipo-panel,
-    .equipo-panel{
-        align-items:center !important;
-        text-align:center !important;
-    }
-
-    #marcadorGlobalContainer .equipo-head,
-    .equipo-head{
-        gap:10px !important;
-        justify-content:center !important;
-        flex-direction:row !important;
-    }
-
-    #marcadorGlobalContainer .equipo-nombre,
-    .equipo-nombre{
-        font-size:17px !important;
-        line-height:1.05 !important;
-    }
-
-    #marcadorGlobalContainer .escudo,
-    .escudo{
-        width:40px !important;
+    .menu{
+        top:78px !important;
         height:auto !important;
+        min-height:44px !important;
+        padding:6px 8px !important;
+        gap:8px !important;
+        justify-content:flex-start !important;
+        overflow-x:auto !important;
+        overflow-y:hidden !important;
+        flex-wrap:nowrap !important;
+        white-space:nowrap !important;
+        -webkit-overflow-scrolling:touch;
+        scrollbar-width:none;
     }
 
-    #marcadorGlobalContainer .subdatos,
-    .subdatos{
-        width:100% !important;
-        max-width:240px !important;
-        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
-        gap:8px !important;
+    .menu::-webkit-scrollbar{
+        display:none;
+    }
+
+    .menu a{
+        flex:0 0 auto !important;
+        display:inline-flex !important;
+        align-items:center !important;
         justify-content:center !important;
-        margin:0 auto !important;
+        min-height:32px !important;
+        padding:7px 10px !important;
+        font-size:11px !important;
+        line-height:1.05 !important;
+        white-space:nowrap !important;
+        border-radius:8px !important;
     }
 
-    #marcadorGlobalContainer .mini-dato,
-    .mini-dato{
-        width:100% !important;
+    .contenido{
+        margin-top:132px !important;
+    }
+
+    .wrap{
+        width:96% !important;
+    }
+}
+
+@media (max-width: 768px){
+    .menu{
+        top:80px !important;
+        height:58px !important;
+        min-height:58px !important;
+        padding:0 !important;
+        gap:0 !important;
+        display:grid !important;
+        grid-template-columns:repeat(5, minmax(0, 1fr)) !important;
+        align-items:stretch !important;
+        justify-content:stretch !important;
+        overflow:hidden !important;
+        white-space:normal !important;
+    }
+
+    .menu::before,
+    .menu::after{
+        display:none !important;
+    }
+
+    .menu a{
         min-width:0 !important;
-        padding:6px 6px 5px !important;
-        border-radius:10px !important;
-    }
-
-    #marcadorGlobalContainer .mini-dato .et,
-    .mini-dato .et{
-        font-size:10px !important;
-        line-height:1.1 !important;
-    }
-
-    #marcadorGlobalContainer .mini-dato .vl,
-    .mini-dato .vl{
-        font-size:17px !important;
-        line-height:1 !important;
-    }
-
-    #marcadorGlobalContainer .total-global-wrap,
-    .total-global-wrap{
         width:100% !important;
-        max-width:240px !important;
-        grid-template-columns:1fr !important;
-        gap:8px !important;
-        margin:0 auto !important;
+        height:58px !important;
+        padding:4px 3px !important;
+        border-radius:0 !important;
+        display:flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        text-align:center !important;
+        font-size:9.5px !important;
+        line-height:1.02 !important;
+        letter-spacing:0 !important;
+        white-space:normal !important;
+        word-break:keep-all !important;
+        overflow-wrap:normal !important;
+        box-sizing:border-box !important;
     }
 
-    #marcadorGlobalContainer .total-global,
-    .total-global{
-        width:100% !important;
-        min-width:0 !important;
-        padding:8px 8px !important;
-        border-radius:16px !important;
+    .menu a span{
+        display:block !important;
     }
 
-    #marcadorGlobalContainer .total-global .et,
-    .total-global .et{
-        font-size:10px !important;
+    .contenido{
+        margin-top:138px !important;
+        min-height:calc(100vh - 138px) !important;
+    }
+}
+
+@media (max-width: 430px){
+    .menu{
+        height:56px !important;
+        min-height:56px !important;
     }
 
-    #marcadorGlobalContainer .total-global .vl,
-    .total-global .vl{
-        font-size:22px !important;
-        line-height:1 !important;
+    .menu a{
+        height:56px !important;
+        font-size:8.6px !important;
+        padding:4px 2px !important;
     }
 
-    #marcadorGlobalContainer .marcador-centro,
-    .marcador-centro{
-        gap:8px !important;
-        padding-top:2px !important;
-    }
-
-    #marcadorGlobalContainer .marcador-titulo,
-    .marcador-titulo{
-        font-size:13px !important;
-        line-height:1.15 !important;
-    }
-
-    #marcadorGlobalContainer .score-box,
-    .score-box{
-        width:100% !important;
-        max-width:280px !important;
-        margin:0 auto !important;
-        padding:12px 10px !important;
-        gap:8px !important;
-        border-radius:18px !important;
-    }
-
-    #marcadorGlobalContainer .score,
-    .score{
-        font-size:34px !important;
-        line-height:1 !important;
-    }
-
-    #marcadorGlobalContainer .score-sep,
-    .score-sep{
-        font-size:22px !important;
-        line-height:1 !important;
-    }
-
-    #marcadorGlobalContainer .score-leyenda,
-    .score-leyenda{
-        max-width:260px !important;
-        margin:0 auto !important;
-        font-size:10px !important;
-        line-height:1.2 !important;
+    .contenido{
+        margin-top:136px !important;
+        min-height:calc(100vh - 136px) !important;
     }
 }
 
@@ -1141,8 +1138,8 @@ textarea{
 
     #marcadorGlobalContainer .marcador-grid,
     .marcador-grid{
-        grid-template-columns:minmax(0, 1fr) 108px minmax(0, 1fr) !important;
-        gap:10px !important;
+        grid-template-columns:minmax(0, 1fr) 118px minmax(0, 1fr) !important;
+        gap:8px !important;
         padding:10px 10px 12px !important;
         align-items:start !important;
     }
@@ -1155,16 +1152,9 @@ textarea{
         text-align:center !important;
     }
 
-    #marcadorGlobalContainer .equipo-panel.barca .equipo-head,
-    .equipo-panel.barca .equipo-head{
-        flex-direction:row-reverse !important;
-        gap:6px !important;
-        justify-content:center !important;
-    }
-
     #marcadorGlobalContainer .equipo-head,
     .equipo-head{
-        gap:6px !important;
+        gap:7px !important;
         justify-content:center !important;
     }
 
@@ -1175,12 +1165,12 @@ textarea{
 
     #marcadorGlobalContainer .escudo,
     .escudo{
-        width:40px !important;
+        width:42px !important;
     }
 
     #marcadorGlobalContainer .equipo-nombre,
     .equipo-nombre{
-        font-size:13px !important;
+        font-size:14px !important;
         line-height:1 !important;
         letter-spacing:0 !important;
     }
@@ -1190,7 +1180,7 @@ textarea{
         width:100% !important;
         max-width:100% !important;
         grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
-        gap:5px !important;
+        gap:6px !important;
         justify-content:stretch !important;
     }
 
@@ -1204,20 +1194,20 @@ textarea{
     .mini-dato{
         width:100% !important;
         min-width:0 !important;
-        border-radius:10px !important;
-        padding:4px 3px 3px !important;
+        border-radius:11px !important;
+        padding:5px 3px 4px !important;
     }
 
     #marcadorGlobalContainer .mini-dato .et,
     .mini-dato .et{
-        font-size:9px !important;
+        font-size:10px !important;
         line-height:1 !important;
         margin-bottom:1px !important;
     }
 
     #marcadorGlobalContainer .mini-dato .vl,
     .mini-dato .vl{
-        font-size:18px !important;
+        font-size:20px !important;
         line-height:1 !important;
     }
 
@@ -1225,7 +1215,7 @@ textarea{
     .total-global-wrap{
         width:100% !important;
         grid-template-columns:1fr !important;
-        gap:5px !important;
+        gap:6px !important;
         margin-top:4px !important;
     }
 
@@ -1234,77 +1224,63 @@ textarea{
         grid-column:1 !important;
         min-width:0 !important;
         width:100% !important;
-        padding:7px 6px !important;
+        padding:8px 6px !important;
         border-radius:14px !important;
     }
 
     #marcadorGlobalContainer .total-global .et,
     .total-global .et{
-        font-size:9px !important;
+        font-size:10px !important;
         line-height:1 !important;
     }
 
     #marcadorGlobalContainer .total-global .vl,
     .total-global .vl{
-        font-size:22px !important;
+        font-size:24px !important;
         line-height:1 !important;
     }
 
     #marcadorGlobalContainer .marcador-centro,
     .marcador-centro{
-        gap:5px !important;
+        gap:6px !important;
         justify-content:center !important;
         align-self:center !important;
-        padding-top:16px !important;
+        padding-top:18px !important;
     }
 
     #marcadorGlobalContainer .marcador-titulo,
     .marcador-titulo{
-        font-size:10px !important;
+        font-size:11px !important;
         line-height:1.05 !important;
     }
 
     #marcadorGlobalContainer .score-box,
     .score-box{
         width:100% !important;
-        padding:9px 6px !important;
+        padding:10px 6px !important;
         border-radius:16px !important;
         gap:4px !important;
     }
 
     #marcadorGlobalContainer .score,
     .score{
-        font-size:34px !important;
+        font-size:36px !important;
         line-height:1 !important;
     }
 
     #marcadorGlobalContainer .score-sep,
     .score-sep{
-        font-size:20px !important;
+        font-size:22px !important;
         line-height:1 !important;
     }
 
     #marcadorGlobalContainer .score-leyenda,
     .score-leyenda{
-        font-size:8px !important;
-        line-height:1.02 !important;
-        letter-spacing:0 !important;
-        max-width:108px !important;
+        font-size:9px !important;
+        line-height:1.08 !important;
+        max-width:118px !important;
         margin:0 auto !important;
     }
-}
-
-@media (max-width: 768px){
-
-    .marcador-centro{
-        transform: translateX(-8px);
-    }
-
-    .marcador-titulo,
-    .score-leyenda{
-        transform: translateX(6px);
-    }
-
 }
 </style>
 
@@ -1317,10 +1293,11 @@ textarea{
 <div class="cabecera"></div>
 
 <nav class="menu">
-    <a href="index.html">Inicio</a>
-    <a href="jugadas-polemicas.html">Jugadas Polémicas</a>
-    <a href="resultados-var.html">Resultados VAR</a>
-    <a href="quien-ha-sido-mas-favorecido.html">¿Quién ha sido más favorecido?</a>
+    <a href="index.html"><span>INICIO</span></a>
+    <a href="jugadas-polemicas.html"><span>JUGADAS<br>POLÉMICAS</span></a>
+    <a href="resultados-var.html"><span>RESULTADOS</span></a>
+    <a href="quien-ha-sido-mas-favorecido.html"><span>EQUIPO MÁS<br>FAVORECIDO</span></a>
+    <a href="arbitros-mas-influyentes.html"><span>ÁRBITROS MÁS<br>INFLUYENTES</span></a>
 </nav>
 
 <div class="contenido">
@@ -1329,7 +1306,7 @@ textarea{
         <section class="bloque-portada">
             <div class="cabecera-portada">
                 <h1>Última jornada con polémica</h1>
-                <p>En esta portada se muestran automáticamente todas las jugadas de la jornada más reciente registrada.</p>
+                <p>Se muestran automáticamente todas las jugadas de la jornada más reciente.</p>
             </div>
 
             <div id="ultimasJugadasContainer">
@@ -1344,201 +1321,444 @@ textarea{
             </div>
 
             <div class="marcador-wrap">
-                <div class="marcador-global" id="marcadorGlobal">
-                    <div class="marcador-grid">
+                <div id="marcadorGlobalContainer">
+                    <div class="marcador-global" id="marcadorGlobal">
+                        <div class="marcador-grid">
 
-                        <div class="equipo-panel barca">
-                            <div class="equipo-head">
-                                <img src="escudo-barcelona.png" class="escudo" alt="Escudo FC Barcelona">
-                                <div class="equipo-nombre">FC Barcelona</div>
+                            <div class="equipo-panel barca">
+                                <div class="equipo-head">
+                                    <img src="escudo-barcelona.png" class="escudo" alt="Escudo FC Barcelona">
+                                    <div class="equipo-nombre">FC Barcelona</div>
+                                </div>
+
+                                <div class="subdatos">
+                                    <div class="mini-dato">
+                                        <span class="et">Total Penaltis</span>
+                                        <span class="vl" id="marcador-barca-penaltis">0</span>
+                                    </div>
+                                    <div class="mini-dato">
+                                        <span class="et">Total Rojas</span>
+                                        <span class="vl" id="marcador-barca-rojas">0</span>
+                                    </div>
+                                    <div class="mini-dato">
+                                        <span class="et">Total Goles</span>
+                                        <span class="vl" id="marcador-barca-goles">0</span>
+                                    </div>
+                                </div>
+
+                                <div class="total-global-wrap">
+                                    <div class="total-global">
+                                        <span class="et">Total Global</span>
+                                        <span class="vl" id="marcador-barca-total">0</span>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="subdatos">
-                                <div class="mini-dato">
-                                    <span class="et">Total Penaltis</span>
-                                    <span class="vl" id="marcador-barca-penaltis">0</span>
+                            <div class="marcador-centro">
+                                <div class="marcador-titulo">Marcador global</div>
+                                <div class="score-box">
+                                    <div class="score" id="marcador-score-barca">0</div>
+                                    <div class="score-sep">-</div>
+                                    <div class="score" id="marcador-score-madrid">0</div>
                                 </div>
-                                <div class="mini-dato">
-                                    <span class="et">Total Rojas</span>
-                                    <span class="vl" id="marcador-barca-rojas">0</span>
+                                <div class="score-leyenda">Balance global según resultados de las encuestas de las jugadas polémicas</div>
+                            </div>
+
+                            <div class="equipo-panel madrid">
+                                <div class="equipo-head">
+                                    <img src="escudo-madrid.png" class="escudo" alt="Escudo Real Madrid">
+                                    <div class="equipo-nombre">Real Madrid</div>
                                 </div>
-                                <div class="mini-dato" style="grid-column:1 / span 2; justify-self:center;">
-                                    <span class="et">Total Goles</span>
-                                    <span class="vl" id="marcador-barca-goles">0</span>
+
+                                <div class="subdatos">
+                                    <div class="mini-dato">
+                                        <span class="et">Total Penaltis</span>
+                                        <span class="vl" id="marcador-madrid-penaltis">0</span>
+                                    </div>
+                                    <div class="mini-dato">
+                                        <span class="et">Total Rojas</span>
+                                        <span class="vl" id="marcador-madrid-rojas">0</span>
+                                    </div>
+                                    <div class="mini-dato">
+                                        <span class="et">Total Goles</span>
+                                        <span class="vl" id="marcador-madrid-goles">0</span>
+                                    </div>
+                                </div>
+
+                                <div class="total-global-wrap">
+                                    <div class="total-global">
+                                        <span class="et">Total Global</span>
+                                        <span class="vl" id="marcador-madrid-total">0</span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="total-global-wrap">
-                                <div class="total-global">
-                                    <span class="et">Total Global</span>
-                                    <span class="vl" id="marcador-barca-total">0</span>
-                                </div>
-                            </div>
                         </div>
-
-                        <div class="marcador-centro">
-                            <div class="marcador-titulo">Marcador global</div>
-                            <div class="score-box">
-                                <div class="score" id="marcador-score-barca">0</div>
-                                <div class="score-sep">-</div>
-                                <div class="score" id="marcador-score-madrid">0</div>
-                            </div>
-                            <div class="score-leyenda">Balance global según resultados de las encuestas de las jugadas polémicas</div>
-                        </div>
-
-                        <div class="equipo-panel madrid">
-                            <div class="equipo-head">
-                                <img src="escudo-madrid.png" class="escudo" alt="Escudo Real Madrid">
-                                <div class="equipo-nombre">Real Madrid</div>
-                            </div>
-
-                            <div class="subdatos">
-                                <div class="mini-dato">
-                                    <span class="et">Total Penaltis</span>
-                                    <span class="vl" id="marcador-madrid-penaltis">0</span>
-                                </div>
-                                <div class="mini-dato">
-                                    <span class="et">Total Rojas</span>
-                                    <span class="vl" id="marcador-madrid-rojas">0</span>
-                                </div>
-                                <div class="mini-dato" style="grid-column:1 / span 2; justify-self:center;">
-                                    <span class="et">Total Goles</span>
-                                    <span class="vl" id="marcador-madrid-goles">0</span>
-                                </div>
-                            </div>
-
-                            <div class="total-global-wrap">
-                                <div class="total-global">
-                                    <span class="et">Total Global</span>
-                                    <span class="vl" id="marcador-madrid-total">0</span>
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
             </div>
 
-            
+            <div class="aviso-legal">
+                Decisión VAR es una plataforma independiente y neutral cuyo objetivo es analizar jugadas polémicas a través de la opinión de los usuarios.
+                Los contenidos audiovisuales mostrados pertenecen a sus respectivos autores y son compartidos desde plataformas públicas. Esta web no almacena ni modifica dichos contenidos.
+            </div>
         </section>
 
     </div>
 </div>
 
+<div id="modalImagen" class="modal-imagen">
+    <div class="modal-imagen-contenido">
+        <button class="cerrar-modal-imagen" type="button" id="cerrarModalImagen">×</button>
+        <div class="modal-imagen-lienzo" id="modalImagenLienzo">
+            <img id="modalImagenImg" alt="Imagen ampliada">
+        </div>
+        <div class="controles-modal-imagen">
+            <button class="zoom-btn" type="button" id="modalZoomMas">+</button>
+            <button class="zoom-btn" type="button" id="modalZoomMenos">−</button>
+            <button class="zoom-btn" type="button" id="modalZoomReset">100%</button>
+        </div>
+    </div>
+</div>
+
 <script>
+const { escapeHtml, loadDataset, getComments, addComment, addVote, getUserVote, setUserVote, formatDate } = window.DecisionVarData;
 const ultimasJugadasContainer = document.getElementById("ultimasJugadasContainer");
-const marcadorContainer = document.getElementById("marcadorGlobalContainer");
 
-function activarComentarios(scope = document){
-    scope.querySelectorAll(".comentarios-box").forEach(box=>{
-        const comentarios = box.querySelectorAll(".comentario");
-        const btnMostrarInicial = box.querySelector(".btn-mostrar-inicial");
-        const btnMostrarMas = box.querySelector(".btn-mostrar-mas");
-        const btnOcultar = box.querySelector(".btn-ocultar");
+function normalizarTexto(txt){ return (txt||"").toString().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); }
+function capitalizarCategoria(v){ const n=normalizarTexto(v); if(n==='penalti') return 'Penalti'; if(n==='gol') return 'Gol'; if(n==='roja') return 'Roja'; return v||''; }
+function extraerNumeroJornada(v){ const m=String(v||'').match(/\d+/); return m?m[0]:''; }
+function limpiarSlug(v){ return (v||'').toString().trim().replace(/^['"]|['"]$/g, ''); }
+function quitarDuplicados(lista){ return [...new Set(lista.filter(Boolean))]; }
+function combinacionesCarpetaJornada(jornada){ const j=extraerNumeroJornada(jornada); return [`Jornada-${j}`,`Jornada ${j}`,`jornada-${j}`,`jornada ${j}`]; }
+function rutasImagenSlug(jornada, slug){ const s=limpiarSlug(slug); if(!s) return []; const bases=['Imagenes','imagenes']; const carpetas=combinacionesCarpetaJornada(jornada); const exts=['png','jpg','jpeg','webp','PNG','JPG','JPEG','WEBP']; const rutas=[]; for(const b of bases){ for(const c of carpetas){ for(const e of exts){ rutas.push(`${b}/${c}/${encodeURIComponent(s)}.${e}`); } } } return quitarDuplicados(rutas); }
+function rutasVideoTxt(jornada, slug){ const s=limpiarSlug(slug); if(!s) return []; const bases=['Videos','videos']; const carpetas=combinacionesCarpetaJornada(jornada); const rutas=[]; for(const b of bases){ for(const c of carpetas){ rutas.push(`${b}/${c}/${encodeURIComponent(s)}.txt`); rutas.push(`${b}/${c}/${encodeURIComponent(s)}.TXT`);} } return quitarDuplicados(rutas); }
 
-        let visibles = 0;
-
-        if(btnOcultar) btnOcultar.style.display = "none";
-        if(btnMostrarMas) btnMostrarMas.style.display = "none";
-
-        function actualizar(){
-            comentarios.forEach((c,i)=>{
-                c.classList.toggle("visible", i < visibles);
-            });
-
-            if(btnOcultar){
-                btnOcultar.style.display = visibles > 0 ? "inline-block" : "none";
+async function primerTextoDisponible(rutas){
+    for(const ruta of rutas){
+        try{
+            const resp = await fetch(ruta,{cache:'no-store'});
+            if(resp.ok){
+                const txt = (await resp.text()).trim();
+                if(txt) return txt;
             }
-
-            if(btnMostrarMas){
-                if(visibles > 0 && visibles < comentarios.length){
-                    btnMostrarMas.style.display = "inline-block";
-                }else{
-                    btnMostrarMas.style.display = "none";
-                }
-            }
-        }
-
-        if(btnMostrarInicial){
-            btnMostrarInicial.onclick = ()=>{
-                visibles = 5;
-                actualizar();
-            };
-        }
-
-        if(btnMostrarMas){
-            btnMostrarMas.onclick = ()=>{
-                visibles += 5;
-                actualizar();
-            };
-        }
-
-        if(btnOcultar){
-            btnOcultar.onclick = ()=>{
-                visibles = 0;
-                actualizar();
-            };
-        }
-    });
-
-    scope.querySelectorAll(".btn-like").forEach(btn=>{
-        btn.onclick = ()=>{
-            const contador = btn.nextElementSibling;
-            if(!contador) return;
-
-            let num = parseInt(contador.textContent) || 0;
-
-            if(btn.classList.contains("activo")){
-                btn.classList.remove("activo");
-                contador.textContent = num - 1;
-            }else{
-                btn.classList.add("activo");
-                contador.textContent = num + 1;
-            }
-        };
-    });
+        }catch(e){}
+    }
+    return '';
 }
 
-fetch("jugadas-polemicas.html")
-    .then(res => {
-        if(!res.ok) throw new Error("No se pudo abrir jugadas-polemicas.html");
-        return res.text();
-    })
-    .then(html => {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, "text/html");
-        const jugadas = [...doc.querySelectorAll(".bloque-jugada")];
+function asignarImagenConFallback(img, rutas){
+    let i=0;
+    function next(){
+        if(i>=rutas.length){
+            img.src='data:image/svg+xml;utf8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700"><rect width="100%" height="100%" fill="#23324b"/><text x="50%" y="48%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="34" fill="#dbe6ff">Imagen pendiente</text></svg>`);
+            img.onerror=null;
+            return;
+        }
+        img.src=rutas[i++];
+    }
+    img.onerror=next;
+    next();
+}
 
-        if(!jugadas.length){
-            throw new Error("No hay jugadas");
+function extraerYouTubeId(url){
+    try{
+        const u=new URL(url);
+        if(u.hostname.includes('youtu.be')) return u.pathname.replace('/','').trim();
+        if(u.searchParams.get('v')) return u.searchParams.get('v').trim();
+        const p=u.pathname.split('/').filter(Boolean);
+        const i=p.indexOf('embed');
+        if(i!==-1&&p[i+1]) return p[i+1].trim();
+        const s=p.indexOf('shorts');
+        if(s!==-1&&p[s+1]) return p[s+1].trim();
+    }catch{}
+    return '';
+}
+
+function construirNodoVideo(url){
+    const limpia=(url||'').trim();
+    if(!limpia) return '';
+    const lower=limpia.toLowerCase();
+
+    if(lower.includes('youtube.com')||lower.includes('youtu.be')){
+        const id=extraerYouTubeId(limpia);
+        if(id){
+            return `<div class="video-principal-wrap"><iframe src="https://www.youtube.com/embed/${id}" title="Vídeo de la jugada" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`;
+        }
+    }
+
+    if(/\.(mp4|webm|ogg)(\?.*)?$/i.test(limpia)){
+        return `<div class="video-principal-wrap"><video controls preload="metadata" playsinline><source src="${escapeHtml(limpia)}"></video></div>`;
+    }
+
+    if(lower.includes('tiktok.com')){
+        return `<div class="video-principal-wrap" style="display:flex;align-items:center;justify-content:center;padding:22px;box-sizing:border-box;background:linear-gradient(135deg,#0e1a2c,#1d3761);"><div style="text-align:center;color:#fff;max-width:420px;"><div style="font-size:24px;font-weight:800;margin-bottom:10px;">Vídeo alojado en TikTok</div><a href="${escapeHtml(limpia)}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:11px 18px;border-radius:10px;background:linear-gradient(90deg,#9b0f2e,#c61d44);color:#fff;text-decoration:none;font-weight:700;font-size:14px;">Ver vídeo en TikTok</a></div></div>`;
+    }
+
+    return `<div class="video-principal-wrap" style="display:flex;align-items:center;justify-content:center;color:white;padding:20px;text-align:center;"><div><a href="${escapeHtml(limpia)}" target="_blank" rel="noopener noreferrer" style="color:#8eb8ff;font-weight:bold;">Abrir vídeo</a></div></div>`;
+}
+
+const modalImagen=document.getElementById('modalImagen');
+const modalImagenImg=document.getElementById('modalImagenImg');
+const modalImagenLienzo=document.getElementById('modalImagenLienzo');
+
+let escalaModal=1, tx=0, ty=0, dragging=false, startX=0, startY=0, ox=0, oy=0;
+
+function applyModal(){
+    modalImagenImg.style.transform=`translate(${tx}px, ${ty}px) scale(${escalaModal})`;
+    modalImagenLienzo.classList.toggle('arrastrando',dragging);
+}
+function resetModal(){ escalaModal=1; tx=0; ty=0; applyModal(); }
+function openModal(src){ modalImagenImg.src=src; resetModal(); modalImagen.classList.add('activo'); }
+function closeModal(){ modalImagen.classList.remove('activo'); modalImagenImg.src=''; resetModal(); }
+
+document.getElementById('cerrarModalImagen').onclick=closeModal;
+modalImagen.onclick=(e)=>{ if(e.target===modalImagen) closeModal(); };
+document.getElementById('modalZoomMas').onclick=()=>{ escalaModal=Math.min(escalaModal+0.2,5); applyModal(); };
+document.getElementById('modalZoomMenos').onclick=()=>{ escalaModal=Math.max(escalaModal-0.2,1); if(escalaModal===1){tx=0;ty=0;} applyModal(); };
+document.getElementById('modalZoomReset').onclick=resetModal;
+
+modalImagenLienzo.addEventListener('mousedown',(e)=>{
+    if(escalaModal<=1) return;
+    dragging=true;
+    startX=e.clientX;
+    startY=e.clientY;
+    ox=tx;
+    oy=ty;
+    applyModal();
+    e.preventDefault();
+});
+
+window.addEventListener('mousemove',(e)=>{
+    if(!dragging) return;
+    tx=ox+(e.clientX-startX);
+    ty=oy+(e.clientY-startY);
+    applyModal();
+});
+
+window.addEventListener('mouseup',()=>{
+    dragging=false;
+    applyModal();
+});
+
+document.addEventListener('keydown',(e)=>{
+    if(e.key==='Escape' && modalImagen.classList.contains('activo')) closeModal();
+});
+
+function initMedia(article){
+    const visor=article.querySelector('.visor-media');
+    const galeria=article.querySelector('.galeria-miniaturas');
+    const btnMas=article.querySelector('.zoom-mas');
+    const btnMenos=article.querySelector('.zoom-menos');
+    const btnReset=article.querySelector('.zoom-reset');
+    const btnExpandir=article.querySelector('.zoom-expandir');
+    let escala=1, tipoActual='', media=[];
+
+    function apply(){
+        const img=visor.querySelector('img');
+        if(img) img.style.transform=`scale(${escala})`;
+    }
+
+    function updateButtons(){
+        const show=tipoActual==='imagen';
+        [btnMas,btnMenos,btnReset,btnExpandir].forEach(b=>b.classList.toggle('oculto',!show));
+    }
+
+    function render(i){
+        const item=media[i];
+        if(!item) return;
+        [...galeria.children].forEach(m=>m.classList.remove('activa'));
+        if(galeria.children[i]) galeria.children[i].classList.add('activa');
+        escala=1;
+
+        if(item.tipo==='video'){
+            tipoActual='video';
+            visor.innerHTML=construirNodoVideo(item.url);
+            updateButtons();
+            return;
         }
 
-        const jornadas = jugadas
-            .map(j => parseInt(j.dataset.jornada, 10))
-            .filter(n => !isNaN(n));
+        tipoActual='imagen';
+        visor.innerHTML='<img class="imagen-principal" alt="Jugada polémica">';
+        const img=visor.querySelector('img');
+        asignarImagenConFallback(img,item.rutas);
+        img.ondblclick=()=>img.src&&openModal(img.src);
+        apply();
+        updateButtons();
+    }
 
-        if(!jornadas.length){
-            throw new Error("No hay jornadas válidas");
-        }
+    btnMas.onclick=()=>{ if(tipoActual!=='imagen') return; escala=Math.min(escala+0.2,4); apply(); };
+    btnMenos.onclick=()=>{ if(tipoActual!=='imagen') return; escala=Math.max(escala-0.2,1); apply(); };
+    btnReset.onclick=()=>{ escala=1; apply(); };
+    btnExpandir.onclick=()=>{ const img=visor.querySelector('img'); if(img&&img.src) openModal(img.src); };
 
-        const ultimaJornada = Math.max(...jornadas);
-        const jugadasUltimaJornada = jugadas.filter(j => parseInt(j.dataset.jornada, 10) === ultimaJornada);
+    article.cargarMedia=function(items){
+        media=items||[];
+        galeria.innerHTML='';
+        media.forEach((item,index)=>{
+            let mini;
+            if(item.tipo==='video'){
+                mini=document.createElement('div');
+                mini.className='miniatura miniatura-video';
+                mini.innerHTML='▶ Vídeo';
+            }else{
+                mini=document.createElement('img');
+                mini.className='miniatura';
+                mini.alt='Miniatura';
+                asignarImagenConFallback(mini,item.rutas);
+            }
+            if(index===0) mini.classList.add('activa');
+            mini.onclick=()=>render(index);
+            galeria.appendChild(mini);
+        });
+        galeria.style.display=media.length>1?'grid':'none';
+        render(0);
+    };
+}
 
-        ultimasJugadasContainer.innerHTML = jugadasUltimaJornada.map(j => j.outerHTML).join("");
-        activarComentarios(ultimasJugadasContainer);
-    })
-    .catch(() => {
-        ultimasJugadasContainer.innerHTML = `
-            <div class="caja-error">
-                No se pudieron cargar automáticamente las jugadas de la última jornada.
-                Abre la web con Live Server en Visual Studio Code.
-            </div>
-        `;
+function createInitialComments(j){
+    const items = [
+        { texto: j.comentario1, autor: j.usuariocomentario1, fecha: j.fechacomentario1 },
+        { texto: j.comentario2, autor: j.usuariocomentario2, fecha: j.fechacomentario2 },
+        { texto: j.comentario3, autor: j.usuariocomentario3, fecha: j.fechacomentario3 },
+        { texto: j.comentario4, autor: j.usuariocomentario4, fecha: j.fechacomentario4 },
+        { texto: j.comentario5, autor: j.usuariocomentario5, fecha: j.fechacomentario5 }
+    ];
+
+    return items
+        .filter(x => (x.texto || '').trim() !== '')
+        .map(x => ({
+            texto: x.texto,
+            created_at: x.fecha || null,
+            autor: (x.autor || '').trim() || 'Usuario'
+        }));
+}
+
+function renderComments(article, comments, visibles){
+    const list=article.querySelector('.lista-comentarios');
+    const counter=article.querySelector('.cabecera-comentarios p');
+    list.innerHTML='';
+    counter.textContent=`${comments.length} comentarios`;
+
+    comments.slice(0, visibles).forEach(c=>{
+        const div=document.createElement('div');
+        div.className='comentario visible';
+        div.innerHTML=`<div style="font-size:12px;color:#667791;font-weight:700;margin-bottom:4px;">${escapeHtml(c.autor||'Usuario')} ${c.created_at ? '· '+escapeHtml(formatDate(c.created_at)) : ''}</div>${escapeHtml(c.texto||'')}`;
+        list.appendChild(div);
     });
 
+    article.querySelector('.btn-mostrar-inicial').style.display = comments.length>0 && visibles===0 ? 'inline-block' : 'none';
+    article.querySelector('.btn-ocultar').style.display = visibles>0 ? 'inline-block' : 'none';
+    article.querySelector('.btn-mostrar-mas').style.display = visibles>0 && visibles<comments.length ? 'inline-block' : 'none';
+}
 
+async function initComments(article, jugada){
+    const initial=createInitialComments(jugada);
+    let online=[];
 
-const { loadDataset } = window.DecisionVarData;
+    try{
+        online=await getComments('jugada', jugada.id);
+    }catch(e){}
+
+    let visibles=0;
+    renderComments(article, [...online, ...initial], visibles);
+
+    article.querySelector('.boton-comentar').onclick=async()=>{
+        const ta=article.querySelector('textarea');
+        const txt=ta.value.trim();
+        if(!txt) return;
+
+        try{
+            await addComment('jugada', txt, jugada.id);
+            ta.value='';
+            online=await getComments('jugada', jugada.id);
+            visibles=Math.max(visibles,5);
+            renderComments(article, [...online, ...initial], visibles);
+        }catch(e){
+            alert('No se pudo guardar el comentario');
+        }
+    };
+
+    article.querySelector('.btn-mostrar-inicial').onclick=()=>{
+        visibles=5;
+        renderComments(article, [...online, ...initial], visibles);
+    };
+
+    article.querySelector('.btn-mostrar-mas').onclick=()=>{
+        visibles+=5;
+        renderComments(article, [...online, ...initial], visibles);
+    };
+
+    article.querySelector('.btn-ocultar').onclick=()=>{
+        visibles=0;
+        renderComments(article, [...online, ...initial], visibles);
+    };
+}
+
+function updateVoteUI(article, jugada){
+    const votosSi=Number(jugada.votosSi||0);
+    const votosNo=Number(jugada.votosNo||0);
+    const total=votosSi+votosNo;
+    const porcentajeSi=total?Math.round(votosSi*100/total):0;
+    const porcentajeNo=total?100-porcentajeSi:0;
+
+    article.querySelector('.barra-incorrecto').style.width=`${porcentajeNo}%`;
+    article.querySelector('.barra-correcto').style.width=`${porcentajeSi}%`;
+    article.querySelector('.porcentaje-incorrecto').textContent=`${porcentajeNo}%`;
+    article.querySelector('.porcentaje-correcto').textContent=`${porcentajeSi}%`;
+    article.querySelector('.detalle-incorrecto').textContent=`${votosNo} de ${total} votos`;
+    article.querySelector('.detalle-correcto').textContent=`${votosSi} de ${total} votos`;
+    article.querySelector('.resultado-cabecera').textContent=total?`${total} votos totales`:'Sin votos todavía';
+
+    const prev=getUserVote(jugada.id);
+    article.querySelector('.mensaje-voto').textContent=prev?`Has votado que se arbitró ${prev==='si'?'bien':'mal'}.`:'Tu voto ya se guarda online.';
+}
+
+async function initVote(article, jugada){
+    updateVoteUI(article,jugada);
+
+    async function send(v){
+        if(getUserVote(jugada.id)) {
+            alert('De momento solo se permite un voto por navegador en esta primera versión.');
+            return;
+        }
+        try{
+            await addVote(jugada.id, v);
+            setUserVote(jugada.id,v);
+            const data=await loadDataset();
+            const actual=data.jugadas.find(x=>x.id===jugada.id);
+            if(actual){
+                Object.assign(jugada, actual);
+                updateVoteUI(article,jugada);
+            }
+        }catch(e){
+            alert('No se pudo registrar el voto');
+        }
+    }
+
+    article.querySelector('.btn-voto-si').onclick=()=>send('si');
+    article.querySelector('.btn-voto-no').onclick=()=>send('no');
+}
+
+function createArticle(jugada){
+    const cat=capitalizarCategoria(jugada.categoria);
+    const commentsInitial=createInitialComments(jugada);
+    const article=document.createElement('section');
+
+    article.className='bloque-jugada';
+    article.dataset.id=jugada.id;
+    article.dataset.jornada=jugada.jornada;
+    article.dataset.equipo=jugada.equipoAfectado;
+    article.dataset.competicion=jugada.competicion;
+    article.dataset.tipo=normalizarTexto(jugada.categoria);
+
+    article.innerHTML=`<div class="etiqueta-jornada">Jornada ${escapeHtml(jugada.jornada)}</div><section class="jugada-principal"><div class="cabecera-jugada"><h2>${escapeHtml(jugada.pregunta)}</h2><p>${escapeHtml(jugada.partido)} · Min ${escapeHtml(jugada.minuto)} · ${escapeHtml(jugada.competicion)}</p><div class="badge-categoria">${escapeHtml(cat)} · ${escapeHtml(jugada.subtipo)}</div><div class="meta-extra"><strong>Equipo afectado:</strong> ${escapeHtml(jugada.equipoAfectado||'')}<br><strong>Árbitro:</strong> ${escapeHtml(jugada.arbitro||'')}<br><strong>VAR:</strong> ${escapeHtml(jugada.var||'')}</div></div><div class="zona-superior"><div><div class="imagen-jugada"><div class="visor-media"></div><div class="zoom-controles"><button class="zoom-btn zoom-mas" type="button">+</button><button class="zoom-btn zoom-menos" type="button">−</button><button class="zoom-btn zoom-reset" type="button">100%</button><button class="zoom-btn zoom-expandir" type="button">Ampliar</button></div></div><div class="galeria-miniaturas" style="display:none;"></div><div class="descripcion-jugada"><strong>Tipo:</strong> ${escapeHtml(cat)}<br><strong>Decisión árbitro:</strong> ${escapeHtml(jugada.decision||'')}<br><br>${escapeHtml(jugada.descripcion||'')}</div></div><div class="panel-votacion"><div class="panel-votacion-top"><h3>Vota la jugada</h3><p>${escapeHtml((jugada.pregunta||'').trim()||'¿Te pareció correcta la decisión arbitral?')}</p></div><div class="botones-voto"><button class="btn-voto btn-voto-si" type="button">${escapeHtml(jugada.respuestaSi||'Sí')}</button><button class="btn-voto btn-voto-no" type="button">${escapeHtml(jugada.respuestaNo||'No')}</button></div><div class="mensaje-voto">Tu voto ya se guarda online.</div><div class="resultado-box"><div class="resultado-cabecera">Sin votos todavía</div><div class="resumen-votos-bloques"><div class="resumen-voto-card incorrecto"><div class="resumen-voto-porcentaje porcentaje-incorrecto">0%</div><div class="resumen-voto-texto">Cree que se arbitró mal</div><div class="resumen-voto-detalle detalle-incorrecto">0 de 0 votos</div><div class="barra-resultado"><div class="barra-no barra-incorrecto" style="width:0%"></div></div></div><div class="resumen-voto-card correcto"><div class="resumen-voto-porcentaje porcentaje-correcto">0%</div><div class="resumen-voto-texto">Cree que se arbitró bien</div><div class="resumen-voto-detalle detalle-correcto">0 de 0 votos</div><div class="barra-resultado"><div class="barra-si barra-correcto" style="width:0%"></div></div></div></div></div></div></div></section><section class="seccion-comentarios comentarios-box"><div class="cabecera-comentarios"><h3>Comentarios</h3><p>${commentsInitial.length} comentarios</p></div><div class="cuerpo-comentarios"><textarea placeholder="Escribe tu comentario..."></textarea><br><button class="boton-comentar" type="button">Publicar comentario</button><button class="btn-mostrar-inicial" type="button">Mostrar comentarios</button><div class="lista-comentarios"></div><div class="mostrar-mas-wrap"><button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button></div><div class="ocultar-wrap"><button class="btn-ocultar" type="button">Ocultar comentarios</button></div></div></section>`;
+
+    initMedia(article);
+    initVote(article,jugada);
+    initComments(article,jugada);
+    return article;
+}
 
 function setVal(id,v){
     const el=document.getElementById(id);
@@ -1565,15 +1785,53 @@ function renderMarker(bloques){
     setVal('marcador-score-madrid',tm);
 }
 
-loadDataset()
-    .then(data => renderMarker(data.resumenBloques || []))
-    .catch(() => {
+(async()=>{
+    try{
+        const data = await loadDataset();
+        const jugadas = [...data.jugadas].sort((a,b)=>
+            (parseInt(b.jornada)||0)-(parseInt(a.jornada)||0) ||
+            (parseInt((b.minuto||'').match(/\d+/)?.[0]||0))-(parseInt((a.minuto||'').match(/\d+/)?.[0]||0))
+        );
+
+        if(!jugadas.length){
+            ultimasJugadasContainer.innerHTML = '<div class="caja-error">No hay jugadas disponibles.</div>';
+            return;
+        }
+
+        const ultimaJornada = Math.max(...jugadas.map(j => parseInt(j.jornada)||0));
+        const jugadasUltimaJornada = jugadas.filter(j => (parseInt(j.jornada)||0) === ultimaJornada);
+
+        ultimasJugadasContainer.innerHTML = '';
+
+        for(const j of jugadasUltimaJornada){
+            const article=createArticle(j);
+            const media=[];
+            const v1=await primerTextoDisponible(rutasVideoTxt(j.jornada,j.slugVideo));
+            const v2=await primerTextoDisponible(rutasVideoTxt(j.jornada,j.slugVideo2));
+
+            if(v1) media.push({tipo:'video',url:v1});
+            if(v2) media.push({tipo:'video',url:v2});
+
+            [j.slugImagen,j.slugImagen2,j.slugImagen3,j.slugImagen4,j.slugImagen5]
+                .filter(Boolean)
+                .forEach(slug=>media.push({tipo:'imagen',rutas:rutasImagenSlug(j.jornada,slug)}));
+
+            if(!media.length) media.push({tipo:'imagen',rutas:[]});
+
+            article.cargarMedia(media);
+            ultimasJugadasContainer.appendChild(article);
+        }
+
+        renderMarker(data.resumenBloques || []);
+    }catch(e){
+        console.error(e);
+        ultimasJugadasContainer.innerHTML = '<div class="caja-error">No se pudieron cargar las jugadas de la última jornada.</div>';
         const box = document.getElementById("marcadorGlobal");
         if(box){
             box.outerHTML = '<div class="caja-error">No se pudo cargar el marcador global.</div>';
         }
-    });
-
+    }
+})();
 </script>
 
 </body>
