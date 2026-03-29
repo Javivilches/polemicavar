@@ -462,19 +462,53 @@ window.DecisionVarData = (() => {
     if (error) throw error;
   }
 
-  function formatDate(dateIso) {
-    try {
-      return new Date(dateIso).toLocaleString("es-ES", {
+ function formatDate(dateValue) {
+  try {
+    if (!dateValue) return "";
+
+    const raw = String(dateValue).trim();
+
+    const isoDate = new Date(raw);
+    if (!isNaN(isoDate.getTime())) {
+      return isoDate.toLocaleString("es-ES", {
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
         hour: "2-digit",
         minute: "2-digit"
       });
-    } catch {
-      return "";
     }
+
+    const m = raw.match(
+      /^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2}))?(?::(\d{2}))?$/
+    );
+
+    if (m) {
+      const dia = Number(m[1]);
+      const mes = Number(m[2]) - 1;
+      const anio = Number(m[3]);
+      const hora = Number(m[4] || 0);
+      const minuto = Number(m[5] || 0);
+      const segundo = Number(m[6] || 0);
+
+      const fecha = new Date(anio, mes, dia, hora, minuto, segundo);
+
+      if (!isNaN(fecha.getTime())) {
+        return fecha.toLocaleString("es-ES", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+      }
+    }
+
+    return raw;
+  } catch {
+    return "";
   }
+}
 
   function getUserVote(id) {
     try {
