@@ -1898,16 +1898,7 @@ function renderHorizontales(bloques){
 function crearGraficoVertical(id, item){
     const ctx = document.getElementById(id).getContext("2d");
 
-   const valores = data.flatMap(x => [x.barca, x.madrid]);
-
-const minVal = Math.min(...valores);
-const maxVal = Math.max(...valores);
-
-// margen mínimo de 1 para que no quede pegado
-const minX = Math.min(-1, Math.floor(minVal));
-const maxX = Math.max(1, Math.ceil(maxVal));
-
- return new Chart(ctx, {
+    return new Chart(ctx, {
         type: "bar",
         data: {
             labels: [""],
@@ -2107,10 +2098,10 @@ function crearGraficoJornadas(data){
             },
             scales: {
                 x: {
-    min: minX,
-    max: maxX,
-    ticks: {
-        stepSize: 1,
+                    min: -2,
+                    max: 2,
+                    ticks: {
+                        stepSize: 1,
                         color: "#eef4ff",
                         font: {
                             size: window.innerWidth <= 768 ? 10 : 12,
