@@ -6,13 +6,29 @@
 <title>Decisión VAR</title>
 <link rel="icon" href="Imagenes/favicon.png" type="image/png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="decisionvar-data.js"></script>
 
 <style>
-body{
+:root{
+    --alto-cabecera: 150px;
+    --bg-oscuro: rgba(8,12,20,0.72);
+    --azul-1: #163b78;
+    --azul-2: #2a5fb0;
+}
+
+*{ box-sizing:border-box; }
+
+html, body{
     margin:0;
+    padding:0;
+    overflow-x:hidden;
+}
+
+body{
     font-family:Inter, Arial, Helvetica, sans-serif;
     background:#111;
-    zoom:0.90;
+    color:#111;
 }
 
 h1,h2,h3,h4{
@@ -27,25 +43,35 @@ h1,h2,h3,h4{
     top:0;
     left:0;
     width:100%;
-    height:170px;
+    height:var(--alto-cabecera);
     background-image:url("cabecera.png");
-    background-size:100% 100%;
-    background-position:center;
+    background-size:cover;
+    background-position:center top;
     background-repeat:no-repeat;
     z-index:1000;
+    box-shadow:0 6px 18px rgba(0,0,0,0.28);
+}
+
+.cabecera::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(to bottom, rgba(0,0,0,0.16), rgba(0,0,0,0.34));
+    pointer-events:none;
 }
 
 /* MENU */
 .menu{
     position:fixed;
-    top:170px;
     left:0;
     width:100%;
-    height:46px;
+    min-height:54px;
     display:flex;
+    flex-wrap:wrap;
     justify-content:center;
     align-items:center;
-    gap:44px;
+    gap:10px 18px;
+    padding:8px 16px;
     z-index:999;
     overflow:hidden;
     background:linear-gradient(
@@ -58,15 +84,14 @@ h1,h2,h3,h4{
         #f3f5f7 88%,
         #ffffff 100%
     );
+    box-shadow:0 8px 20px rgba(0,0,0,0.18);
 }
 
 .menu::before{
     content:"";
     position:absolute;
-    top:0;
-    left:0;
+    inset:0 auto 0 0;
     width:50%;
-    height:100%;
     background:linear-gradient(90deg, rgba(0,0,0,0.18), rgba(0,0,0,0.05));
     pointer-events:none;
 }
@@ -75,7 +100,7 @@ h1,h2,h3,h4{
     content:"";
     position:absolute;
     left:50%;
-    top:5px;
+    top:10px;
     transform:translateX(-50%);
     width:2px;
     height:34px;
@@ -92,12 +117,13 @@ h1,h2,h3,h4{
     position:relative;
     z-index:2;
     text-decoration:none;
-    font-size:14px;
-    font-weight:700;
+    font-size:13px;
+    font-weight:800;
     text-transform:uppercase;
-    padding:6px 10px;
-    border-radius:6px;
+    padding:8px 10px;
+    border-radius:8px;
     transition:all .2s ease;
+    white-space:nowrap;
 }
 
 .menu a:hover{
@@ -116,7 +142,6 @@ h1,h2,h3,h4{
 
 /* CONTENIDO */
 .contenido{
-    margin-top:216px;
     background:linear-gradient(
         90deg,
         #081b48 0%,
@@ -128,7 +153,7 @@ h1,h2,h3,h4{
         #ffffff 100%
     );
     padding:30px 0 85px;
-    min-height:calc(100vh - 216px);
+    min-height:100vh;
 }
 
 .wrap{
@@ -136,27 +161,34 @@ h1,h2,h3,h4{
     margin:auto;
 }
 
-/* BLOQUE GENERAL */
-.bloque-portada{
+/* BLOQUES */
+.bloque-portada,
+.bloque-resultados{
     background:rgba(8,12,20,0.72);
     border-radius:24px;
     overflow:hidden;
     box-shadow:0 14px 30px rgba(0,0,0,0.28);
+}
+
+.bloque-portada{
     margin-bottom:28px;
 }
 
-.cabecera-portada{
+.cabecera-portada,
+.cabecera-resultados{
     padding:24px 28px;
     background:linear-gradient(90deg,#163b78,#2a5fb0);
     color:white;
 }
 
-.cabecera-portada h1{
+.cabecera-portada h1,
+.cabecera-resultados h1{
     font-size:32px;
     margin:0 0 6px;
 }
 
-.cabecera-portada p{
+.cabecera-portada p,
+.cabecera-resultados p{
     margin:0;
     font-size:15px;
     color:#dfe8f3;
@@ -169,6 +201,10 @@ h1,h2,h3,h4{
     font-size:15px;
 }
 
+.caja-error{
+    background:rgba(130,20,20,0.25);
+}
+
 /* JUGADAS */
 .bloque-jugada{
     margin:22px 22px 18px;
@@ -178,7 +214,7 @@ h1,h2,h3,h4{
     display:inline-block;
     background:linear-gradient(180deg,#f5d47a,#d9a73a);
     color:#4a3400;
-    font-weight:bold;
+    font-weight:800;
     padding:6px 13px;
     border-radius:999px;
     font-size:12px;
@@ -223,6 +259,7 @@ h1,h2,h3,h4{
     object-fit:cover;
     border-radius:12px;
     display:block;
+    background:#0b1220;
 }
 
 .descripcion-jugada{
@@ -231,7 +268,7 @@ h1,h2,h3,h4{
     background:rgba(255,255,255,0.08);
     border-radius:10px;
     color:#eee;
-    line-height:1.4;
+    line-height:1.5;
     font-size:14px;
 }
 
@@ -270,7 +307,7 @@ h1,h2,h3,h4{
     background:#2e5db8;
     color:white;
     font-weight:bold;
-    cursor:pointer;
+    cursor:default;
     font-size:14px;
 }
 
@@ -316,10 +353,19 @@ h1,h2,h3,h4{
     font-size:12px;
     display:flex;
     justify-content:space-between;
+    gap:8px;
+}
+
+.sin-votos{
+    font-size:13px;
+    color:#555;
+    text-align:center;
+    line-height:1.4;
 }
 
 /* COMENTARIOS */
-.seccion-comentarios{
+.seccion-comentarios,
+.comentarios-box{
     margin-top:12px;
     background:white;
     border-radius:14px;
@@ -354,7 +400,6 @@ textarea{
     border:1px solid #d0d7e2;
     resize:vertical;
     min-height:45px;
-    box-sizing:border-box;
     font-size:13px;
 }
 
@@ -447,148 +492,11 @@ textarea{
     background:#777;
 }
 
-/* BLOQUE MARCADOR */
-.bloque-resultados{
-    background:rgba(8,12,20,0.72);
-    border-radius:24px;
-    overflow:hidden;
-    box-shadow:0 14px 30px rgba(0,0,0,0.28);
-}
-
-.cabecera-resultados{
-    padding:24px 28px;
-    background:linear-gradient(90deg,#163b78,#2a5fb0);
-    color:white;
-}
-
-.cabecera-resultados h1{
-    font-size:32px;
-    margin:0 0 6px;
-}
-
-.cabecera-resultados p{
-    margin:0;
-    font-size:15px;
-    color:#dfe8f3;
-}
-
-.marcador-wrap{
-    padding:22px 22px 12px;
-    display:flex;
-    justify-content:center;
-}
-
-#marcadorGlobalContainer{
-    width:100%;
-    display:flex;
-    justify-content:center;
-}
-
-@media (max-width: 1200px){
-    .marcador-grid{
-        grid-template-columns:1fr;
-        gap:18px;
-    }
-
-    .equipo-panel.barca,
-    .equipo-panel.madrid{
-        align-items:center;
-        text-align:center;
-    }
-
-    .equipo-panel.madrid .equipo-head{
-        flex-direction:row;
-    }
-}
-
-@media (max-width: 1100px){
-    body{
-        zoom:1;
-    }
-}
-
-@media (max-width: 980px){
-    .zona-superior{
-        grid-template-columns:1fr;
-    }
-
-    .imagen-jugada img{
-        height:220px;
-    }
-}
-
-@media (max-width: 768px){
-    .cabecera{
-        height:130px;
-    }
-
-    .menu{
-        top:130px;
-        height:42px;
-        gap:18px;
-        padding:0 10px;
-    }
-
-    .menu a{
-        font-size:11px;
-    }
-
-    .contenido{
-        margin-top:172px;
-        padding:16px 0 50px;
-    }
-
-    .wrap{
-        width:96%;
-    }
-
-    .cabecera-portada,
-    .cabecera-resultados{
-        padding:18px;
-    }
-
-    .cabecera-portada h1,
-    .cabecera-resultados h1{
-        font-size:26px;
-    }
-
-    .cabecera-jugada h2{
-        font-size:20px;
-    }
-
-    .zona-superior{
-        padding:12px;
-        gap:12px;
-    }
-
-    .imagen-jugada img{
-        height:200px;
-    }
-
-    .marcador-wrap{
-        padding:14px 12px 8px;
-    }
-}
-
-
 /* MARCADOR */
 .marcador-wrap{
     padding:22px 22px 12px;
     display:flex;
     justify-content:center;
-}
-
-#marcadorGlobalContainer{
-    width:100%;
-    display:flex;
-    justify-content:center;
-}
-
-.caja-cargando,
-.caja-error{
-    padding:22px 26px;
-    color:white;
-    font-size:15px;
 }
 
 .marcador-global{
@@ -699,7 +607,6 @@ textarea{
     padding:4px 4px 3px;
     text-align:center;
     backdrop-filter:blur(2px);
-    box-sizing:border-box;
 }
 
 .mini-dato .et{
@@ -826,8 +733,7 @@ textarea{
     line-height:1.15;
 }
 
-
-
+/* RESPONSIVE */
 @media (max-width: 1200px){
     .marcador-grid{
         grid-template-columns:1fr;
@@ -853,24 +759,41 @@ textarea{
     }
 }
 
+@media (max-width: 980px){
+    .zona-superior{
+        grid-template-columns:1fr;
+    }
+
+    .imagen-jugada img{
+        height:220px;
+    }
+}
+
 @media (max-width: 768px){
+    :root{
+        --alto-cabecera: 96px;
+    }
+
     .cabecera{
-        height:130px;
+        background-position:center top;
     }
 
     .menu{
-        top:130px;
-        height:42px;
-        gap:18px;
-        padding:0 10px;
+        min-height:60px;
+        gap:8px;
+        padding:8px 10px;
+    }
+
+    .menu::after{
+        display:none;
     }
 
     .menu a{
-        font-size:11px;
+        font-size:10px;
+        padding:7px 8px;
     }
 
     .contenido{
-        margin-top:172px;
         padding:16px 0 50px;
     }
 
@@ -878,104 +801,172 @@ textarea{
         width:96%;
     }
 
+    .cabecera-portada,
     .cabecera-resultados{
         padding:18px;
     }
 
+    .cabecera-portada h1,
     .cabecera-resultados h1{
         font-size:26px;
     }
 
+    .cabecera-jugada h2{
+        font-size:20px;
+    }
+
+    .zona-superior{
+        padding:12px;
+        gap:12px;
+    }
+
+    .imagen-jugada img{
+        height:200px;
+    }
+
     .marcador-wrap{
-        padding:14px 12px 8px;
+        padding:10px 6px 6px;
+    }
+
+    .marcador-global{
+        width:100%;
+        max-width:100%;
+        border-radius:18px;
     }
 
     .marcador-grid{
-        padding:16px;
+        grid-template-columns:minmax(0, 1fr) 108px minmax(0, 1fr) !important;
+        gap:10px !important;
+        padding:10px 10px 12px !important;
+        align-items:start !important;
         min-height:auto;
     }
 
-    .equipo-nombre{
-        font-size:27px;
+    .equipo-panel.barca,
+    .equipo-panel.madrid{
+        align-items:center !important;
+        text-align:center !important;
+    }
+
+    .equipo-panel.barca .equipo-head{
+        flex-direction:row-reverse !important;
+        gap:6px !important;
+        justify-content:center !important;
+    }
+
+    .equipo-panel.madrid .equipo-head{
+        flex-direction:row !important;
+    }
+
+    .equipo-head{
+        gap:6px !important;
+        justify-content:center !important;
     }
 
     .escudo{
-        width:64px;
+        width:40px !important;
     }
 
-    .score{
-        font-size:68px;
-    }
-
-    .score-sep{
-        font-size:38px;
-    }
-
-    .mini-dato{
-        width:130px;
-        min-width:130px;
-    }
-
-    .mini-dato .et{
-        font-size:12px;
-    }
-
-    .mini-dato .vl{
-        font-size:25px;
+    .equipo-nombre{
+        font-size:13px !important;
+        line-height:1 !important;
+        letter-spacing:0 !important;
     }
 
     .subdatos{
-        grid-template-columns:130px 130px;
+        width:100% !important;
+        max-width:100% !important;
+        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+        gap:5px !important;
+        justify-content:stretch !important;
+    }
+
+    .subdatos .mini-dato:nth-child(3){
+        grid-column:1 / span 2 !important;
+        justify-self:stretch !important;
+    }
+
+    .mini-dato{
+        width:100% !important;
+        min-width:0 !important;
+        border-radius:10px !important;
+        padding:4px 3px 3px !important;
+    }
+
+    .mini-dato .et{
+        font-size:9px !important;
+        line-height:1 !important;
+        margin-bottom:1px !important;
+    }
+
+    .mini-dato .vl{
+        font-size:18px !important;
+        line-height:1 !important;
     }
 
     .total-global-wrap{
-        width:270px;
-        grid-template-columns:130px 130px;
+        width:100% !important;
+        grid-template-columns:1fr !important;
+        gap:5px !important;
+        margin-top:4px !important;
     }
 
     .total-global{
-        min-width:126px;
-        padding:9px 10px 8px;
+        grid-column:1 !important;
+        min-width:0 !important;
+        width:100% !important;
+        padding:7px 6px !important;
+        border-radius:14px !important;
     }
 
     .total-global .et{
-        font-size:12px;
+        font-size:9px !important;
+        line-height:1 !important;
     }
 
     .total-global .vl{
-        font-size:30px;
+        font-size:22px !important;
+        line-height:1 !important;
     }
 
-    .columnas-equipos{
-        padding:8px 12px 16px;
-        gap:14px;
+    .marcador-centro{
+        gap:5px !important;
+        justify-content:center !important;
+        align-self:center !important;
+        padding-top:16px !important;
+        transform:translateX(-8px);
     }
 
-    .tarjeta-top{
-        font-size:23px;
-        padding:14px 12px;
+    .marcador-titulo{
+        font-size:10px !important;
+        line-height:1.05 !important;
+        transform:translateX(6px);
     }
 
-    .tarjeta-body{
-        padding:10px;
+    .score-box{
+        width:100% !important;
+        padding:9px 6px !important;
+        border-radius:16px !important;
+        gap:4px !important;
     }
 
-    .categoria-titulo{
-        font-size:18px;
+    .score{
+        font-size:34px !important;
+        line-height:1 !important;
     }
 
-    .tabla-wrap{
-        justify-content:flex-start;
+    .score-sep{
+        font-size:20px !important;
+        line-height:1 !important;
     }
 
-    .resumen-table th,
-    .resumen-table td{
-        font-size:12px;
-        padding:9px 7px;
-    }
-
-    .col-concepto{
-        font-size:12px;
+    .score-leyenda{
+        font-size:8px !important;
+        line-height:1.02 !important;
+        letter-spacing:0 !important;
+        max-width:108px !important;
+        margin:0 auto !important;
+        transform:translateX(6px);
     }
 
     .btn-mostrar-inicial{
@@ -985,331 +976,31 @@ textarea{
     }
 }
 
-@media (max-width: 768px){
-    .marcador-wrap{
-        padding:10px 6px 6px !important;
+@media (max-width: 480px){
+    .menu{
+        min-height:72px;
     }
 
-    #marcadorGlobalContainer,
-    .marcador-global{
-        width:100% !important;
-        max-width:100% !important;
-        overflow:hidden !important;
-        border-radius:18px !important;
+    .menu a{
+        font-size:10px;
+        padding:6px 7px;
     }
 
-    #marcadorGlobalContainer .marcador-grid,
-    .marcador-grid{
-        grid-template-columns:1fr !important;
-        gap:12px !important;
-        min-height:auto !important;
-        padding:14px 10px 16px !important;
+    .cabecera-portada h1,
+    .cabecera-resultados h1{
+        font-size:23px;
     }
 
-    #marcadorGlobalContainer .equipo-panel,
-    .equipo-panel{
-        align-items:center !important;
-        text-align:center !important;
+    .bloque-jugada{
+        margin:16px 12px 14px;
     }
 
-    #marcadorGlobalContainer .equipo-head,
-    .equipo-head{
-        gap:10px !important;
-        justify-content:center !important;
-        flex-direction:row !important;
+    .detalle-votos{
+        flex-direction:column;
+        align-items:center;
     }
-
-    #marcadorGlobalContainer .equipo-nombre,
-    .equipo-nombre{
-        font-size:17px !important;
-        line-height:1.05 !important;
-    }
-
-    #marcadorGlobalContainer .escudo,
-    .escudo{
-        width:40px !important;
-        height:auto !important;
-    }
-
-    #marcadorGlobalContainer .subdatos,
-    .subdatos{
-        width:100% !important;
-        max-width:240px !important;
-        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
-        gap:8px !important;
-        justify-content:center !important;
-        margin:0 auto !important;
-    }
-
-    #marcadorGlobalContainer .mini-dato,
-    .mini-dato{
-        width:100% !important;
-        min-width:0 !important;
-        padding:6px 6px 5px !important;
-        border-radius:10px !important;
-    }
-
-    #marcadorGlobalContainer .mini-dato .et,
-    .mini-dato .et{
-        font-size:10px !important;
-        line-height:1.1 !important;
-    }
-
-    #marcadorGlobalContainer .mini-dato .vl,
-    .mini-dato .vl{
-        font-size:17px !important;
-        line-height:1 !important;
-    }
-
-    #marcadorGlobalContainer .total-global-wrap,
-    .total-global-wrap{
-        width:100% !important;
-        max-width:240px !important;
-        grid-template-columns:1fr !important;
-        gap:8px !important;
-        margin:0 auto !important;
-    }
-
-    #marcadorGlobalContainer .total-global,
-    .total-global{
-        width:100% !important;
-        min-width:0 !important;
-        padding:8px 8px !important;
-        border-radius:16px !important;
-    }
-
-    #marcadorGlobalContainer .total-global .et,
-    .total-global .et{
-        font-size:10px !important;
-    }
-
-    #marcadorGlobalContainer .total-global .vl,
-    .total-global .vl{
-        font-size:22px !important;
-        line-height:1 !important;
-    }
-
-    #marcadorGlobalContainer .marcador-centro,
-    .marcador-centro{
-        gap:8px !important;
-        padding-top:2px !important;
-    }
-
-    #marcadorGlobalContainer .marcador-titulo,
-    .marcador-titulo{
-        font-size:13px !important;
-        line-height:1.15 !important;
-    }
-
-    #marcadorGlobalContainer .score-box,
-    .score-box{
-        width:100% !important;
-        max-width:280px !important;
-        margin:0 auto !important;
-        padding:12px 10px !important;
-        gap:8px !important;
-        border-radius:18px !important;
-    }
-
-    #marcadorGlobalContainer .score,
-    .score{
-        font-size:34px !important;
-        line-height:1 !important;
-    }
-
-    #marcadorGlobalContainer .score-sep,
-    .score-sep{
-        font-size:22px !important;
-        line-height:1 !important;
-    }
-
-    #marcadorGlobalContainer .score-leyenda,
-    .score-leyenda{
-        max-width:260px !important;
-        margin:0 auto !important;
-        font-size:10px !important;
-        line-height:1.2 !important;
-    }
-}
-
-@media (max-width: 768px){
-    #marcadorGlobalContainer,
-    .marcador-global{
-        width:100% !important;
-        max-width:100% !important;
-    }
-
-    #marcadorGlobalContainer .marcador-grid,
-    .marcador-grid{
-        grid-template-columns:minmax(0, 1fr) 108px minmax(0, 1fr) !important;
-        gap:10px !important;
-        padding:10px 10px 12px !important;
-        align-items:start !important;
-    }
-
-    #marcadorGlobalContainer .equipo-panel.barca,
-    #marcadorGlobalContainer .equipo-panel.madrid,
-    .equipo-panel.barca,
-    .equipo-panel.madrid{
-        align-items:center !important;
-        text-align:center !important;
-    }
-
-    #marcadorGlobalContainer .equipo-panel.barca .equipo-head,
-    .equipo-panel.barca .equipo-head{
-        flex-direction:row-reverse !important;
-        gap:6px !important;
-        justify-content:center !important;
-    }
-
-    #marcadorGlobalContainer .equipo-head,
-    .equipo-head{
-        gap:6px !important;
-        justify-content:center !important;
-    }
-
-    #marcadorGlobalContainer .equipo-panel.madrid .equipo-head,
-    .equipo-panel.madrid .equipo-head{
-        flex-direction:row !important;
-    }
-
-    #marcadorGlobalContainer .escudo,
-    .escudo{
-        width:40px !important;
-    }
-
-    #marcadorGlobalContainer .equipo-nombre,
-    .equipo-nombre{
-        font-size:13px !important;
-        line-height:1 !important;
-        letter-spacing:0 !important;
-    }
-
-    #marcadorGlobalContainer .subdatos,
-    .subdatos{
-        width:100% !important;
-        max-width:100% !important;
-        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
-        gap:5px !important;
-        justify-content:stretch !important;
-    }
-
-    #marcadorGlobalContainer .subdatos .mini-dato:nth-child(3),
-    .subdatos .mini-dato:nth-child(3){
-        grid-column:1 / span 2 !important;
-        justify-self:stretch !important;
-    }
-
-    #marcadorGlobalContainer .mini-dato,
-    .mini-dato{
-        width:100% !important;
-        min-width:0 !important;
-        border-radius:10px !important;
-        padding:4px 3px 3px !important;
-    }
-
-    #marcadorGlobalContainer .mini-dato .et,
-    .mini-dato .et{
-        font-size:9px !important;
-        line-height:1 !important;
-        margin-bottom:1px !important;
-    }
-
-    #marcadorGlobalContainer .mini-dato .vl,
-    .mini-dato .vl{
-        font-size:18px !important;
-        line-height:1 !important;
-    }
-
-    #marcadorGlobalContainer .total-global-wrap,
-    .total-global-wrap{
-        width:100% !important;
-        grid-template-columns:1fr !important;
-        gap:5px !important;
-        margin-top:4px !important;
-    }
-
-    #marcadorGlobalContainer .total-global,
-    .total-global{
-        grid-column:1 !important;
-        min-width:0 !important;
-        width:100% !important;
-        padding:7px 6px !important;
-        border-radius:14px !important;
-    }
-
-    #marcadorGlobalContainer .total-global .et,
-    .total-global .et{
-        font-size:9px !important;
-        line-height:1 !important;
-    }
-
-    #marcadorGlobalContainer .total-global .vl,
-    .total-global .vl{
-        font-size:22px !important;
-        line-height:1 !important;
-    }
-
-    #marcadorGlobalContainer .marcador-centro,
-    .marcador-centro{
-        gap:5px !important;
-        justify-content:center !important;
-        align-self:center !important;
-        padding-top:16px !important;
-    }
-
-    #marcadorGlobalContainer .marcador-titulo,
-    .marcador-titulo{
-        font-size:10px !important;
-        line-height:1.05 !important;
-    }
-
-    #marcadorGlobalContainer .score-box,
-    .score-box{
-        width:100% !important;
-        padding:9px 6px !important;
-        border-radius:16px !important;
-        gap:4px !important;
-    }
-
-    #marcadorGlobalContainer .score,
-    .score{
-        font-size:34px !important;
-        line-height:1 !important;
-    }
-
-    #marcadorGlobalContainer .score-sep,
-    .score-sep{
-        font-size:20px !important;
-        line-height:1 !important;
-    }
-
-    #marcadorGlobalContainer .score-leyenda,
-    .score-leyenda{
-        font-size:8px !important;
-        line-height:1.02 !important;
-        letter-spacing:0 !important;
-        max-width:108px !important;
-        margin:0 auto !important;
-    }
-}
-
-@media (max-width: 768px){
-
-    .marcador-centro{
-        transform: translateX(-8px);
-    }
-
-    .marcador-titulo,
-    .score-leyenda{
-        transform: translateX(6px);
-    }
-
 }
 </style>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="decisionvar-data.js"></script>
 </head>
 
 <body>
@@ -1362,7 +1053,7 @@ textarea{
                                     <span class="et">Total Rojas</span>
                                     <span class="vl" id="marcador-barca-rojas">0</span>
                                 </div>
-                                <div class="mini-dato" style="grid-column:1 / span 2; justify-self:center;">
+                                <div class="mini-dato">
                                     <span class="et">Total Goles</span>
                                     <span class="vl" id="marcador-barca-goles">0</span>
                                 </div>
@@ -1401,7 +1092,7 @@ textarea{
                                     <span class="et">Total Rojas</span>
                                     <span class="vl" id="marcador-madrid-rojas">0</span>
                                 </div>
-                                <div class="mini-dato" style="grid-column:1 / span 2; justify-self:center;">
+                                <div class="mini-dato">
                                     <span class="et">Total Goles</span>
                                     <span class="vl" id="marcador-madrid-goles">0</span>
                                 </div>
@@ -1418,8 +1109,6 @@ textarea{
                     </div>
                 </div>
             </div>
-
-            
         </section>
 
     </div>
@@ -1427,10 +1116,63 @@ textarea{
 
 <script>
 const ultimasJugadasContainer = document.getElementById("ultimasJugadasContainer");
-const marcadorContainer = document.getElementById("marcadorGlobalContainer");
+const loadDataset = window.DecisionVarData && typeof window.DecisionVarData.loadDataset === "function"
+    ? window.DecisionVarData.loadDataset
+    : null;
+
+function ajustarOffsetSuperior(){
+    const cabecera = document.querySelector(".cabecera");
+    const menu = document.querySelector(".menu");
+    const contenido = document.querySelector(".contenido");
+
+    if(!cabecera || !menu || !contenido) return;
+
+    const altoCabecera = cabecera.offsetHeight || 0;
+    menu.style.top = altoCabecera + "px";
+
+    requestAnimationFrame(() => {
+        const altoMenu = menu.offsetHeight || 0;
+        contenido.style.marginTop = (altoCabecera + altoMenu) + "px";
+    });
+}
+
+window.addEventListener("load", ajustarOffsetSuperior);
+window.addEventListener("resize", ajustarOffsetSuperior);
+window.addEventListener("orientationchange", ajustarOffsetSuperior);
+
+if(document.fonts && document.fonts.ready){
+    document.fonts.ready.then(ajustarOffsetSuperior);
+}
+
+function escapeHtml(valor){
+    return String(valor ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+}
+
+function extraerNumero(valor){
+    if(typeof valor === "number" && Number.isFinite(valor)) return valor;
+    if(typeof valor === "string"){
+        const limpio = valor.replace(",", ".").match(/-?\d+(\.\d+)?/);
+        if(limpio) return Number(limpio[0]);
+    }
+    return null;
+}
+
+function extraerNumeroJornada(valor){
+    if(typeof valor === "number" && Number.isFinite(valor)) return valor;
+    if(typeof valor === "string"){
+        const m = valor.match(/\d+/);
+        if(m) return parseInt(m[0], 10);
+    }
+    return null;
+}
 
 function activarComentarios(scope = document){
-    scope.querySelectorAll(".comentarios-box").forEach(box=>{
+    scope.querySelectorAll(".comentarios-box, .seccion-comentarios").forEach(box=>{
         const comentarios = box.querySelectorAll(".comentario");
         const btnMostrarInicial = box.querySelector(".btn-mostrar-inicial");
         const btnMostrarMas = box.querySelector(".btn-mostrar-mas");
@@ -1451,11 +1193,9 @@ function activarComentarios(scope = document){
             }
 
             if(btnMostrarMas){
-                if(visibles > 0 && visibles < comentarios.length){
-                    btnMostrarMas.style.display = "inline-block";
-                }else{
-                    btnMostrarMas.style.display = "none";
-                }
+                btnMostrarMas.style.display = (visibles > 0 && visibles < comentarios.length)
+                    ? "inline-block"
+                    : "none";
             }
         }
 
@@ -1486,11 +1226,11 @@ function activarComentarios(scope = document){
             const contador = btn.nextElementSibling;
             if(!contador) return;
 
-            let num = parseInt(contador.textContent) || 0;
+            let num = parseInt(contador.textContent, 10) || 0;
 
             if(btn.classList.contains("activo")){
                 btn.classList.remove("activo");
-                contador.textContent = num - 1;
+                contador.textContent = Math.max(0, num - 1);
             }else{
                 btn.classList.add("activo");
                 contador.textContent = num + 1;
@@ -1499,81 +1239,343 @@ function activarComentarios(scope = document){
     });
 }
 
-fetch("jugadas-polemicas.html")
-    .then(res => {
-        if(!res.ok) throw new Error("No se pudo abrir jugadas-polemicas.html");
-        return res.text();
-    })
-    .then(html => {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, "text/html");
-        const jugadas = [...doc.querySelectorAll(".bloque-jugada")];
+function esObjeto(v){
+    return v && typeof v === "object" && !Array.isArray(v);
+}
 
-        if(!jugadas.length){
-            throw new Error("No hay jugadas");
+function recolectarArrays(obj, profundidad = 0, maxProfundidad = 5, out = []){
+    if(profundidad > maxProfundidad || obj == null) return out;
+
+    if(Array.isArray(obj)){
+        out.push(obj);
+        for(const item of obj){
+            if(esObjeto(item) || Array.isArray(item)){
+                recolectarArrays(item, profundidad + 1, maxProfundidad, out);
+            }
         }
+        return out;
+    }
 
-        const jornadas = jugadas
-            .map(j => parseInt(j.dataset.jornada, 10))
-            .filter(n => !isNaN(n));
-
-        if(!jornadas.length){
-            throw new Error("No hay jornadas válidas");
+    if(esObjeto(obj)){
+        for(const val of Object.values(obj)){
+            if(esObjeto(val) || Array.isArray(val)){
+                recolectarArrays(val, profundidad + 1, maxProfundidad, out);
+            }
         }
+    }
 
-        const ultimaJornada = Math.max(...jornadas);
-        const jugadasUltimaJornada = jugadas.filter(j => parseInt(j.dataset.jornada, 10) === ultimaJornada);
+    return out;
+}
 
-        ultimasJugadasContainer.innerHTML = jugadasUltimaJornada.map(j => j.outerHTML).join("");
-        activarComentarios(ultimasJugadasContainer);
-    })
-    .catch(() => {
+function pareceJugada(item){
+    if(!esObjeto(item)) return false;
+
+    const keys = Object.keys(item).map(k => k.toLowerCase());
+    return keys.some(k =>
+        k.includes("jornada") ||
+        k.includes("partido") ||
+        k.includes("titulo") ||
+        k.includes("descrip") ||
+        k.includes("imagen") ||
+        k.includes("foto") ||
+        k.includes("equipo") ||
+        k.includes("minuto") ||
+        k.includes("tipo")
+    );
+}
+
+function obtenerJugadasDesdeDataset(data){
+    const arrays = recolectarArrays(data);
+    const candidatos = arrays
+        .map(arr => arr.filter(pareceJugada))
+        .filter(arr => arr.length);
+
+    if(!candidatos.length) return [];
+
+    candidatos.sort((a,b) => b.length - a.length);
+    return candidatos[0];
+}
+
+function resolverStats(item){
+    let si = extraerNumero(
+        item.porcentajeSi ?? item.porcentaje_si ?? item.siPorcentaje ?? item.si_porcentaje ??
+        item.resultadoSi ?? item.resultado_si ?? item.si ?? item.votosSi ?? item.votos_si
+    );
+
+    let no = extraerNumero(
+        item.porcentajeNo ?? item.porcentaje_no ?? item.noPorcentaje ?? item.no_porcentaje ??
+        item.resultadoNo ?? item.resultado_no ?? item.no ?? item.votosNo ?? item.votos_no
+    );
+
+    if(si == null && no == null) return null;
+
+    if(si == null && no != null) si = 100 - no;
+    if(no == null && si != null) no = 100 - si;
+
+    if(si == null || no == null) return null;
+
+    if(si > 100 || no > 100){
+        const total = si + no;
+        if(total > 0){
+            si = Math.round((si / total) * 100);
+            no = 100 - si;
+        }
+    }else{
+        si = Math.round(si);
+        no = Math.round(no);
+        const suma = si + no;
+        if(suma !== 100 && suma > 0){
+            si = Math.round((si / suma) * 100);
+            no = 100 - si;
+        }
+    }
+
+    si = Math.max(0, Math.min(100, si));
+    no = Math.max(0, Math.min(100, no));
+
+    return {
+        si,
+        no,
+        texto: si >= 50 ? "La mayoría cree que SÍ" : "La mayoría cree que NO"
+    };
+}
+
+function capitalizar(texto){
+    const t = String(texto || "").trim();
+    if(!t) return "";
+    return t.charAt(0).toUpperCase() + t.slice(1);
+}
+
+function crearHtmlJugada(item){
+    const jornadaRaw = item.jornada ?? item.numeroJornada ?? item.matchday ?? item.round ?? "";
+    const jornadaNum = extraerNumeroJornada(jornadaRaw);
+    const jornadaTexto = jornadaNum != null ? `Jornada ${jornadaNum}` : (jornadaRaw || "Jornada");
+
+    const titulo = item.titulo
+        || item.title
+        || item.nombre
+        || item.jugada
+        || item.tipo_jugada
+        || (item.tipo ? `Jugada: ${capitalizar(item.tipo)}` : "Jugada polémica");
+
+    const partido = item.partido
+        || item.encuentro
+        || item.match
+        || [item.equipoLocal, item.equipoVisitante].filter(Boolean).join(" - ")
+        || [item.local, item.visitante].filter(Boolean).join(" - ")
+        || "Partido no indicado";
+
+    const minuto = item.minuto != null ? ` · Min. ${escapeHtml(item.minuto)}` : "";
+    const subtitulo = `${escapeHtml(partido)}${minuto}`;
+
+    const descripcion = item.descripcion
+        || item.detalle
+        || item.resumen
+        || item.texto
+        || item.explicacion
+        || "Sin descripción disponible.";
+
+    const imagen = item.imagen
+        || item.urlImagen
+        || item.foto
+        || item.image
+        || item.src
+        || "cabecera.png";
+
+    const stats = resolverStats(item);
+
+    const panelResultado = stats
+        ? `
+            <div class="resultado-box">
+                <div class="resultado-porcentaje">${stats.si}%</div>
+                <div class="resultado-texto">${escapeHtml(stats.texto)}</div>
+                <div class="barra-resultado">
+                    <div class="barra-si" style="width:${stats.si}%"></div>
+                    <div class="barra-no" style="width:${stats.no}%"></div>
+                </div>
+                <div class="detalle-votos">
+                    <span>SÍ: ${stats.si}%</span>
+                    <span>NO: ${stats.no}%</span>
+                </div>
+            </div>
+        `
+        : `
+            <div class="resultado-box">
+                <div class="sin-votos">
+                    Datos de votación no disponibles en el dataset.<br>
+                    Puedes votar en la página completa de jugadas polémicas.
+                </div>
+            </div>
+        `;
+
+    return `
+        <div class="bloque-jugada" data-jornada="${escapeHtml(jornadaNum ?? "")}">
+            <div class="etiqueta-jornada">${escapeHtml(jornadaTexto)}</div>
+
+            <div class="jugada-principal">
+                <div class="cabecera-jugada">
+                    <h2>${escapeHtml(titulo)}</h2>
+                    <p>${subtitulo}</p>
+                </div>
+
+                <div class="zona-superior">
+                    <div class="columna-izquierda">
+                        <div class="imagen-jugada">
+                            <img src="${escapeHtml(imagen)}" alt="${escapeHtml(titulo)}" loading="lazy">
+                        </div>
+
+                        <div class="descripcion-jugada">
+                            ${escapeHtml(descripcion)}
+                        </div>
+                    </div>
+
+                    <div class="panel-votacion">
+                        <div class="panel-votacion-top">
+                            <h3>Resultado</h3>
+                            <p>Resumen disponible para esta jugada.</p>
+                        </div>
+
+                        <div class="botones-voto">
+                            <button class="btn-voto" type="button">Ver en Jugadas Polémicas</button>
+                        </div>
+
+                        ${panelResultado}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function renderJugadasDesdeHtml(html){
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+    const jugadas = [...doc.querySelectorAll(".bloque-jugada")];
+
+    if(!jugadas.length){
+        throw new Error("No hay bloques .bloque-jugada en jugadas-polemicas.html");
+    }
+
+    const jornadas = jugadas
+        .map(j => parseInt(j.dataset.jornada, 10))
+        .filter(n => !isNaN(n));
+
+    if(!jornadas.length){
+        throw new Error("No hay jornadas válidas en jugadas-polemicas.html");
+    }
+
+    const ultimaJornada = Math.max(...jornadas);
+    const jugadasUltimaJornada = jugadas.filter(j => parseInt(j.dataset.jornada, 10) === ultimaJornada);
+
+    if(!jugadasUltimaJornada.length){
+        throw new Error("No hay jugadas en la última jornada");
+    }
+
+    ultimasJugadasContainer.innerHTML = jugadasUltimaJornada.map(j => j.outerHTML).join("");
+    activarComentarios(ultimasJugadasContainer);
+}
+
+function renderJugadasDesdeDataset(data){
+    const jugadas = obtenerJugadasDesdeDataset(data);
+
+    if(!jugadas.length){
+        throw new Error("El dataset no contiene jugadas reconocibles");
+    }
+
+    const jornadasValidas = jugadas
+        .map(j => extraerNumeroJornada(j.jornada ?? j.numeroJornada ?? j.matchday ?? j.round))
+        .filter(n => n != null && !isNaN(n));
+
+    if(!jornadasValidas.length){
+        throw new Error("No se pudo detectar la jornada de las jugadas");
+    }
+
+    const ultimaJornada = Math.max(...jornadasValidas);
+
+    const jugadasUltima = jugadas.filter(j => {
+        const n = extraerNumeroJornada(j.jornada ?? j.numeroJornada ?? j.matchday ?? j.round);
+        return n === ultimaJornada;
+    });
+
+    if(!jugadasUltima.length){
+        throw new Error("No hay jugadas para la última jornada detectada");
+    }
+
+    ultimasJugadasContainer.innerHTML = jugadasUltima.map(crearHtmlJugada).join("");
+}
+
+async function cargarUltimasJugadas(){
+    ultimasJugadasContainer.innerHTML = `<div class="caja-cargando">Cargando jugadas de la última jornada...</div>`;
+
+    try{
+        const res = await fetch("jugadas-polemicas.html?ts=" + Date.now(), { cache: "no-store" });
+        if(res.ok){
+            const html = await res.text();
+            renderJugadasDesdeHtml(html);
+            return;
+        }
+    }catch(e){}
+
+    try{
+        if(!loadDataset){
+            throw new Error("DecisionVarData.loadDataset no está disponible");
+        }
+        const data = await loadDataset();
+        renderJugadasDesdeDataset(data);
+        return;
+    }catch(e){
         ultimasJugadasContainer.innerHTML = `
             <div class="caja-error">
                 No se pudieron cargar automáticamente las jugadas de la última jornada.
-                Abre la web con Live Server en Visual Studio Code.
+                Revisa que <strong>jugadas-polemicas.html</strong> y <strong>decisionvar-data.js</strong> estén en la ruta correcta.
             </div>
         `;
-    });
-
-
-
-const { loadDataset } = window.DecisionVarData;
+    }
+}
 
 function setVal(id,v){
-    const el=document.getElementById(id);
-    if(el) el.textContent=v;
+    const el = document.getElementById(id);
+    if(el) el.textContent = v;
 }
 
 function renderMarker(bloques){
-    const map={};
-    bloques.forEach(b=>map[b.key]=b);
+    const map = {};
+    bloques.forEach(b => map[b.key] = b);
 
-    setVal('marcador-barca-penaltis', map.penalti?.barca||0);
-    setVal('marcador-barca-goles', map.gol?.barca||0);
-    setVal('marcador-barca-rojas', map.roja?.barca||0);
-    setVal('marcador-madrid-penaltis', map.penalti?.madrid||0);
-    setVal('marcador-madrid-goles', map.gol?.madrid||0);
-    setVal('marcador-madrid-rojas', map.roja?.madrid||0);
+    setVal("marcador-barca-penaltis", map.penalti?.barca || 0);
+    setVal("marcador-barca-goles", map.gol?.barca || 0);
+    setVal("marcador-barca-rojas", map.roja?.barca || 0);
+    setVal("marcador-madrid-penaltis", map.penalti?.madrid || 0);
+    setVal("marcador-madrid-goles", map.gol?.madrid || 0);
+    setVal("marcador-madrid-rojas", map.roja?.madrid || 0);
 
-    const tb=(map.penalti?.barca||0)+(map.gol?.barca||0)+(map.roja?.barca||0);
-    const tm=(map.penalti?.madrid||0)+(map.gol?.madrid||0)+(map.roja?.madrid||0);
+    const tb = (map.penalti?.barca || 0) + (map.gol?.barca || 0) + (map.roja?.barca || 0);
+    const tm = (map.penalti?.madrid || 0) + (map.gol?.madrid || 0) + (map.roja?.madrid || 0);
 
-    setVal('marcador-barca-total',tb);
-    setVal('marcador-madrid-total',tm);
-    setVal('marcador-score-barca',tb);
-    setVal('marcador-score-madrid',tm);
+    setVal("marcador-barca-total", tb);
+    setVal("marcador-madrid-total", tm);
+    setVal("marcador-score-barca", tb);
+    setVal("marcador-score-madrid", tm);
 }
 
-loadDataset()
-    .then(data => renderMarker(data.resumenBloques || []))
-    .catch(() => {
+async function cargarMarcador(){
+    try{
+        if(!loadDataset){
+            throw new Error("DecisionVarData.loadDataset no está disponible");
+        }
+
+        const data = await loadDataset();
+        renderMarker(data.resumenBloques || []);
+    }catch(e){
         const box = document.getElementById("marcadorGlobal");
         if(box){
             box.outerHTML = '<div class="caja-error">No se pudo cargar el marcador global.</div>';
         }
-    });
+    }
+}
 
+cargarUltimasJugadas();
+cargarMarcador();
 </script>
 
 </body>

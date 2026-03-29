@@ -1096,6 +1096,10 @@ html{
 
 
 @media (max-width: 768px){
+    .bloque-verticales{
+        grid-template-columns:1fr !important;
+    }
+
     .grafico-jornadas-box{
         padding:10px 8px 10px !important;
         border-radius:14px !important;
@@ -1853,6 +1857,12 @@ function renderHorizontales(bloques){
         function line(val, cls, img){
             const width = Math.round(Math.abs(val) / max * 50);
             const left = val >= 0 ? 50 : 50 - width;
+            const valorTexto = `${val > 0 ? '+' : ''}${val}`;
+            const estiloValor = val > 0
+                ? `left:calc(${left + width}% + 6px); transform:translateY(-50%);`
+                : val < 0
+                    ? `left:calc(${left}% - 6px); transform:translate(-100%, -50%);`
+                    : `left:calc(50% + 8px); transform:translateY(-50%);`;
 
             return `
                 <div class="linea-equipo">
@@ -1862,8 +1872,8 @@ function renderHorizontales(bloques){
                     <div class="pista">
                         <div class="cero"></div>
                         <div class="relleno ${cls}" style="left:${left}%;width:${width}%;"></div>
-                        <div class="valor-final ${val>0?'pos':(val<0?'neg':'neu')}" style="${val>=0?'left':'right'}:calc(${val>=0?left+width:left}% + 6px);">
-                            ${val>0?'+':''}${val}
+                        <div class="valor-final ${val>0?'pos':(val<0?'neg':'neu')}" style="${estiloValor}">
+                            ${valorTexto}
                         </div>
                     </div>
                 </div>
@@ -1907,12 +1917,106 @@ function crearGraficoVertical(id, item){
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    top: 24,
+                    bottom: 24,
+                    left: 8,
+                    right: 8
+                }
+            },
+            scales: {
+                y: {
+                    grace: "18%",
+                    ticks: {
+                        stepSize: 1,
+                        color: "#eef4ff",
+                        font: {
+                            size: 12,
+                            weight: "700"
+                        }
+                    },
+                    grid: {
+                        color: "rgba(255,255,255,0.12)"
+                    },
+                    border: {
+                        color: "rgba(255,255,255,0.22)"
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: "#eef4ff",
+                        font: {
+                            size: 12,
+                            weight: "700"
+                        }
+                    },
+                    grid: {
+                        display: false
+                    },
+                    border: {
+                        color: "rgba(255,255,255,0.22)"
+                    }
+                }
+            },
             plugins: {
-                legend: { display: false }
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context){
+                            const v = context.raw;
+                            return `${context.dataset.label}: ${v > 0 ? "+" + v : v}`;
+                        }
+                    }
+                }
             }
-        }
+        },
+        plugins: [pluginValoresBarrasVerticales]
     });
 }
+
+const pluginValoresBarrasVerticales = {
+    id: "pluginValoresBarrasVerticales",
+    afterDatasetsDraw(chart){
+        const { ctx, chartArea } = chart;
+        if(!chartArea) return;
+
+        ctx.save();
+        ctx.font = '800 16px "Barlow Condensed", sans-serif';
+        ctx.textAlign = "center";
+        ctx.shadowColor = "rgba(0,0,0,0.45)";
+        ctx.shadowBlur = 6;
+
+        chart.data.datasets.forEach((dataset, datasetIndex) => {
+            const meta = chart.getDatasetMeta(datasetIndex);
+
+            meta.data.forEach((bar, index) => {
+                const valor = Number(dataset.data[index] || 0);
+                const texto = valor > 0 ? `+${valor}` : `${valor}`;
+                const x = bar.x;
+                let y;
+
+                if(valor > 0){
+                    y = Math.max(chartArea.top + 14, bar.y - 12);
+                    ctx.textBaseline = "bottom";
+                    ctx.fillStyle = "#18c468";
+                }else if(valor < 0){
+                    y = Math.min(chartArea.bottom - 14, bar.y + 12);
+                    ctx.textBaseline = "top";
+                    ctx.fillStyle = "#ff4f4f";
+                }else{
+                    y = bar.y - 12;
+                    ctx.textBaseline = "bottom";
+                    ctx.fillStyle = "#ffffff";
+                }
+
+                ctx.fillText(texto, x, y);
+            });
+        });
+
+        ctx.restore();
+    }
+};
 
 const pluginValoresFinalBarraJornadas = {
     id: "pluginValoresFinalBarraJornadas",
