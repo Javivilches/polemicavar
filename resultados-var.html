@@ -1901,6 +1901,38 @@ const { loadDataset, getComments, addComment, escapeHtml, formatDate } = window.
 function setVal(id,v){ const el=document.getElementById(id); if(el) el.textContent=v; }
 function classBalance(v){ return v>0?'valor-pos':(v<0?'valor-neg':'valor-neutro'); }
 function totalCat(obj){ return Object.values(obj).reduce((a,b)=>({total:a.total+b.total, si:a.si+b.si, no:a.no+b.no, balance:a.balance+b.balance}), {total:0,si:0,no:0,balance:0}); }
+function convertirResumenAVeredictos(resumenOriginal){
+    const resumen = JSON.parse(JSON.stringify(resumenOriginal));
+
+    ['barcelona','madrid'].forEach(team=>{
+        ['penalti','gol','roja'].forEach(cat=>{
+            Object.keys(resumen[team][cat]).forEach(sub=>{
+                const bloque = resumen[team][cat][sub];
+
+                const votosSi = Number(bloque.si || 0);
+                const votosNo = Number(bloque.no || 0);
+                const totalJugadas = Number(bloque.total || 0);
+
+                let jugadasBien = 0;
+                let jugadasMal = 0;
+
+                if(totalJugadas > 0){
+                    if(votosSi > votosNo){
+                        jugadasBien = totalJugadas;
+                    }else if(votosNo > votosSi){
+                        jugadasMal = totalJugadas;
+                    }
+                }
+
+                bloque.si = jugadasBien;
+                bloque.no = jugadasMal;
+                bloque.balance = jugadasMal - jugadasBien;
+            });
+        });
+    });
+
+    return resumen;
+}
 function renderTeam(teamKey,prefix,resumen){ ['penalti','gol','roja'].forEach(cat=>{ const catObj=resumen[teamKey][cat]; Object.entries(catObj).forEach(([sub,b])=>{ setVal(`${prefix}-${cat}-${sub}-total`, b.total); setVal(`${prefix}-${cat}-${sub}-si`, b.si); setVal(`${prefix}-${cat}-${sub}-no`, b.no); const el=document.getElementById(`${prefix}-${cat}-${sub}-balance`); if(el){ el.textContent=b.balance>0?`+${b.balance}`:String(b.balance); el.className=classBalance(b.balance); } }); const t=totalCat(catObj); setVal(`${prefix}-${cat}-total-total`, t.total); setVal(`${prefix}-${cat}-total-si`, t.si); setVal(`${prefix}-${cat}-total-no`, t.no); const el=document.getElementById(`${prefix}-${cat}-total-balance`); if(el){ el.textContent=t.balance>0?`+${t.balance}`:String(t.balance); el.className=classBalance(t.balance);} }); }
 function renderMarker(bloques){ const map={}; bloques.forEach(b=>map[b.key]=b); setVal('marcador-barca-penaltis', map.penalti?.barca||0); setVal('marcador-barca-goles', map.gol?.barca||0); setVal('marcador-barca-rojas', map.roja?.barca||0); setVal('marcador-madrid-penaltis', map.penalti?.madrid||0); setVal('marcador-madrid-goles', map.gol?.madrid||0); setVal('marcador-madrid-rojas', map.roja?.madrid||0); const tb=(map.penalti?.barca||0)+(map.gol?.barca||0)+(map.roja?.barca||0); const tm=(map.penalti?.madrid||0)+(map.gol?.madrid||0)+(map.roja?.madrid||0); setVal('marcador-barca-total',tb); setVal('marcador-madrid-total',tm); setVal('marcador-score-barca',tb); setVal('marcador-score-madrid',tm); }
 async function initComments(){ const list=document.getElementById('listaComentariosResultadosVar'); const count=document.getElementById('contadorComentariosResultadosVar'); const ta=document.getElementById('textoComentarioResultadosVar'); const btnPub=document.getElementById('btnPublicarComentarioResultadosVar'); const btnShow=document.getElementById('btnMostrarComentariosResultadosVar'); const btnMore=document.getElementById('btnMostrarMasResultadosVar'); const btnHide=document.getElementById('btnOcultarComentariosResultadosVar'); let visibles=0, comments=[]; async function reload(){ try{ comments=await getComments('resultados',''); }catch(e){ comments=[]; } count.textContent=`${comments.length} comentarios`; list.innerHTML=''; comments.slice(0,visibles).forEach(c=>{ const div=document.createElement('div'); div.className='comentario-item visible'; div.innerHTML=`<div class="comentario-cabecera-item"><span class="comentario-autor">${escapeHtml(c.autor||'Usuario')}</span><span class="comentario-fecha">${escapeHtml(formatDate(c.created_at))}</span></div><div class="comentario-texto">${escapeHtml(c.texto||'')}</div>`; list.appendChild(div); }); btnShow.style.display=comments.length>0&&visibles===0?'inline-block':'none'; btnHide.style.display=visibles>0?'inline-block':'none'; btnMore.style.display=visibles>0&&visibles<comments.length?'inline-block':'none'; } btnPub.onclick=async()=>{ const txt=ta.value.trim(); if(!txt) return; await addComment('resultados',txt,''); ta.value=''; visibles=Math.max(visibles,5); await reload();}; btnShow.onclick=()=>{ visibles=5; reload();}; btnMore.onclick=()=>{ visibles+=5; reload();}; btnHide.onclick=()=>{ visibles=0; reload();}; reload(); }
