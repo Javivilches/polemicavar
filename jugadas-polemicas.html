@@ -96,7 +96,7 @@ body{
     color:white;
 }
 
-/* Jugadas polémicas (lo dejamos como estaba) */
+/* Jugadas polémicas */
 .menu a:nth-child(2){
     color:white;
 }
@@ -831,7 +831,6 @@ textarea{
     }
 }
 
-
 /* ===== AJUSTES EXTRA MOVIL ===== */
 @media (max-width: 768px){
     .cabecera{
@@ -887,8 +886,6 @@ textarea{
         font-size:22px !important;
     }
 }
-
-
 
 /* ===== AJUSTE FINAL MOVIL MENU + MARCADOR ===== */
 @media (max-width: 768px){
@@ -1111,7 +1108,6 @@ textarea{
         margin:0 auto !important;
     }
 }
-
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1217,7 +1213,6 @@ textarea{
     </div>
 </div>
 
-
 <script>
 const { escapeHtml, loadDataset, getComments, addComment, addVote, getUserVote, setUserVote, formatDate } = window.DecisionVarData;
 const filtroJornada = document.getElementById("filtroJornada");
@@ -1236,62 +1231,448 @@ function quitarDuplicados(lista){ return [...new Set(lista.filter(Boolean))]; }
 function combinacionesCarpetaJornada(jornada){ const j=extraerNumeroJornada(jornada); return [`Jornada-${j}`,`Jornada ${j}`,`jornada-${j}`,`jornada ${j}`]; }
 function rutasImagenSlug(jornada, slug){ const s=limpiarSlug(slug); if(!s) return []; const bases=['Imagenes','imagenes']; const carpetas=combinacionesCarpetaJornada(jornada); const exts=['png','jpg','jpeg','webp','PNG','JPG','JPEG','WEBP']; const rutas=[]; for(const b of bases){ for(const c of carpetas){ for(const e of exts){ rutas.push(`${b}/${c}/${encodeURIComponent(s)}.${e}`); } } } return quitarDuplicados(rutas); }
 function rutasVideoTxt(jornada, slug){ const s=limpiarSlug(slug); if(!s) return []; const bases=['Videos','videos']; const carpetas=combinacionesCarpetaJornada(jornada); const rutas=[]; for(const b of bases){ for(const c of carpetas){ rutas.push(`${b}/${c}/${encodeURIComponent(s)}.txt`); rutas.push(`${b}/${c}/${encodeURIComponent(s)}.TXT`);} } return quitarDuplicados(rutas); }
-async function primerTextoDisponible(rutas){ for(const ruta of rutas){ try{ const resp=await fetch(ruta,{cache:'no-store'}); if(resp.ok){ const txt=(await resp.text()).trim(); if(txt) return txt; } }catch(e){} } return ''; }
-function asignarImagenConFallback(img, rutas){ let i=0; function next(){ if(i>=rutas.length){ img.src='data:image/svg+xml;utf8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700"><rect width="100%" height="100%" fill="#23324b"/><text x="50%" y="48%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="34" fill="#dbe6ff">Imagen pendiente</text></svg>`); img.onerror=null; return;} img.src=rutas[i++]; } img.onerror=next; next(); }
-function extraerYouTubeId(url){ try{ const u=new URL(url); if(u.hostname.includes('youtu.be')) return u.pathname.replace('/','').trim(); if(u.searchParams.get('v')) return u.searchParams.get('v').trim(); const p=u.pathname.split('/').filter(Boolean); const i=p.indexOf('embed'); if(i!==-1&&p[i+1]) return p[i+1].trim(); const s=p.indexOf('shorts'); if(s!==-1&&p[s+1]) return p[s+1].trim(); }catch{} return ''; }
-function construirNodoVideo(url){ const limpia=(url||'').trim(); if(!limpia) return ''; const lower=limpia.toLowerCase(); if(lower.includes('youtube.com')||lower.includes('youtu.be')){ const id=extraerYouTubeId(limpia); if(id) return `<div class="video-principal-wrap"><iframe src="https://www.youtube.com/embed/${id}" title="Vídeo de la jugada" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`; }
-if(/\.(mp4|webm|ogg)(\?.*)?$/i.test(limpia)) return `<div class="video-principal-wrap"><video controls preload="metadata" playsinline><source src="${escapeHtml(limpia)}"></video></div>`;
-if(lower.includes('tiktok.com')) return `<div class="video-principal-wrap" style="display:flex;align-items:center;justify-content:center;padding:22px;box-sizing:border-box;background:linear-gradient(135deg,#0e1a2c,#1d3761);"><div style="text-align:center;color:#fff;max-width:420px;"><div style="font-size:24px;font-weight:800;margin-bottom:10px;">Vídeo alojado en TikTok</div><a href="${escapeHtml(limpia)}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:11px 18px;border-radius:10px;background:linear-gradient(90deg,#9b0f2e,#c61d44);color:#fff;text-decoration:none;font-weight:700;font-size:14px;">Ver vídeo en TikTok</a></div></div>`;
-return `<div class="video-principal-wrap" style="display:flex;align-items:center;justify-content:center;color:white;padding:20px;text-align:center;"><div><a href="${escapeHtml(limpia)}" target="_blank" rel="noopener noreferrer" style="color:#8eb8ff;font-weight:bold;">Abrir vídeo</a></div></div>`; }
-const modalImagen=document.getElementById('modalImagen'), modalImagenImg=document.getElementById('modalImagenImg'), modalImagenLienzo=document.getElementById('modalImagenLienzo');
+
+async function primerTextoDisponible(rutas){
+    for(const ruta of rutas){
+        try{
+            const resp = await fetch(ruta,{cache:'no-store'});
+            if(resp.ok){
+                const txt = (await resp.text()).trim();
+                if(txt) return txt;
+            }
+        }catch(e){}
+    }
+    return '';
+}
+
+function asignarImagenConFallback(img, rutas){
+    let i=0;
+    function next(){
+        if(i>=rutas.length){
+            img.src='data:image/svg+xml;utf8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700"><rect width="100%" height="100%" fill="#23324b"/><text x="50%" y="48%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="34" fill="#dbe6ff">Imagen pendiente</text></svg>`);
+            img.onerror=null;
+            return;
+        }
+        img.src=rutas[i++];
+    }
+    img.onerror=next;
+    next();
+}
+
+function extraerYouTubeId(url){
+    try{
+        const u=new URL(url);
+        if(u.hostname.includes('youtu.be')) return u.pathname.replace('/','').trim();
+        if(u.searchParams.get('v')) return u.searchParams.get('v').trim();
+        const p=u.pathname.split('/').filter(Boolean);
+        const i=p.indexOf('embed');
+        if(i!==-1&&p[i+1]) return p[i+1].trim();
+        const s=p.indexOf('shorts');
+        if(s!==-1&&p[s+1]) return p[s+1].trim();
+    }catch{}
+    return '';
+}
+
+function construirNodoVideo(url){
+    const limpia=(url||'').trim();
+    if(!limpia) return '';
+    const lower=limpia.toLowerCase();
+
+    if(lower.includes('youtube.com')||lower.includes('youtu.be')){
+        const id=extraerYouTubeId(limpia);
+        if(id){
+            return `<div class="video-principal-wrap"><iframe src="https://www.youtube.com/embed/${id}" title="Vídeo de la jugada" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`;
+        }
+    }
+
+    if(/\.(mp4|webm|ogg)(\?.*)?$/i.test(limpia)){
+        return `<div class="video-principal-wrap"><video controls preload="metadata" playsinline><source src="${escapeHtml(limpia)}"></video></div>`;
+    }
+
+    if(lower.includes('tiktok.com')){
+        return `<div class="video-principal-wrap" style="display:flex;align-items:center;justify-content:center;padding:22px;box-sizing:border-box;background:linear-gradient(135deg,#0e1a2c,#1d3761);"><div style="text-align:center;color:#fff;max-width:420px;"><div style="font-size:24px;font-weight:800;margin-bottom:10px;">Vídeo alojado en TikTok</div><a href="${escapeHtml(limpia)}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:11px 18px;border-radius:10px;background:linear-gradient(90deg,#9b0f2e,#c61d44);color:#fff;text-decoration:none;font-weight:700;font-size:14px;">Ver vídeo en TikTok</a></div></div>`;
+    }
+
+    return `<div class="video-principal-wrap" style="display:flex;align-items:center;justify-content:center;color:white;padding:20px;text-align:center;"><div><a href="${escapeHtml(limpia)}" target="_blank" rel="noopener noreferrer" style="color:#8eb8ff;font-weight:bold;">Abrir vídeo</a></div></div>`;
+}
+
+const modalImagen=document.getElementById('modalImagen');
+const modalImagenImg=document.getElementById('modalImagenImg');
+const modalImagenLienzo=document.getElementById('modalImagenLienzo');
+
 let escalaModal=1, tx=0, ty=0, dragging=false, startX=0, startY=0, ox=0, oy=0;
-function applyModal(){ modalImagenImg.style.transform=`translate(${tx}px, ${ty}px) scale(${escalaModal})`; modalImagenLienzo.classList.toggle('arrastrando',dragging); }
+
+function applyModal(){
+    modalImagenImg.style.transform=`translate(${tx}px, ${ty}px) scale(${escalaModal})`;
+    modalImagenLienzo.classList.toggle('arrastrando',dragging);
+}
 function resetModal(){ escalaModal=1; tx=0; ty=0; applyModal(); }
 function openModal(src){ modalImagenImg.src=src; resetModal(); modalImagen.classList.add('activo'); }
 function closeModal(){ modalImagen.classList.remove('activo'); modalImagenImg.src=''; resetModal(); }
-document.getElementById('cerrarModalImagen').onclick=closeModal; modalImagen.onclick=(e)=>{ if(e.target===modalImagen) closeModal(); };
+
+document.getElementById('cerrarModalImagen').onclick=closeModal;
+modalImagen.onclick=(e)=>{ if(e.target===modalImagen) closeModal(); };
 document.getElementById('modalZoomMas').onclick=()=>{ escalaModal=Math.min(escalaModal+0.2,5); applyModal(); };
 document.getElementById('modalZoomMenos').onclick=()=>{ escalaModal=Math.max(escalaModal-0.2,1); if(escalaModal===1){tx=0;ty=0;} applyModal(); };
 document.getElementById('modalZoomReset').onclick=resetModal;
-modalImagenLienzo.addEventListener('mousedown',(e)=>{ if(escalaModal<=1) return; dragging=true; startX=e.clientX; startY=e.clientY; ox=tx; oy=ty; applyModal(); e.preventDefault();});
-window.addEventListener('mousemove',(e)=>{ if(!dragging) return; tx=ox+(e.clientX-startX); ty=oy+(e.clientY-startY); applyModal(); });
-window.addEventListener('mouseup',()=>{ dragging=false; applyModal(); });
-document.addEventListener('keydown',(e)=>{ if(e.key==='Escape' && modalImagen.classList.contains('activo')) closeModal(); });
 
-function initMedia(article){ const visor=article.querySelector('.visor-media'), galeria=article.querySelector('.galeria-miniaturas'); const btnMas=article.querySelector('.zoom-mas'), btnMenos=article.querySelector('.zoom-menos'), btnReset=article.querySelector('.zoom-reset'), btnExpandir=article.querySelector('.zoom-expandir'); let escala=1, tipoActual='', media=[];
- function apply(){ const img=visor.querySelector('img'); if(img) img.style.transform=`scale(${escala})`; }
- function updateButtons(){ const show=tipoActual==='imagen'; [btnMas,btnMenos,btnReset,btnExpandir].forEach(b=>b.classList.toggle('oculto',!show)); }
- function render(i){ const item=media[i]; if(!item) return; [...galeria.children].forEach(m=>m.classList.remove('activa')); if(galeria.children[i]) galeria.children[i].classList.add('activa'); escala=1; if(item.tipo==='video'){ tipoActual='video'; visor.innerHTML=construirNodoVideo(item.url); updateButtons(); return; } tipoActual='imagen'; visor.innerHTML='<img class="imagen-principal" alt="Jugada polémica">'; const img=visor.querySelector('img'); asignarImagenConFallback(img,item.rutas); img.ondblclick=()=>img.src&&openModal(img.src); apply(); updateButtons(); }
- btnMas.onclick=()=>{ if(tipoActual!=='imagen') return; escala=Math.min(escala+0.2,4); apply();}; btnMenos.onclick=()=>{ if(tipoActual!=='imagen') return; escala=Math.max(escala-0.2,1); apply();}; btnReset.onclick=()=>{ escala=1; apply();}; btnExpandir.onclick=()=>{ const img=visor.querySelector('img'); if(img&&img.src) openModal(img.src); };
- article.cargarMedia=function(items){ media=items||[]; galeria.innerHTML=''; media.forEach((item,index)=>{ let mini; if(item.tipo==='video'){ mini=document.createElement('div'); mini.className='miniatura miniatura-video'; mini.innerHTML='▶ Vídeo'; } else { mini=document.createElement('img'); mini.className='miniatura'; mini.alt='Miniatura'; asignarImagenConFallback(mini,item.rutas); } if(index===0) mini.classList.add('activa'); mini.onclick=()=>render(index); galeria.appendChild(mini); }); galeria.style.display=media.length>1?'grid':'none'; render(0); };
+modalImagenLienzo.addEventListener('mousedown',(e)=>{
+    if(escalaModal<=1) return;
+    dragging=true;
+    startX=e.clientX;
+    startY=e.clientY;
+    ox=tx;
+    oy=ty;
+    applyModal();
+    e.preventDefault();
+});
+
+window.addEventListener('mousemove',(e)=>{
+    if(!dragging) return;
+    tx=ox+(e.clientX-startX);
+    ty=oy+(e.clientY-startY);
+    applyModal();
+});
+
+window.addEventListener('mouseup',()=>{
+    dragging=false;
+    applyModal();
+});
+
+document.addEventListener('keydown',(e)=>{
+    if(e.key==='Escape' && modalImagen.classList.contains('activo')) closeModal();
+});
+
+function initMedia(article){
+    const visor=article.querySelector('.visor-media');
+    const galeria=article.querySelector('.galeria-miniaturas');
+    const btnMas=article.querySelector('.zoom-mas');
+    const btnMenos=article.querySelector('.zoom-menos');
+    const btnReset=article.querySelector('.zoom-reset');
+    const btnExpandir=article.querySelector('.zoom-expandir');
+    let escala=1, tipoActual='', media=[];
+
+    function apply(){
+        const img=visor.querySelector('img');
+        if(img) img.style.transform=`scale(${escala})`;
+    }
+
+    function updateButtons(){
+        const show=tipoActual==='imagen';
+        [btnMas,btnMenos,btnReset,btnExpandir].forEach(b=>b.classList.toggle('oculto',!show));
+    }
+
+    function render(i){
+        const item=media[i];
+        if(!item) return;
+        [...galeria.children].forEach(m=>m.classList.remove('activa'));
+        if(galeria.children[i]) galeria.children[i].classList.add('activa');
+        escala=1;
+
+        if(item.tipo==='video'){
+            tipoActual='video';
+            visor.innerHTML=construirNodoVideo(item.url);
+            updateButtons();
+            return;
+        }
+
+        tipoActual='imagen';
+        visor.innerHTML='<img class="imagen-principal" alt="Jugada polémica">';
+        const img=visor.querySelector('img');
+        asignarImagenConFallback(img,item.rutas);
+        img.ondblclick=()=>img.src&&openModal(img.src);
+        apply();
+        updateButtons();
+    }
+
+    btnMas.onclick=()=>{ if(tipoActual!=='imagen') return; escala=Math.min(escala+0.2,4); apply(); };
+    btnMenos.onclick=()=>{ if(tipoActual!=='imagen') return; escala=Math.max(escala-0.2,1); apply(); };
+    btnReset.onclick=()=>{ escala=1; apply(); };
+    btnExpandir.onclick=()=>{ const img=visor.querySelector('img'); if(img&&img.src) openModal(img.src); };
+
+    article.cargarMedia=function(items){
+        media=items||[];
+        galeria.innerHTML='';
+        media.forEach((item,index)=>{
+            let mini;
+            if(item.tipo==='video'){
+                mini=document.createElement('div');
+                mini.className='miniatura miniatura-video';
+                mini.innerHTML='▶ Vídeo';
+            }else{
+                mini=document.createElement('img');
+                mini.className='miniatura';
+                mini.alt='Miniatura';
+                asignarImagenConFallback(mini,item.rutas);
+            }
+            if(index===0) mini.classList.add('activa');
+            mini.onclick=()=>render(index);
+            galeria.appendChild(mini);
+        });
+        galeria.style.display=media.length>1?'grid':'none';
+        render(0);
+    };
 }
+
 function createInitialComments(j){
+    function norm(s){
+        return (s || "")
+            .toString()
+            .trim()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .replace(/[\s_\-]/g, "");
+    }
+
+    function getField(obj, ...possibleNames){
+        const keys = Object.keys(obj || {});
+        const normalizedMap = {};
+
+        keys.forEach(k => {
+            normalizedMap[norm(k)] = k;
+        });
+
+        for(const name of possibleNames){
+            const foundKey = normalizedMap[norm(name)];
+            if(foundKey && obj[foundKey] != null && String(obj[foundKey]).trim() !== ""){
+                return obj[foundKey];
+            }
+        }
+        return "";
+    }
+
     const items = [
-        { texto: j.comentario1, autor: j.usuariocomentario1, fecha: j.fechacomentario1 },
-        { texto: j.comentario2, autor: j.usuariocomentario2, fecha: j.fechacomentario2 },
-        { texto: j.comentario3, autor: j.usuariocomentario3, fecha: j.fechacomentario3 },
-        { texto: j.comentario4, autor: j.usuariocomentario4, fecha: j.fechacomentario4 },
-        { texto: j.comentario5, autor: j.usuariocomentario5, fecha: j.fechacomentario5 }
+        {
+            texto: getField(j, "comentario1"),
+            autor: getField(j, "usuariocomentario1", "usuarioComentario1", "usuario comentario 1"),
+            fecha: getField(j, "fechacomentario1", "fechaComentario1", "fecha comentario 1")
+        },
+        {
+            texto: getField(j, "comentario2"),
+            autor: getField(j, "usuariocomentario2", "usuarioComentario2", "usuario comentario 2"),
+            fecha: getField(j, "fechacomentario2", "fechaComentario2", "fecha comentario 2")
+        },
+        {
+            texto: getField(j, "comentario3"),
+            autor: getField(j, "usuariocomentario3", "usuarioComentario3", "usuario comentario 3"),
+            fecha: getField(j, "fechacomentario3", "fechaComentario3", "fecha comentario 3")
+        },
+        {
+            texto: getField(j, "comentario4"),
+            autor: getField(j, "usuariocomentario4", "usuarioComentario4", "usuario comentario 4"),
+            fecha: getField(j, "fechacomentario4", "fechaComentario4", "fecha comentario 4")
+        },
+        {
+            texto: getField(j, "comentario5"),
+            autor: getField(j, "usuariocomentario5", "usuarioComentario5", "usuario comentario 5"),
+            fecha: getField(j, "fechacomentario5", "fechaComentario5", "fecha comentario 5")
+        }
     ];
 
     return items
-        .filter(x => (x.texto || '').trim() !== '')
+        .filter(x => (x.texto || "").trim() !== "")
         .map(x => ({
             texto: x.texto,
             created_at: x.fecha || null,
-            autor: (x.autor || '').trim() || 'Usuario'
+            autor: (x.autor || "").trim() || "Usuario"
         }));
 }
-function renderComments(article, comments, visibles){ const list=article.querySelector('.lista-comentarios'); const counter=article.querySelector('.cabecera-comentarios p'); list.innerHTML=''; counter.textContent=`${comments.length} comentarios`; comments.slice(0, visibles).forEach(c=>{ const div=document.createElement('div'); div.className='comentario visible'; div.innerHTML=`<div style="font-size:12px;color:#667791;font-weight:700;margin-bottom:4px;">${escapeHtml(c.autor||'Usuario')} ${c.created_at? '· '+escapeHtml(formatDate(c.created_at)) : ''}</div>${escapeHtml(c.texto||'')}`; list.appendChild(div); }); article.querySelector('.btn-mostrar-inicial').style.display = comments.length>0 && visibles===0 ? 'inline-block' : 'none'; article.querySelector('.btn-ocultar').style.display = visibles>0 ? 'inline-block' : 'none'; article.querySelector('.btn-mostrar-mas').style.display = visibles>0 && visibles<comments.length ? 'inline-block' : 'none'; }
-async function initComments(article, jugada){ const initial=createInitialComments(jugada); let online=[]; try{ online=await getComments('jugada', jugada.id); }catch(e){} const merged=[...online, ...initial]; let visibles=0; renderComments(article, merged, visibles); article.querySelector('.boton-comentar').onclick=async()=>{ const ta=article.querySelector('textarea'); const txt=ta.value.trim(); if(!txt) return; try{ await addComment('jugada', txt, jugada.id); ta.value=''; online=await getComments('jugada', jugada.id); visibles=Math.max(visibles,5); renderComments(article,[...online,...initial],visibles); }catch(e){ alert('No se pudo guardar el comentario'); } }; article.querySelector('.btn-mostrar-inicial').onclick=()=>{ visibles=5; renderComments(article,[...online,...initial],visibles); }; article.querySelector('.btn-mostrar-mas').onclick=()=>{ visibles+=5; renderComments(article,[...online,...initial],visibles); }; article.querySelector('.btn-ocultar').onclick=()=>{ visibles=0; renderComments(article,[...online,...initial],visibles); }; }
-function updateVoteUI(article, jugada){ const votosSi=Number(jugada.votosSi||0), votosNo=Number(jugada.votosNo||0), total=votosSi+votosNo; const porcentajeSi=total?Math.round(votosSi*100/total):0, porcentajeNo=total?100-porcentajeSi:0; article.querySelector('.barra-incorrecto').style.width=`${porcentajeNo}%`; article.querySelector('.barra-correcto').style.width=`${porcentajeSi}%`; article.querySelector('.porcentaje-incorrecto').textContent=`${porcentajeNo}%`; article.querySelector('.porcentaje-correcto').textContent=`${porcentajeSi}%`; article.querySelector('.detalle-incorrecto').textContent=`${votosNo} de ${total} votos`; article.querySelector('.detalle-correcto').textContent=`${votosSi} de ${total} votos`; article.querySelector('.resultado-cabecera').textContent=total?`${total} votos totales`:'Sin votos todavía'; const prev=getUserVote(jugada.id); article.querySelector('.mensaje-voto').textContent=prev?`Has votado que se arbitró ${prev==='si'?'bien':'mal'}.`:'Tu voto ya se guarda online.'; article.dataset.resumenEncuesta = jugada.encuesta || ''; }
-async function initVote(article, jugada){ updateVoteUI(article,jugada); async function send(v){ if(getUserVote(jugada.id)) { alert('De momento solo se permite un voto por navegador en esta primera versión.'); return; } try{ await addVote(jugada.id, v); setUserVote(jugada.id,v); const data=await loadDataset(); const actual=data.jugadas.find(x=>x.id===jugada.id); if(actual){ Object.assign(jugada, actual); updateVoteUI(article,jugada); } }catch(e){ alert('No se pudo registrar el voto'); } }
- article.querySelector('.btn-voto-si').onclick=()=>send('si'); article.querySelector('.btn-voto-no').onclick=()=>send('no'); }
-function createArticle(jugada){ const cat=capitalizarCategoria(jugada.categoria); const commentsInitial=createInitialComments(jugada); const article=document.createElement('section'); article.className='bloque-jugada'; article.dataset.id=jugada.id; article.dataset.jornada=jugada.jornada; article.dataset.equipo=jugada.equipoAfectado; article.dataset.competicion=jugada.competicion; article.dataset.tipo=normalizarTexto(jugada.categoria); article.innerHTML=`<div class="etiqueta-jornada">Jornada ${escapeHtml(jugada.jornada)}</div><section class="jugada-principal"><div class="cabecera-jugada"><h2>${escapeHtml(jugada.pregunta)}</h2><p>${escapeHtml(jugada.partido)} · Min ${escapeHtml(jugada.minuto)} · ${escapeHtml(jugada.competicion)}</p><div class="badge-categoria">${escapeHtml(cat)} · ${escapeHtml(jugada.subtipo)}</div><div class="meta-extra"><strong>Equipo afectado:</strong> ${escapeHtml(jugada.equipoAfectado||'')}<br><strong>Árbitro:</strong> ${escapeHtml(jugada.arbitro||'')}<br><strong>VAR:</strong> ${escapeHtml(jugada.var||'')}</div></div><div class="zona-superior"><div><div class="imagen-jugada"><div class="visor-media"></div><div class="zoom-controles"><button class="zoom-btn zoom-mas" type="button">+</button><button class="zoom-btn zoom-menos" type="button">−</button><button class="zoom-btn zoom-reset" type="button">100%</button><button class="zoom-btn zoom-expandir" type="button">Ampliar</button></div></div><div class="galeria-miniaturas" style="display:none;"></div><div class="descripcion-jugada"><strong>Tipo:</strong> ${escapeHtml(cat)}<br><strong>Decisión árbitro:</strong> ${escapeHtml(jugada.decision||'')}<br><br>${escapeHtml(jugada.descripcion||'')}</div></div><div class="panel-votacion"><div class="panel-votacion-top"><h3>Vota la jugada</h3><p>${escapeHtml((jugada.pregunta||'').trim()||'¿Te pareció correcta la decisión arbitral?')}</p></div><div class="botones-voto"><button class="btn-voto btn-voto-si" type="button">${escapeHtml(jugada.respuestaSi||'Sí')}</button><button class="btn-voto btn-voto-no" type="button">${escapeHtml(jugada.respuestaNo||'No')}</button></div><div class="mensaje-voto">Tu voto ya se guarda online.</div><div class="resultado-box"><div class="resultado-cabecera">Sin votos todavía</div><div class="resumen-votos-bloques"><div class="resumen-voto-card incorrecto"><div class="resumen-voto-porcentaje porcentaje-incorrecto">0%</div><div class="resumen-voto-texto">Cree que se arbitró mal</div><div class="resumen-voto-detalle detalle-incorrecto">0 de 0 votos</div><div class="barra-resultado"><div class="barra-no barra-incorrecto" style="width:0%"></div></div></div><div class="resumen-voto-card correcto"><div class="resumen-voto-porcentaje porcentaje-correcto">0%</div><div class="resumen-voto-texto">Cree que se arbitró bien</div><div class="resumen-voto-detalle detalle-correcto">0 de 0 votos</div><div class="barra-resultado"><div class="barra-si barra-correcto" style="width:0%"></div></div></div></div></div></div></div></section><section class="seccion-comentarios comentarios-box"><div class="cabecera-comentarios"><h3>Comentarios</h3><p>${commentsInitial.length} comentarios</p></div><div class="cuerpo-comentarios"><textarea placeholder="Escribe tu comentario..."></textarea><br><button class="boton-comentar" type="button">Publicar comentario</button><button class="btn-mostrar-inicial" type="button">Mostrar comentarios</button><div class="lista-comentarios"></div><div class="mostrar-mas-wrap"><button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button></div><div class="ocultar-wrap"><button class="btn-ocultar" type="button">Ocultar comentarios</button></div></div></section>`;
- initMedia(article); initVote(article,jugada); initComments(article,jugada); return article; }
-function aplicarFiltros(){ const jornada=filtroJornada.value, equipo=filtroEquipo.value, competicion=filtroCompeticion.value, tipo=filtroTipo.value; let visibles=0; document.querySelectorAll('.bloque-jugada').forEach(b=>{ const ok=!jornada||b.dataset.jornada===jornada; const ok2=!equipo||b.dataset.equipo===equipo; const ok3=!competicion||b.dataset.competicion===competicion; const ok4=!tipo||b.dataset.tipo===tipo; b.style.display=(ok&&ok2&&ok3&&ok4)?'':'none'; if(ok&&ok2&&ok3&&ok4) visibles++; }); sinResultados.style.display=visibles===0?'block':'none'; }
-(async()=>{ try{ const data=await loadDataset(); const jugadas=[...data.jugadas].sort((a,b)=> (parseInt(b.jornada)||0)-(parseInt(a.jornada)||0) || (parseInt((b.minuto||'').match(/\d+/)?.[0]||0))-(parseInt((a.minuto||'').match(/\d+/)?.[0]||0))); contenedorJugadas.innerHTML=''; for(const j of jugadas){ const article=createArticle(j); const media=[]; const v1=await primerTextoDisponible(rutasVideoTxt(j.jornada,j.slugVideo)); const v2=await primerTextoDisponible(rutasVideoTxt(j.jornada,j.slugVideo2)); if(v1) media.push({tipo:'video',url:v1}); if(v2) media.push({tipo:'video',url:v2}); [j.slugImagen,j.slugImagen2,j.slugImagen3,j.slugImagen4,j.slugImagen5].filter(Boolean).forEach(slug=>media.push({tipo:'imagen',rutas:rutasImagenSlug(j.jornada,slug)})); if(!media.length) media.push({tipo:'imagen',rutas:[]}); article.cargarMedia(media); contenedorJugadas.appendChild(article); } aplicarFiltros(); }catch(e){ console.error(e); sinResultados.textContent='No se pudo cargar jugadas.csv'; sinResultados.style.display='block'; }})();
-[filtroJornada,filtroEquipo,filtroCompeticion,filtroTipo].forEach(f=>f&&f.addEventListener('change',aplicarFiltros)); if(btnLimpiarFiltros) btnLimpiarFiltros.onclick=()=>{ filtroJornada.value=''; filtroEquipo.value=''; filtroCompeticion.value=''; filtroTipo.value=''; aplicarFiltros(); };
+
+function renderComments(article, comments, visibles){
+    const list=article.querySelector('.lista-comentarios');
+    const counter=article.querySelector('.cabecera-comentarios p');
+    list.innerHTML='';
+    counter.textContent=`${comments.length} comentarios`;
+
+    comments.slice(0, visibles).forEach(c=>{
+        const div=document.createElement('div');
+        div.className='comentario visible';
+        div.innerHTML=`<div style="font-size:12px;color:#667791;font-weight:700;margin-bottom:4px;">${escapeHtml(c.autor||'Usuario')} ${c.created_at ? '· '+escapeHtml(formatDate(c.created_at)) : ''}</div>${escapeHtml(c.texto||'')}`;
+        list.appendChild(div);
+    });
+
+    article.querySelector('.btn-mostrar-inicial').style.display = comments.length>0 && visibles===0 ? 'inline-block' : 'none';
+    article.querySelector('.btn-ocultar').style.display = visibles>0 ? 'inline-block' : 'none';
+    article.querySelector('.btn-mostrar-mas').style.display = visibles>0 && visibles<comments.length ? 'inline-block' : 'none';
+}
+
+async function initComments(article, jugada){
+    const initial=createInitialComments(jugada);
+    let online=[];
+
+    try{
+        online=await getComments('jugada', jugada.id);
+    }catch(e){}
+
+    let visibles=0;
+    renderComments(article, [...online, ...initial], visibles);
+
+    article.querySelector('.boton-comentar').onclick=async()=>{
+        const ta=article.querySelector('textarea');
+        const txt=ta.value.trim();
+        if(!txt) return;
+
+        try{
+            await addComment('jugada', txt, jugada.id);
+            ta.value='';
+            online=await getComments('jugada', jugada.id);
+            visibles=Math.max(visibles,5);
+            renderComments(article, [...online, ...initial], visibles);
+        }catch(e){
+            alert('No se pudo guardar el comentario');
+        }
+    };
+
+    article.querySelector('.btn-mostrar-inicial').onclick=()=>{
+        visibles=5;
+        renderComments(article, [...online, ...initial], visibles);
+    };
+
+    article.querySelector('.btn-mostrar-mas').onclick=()=>{
+        visibles+=5;
+        renderComments(article, [...online, ...initial], visibles);
+    };
+
+    article.querySelector('.btn-ocultar').onclick=()=>{
+        visibles=0;
+        renderComments(article, [...online, ...initial], visibles);
+    };
+}
+
+function updateVoteUI(article, jugada){
+    const votosSi=Number(jugada.votosSi||0);
+    const votosNo=Number(jugada.votosNo||0);
+    const total=votosSi+votosNo;
+    const porcentajeSi=total?Math.round(votosSi*100/total):0;
+    const porcentajeNo=total?100-porcentajeSi:0;
+
+    article.querySelector('.barra-incorrecto').style.width=`${porcentajeNo}%`;
+    article.querySelector('.barra-correcto').style.width=`${porcentajeSi}%`;
+    article.querySelector('.porcentaje-incorrecto').textContent=`${porcentajeNo}%`;
+    article.querySelector('.porcentaje-correcto').textContent=`${porcentajeSi}%`;
+    article.querySelector('.detalle-incorrecto').textContent=`${votosNo} de ${total} votos`;
+    article.querySelector('.detalle-correcto').textContent=`${votosSi} de ${total} votos`;
+    article.querySelector('.resultado-cabecera').textContent=total?`${total} votos totales`:'Sin votos todavía';
+
+    const prev=getUserVote(jugada.id);
+    article.querySelector('.mensaje-voto').textContent=prev?`Has votado que se arbitró ${prev==='si'?'bien':'mal'}.`:'Tu voto ya se guarda online.';
+    article.dataset.resumenEncuesta = jugada.encuesta || '';
+}
+
+async function initVote(article, jugada){
+    updateVoteUI(article,jugada);
+
+    async function send(v){
+        if(getUserVote(jugada.id)) {
+            alert('De momento solo se permite un voto por navegador en esta primera versión.');
+            return;
+        }
+        try{
+            await addVote(jugada.id, v);
+            setUserVote(jugada.id,v);
+            const data=await loadDataset();
+            const actual=data.jugadas.find(x=>x.id===jugada.id);
+            if(actual){
+                Object.assign(jugada, actual);
+                updateVoteUI(article,jugada);
+            }
+        }catch(e){
+            alert('No se pudo registrar el voto');
+        }
+    }
+
+    article.querySelector('.btn-voto-si').onclick=()=>send('si');
+    article.querySelector('.btn-voto-no').onclick=()=>send('no');
+}
+
+function createArticle(jugada){
+    const cat=capitalizarCategoria(jugada.categoria);
+    const commentsInitial=createInitialComments(jugada);
+    const article=document.createElement('section');
+
+    article.className='bloque-jugada';
+    article.dataset.id=jugada.id;
+    article.dataset.jornada=jugada.jornada;
+    article.dataset.equipo=jugada.equipoAfectado;
+    article.dataset.competicion=jugada.competicion;
+    article.dataset.tipo=normalizarTexto(jugada.categoria);
+
+    article.innerHTML=`<div class="etiqueta-jornada">Jornada ${escapeHtml(jugada.jornada)}</div><section class="jugada-principal"><div class="cabecera-jugada"><h2>${escapeHtml(jugada.pregunta)}</h2><p>${escapeHtml(jugada.partido)} · Min ${escapeHtml(jugada.minuto)} · ${escapeHtml(jugada.competicion)}</p><div class="badge-categoria">${escapeHtml(cat)} · ${escapeHtml(jugada.subtipo)}</div><div class="meta-extra"><strong>Equipo afectado:</strong> ${escapeHtml(jugada.equipoAfectado||'')}<br><strong>Árbitro:</strong> ${escapeHtml(jugada.arbitro||'')}<br><strong>VAR:</strong> ${escapeHtml(jugada.var||'')}</div></div><div class="zona-superior"><div><div class="imagen-jugada"><div class="visor-media"></div><div class="zoom-controles"><button class="zoom-btn zoom-mas" type="button">+</button><button class="zoom-btn zoom-menos" type="button">−</button><button class="zoom-btn zoom-reset" type="button">100%</button><button class="zoom-btn zoom-expandir" type="button">Ampliar</button></div></div><div class="galeria-miniaturas" style="display:none;"></div><div class="descripcion-jugada"><strong>Tipo:</strong> ${escapeHtml(cat)}<br><strong>Decisión árbitro:</strong> ${escapeHtml(jugada.decision||'')}<br><br>${escapeHtml(jugada.descripcion||'')}</div></div><div class="panel-votacion"><div class="panel-votacion-top"><h3>Vota la jugada</h3><p>${escapeHtml((jugada.pregunta||'').trim()||'¿Te pareció correcta la decisión arbitral?')}</p></div><div class="botones-voto"><button class="btn-voto btn-voto-si" type="button">${escapeHtml(jugada.respuestaSi||'Sí')}</button><button class="btn-voto btn-voto-no" type="button">${escapeHtml(jugada.respuestaNo||'No')}</button></div><div class="mensaje-voto">Tu voto ya se guarda online.</div><div class="resultado-box"><div class="resultado-cabecera">Sin votos todavía</div><div class="resumen-votos-bloques"><div class="resumen-voto-card incorrecto"><div class="resumen-voto-porcentaje porcentaje-incorrecto">0%</div><div class="resumen-voto-texto">Cree que se arbitró mal</div><div class="resumen-voto-detalle detalle-incorrecto">0 de 0 votos</div><div class="barra-resultado"><div class="barra-no barra-incorrecto" style="width:0%"></div></div></div><div class="resumen-voto-card correcto"><div class="resumen-voto-porcentaje porcentaje-correcto">0%</div><div class="resumen-voto-texto">Cree que se arbitró bien</div><div class="resumen-voto-detalle detalle-correcto">0 de 0 votos</div><div class="barra-resultado"><div class="barra-si barra-correcto" style="width:0%"></div></div></div></div></div></div></div></section><section class="seccion-comentarios comentarios-box"><div class="cabecera-comentarios"><h3>Comentarios</h3><p>${commentsInitial.length} comentarios</p></div><div class="cuerpo-comentarios"><textarea placeholder="Escribe tu comentario..."></textarea><br><button class="boton-comentar" type="button">Publicar comentario</button><button class="btn-mostrar-inicial" type="button">Mostrar comentarios</button><div class="lista-comentarios"></div><div class="mostrar-mas-wrap"><button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button></div><div class="ocultar-wrap"><button class="btn-ocultar" type="button">Ocultar comentarios</button></div></div></section>`;
+
+    initMedia(article);
+    initVote(article,jugada);
+    initComments(article,jugada);
+    return article;
+}
+
+function aplicarFiltros(){
+    const jornada=filtroJornada.value;
+    const equipo=filtroEquipo.value;
+    const competicion=filtroCompeticion.value;
+    const tipo=filtroTipo.value;
+    let visibles=0;
+
+    document.querySelectorAll('.bloque-jugada').forEach(b=>{
+        const ok=!jornada||b.dataset.jornada===jornada;
+        const ok2=!equipo||b.dataset.equipo===equipo;
+        const ok3=!competicion||b.dataset.competicion===competicion;
+        const ok4=!tipo||b.dataset.tipo===tipo;
+        b.style.display=(ok&&ok2&&ok3&&ok4)?'':'none';
+        if(ok&&ok2&&ok3&&ok4) visibles++;
+    });
+
+    sinResultados.style.display=visibles===0?'block':'none';
+}
+
+(async()=>{
+    try{
+        const data=await loadDataset();
+        const jugadas=[...data.jugadas].sort((a,b)=>
+            (parseInt(b.jornada)||0)-(parseInt(a.jornada)||0) ||
+            (parseInt((b.minuto||'').match(/\d+/)?.[0]||0))-(parseInt((a.minuto||'').match(/\d+/)?.[0]||0))
+        );
+
+        contenedorJugadas.innerHTML='';
+
+        for(const j of jugadas){
+            const article=createArticle(j);
+            const media=[];
+            const v1=await primerTextoDisponible(rutasVideoTxt(j.jornada,j.slugVideo));
+            const v2=await primerTextoDisponible(rutasVideoTxt(j.jornada,j.slugVideo2));
+
+            if(v1) media.push({tipo:'video',url:v1});
+            if(v2) media.push({tipo:'video',url:v2});
+
+            [j.slugImagen,j.slugImagen2,j.slugImagen3,j.slugImagen4,j.slugImagen5]
+                .filter(Boolean)
+                .forEach(slug=>media.push({tipo:'imagen',rutas:rutasImagenSlug(j.jornada,slug)}));
+
+            if(!media.length) media.push({tipo:'imagen',rutas:[]});
+
+            article.cargarMedia(media);
+            contenedorJugadas.appendChild(article);
+        }
+
+        aplicarFiltros();
+    }catch(e){
+        console.error(e);
+        sinResultados.textContent='No se pudo cargar jugadas.csv';
+        sinResultados.style.display='block';
+    }
+})();
+
+[filtroJornada,filtroEquipo,filtroCompeticion,filtroTipo].forEach(f=>f&&f.addEventListener('change',aplicarFiltros));
+
+if(btnLimpiarFiltros){
+    btnLimpiarFiltros.onclick=()=>{
+        filtroJornada.value='';
+        filtroEquipo.value='';
+        filtroCompeticion.value='';
+        filtroTipo.value='';
+        aplicarFiltros();
+    };
+}
 </script>
 </body>
 </html>
