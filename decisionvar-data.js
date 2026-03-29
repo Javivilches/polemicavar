@@ -249,11 +249,26 @@ window.DecisionVarData = (() => {
           votosInicialesNo: numeroSeguro(
             valueFromRow(row, ["votos iniciales no", "Votos iniciales no", "votos_iniciales_no"])
           ),
+
           comentario1: valueFromRow(row, ["comentario1"]),
+          usuariocomentario1: valueFromRow(row, ["usuariocomentario1", "usuario comentario1", "usuario_comentario1"]),
+          fechacomentario1: valueFromRow(row, ["fechacomentario1", "fecha comentario1", "fecha_comentario1"]),
+
           comentario2: valueFromRow(row, ["comentario2"]),
+          usuariocomentario2: valueFromRow(row, ["usuariocomentario2", "usuario comentario2", "usuario_comentario2"]),
+          fechacomentario2: valueFromRow(row, ["fechacomentario2", "fecha comentario2", "fecha_comentario2"]),
+
           comentario3: valueFromRow(row, ["comentario3"]),
+          usuariocomentario3: valueFromRow(row, ["usuariocomentario3", "usuario comentario3", "usuario_comentario3"]),
+          fechacomentario3: valueFromRow(row, ["fechacomentario3", "fecha comentario3", "fecha_comentario3"]),
+
           comentario4: valueFromRow(row, ["comentario4"]),
-          comentario5: valueFromRow(row, ["comentario5"])
+          usuariocomentario4: valueFromRow(row, ["usuariocomentario4", "usuario comentario4", "usuario_comentario4"]),
+          fechacomentario4: valueFromRow(row, ["fechacomentario4", "fecha comentario4", "fecha_comentario4"]),
+
+          comentario5: valueFromRow(row, ["comentario5"]),
+          usuariocomentario5: valueFromRow(row, ["usuariocomentario5", "usuario comentario5", "usuario_comentario5"]),
+          fechacomentario5: valueFromRow(row, ["fechacomentario5", "fecha comentario5", "fecha_comentario5"])
         };
       })
       .filter((j) => j.jornada && j.partido && j.categoria)
@@ -344,12 +359,17 @@ window.DecisionVarData = (() => {
         totalVotos: numeroSeguro(j.totalVotos)
       });
 
-      const block = resumen[equipo]?.[categoria]?.[subtipo];
+          const block = resumen[equipo]?.[categoria]?.[subtipo];
       if (!block) continue;
 
       block.total += 1;
-      block.si += numeroSeguro(j.votosSi);
-      block.no += numeroSeguro(j.votosNo);
+
+      if (j.encuesta === "si") {
+        block.si += 1;
+      } else if (j.encuesta === "no") {
+        block.no += 1;
+      }
+
       block.balance += obtenerImpacto(categoria, subtipo, j.encuesta);
     }
 
