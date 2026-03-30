@@ -2,10 +2,19 @@ window.DECISIONVAR_SUPABASE_URL = "https://rvxdoxaovuhiatjxhynl.supabase.co";
 window.DECISIONVAR_SUPABASE_KEY = "sb_publishable_tFHi8NKMy1Ro5yT8e1nzcw_Ha0rvyPk";
 
 window.DecisionVarData = (() => {
-  const supabase = window.supabase.createClient(
-    window.DECISIONVAR_SUPABASE_URL,
-    window.DECISIONVAR_SUPABASE_KEY
-  );
+  let supabase = null;
+
+  try {
+    if (window.supabase && window.DECISIONVAR_SUPABASE_URL && window.DECISIONVAR_SUPABASE_KEY) {
+      supabase = window.supabase.createClient(
+        window.DECISIONVAR_SUPABASE_URL,
+        window.DECISIONVAR_SUPABASE_KEY
+      );
+    }
+  } catch (e) {
+    console.error("No se pudo crear cliente Supabase", e);
+    supabase = null;
+  }
 
   function normalize(txt) {
     return (txt || "")
@@ -114,12 +123,7 @@ window.DecisionVarData = (() => {
   }
 
   function createEmptyBlock() {
-    return {
-      total: 0,
-      si: 0,
-      no: 0,
-      balance: 0
-    };
+    return { total: 0, si: 0, no: 0, balance: 0 };
   }
 
   function createEmptySummary() {
@@ -279,36 +283,43 @@ window.DecisionVarData = (() => {
   }
 
   async function getVotesMap(jugadaIds) {
+    if (!supabase) return {};
+
     const ids = [...new Set((jugadaIds || []).filter(Boolean))];
     if (!ids.length) return {};
 
-    const { data, error } = await supabase
-      .from("votos")
-      .select("jugada_id,voto")
-      .in("jugada_id", ids);
+    try {
+      const { data, error } = await supabase
+        .from("votos")
+        .select("jugada_id,voto")
+        .in("jugada_id", ids);
 
-    if (error) throw error;
+      if (error) throw error;
 
-    const map = {};
-    ids.forEach((id) => {
-      map[id] = { si: 0, no: 0, total: 0 };
-    });
+      const map = {};
+      ids.forEach((id) => {
+        map[id] = { si: 0, no: 0, total: 0 };
+      });
 
-    (data || []).forEach((row) => {
-      const id = row.jugada_id;
-      if (!map[id]) map[id] = { si: 0, no: 0, total: 0 };
+      (data || []).forEach((row) => {
+        const id = row.jugada_id;
+        if (!map[id]) map[id] = { si: 0, no: 0, total: 0 };
 
-      const v = normalize(row.voto);
-      if (v === "si") {
-        map[id].si += 1;
-        map[id].total += 1;
-      } else if (v === "no") {
-        map[id].no += 1;
-        map[id].total += 1;
-      }
-    });
+        const v = normalize(row.voto);
+        if (v === "si") {
+          map[id].si += 1;
+          map[id].total += 1;
+        } else if (v === "no") {
+          map[id].no += 1;
+          map[id].total += 1;
+        }
+      });
 
-    return map;
+      return map;
+    } catch (e) {
+      console.error("No se pudieron cargar los votos online", e);
+      return {};
+    }
   }
 
   function mergeVotes(jugadas, votesMap) {
@@ -364,11 +375,8 @@ window.DecisionVarData = (() => {
 
       block.total += 1;
 
-      if (j.encuesta === "si") {
-        block.si += 1;
-      } else if (j.encuesta === "no") {
-        block.no += 1;
-      }
+      if (j.encuesta === "si") block.si += 1;
+      else if (j.encuesta === "no") block.no += 1;
 
       block.balance += obtenerImpacto(categoria, subtipo, j.encuesta);
     }
@@ -393,9 +401,7 @@ window.DecisionVarData = (() => {
       const key = Number(j.jornada || 0);
       if (!key) return;
 
-      if (!map.has(key)) {
-        map.set(key, { jornada: key, barca: 0, madrid: 0 });
-      }
+      if (!map.has(key)) map.set(key, { jornada: key, barca: 0, madrid: 0 });
 
       const reg = map.get(key);
       const impact = obtenerImpacto(j.categoria, j.subtipo, j.encuesta);
@@ -423,26 +429,39 @@ window.DecisionVarData = (() => {
   }
 
   async function getUsuarioActual() {
-    const { data, error } = await supabase.auth.getUser();
-    if (error) throw error;
-    return data?.user || null;
+    if (!supabase) return null;
+    try {
+      const { data, error } = await supabase.auth.getUser();
+      if (error) throw error;
+      return data?.user || null;
+    } catch (e) {
+      console.error("No se pudo obtener el usuario actual", e);
+      return null;
+    }
   }
 
   async function getPerfilActual() {
+    if (!supabase) return null;
     const user = await getUsuarioActual();
     if (!user) return null;
 
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("id,username")
-      .eq("id", user.id)
-      .maybeSingle();
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id,username")
+        .eq("id", user.id)
+        .maybeSingle();
 
-    if (error) throw error;
-    return data || null;
+      if (error) throw error;
+      return data || null;
+    } catch (e) {
+      console.error("No se pudo obtener el perfil actual", e);
+      return null;
+    }
   }
 
   async function crearPerfil(username) {
+    if (!supabase) throw new Error("Supabase no disponible");
     const user = await getUsuarioActual();
     if (!user) throw new Error("No hay usuario autenticado");
 
@@ -451,59 +470,57 @@ window.DecisionVarData = (() => {
 
     const { error } = await supabase
       .from("profiles")
-      .insert({
-        id: user.id,
-        username: limpio
-      });
+      .insert({ id: user.id, username: limpio });
 
     if (error) throw error;
   }
 
   async function getCurrentUserVote(jugadaId) {
+    if (!supabase) return "";
     const user = await getUsuarioActual();
     if (!user) return "";
 
-    const { data, error } = await supabase
-      .from("votos")
-      .select("voto")
-      .eq("jugada_id", jugadaId)
-      .eq("user_id", user.id)
-      .maybeSingle();
+    try {
+      const { data, error } = await supabase
+        .from("votos")
+        .select("voto")
+        .eq("jugada_id", jugadaId)
+        .eq("user_id", user.id)
+        .maybeSingle();
 
-    if (error) throw error;
-    return data?.voto || "";
+      if (error) throw error;
+      return data?.voto || "";
+    } catch (e) {
+      console.error("No se pudo obtener el voto del usuario", e);
+      return "";
+    }
   }
 
   async function getComments(scope, jugadaId = "") {
-    let query = supabase
-      .from("comentarios")
-      .select("id,autor,texto,created_at,jugada_id")
-      .eq("scope", scope)
-      .order("created_at", { ascending: false });
+    if (!supabase) return [];
 
-    if (jugadaId) query = query.eq("jugada_id", jugadaId);
-    else query = query.is("jugada_id", null);
-
-    const { data, error } = await query;
-
-    if (error) {
-      let fallback = supabase
+    try {
+      let query = supabase
         .from("comentarios")
         .select("id,autor,texto,created_at,jugada_id")
+        .eq("scope", scope)
         .order("created_at", { ascending: false });
 
-      if (jugadaId) fallback = fallback.eq("jugada_id", jugadaId);
-      else fallback = fallback.is("jugada_id", null);
+      if (jugadaId) query = query.eq("jugada_id", jugadaId);
+      else query = query.is("jugada_id", null);
 
-      const second = await fallback;
-      if (second.error) throw second.error;
-      return second.data || [];
+      const { data, error } = await query;
+      if (error) throw error;
+      return data || [];
+    } catch (e) {
+      console.error("No se pudieron cargar comentarios online", e);
+      return [];
     }
-
-    return data || [];
   }
 
   async function addComment(scope, text, jugadaId = "") {
+    if (!supabase) throw new Error("Servicio no disponible");
+
     const user = await getUsuarioActual();
     if (!user) throw new Error("Debes iniciar sesión para comentar");
 
@@ -527,6 +544,8 @@ window.DecisionVarData = (() => {
   }
 
   async function addVote(jugadaId, voto) {
+    if (!supabase) throw new Error("Servicio no disponible");
+
     const user = await getUsuarioActual();
     if (!user) throw new Error("Debes iniciar sesión");
 
@@ -547,8 +566,8 @@ window.DecisionVarData = (() => {
       if (!dateValue) return "";
 
       const raw = String(dateValue).trim();
-
       const isoDate = new Date(raw);
+
       if (!isNaN(isoDate.getTime())) {
         return isoDate.toLocaleString("es-ES", {
           day: "2-digit",
@@ -564,14 +583,14 @@ window.DecisionVarData = (() => {
       );
 
       if (m) {
-        const dia = Number(m[1]);
-        const mes = Number(m[2]) - 1;
-        const anio = Number(m[3]);
-        const hora = Number(m[4] || 0);
-        const minuto = Number(m[5] || 0);
-        const segundo = Number(m[6] || 0);
-
-        const fecha = new Date(anio, mes, dia, hora, minuto, segundo);
+        const fecha = new Date(
+          Number(m[3]),
+          Number(m[2]) - 1,
+          Number(m[1]),
+          Number(m[4] || 0),
+          Number(m[5] || 0),
+          Number(m[6] || 0)
+        );
 
         if (!isNaN(fecha.getTime())) {
           return fecha.toLocaleString("es-ES", {
@@ -591,13 +610,16 @@ window.DecisionVarData = (() => {
   }
 
   async function loginConGoogle() {
+    if (!supabase) {
+      alert("Inicio de sesión no disponible ahora mismo");
+      return;
+    }
+
     const redirectTo = window.location.href.split("#")[0];
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: {
-        redirectTo
-      }
+      options: { redirectTo }
     });
 
     if (error) {
@@ -607,6 +629,7 @@ window.DecisionVarData = (() => {
   }
 
   async function logout() {
+    if (!supabase) return;
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
   }

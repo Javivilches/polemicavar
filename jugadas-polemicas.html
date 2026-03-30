@@ -1356,21 +1356,21 @@ textarea{
 </div>
 
 <script>
-const {
-    supabase,
-    escapeHtml,
-    loadDataset,
-    getComments,
-    addComment,
-    addVote,
-    formatDate,
-    getUsuarioActual,
-    getPerfilActual,
-    crearPerfil,
-    logout,
-    getCurrentUserVote,
-    loginConGoogle
-} = window.DecisionVarData;
+const DecisionVarAPI = window.DecisionVarData || {};
+
+const supabase = DecisionVarAPI.supabase || null;
+const escapeHtml = DecisionVarAPI.escapeHtml || ((t) => String(t || ""));
+const loadDataset = DecisionVarAPI.loadDataset || (async () => ({ jugadas: [] }));
+const getComments = DecisionVarAPI.getComments || (async () => []);
+const addComment = DecisionVarAPI.addComment || (async () => { throw new Error("No disponible"); });
+const addVote = DecisionVarAPI.addVote || (async () => { throw new Error("No disponible"); });
+const formatDate = DecisionVarAPI.formatDate || ((v) => v || "");
+const getUsuarioActual = DecisionVarAPI.getUsuarioActual || (async () => null);
+const getPerfilActual = DecisionVarAPI.getPerfilActual || (async () => null);
+const crearPerfil = DecisionVarAPI.crearPerfil || (async () => { throw new Error("No disponible"); });
+const logout = DecisionVarAPI.logout || (async () => {});
+const getCurrentUserVote = DecisionVarAPI.getCurrentUserVote || (async () => "");
+const loginConGoogle = DecisionVarAPI.loginConGoogle || (async () => alert("Inicio de sesión no disponible"));
 
 const filtroJornada = document.getElementById("filtroJornada");
 const filtroEquipo = document.getElementById("filtroEquipo");
@@ -2073,13 +2073,15 @@ document.addEventListener('click', (e) => {
     }
 })();
 
-supabase.auth.onAuthStateChange(async () => {
-    try {
-        await renderMenuUsuario();
-    } catch (e) {
-        console.error(e);
-    }
-});
+if (supabase && supabase.auth && typeof supabase.auth.onAuthStateChange === 'function') {
+    supabase.auth.onAuthStateChange(async () => {
+        try {
+            await renderMenuUsuario();
+        } catch (e) {
+            console.error(e);
+        }
+    });
+}
 
 [filtroJornada,filtroEquipo,filtroCompeticion,filtroTipo].forEach(f=>f&&f.addEventListener('change',aplicarFiltros));
 
