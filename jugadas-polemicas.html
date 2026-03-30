@@ -40,7 +40,7 @@ body{
     align-items:center;
     gap:44px;
     z-index:999;
-    overflow:hidden;
+    overflow:visible;
     background:linear-gradient(
         90deg,
         #0b2d6b 0%,
@@ -105,6 +105,110 @@ body{
 .menu a:nth-child(4),
 .menu a:nth-child(5){
     color:#0a2f6b;
+}
+
+.menu-user-wrap{
+    position:absolute;
+    right:14px;
+    top:50%;
+    transform:translateY(-50%);
+    z-index:5;
+}
+
+.menu-user-btn{
+    width:34px;
+    height:34px;
+    border:none;
+    border-radius:50%;
+    background:rgba(8,12,20,0.82);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    box-shadow:0 4px 12px rgba(0,0,0,0.18);
+    font-size:16px;
+}
+
+.menu-user-btn:hover{
+    background:rgba(20,34,58,0.95);
+}
+
+.menu-user-dropdown{
+    position:absolute;
+    right:0;
+    top:42px;
+    min-width:240px;
+    background:#fff;
+    border-radius:12px;
+    box-shadow:0 12px 28px rgba(0,0,0,0.22);
+    padding:12px;
+    display:none;
+    color:#1e2b46;
+}
+
+.menu-user-dropdown.activo{
+    display:block;
+}
+
+.menu-user-line{
+    font-size:13px;
+    line-height:1.4;
+    margin-bottom:10px;
+    color:#41516f;
+}
+
+.menu-user-title{
+    font-size:14px;
+    font-weight:bold;
+    color:#18263f;
+    margin-bottom:10px;
+}
+
+.menu-user-actions{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.menu-user-actions button,
+.menu-user-actions input{
+    width:100%;
+    box-sizing:border-box;
+}
+
+.menu-user-actions input{
+    height:38px;
+    border:1px solid #d8dfeb;
+    border-radius:8px;
+    padding:0 10px;
+    font-size:14px;
+}
+
+.menu-user-actions button{
+    height:38px;
+    border:none;
+    border-radius:8px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.btn-user-primary{
+    background:#1f4fb0;
+    color:#fff;
+}
+
+.btn-user-primary:hover{
+    background:#173f90;
+}
+
+.btn-user-secondary{
+    background:#eef2f8;
+    color:#243757;
+}
+
+.btn-user-secondary:hover{
+    background:#dfe7f3;
 }
 
 /* CONTENIDO */
@@ -824,6 +928,21 @@ textarea{
         height:32px;
         font-size:13px;
     }
+
+    .menu-user-wrap{
+        right:6px;
+    }
+
+    .menu-user-btn{
+        width:30px;
+        height:30px;
+        font-size:14px;
+    }
+
+    .menu-user-dropdown{
+        right:-4px;
+        min-width:220px;
+    }
 }
 @media (max-width: 650px){
     .filtros-jugadas{
@@ -893,13 +1012,13 @@ textarea{
         top:80px !important;
         height:58px !important;
         min-height:58px !important;
-        padding:0 !important;
+        padding:0 44px 0 0 !important;
         gap:0 !important;
         display:grid !important;
         grid-template-columns:repeat(5, minmax(0, 1fr)) !important;
         align-items:stretch !important;
         justify-content:stretch !important;
-        overflow:hidden !important;
+        overflow:visible !important;
         white-space:normal !important;
     }
 
@@ -931,6 +1050,13 @@ textarea{
         display:block !important;
     }
 
+    .menu-user-wrap{
+        position:absolute !important;
+        right:8px !important;
+        top:50% !important;
+        transform:translateY(-50%) !important;
+    }
+
     .contenido{
         margin-top:138px !important;
         min-height:calc(100vh - 138px) !important;
@@ -941,12 +1067,19 @@ textarea{
     .menu{
         height:56px !important;
         min-height:56px !important;
+        padding-right:42px !important;
     }
 
     .menu a{
         height:56px !important;
         font-size:8.6px !important;
         padding:4px 2px !important;
+    }
+
+    .menu-user-btn{
+        width:28px !important;
+        height:28px !important;
+        font-size:13px !important;
     }
 
     .contenido{
@@ -1124,6 +1257,11 @@ textarea{
     <a href="resultados-var.html"><span>RESULTADOS</span></a>
     <a href="quien-ha-sido-mas-favorecido.html"><span>EQUIPO MÁS<br>FAVORECIDO</span></a>
     <a href="arbitros-mas-influyentes.html"><span>ÁRBITROS MÁS<br>INFLUYENTES</span></a>
+
+    <div class="menu-user-wrap">
+        <button id="menuUserBtn" class="menu-user-btn" type="button" title="Usuario">👤</button>
+        <div id="menuUserDropdown" class="menu-user-dropdown"></div>
+    </div>
 </nav>
 
 <div class="contenido">
@@ -1133,21 +1271,6 @@ textarea{
         <h1>Todas las jugadas polémicas</h1>
         <p>Ordenadas de la más reciente a la más antigua.</p>
     </section>
-
-    <div style="text-align:center; margin:15px 0;">
-        <button id="btnLoginGoogle" onclick="DecisionVarData.loginConGoogle()" style="
-            padding:10px 18px;
-            font-weight:bold;
-            border:none;
-            border-radius:6px;
-            background:#ffffff;
-            cursor:pointer;
-        ">
-            Entrar con Google para votar
-        </button>
-    </div>
-
-    <div id="bloqueUsuario" style="text-align:center; margin:10px 0 18px; color:white;"></div>
 
     <section class="filtros-jugadas">
         <div class="filtro-grupo">
@@ -1241,7 +1364,8 @@ const {
     getPerfilActual,
     crearPerfil,
     logout,
-    getCurrentUserVote
+    getCurrentUserVote,
+    loginConGoogle
 } = window.DecisionVarData;
 
 const filtroJornada = document.getElementById("filtroJornada");
@@ -1251,6 +1375,8 @@ const filtroTipo = document.getElementById("filtroTipo");
 const btnLimpiarFiltros = document.getElementById("btnLimpiarFiltros");
 const sinResultados = document.getElementById("sinResultados");
 const contenedorJugadas = document.getElementById("contenedorJugadas");
+const menuUserBtn = document.getElementById("menuUserBtn");
+const menuUserDropdown = document.getElementById("menuUserDropdown");
 
 function normalizarTexto(txt){ return (txt||"").toString().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); }
 function capitalizarCategoria(v){ const n=normalizarTexto(v); if(n==='penalti') return 'Penalti'; if(n==='gol') return 'Gol'; if(n==='roja') return 'Roja'; return v||''; }
@@ -1585,7 +1711,8 @@ async function initComments(article, jugada){
             const perfil = await getPerfilActual();
             if(!perfil || !perfil.username){
                 alert('Antes de comentar debes elegir un nombre de usuario.');
-                await pintarEstadoUsuario();
+                await renderMenuUsuario();
+                abrirMenuUsuario();
                 return;
             }
 
@@ -1702,7 +1829,8 @@ async function initVote(article, jugada){
 
             if(!perfil || !perfil.username){
                 alert('Antes de votar debes elegir un nombre de usuario.');
-                await pintarEstadoUsuario();
+                await renderMenuUsuario();
+                abrirMenuUsuario();
                 return;
             }
 
@@ -1759,99 +1887,100 @@ function createArticle(jugada){
     return article;
 }
 
-async function pintarEstadoUsuario() {
-    const bloque = document.getElementById("bloqueUsuario");
-    const btnLogin = document.getElementById("btnLoginGoogle");
-    if (!bloque) return;
+function abrirMenuUsuario(){
+    menuUserDropdown.classList.add('activo');
+}
 
+function cerrarMenuUsuario(){
+    menuUserDropdown.classList.remove('activo');
+}
+
+async function renderMenuUsuario() {
     try {
         const user = await getUsuarioActual();
 
         if (!user) {
-            bloque.innerHTML = '<span>No has iniciado sesión.</span>';
-            if (btnLogin) {
-                btnLogin.style.display = 'inline-block';
-                btnLogin.textContent = 'Entrar con Google para votar';
-                btnLogin.disabled = false;
-                btnLogin.style.opacity = '1';
-                btnLogin.style.cursor = 'pointer';
-            }
+            menuUserDropdown.innerHTML = `
+                <div class="menu-user-title">Usuario</div>
+                <div class="menu-user-line">Puedes ver todo el contenido sin iniciar sesión. Para votar o comentar, entra con Google.</div>
+                <div class="menu-user-actions">
+                    <button id="btnMenuLoginGoogle" class="btn-user-primary" type="button">Iniciar sesión con Google</button>
+                </div>
+            `;
+            document.getElementById('btnMenuLoginGoogle').onclick = () => loginConGoogle();
             return;
         }
 
         const perfil = await getPerfilActual();
 
         if (perfil && perfil.username) {
-            bloque.innerHTML = `
-                <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:center;">
-                    <span>Has iniciado sesión como <strong>${escapeHtml(perfil.username)}</strong>.</span>
-                    <button id="btnLogoutUsuario" type="button" style="height:38px; padding:0 14px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">
-                        Cerrar sesión
-                    </button>
+            menuUserDropdown.innerHTML = `
+                <div class="menu-user-title">Sesión iniciada</div>
+                <div class="menu-user-line">Has iniciado sesión como <strong>${escapeHtml(perfil.username)}</strong>.</div>
+                <div class="menu-user-actions">
+                    <button id="btnMenuLogout" class="btn-user-secondary" type="button">Cerrar sesión</button>
                 </div>
             `;
-
-            if (btnLogin) {
-                btnLogin.textContent = 'Sesión iniciada con Google';
-                btnLogin.disabled = true;
-                btnLogin.style.opacity = '0.7';
-                btnLogin.style.cursor = 'default';
-            }
-
-            document.getElementById("btnLogoutUsuario").onclick = async () => {
+            document.getElementById('btnMenuLogout').onclick = async () => {
                 try {
                     await logout();
                     window.location.reload();
                 } catch (e) {
                     console.error(e);
-                    alert("No se pudo cerrar sesión");
+                    alert('No se pudo cerrar sesión');
                 }
             };
-
             return;
         }
 
-        if (btnLogin) {
-            btnLogin.textContent = 'Sesión iniciada con Google';
-            btnLogin.disabled = true;
-            btnLogin.style.opacity = '0.7';
-            btnLogin.style.cursor = 'default';
-        }
-
-        bloque.innerHTML = `
-            <div style="display:inline-flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:center;">
-                <input id="inputUsername" type="text" placeholder="Elige tu nombre de usuario" style="height:38px; padding:0 12px; border:none; border-radius:8px; min-width:240px;">
-                <button id="btnGuardarUsername" type="button" style="height:38px; padding:0 14px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">
-                    Guardar nombre
-                </button>
+        menuUserDropdown.innerHTML = `
+            <div class="menu-user-title">Completa tu usuario</div>
+            <div class="menu-user-line">Ya has iniciado sesión. Ahora elige tu nombre de usuario para poder votar y comentar.</div>
+            <div class="menu-user-actions">
+                <input id="inputUsernameMenu" type="text" placeholder="Elige tu nombre de usuario">
+                <button id="btnGuardarUsernameMenu" class="btn-user-primary" type="button">Guardar nombre</button>
+                <button id="btnMenuLogout" class="btn-user-secondary" type="button">Cerrar sesión</button>
             </div>
         `;
 
-        document.getElementById("btnGuardarUsername").onclick = async () => {
-            const input = document.getElementById("inputUsername");
+        document.getElementById('btnGuardarUsernameMenu').onclick = async () => {
+            const input = document.getElementById('inputUsernameMenu');
             const username = input.value.trim();
 
             if (!username) {
-                alert("Escribe un nombre de usuario");
+                alert('Escribe un nombre de usuario');
                 return;
             }
 
             try {
                 await crearPerfil(username);
-                await pintarEstadoUsuario();
                 window.location.reload();
             } catch (e) {
                 console.error(e);
                 if (e.code === '23505') {
-                    alert("Ese nombre de usuario ya está en uso");
+                    alert('Ese nombre de usuario ya está en uso');
                     return;
                 }
-                alert("No se pudo guardar el nombre de usuario");
+                alert('No se pudo guardar el nombre de usuario');
             }
         };
+
+        document.getElementById('btnMenuLogout').onclick = async () => {
+            try {
+                await logout();
+                window.location.reload();
+            } catch (e) {
+                console.error(e);
+                alert('No se pudo cerrar sesión');
+            }
+        };
+
     } catch (e) {
         console.error(e);
-        bloque.innerHTML = '<span>No se pudo comprobar el usuario.</span>';
+        menuUserDropdown.innerHTML = `
+            <div class="menu-user-title">Usuario</div>
+            <div class="menu-user-line">No se pudo comprobar el estado de la sesión.</div>
+        `;
     }
 }
 
@@ -1874,9 +2003,25 @@ function aplicarFiltros(){
     sinResultados.style.display=visibles===0?'block':'none';
 }
 
+menuUserBtn.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    if (menuUserDropdown.classList.contains('activo')) {
+        cerrarMenuUsuario();
+    } else {
+        await renderMenuUsuario();
+        abrirMenuUsuario();
+    }
+});
+
+document.addEventListener('click', (e) => {
+    if (!menuUserDropdown.contains(e.target) && !menuUserBtn.contains(e.target)) {
+        cerrarMenuUsuario();
+    }
+});
+
 (async()=>{
     try{
-        await pintarEstadoUsuario();
+        await renderMenuUsuario();
 
         const data=await loadDataset();
         const jugadas=[...data.jugadas].sort((a,b)=>
@@ -1915,7 +2060,7 @@ function aplicarFiltros(){
 
 supabase.auth.onAuthStateChange(async () => {
     try {
-        await pintarEstadoUsuario();
+        await renderMenuUsuario();
     } catch (e) {
         console.error(e);
     }

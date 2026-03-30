@@ -575,47 +575,11 @@ window.DecisionVarData = (() => {
     }
   }
 
-  function getUserVote(id) {
-    try {
-      const data = JSON.parse(localStorage.getItem("decisionvar_votos_usuario_online") || "{}");
-      return data[id] || "";
-    } catch {
-      return "";
-    }
-  }
-
-  function setUserVote(id, vote) {
-    let data = {};
-    try {
-      data = JSON.parse(localStorage.getItem("decisionvar_votos_usuario_online") || "{}") || {};
-    } catch {
-      data = {};
-    }
-    data[id] = vote;
-    localStorage.setItem("decisionvar_votos_usuario_online", JSON.stringify(data));
-  }
-
-  async function loadDataset() {
-    const jugadas = await loadCSVJugadas();
-    const votesMap = await getVotesMap(jugadas.map((j) => j.id));
-    const merged = mergeVotes(jugadas, votesMap);
-    const built = buildSummary(merged);
-
-    return {
-      jugadas: merged,
-      votesMap,
-      resumen: built.resumen,
-      jugadasVAR: built.jugadasVAR,
-      resumenBloques: buildSummaryBlocks(built.resumen),
-      jornadasData: buildJornadasData(built.jugadasVAR)
-    };
-  }
-
   async function loginConGoogle() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: window.location.origin + window.location.pathname
+        redirectTo: "https://javivilches.github.io/polemicavar/jugadas-polemicas.html"
       }
     });
 
@@ -639,8 +603,6 @@ window.DecisionVarData = (() => {
     getComments,
     addComment,
     addVote,
-    getUserVote,
-    setUserVote,
     formatDate,
     obtenerImpacto,
     buildSummaryBlocks,
