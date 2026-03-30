@@ -112,10 +112,13 @@ body{
     right:14px;
     top:50%;
     transform:translateY(-50%);
-    z-index:5;
+    z-index:5000;
+    pointer-events:auto;
 }
 
 .menu-user-btn{
+    position:relative;
+    z-index:5001;
     width:34px;
     height:34px;
     border:none;
@@ -128,6 +131,7 @@ body{
     cursor:pointer;
     box-shadow:0 4px 12px rgba(0,0,0,0.18);
     font-size:16px;
+    pointer-events:auto;
 }
 
 .menu-user-btn:hover{
@@ -1259,7 +1263,7 @@ textarea{
     <a href="arbitros-mas-influyentes.html"><span>ÁRBITROS MÁS<br>INFLUYENTES</span></a>
 
     <div class="menu-user-wrap">
-        <button id="menuUserBtn" class="menu-user-btn" type="button" title="Usuario">👤</button>
+        <button id="menuUserBtn" class="menu-user-btn" type="button" title="Usuario" onclick="window.toggleMenuUsuario && window.toggleMenuUsuario(event)">👤</button>
         <div id="menuUserDropdown" class="menu-user-dropdown"></div>
     </div>
 </nav>
@@ -2003,15 +2007,26 @@ function aplicarFiltros(){
     sinResultados.style.display=visibles===0?'block':'none';
 }
 
-menuUserBtn.addEventListener('click', async (e) => {
-    e.stopPropagation();
-    if (menuUserDropdown.classList.contains('activo')) {
-        cerrarMenuUsuario();
-    } else {
-        await renderMenuUsuario();
+window.toggleMenuUsuario = async function(e){
+    if(e) e.stopPropagation();
+    try{
+        if (menuUserDropdown.classList.contains('activo')) {
+            cerrarMenuUsuario();
+        } else {
+            await renderMenuUsuario();
+            abrirMenuUsuario();
+        }
+    }catch(err){
+        console.error(err);
+        menuUserDropdown.innerHTML = `
+            <div class="menu-user-title">Usuario</div>
+            <div class="menu-user-line">No se pudo abrir el menú de usuario.</div>
+        `;
         abrirMenuUsuario();
     }
-});
+};
+
+menuUserBtn.addEventListener('click', window.toggleMenuUsuario);
 
 document.addEventListener('click', (e) => {
     if (!menuUserDropdown.contains(e.target) && !menuUserBtn.contains(e.target)) {
