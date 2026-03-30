@@ -407,6 +407,21 @@ window.DecisionVarData = (() => {
     return Array.from(map.values()).sort((a, b) => a.jornada - b.jornada);
   }
 
+  async function loadDataset() {
+    const jugadasBase = await loadCSVJugadas();
+    const votesMap = await getVotesMap(jugadasBase.map((j) => j.id));
+    const jugadas = mergeVotes(jugadasBase, votesMap);
+    const { resumen, jugadasVAR } = buildSummary(jugadas);
+
+    return {
+      jugadas,
+      resumen,
+      jugadasVAR,
+      resumenBloques: buildSummaryBlocks(resumen),
+      jornadasData: buildJornadasData(jugadasVAR)
+    };
+  }
+
   async function getUsuarioActual() {
     const { data, error } = await supabase.auth.getUser();
     if (error) throw error;
@@ -576,10 +591,12 @@ window.DecisionVarData = (() => {
   }
 
   async function loginConGoogle() {
+    const redirectTo = window.location.href.split("#")[0];
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: "https://javivilches.github.io/polemicavar/jugadas-polemicas.html"
+        redirectTo
       }
     });
 
