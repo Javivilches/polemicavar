@@ -2,10 +2,19 @@ window.DECISIONVAR_SUPABASE_URL = "https://rvxdoxaovuhiatjxhynl.supabase.co";
 window.DECISIONVAR_SUPABASE_KEY = "sb_publishable_tFHi8NKMy1Ro5yT8e1nzcw_Ha0rvyPk";
 
 window.DecisionVarData = (() => {
-  const supabase = window.supabase.createClient(
-    window.DECISIONVAR_SUPABASE_URL,
-    window.DECISIONVAR_SUPABASE_KEY
-  );
+  let supabase = null;
+
+  try {
+    if (window.supabase && window.DECISIONVAR_SUPABASE_URL && window.DECISIONVAR_SUPABASE_KEY) {
+      supabase = window.supabase.createClient(
+        window.DECISIONVAR_SUPABASE_URL,
+        window.DECISIONVAR_SUPABASE_KEY
+      );
+    }
+  } catch (e) {
+    console.error("No se pudo crear cliente Supabase", e);
+    supabase = null;
+  }
 
   function normalize(txt) {
     return (txt || "")
@@ -114,12 +123,7 @@ window.DecisionVarData = (() => {
   }
 
   function createEmptyBlock() {
-    return {
-      total: 0,
-      si: 0,
-      no: 0,
-      balance: 0
-    };
+    return { total: 0, si: 0, no: 0, balance: 0 };
   }
 
   function createEmptySummary() {
@@ -278,37 +282,61 @@ window.DecisionVarData = (() => {
       }));
   }
 
+  async function loadJugadasPublicas() {
+    const jugadasBase = await loadCSVJugadas();
+
+    return jugadasBase.map((j) => {
+      const votosSi = numeroSeguro(j.votosInicialesSi);
+      const votosNo = numeroSeguro(j.votosInicialesNo);
+
+      return {
+        ...j,
+        votosSi,
+        votosNo,
+        totalVotos: votosSi + votosNo,
+        encuesta: encuestaGanadora(votosSi, votosNo)
+      };
+    });
+  }
+
   async function getVotesMap(jugadaIds) {
+    if (!supabase) return {};
+
     const ids = [...new Set((jugadaIds || []).filter(Boolean))];
     if (!ids.length) return {};
 
-    const { data, error } = await supabase
-      .from("votos")
-      .select("jugada_id,voto")
-      .in("jugada_id", ids);
+    try {
+      const { data, error } = await supabase
+        .from("votos")
+        .select("jugada_id,voto")
+        .in("jugada_id", ids);
 
-    if (error) throw error;
+      if (error) throw error;
 
-    const map = {};
-    ids.forEach((id) => {
-      map[id] = { si: 0, no: 0, total: 0 };
-    });
+      const map = {};
+      ids.forEach((id) => {
+        map[id] = { si: 0, no: 0, total: 0 };
+      });
 
-    (data || []).forEach((row) => {
-      const id = row.jugada_id;
-      if (!map[id]) map[id] = { si: 0, no: 0, total: 0 };
+      (data || []).forEach((row) => {
+        const id = row.jugada_id;
+        if (!map[id]) map[id] = { si: 0, no: 0, total: 0 };
 
-      const v = normalize(row.voto);
-      if (v === "si") {
-        map[id].si += 1;
-        map[id].total += 1;
-      } else if (v === "no") {
-        map[id].no += 1;
-        map[id].total += 1;
-      }
-    });
+        const v = normalize(row.voto);
+        if (v === "si") {
+          map[id].si += 1;
+          map[id].total += 1;
+        } else if (v === "no") {
+          map[id].no += 1;
+          map[id].total += 1;
+        }
+      });
 
-    return map;
+      return map;
+    } catch (e) {
+      console.error("No se pudieron cargar los votos online", e);
+      return {};
+    }
   }
 
   function mergeVotes(jugadas, votesMap) {
@@ -359,16 +387,13 @@ window.DecisionVarData = (() => {
         totalVotos: numeroSeguro(j.totalVotos)
       });
 
-          const block = resumen[equipo]?.[categoria]?.[subtipo];
+      const block = resumen[equipo]?.[categoria]?.[subtipo];
       if (!block) continue;
 
       block.total += 1;
 
-      if (j.encuesta === "si") {
-        block.si += 1;
-      } else if (j.encuesta === "no") {
-        block.no += 1;
-      }
+      if (j.encuesta === "si") block.si += 1;
+      else if (j.encuesta === "no") block.no += 1;
 
       block.balance += obtenerImpacto(categoria, subtipo, j.encuesta);
     }
@@ -393,9 +418,7 @@ window.DecisionVarData = (() => {
       const key = Number(j.jornada || 0);
       if (!key) return;
 
-      if (!map.has(key)) {
-        map.set(key, { jornada: key, barca: 0, madrid: 0 });
-      }
+      if (!map.has(key)) map.set(key, { jornada: key, barca: 0, madrid: 0 });
 
       const reg = map.get(key);
       const impact = obtenerImpacto(j.categoria, j.subtipo, j.encuesta);
@@ -407,39 +430,123 @@ window.DecisionVarData = (() => {
     return Array.from(map.values()).sort((a, b) => a.jornada - b.jornada);
   }
 
+  async function loadDataset() {
+    const jugadasBase = await loadCSVJugadas();
+    const votesMap = await getVotesMap(jugadasBase.map((j) => j.id));
+    const jugadas = mergeVotes(jugadasBase, votesMap);
+    const { resumen, jugadasVAR } = buildSummary(jugadas);
+
+    return {
+      jugadas,
+      resumen,
+      jugadasVAR,
+      resumenBloques: buildSummaryBlocks(resumen),
+      jornadasData: buildJornadasData(jugadasVAR)
+    };
+  }
+
+  async function getUsuarioActual() {
+    if (!supabase) return null;
+    try {
+      const { data, error } = await supabase.auth.getUser();
+      if (error) throw error;
+      return data?.user || null;
+    } catch (e) {
+      console.error("No se pudo obtener el usuario actual", e);
+      return null;
+    }
+  }
+
+  async function getPerfilActual() {
+    if (!supabase) return null;
+    const user = await getUsuarioActual();
+    if (!user) return null;
+
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id,username")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (error) throw error;
+      return data || null;
+    } catch (e) {
+      console.error("No se pudo obtener el perfil actual", e);
+      return null;
+    }
+  }
+
+  async function crearPerfil(username) {
+    if (!supabase) throw new Error("Supabase no disponible");
+    const user = await getUsuarioActual();
+    if (!user) throw new Error("No hay usuario autenticado");
+
+    const limpio = String(username || "").trim();
+    if (!limpio) throw new Error("Nombre de usuario vacío");
+
+    const { error } = await supabase
+      .from("profiles")
+      .insert({ id: user.id, username: limpio });
+
+    if (error) throw error;
+  }
+
+  async function getCurrentUserVote(jugadaId) {
+    if (!supabase) return "";
+    const user = await getUsuarioActual();
+    if (!user) return "";
+
+    try {
+      const { data, error } = await supabase
+        .from("votos")
+        .select("voto")
+        .eq("jugada_id", jugadaId)
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (error) throw error;
+      return data?.voto || "";
+    } catch (e) {
+      console.error("No se pudo obtener el voto del usuario", e);
+      return "";
+    }
+  }
+
   async function getComments(scope, jugadaId = "") {
-    let query = supabase
-      .from("comentarios")
-      .select("id,autor,texto,created_at,jugada_id")
-      .eq("scope", scope)
-      .order("created_at", { ascending: false });
+    if (!supabase) return [];
 
-    if (jugadaId) query = query.eq("jugada_id", jugadaId);
-    else query = query.is("jugada_id", null);
-
-    const { data, error } = await query;
-
-    if (error) {
-      let fallback = supabase
+    try {
+      let query = supabase
         .from("comentarios")
         .select("id,autor,texto,created_at,jugada_id")
+        .eq("scope", scope)
         .order("created_at", { ascending: false });
 
-      if (jugadaId) fallback = fallback.eq("jugada_id", jugadaId);
-      else fallback = fallback.is("jugada_id", null);
+      if (jugadaId) query = query.eq("jugada_id", jugadaId);
+      else query = query.is("jugada_id", null);
 
-      const second = await fallback;
-      if (second.error) throw second.error;
-      return second.data || [];
+      const { data, error } = await query;
+      if (error) throw error;
+      return data || [];
+    } catch (e) {
+      console.error("No se pudieron cargar comentarios online", e);
+      return [];
     }
-
-    return data || [];
   }
 
   async function addComment(scope, text, jugadaId = "") {
+    if (!supabase) throw new Error("Servicio no disponible");
+
+    const user = await getUsuarioActual();
+    if (!user) throw new Error("Debes iniciar sesión para comentar");
+
+    const perfil = await getPerfilActual();
+    if (!perfil?.username) throw new Error("Debes crear un nombre de usuario antes de comentar");
+
     const payload = {
       texto: text,
-      autor: "Usuario",
+      autor: perfil.username,
       scope: scope || null,
       jugada_id: jugadaId || null
     };
@@ -453,92 +560,33 @@ window.DecisionVarData = (() => {
     }
   }
 
- async function addVote(jugadaId, voto) {
-  const user = await getUsuarioActual();
-  if (!user) throw new Error("Debes iniciar sesión");
+  async function addVote(jugadaId, voto) {
+    if (!supabase) throw new Error("Servicio no disponible");
 
-  const { error } = await supabase
-    .from("votos")
-    .upsert(
-      {
-        jugada_id: jugadaId,
-        user_id: user.id,
-        voto
-      },
-      {
-        onConflict: "jugada_id,user_id"
-      }
-    );
+    const user = await getUsuarioActual();
+    if (!user) throw new Error("Debes iniciar sesión");
 
-  if (error) throw error;
-}
+    const perfil = await getPerfilActual();
+    if (!perfil?.username) throw new Error("Debes crear un nombre de usuario antes de votar");
 
-async function getUsuarioActual() {
-  const { data, error } = await supabase.auth.getUser();
-  if (error) throw error;
-  return data?.user || null;
-}
-
-async function getPerfilActual() {
-  const user = await getUsuarioActual();
-  if (!user) return null;
-
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("id, username")
-    .eq("id", user.id)
-    .maybeSingle();
-
-  if (error) throw error;
-  return data || null;
-}
-
-async function crearPerfil(username) {
-  const user = await getUsuarioActual();
-  if (!user) throw new Error("No hay usuario autenticado");
-
-  const { error } = await supabase
-    .from("profiles")
-    .insert({
-      id: user.id,
-      username: String(username || "").trim()
+    const { error } = await supabase.from("votos").insert({
+      jugada_id: jugadaId,
+      user_id: user.id,
+      voto
     });
 
-  if (error) throw error;
-}
- function formatDate(dateValue) {
-  try {
-    if (!dateValue) return "";
+    if (error) throw error;
+  }
 
-    const raw = String(dateValue).trim();
+  function formatDate(dateValue) {
+    try {
+      if (!dateValue) return "";
 
-    const isoDate = new Date(raw);
-    if (!isNaN(isoDate.getTime())) {
-      return isoDate.toLocaleString("es-ES", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit"
-      });
-    }
+      const raw = String(dateValue).trim();
+      const isoDate = new Date(raw);
 
-    const m = raw.match(
-      /^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2}))?(?::(\d{2}))?$/
-    );
-
-    if (m) {
-      const dia = Number(m[1]);
-      const mes = Number(m[2]) - 1;
-      const anio = Number(m[3]);
-      const hora = Number(m[4] || 0);
-      const minuto = Number(m[5] || 0);
-      const segundo = Number(m[6] || 0);
-
-      const fecha = new Date(anio, mes, dia, hora, minuto, segundo);
-
-      if (!isNaN(fecha.getTime())) {
-        return fecha.toLocaleString("es-ES", {
+      if (!isNaN(isoDate.getTime())) {
+        return isoDate.toLocaleString("es-ES", {
           day: "2-digit",
           month: "2-digit",
           year: "numeric",
@@ -546,88 +594,82 @@ async function crearPerfil(username) {
           minute: "2-digit"
         });
       }
-    }
 
-    return raw;
-  } catch {
-    return "";
-  }
-}
+      const m = raw.match(
+        /^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2}))?(?::(\d{2}))?$/
+      );
 
-  function getUserVote(id) {
-    try {
-      const data = JSON.parse(localStorage.getItem("decisionvar_votos_usuario_online") || "{}");
-      return data[id] || "";
+      if (m) {
+        const fecha = new Date(
+          Number(m[3]),
+          Number(m[2]) - 1,
+          Number(m[1]),
+          Number(m[4] || 0),
+          Number(m[5] || 0),
+          Number(m[6] || 0)
+        );
+
+        if (!isNaN(fecha.getTime())) {
+          return fecha.toLocaleString("es-ES", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+          });
+        }
+      }
+
+      return raw;
     } catch {
       return "";
     }
   }
 
-  function setUserVote(id, vote) {
-    let data = {};
-    try {
-      data = JSON.parse(localStorage.getItem("decisionvar_votos_usuario_online") || "{}") || {};
-    } catch {
-      data = {};
+  async function loginConGoogle() {
+    if (!supabase) {
+      alert("Inicio de sesión no disponible ahora mismo");
+      return;
     }
-    data[id] = vote;
-    localStorage.setItem("decisionvar_votos_usuario_online", JSON.stringify(data));
-  }
 
-  async function loadDataset() {
-    const jugadas = await loadCSVJugadas();
-    const votesMap = await getVotesMap(jugadas.map((j) => j.id));
-    const merged = mergeVotes(jugadas, votesMap);
-    const built = buildSummary(merged);
+    const redirectTo = window.location.href.split("#")[0];
 
-    return {
-      jugadas: merged,
-      votesMap,
-      resumen: built.resumen,
-      jugadasVAR: built.jugadasVAR,
-      resumenBloques: buildSummaryBlocks(built.resumen),
-      jornadasData: buildJornadasData(built.jugadasVAR)
-    };
-  }
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo }
+    });
 
-async function loginConGoogle() {
-  const { error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: window.location.origin + window.location.pathname
+    if (error) {
+      alert("Error al iniciar sesión con Google");
+      console.error(error);
     }
-  });
-
-  if (error) {
-    alert('Error al iniciar sesión con Google');
-    console.error(error);
   }
-}
 
-async function logout() {
-  const { error } = await supabase.auth.signOut();
-  if (error) throw error;
-}
+  async function logout() {
+    if (!supabase) return;
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+  }
 
- return {
-  supabase,
-  normalize,
-  escapeHtml,
-  numeroSeguro,
-  loadDataset,
-  getComments,
-  addComment,
-  addVote,
-  getUserVote,
-  setUserVote,
-  formatDate,
-  obtenerImpacto,
-  buildSummaryBlocks,
-  buildJornadasData,
-  loginConGoogle,
-  logout,
-  getUsuarioActual,
-  getPerfilActual,
-  crearPerfil
-};
+  return {
+    supabase,
+    normalize,
+    escapeHtml,
+    numeroSeguro,
+    loadDataset,
+    loadJugadasPublicas,
+    getComments,
+    addComment,
+    addVote,
+    formatDate,
+    obtenerImpacto,
+    buildSummaryBlocks,
+    buildJornadasData,
+    loginConGoogle,
+    logout,
+    getUsuarioActual,
+    getPerfilActual,
+    crearPerfil,
+    getCurrentUserVote
+  };
 })();
