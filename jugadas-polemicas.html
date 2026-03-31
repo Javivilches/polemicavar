@@ -1465,6 +1465,7 @@ function valueFromRow(row, keys){
 }
 
 async function loadJugadasPublicasDesdeCSV(){
+
     const rutasPosibles = [
         "jugadas.csv",
         "./jugadas.csv",
@@ -1492,63 +1493,61 @@ async function loadJugadasPublicasDesdeCSV(){
 
     const rows = parseCSV(text);
 
-    return rows
-        .map((row, index) => {
-            const jornadaRaw = valueFromRow(row, ["Jornada", "jornada"]);
-            const votosInicialesSi = numeroSeguro(valueFromRow(row, ["votos iniciales si", "Votos iniciales si", "votos_iniciales_si"]));
-            const votosInicialesNo = numeroSeguro(valueFromRow(row, ["votos iniciales no", "Votos iniciales no", "votos_iniciales_no"]));
+    return rows.map((row, index) => {
+        const jornadaRaw = valueFromRow(row, ["Jornada", "jornada"]);
+        const votosInicialesSi = numeroSeguro(valueFromRow(row, ["votos iniciales si", "Votos iniciales si", "votos_iniciales_si"]));
+        const votosInicialesNo = numeroSeguro(valueFromRow(row, ["votos iniciales no", "Votos iniciales no", "votos_iniciales_no"]));
 
-            return {
-                id: valueFromRow(row, ["id"]) || String(index + 1),
-                competicion: valueFromRow(row, ["Competición", "Competicion", "competicion"]) || "LaLiga",
-                jornada: extraerNumeroJornada(jornadaRaw),
-                partido: valueFromRow(row, ["Partido", "partido"]),
-                arbitro: valueFromRow(row, ["Árbitro", "Arbitro", "arbitro"]),
-                var: valueFromRow(row, ["VAR", "var", "Arbitro VAR", "Árbitro VAR", "arbitro_var"]),
-                minuto: valueFromRow(row, ["Minuto", "minuto"]),
-                equipoAfectado: valueFromRow(row, ["Equipo afectado", "equipo afectado", "equipo_afectado"]),
-                categoria: valueFromRow(row, ["Categoría", "Categoria", "categoria"]),
-                subtipo: valueFromRow(row, ["Subtipo", "subtipo"]),
-                pregunta: valueFromRow(row, ["Pregunta", "pregunta"]),
-                decision: valueFromRow(row, ["Decisión arbitral", "Decision arbitral", "decision arbitral", "decision_arbitral"]),
-                descripcion: valueFromRow(row, ["Descripción", "Descripcion", "descripcion"]),
-                slugImagen: valueFromRow(row, ["slug_imagen", "slug imagen"]),
-                slugImagen2: valueFromRow(row, ["slug_imagen2", "slug imagen2"]),
-                slugImagen3: valueFromRow(row, ["slug_imagen3", "slug imagen3"]),
-                slugImagen4: valueFromRow(row, ["slug_imagen4", "slug imagen4"]),
-                slugImagen5: valueFromRow(row, ["slug_imagen5", "slug imagen5"]),
-                slugVideo: valueFromRow(row, ["slug_video", "slug video"]),
-                slugVideo2: valueFromRow(row, ["slug_video2", "slug video2"]),
-                respuestaSi: valueFromRow(row, ["Respuesta si", "respuesta si", "respuesta_si"]) || "Sí",
-                respuestaNo: valueFromRow(row, ["Respuesta no", "respuesta no", "respuesta_no"]) || "No",
-                votosInicialesSi,
-                votosInicialesNo,
-                votosSi: votosInicialesSi,
-                votosNo: votosInicialesNo,
-                totalVotos: votosInicialesSi + votosInicialesNo,
+        return {
+            id: valueFromRow(row, ["id"]) || String(index + 1),
+            competicion: valueFromRow(row, ["Competición", "Competicion", "competicion"]) || "LaLiga",
+            jornada: extraerNumeroJornada(jornadaRaw),
+            partido: valueFromRow(row, ["Partido", "partido"]),
+            arbitro: valueFromRow(row, ["Árbitro", "Arbitro", "arbitro"]),
+            var: valueFromRow(row, ["VAR", "var", "Arbitro VAR", "Árbitro VAR", "arbitro_var"]),
+            minuto: valueFromRow(row, ["Minuto", "minuto"]),
+            equipoAfectado: valueFromRow(row, ["Equipo afectado", "equipo afectado", "equipo_afectado"]),
+            categoria: valueFromRow(row, ["Categoría", "Categoria", "categoria"]),
+            subtipo: valueFromRow(row, ["Subtipo", "subtipo"]),
+            pregunta: valueFromRow(row, ["Pregunta", "pregunta"]),
+            decision: valueFromRow(row, ["Decisión arbitral", "Decision arbitral", "decision arbitral", "decision_arbitral"]),
+            descripcion: valueFromRow(row, ["Descripción", "Descripcion", "descripcion"]),
+            slugImagen: valueFromRow(row, ["slug_imagen", "slug imagen"]),
+            slugImagen2: valueFromRow(row, ["slug_imagen2", "slug imagen2"]),
+            slugImagen3: valueFromRow(row, ["slug_imagen3", "slug imagen3"]),
+            slugImagen4: valueFromRow(row, ["slug_imagen4", "slug imagen4"]),
+            slugImagen5: valueFromRow(row, ["slug_imagen5", "slug imagen5"]),
+            slugVideo: valueFromRow(row, ["slug_video", "slug video"]),
+            slugVideo2: valueFromRow(row, ["slug_video2", "slug video2"]),
+            respuestaSi: valueFromRow(row, ["Respuesta si", "respuesta si", "respuesta_si"]) || "Sí",
+            respuestaNo: valueFromRow(row, ["Respuesta no", "respuesta no", "respuesta_no"]) || "No",
+            votosInicialesSi,
+            votosInicialesNo,
+            votosSi: votosInicialesSi,
+            votosNo: votosInicialesNo,
+            totalVotos: votosInicialesSi + votosInicialesNo,
 
-                comentario1: valueFromRow(row, ["comentario1"]),
-                usuariocomentario1: valueFromRow(row, ["usuariocomentario1", "usuario comentario1", "usuario_comentario1"]),
-                fechacomentario1: valueFromRow(row, ["fechacomentario1", "fecha comentario1", "fecha_comentario1"]),
+            comentario1: valueFromRow(row, ["comentario1"]),
+            usuariocomentario1: valueFromRow(row, ["usuariocomentario1", "usuario comentario1", "usuario_comentario1"]),
+            fechacomentario1: valueFromRow(row, ["fechacomentario1", "fecha comentario1", "fecha_comentario1"]),
 
-                comentario2: valueFromRow(row, ["comentario2"]),
-                usuariocomentario2: valueFromRow(row, ["usuariocomentario2", "usuario comentario2", "usuario_comentario2"]),
-                fechacomentario2: valueFromRow(row, ["fechacomentario2", "fecha comentario2", "fecha_comentario2"]),
+            comentario2: valueFromRow(row, ["comentario2"]),
+            usuariocomentario2: valueFromRow(row, ["usuariocomentario2", "usuario comentario2", "usuario_comentario2"]),
+            fechacomentario2: valueFromRow(row, ["fechacomentario2", "fecha comentario2", "fecha_comentario2"]),
 
-                comentario3: valueFromRow(row, ["comentario3"]),
-                usuariocomentario3: valueFromRow(row, ["usuariocomentario3", "usuario comentario3", "usuario_comentario3"]),
-                fechacomentario3: valueFromRow(row, ["fechacomentario3", "fecha comentario3", "fecha_comentario3"]),
+            comentario3: valueFromRow(row, ["comentario3"]),
+            usuariocomentario3: valueFromRow(row, ["usuariocomentario3", "usuario comentario3", "usuario_comentario3"]),
+            fechacomentario3: valueFromRow(row, ["fechacomentario3", "fecha comentario3", "fecha_comentario3"]),
 
-                comentario4: valueFromRow(row, ["comentario4"]),
-                usuariocomentario4: valueFromRow(row, ["usuariocomentario4", "usuario comentario4", "usuario_comentario4"]),
-                fechacomentario4: valueFromRow(row, ["fechacomentario4", "fecha comentario4", "fecha_comentario4"]),
+            comentario4: valueFromRow(row, ["comentario4"]),
+            usuariocomentario4: valueFromRow(row, ["usuariocomentario4", "usuario comentario4", "usuario_comentario4"]),
+            fechacomentario4: valueFromRow(row, ["fechacomentario4", "fecha comentario4", "fecha_comentario4"]),
 
-                comentario5: valueFromRow(row, ["comentario5"]),
-                usuariocomentario5: valueFromRow(row, ["usuariocomentario5", "usuario comentario5", "usuario_comentario5"]),
-                fechacomentario5: valueFromRow(row, ["fechacomentario5", "fecha comentario5", "fecha_comentario5"])
-            };
-        })
-        .filter(j => j.jornada && j.partido && j.categoria);
+            comentario5: valueFromRow(row, ["comentario5"]),
+            usuariocomentario5: valueFromRow(row, ["usuariocomentario5", "usuario comentario5", "usuario_comentario5"]),
+            fechacomentario5: valueFromRow(row, ["fechacomentario5", "fecha comentario5", "fecha_comentario5"])
+        };
+    }).filter(j => j.jornada && j.partido && j.categoria);
 }
 
 async function primerTextoDisponible(rutas){
