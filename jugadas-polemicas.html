@@ -40,7 +40,7 @@ body{
     align-items:center;
     gap:44px;
     z-index:999;
-    overflow:visible;
+    overflow:hidden;
     background:linear-gradient(
         90deg,
         #0b2d6b 0%,
@@ -105,114 +105,6 @@ body{
 .menu a:nth-child(4),
 .menu a:nth-child(5){
     color:#0a2f6b;
-}
-
-.menu-user-wrap{
-    position:absolute;
-    right:14px;
-    top:50%;
-    transform:translateY(-50%);
-    z-index:5000;
-    pointer-events:auto;
-}
-
-.menu-user-btn{
-    position:relative;
-    z-index:5001;
-    width:34px;
-    height:34px;
-    border:none;
-    border-radius:50%;
-    background:rgba(8,12,20,0.82);
-    color:#fff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
-    box-shadow:0 4px 12px rgba(0,0,0,0.18);
-    font-size:16px;
-    pointer-events:auto;
-}
-
-.menu-user-btn:hover{
-    background:rgba(20,34,58,0.95);
-}
-
-.menu-user-dropdown{
-    position:absolute;
-    right:0;
-    top:42px;
-    min-width:240px;
-    background:#fff;
-    border-radius:12px;
-    box-shadow:0 12px 28px rgba(0,0,0,0.22);
-    padding:12px;
-    display:none;
-    color:#1e2b46;
-}
-
-.menu-user-dropdown.activo{
-    display:block;
-}
-
-.menu-user-line{
-    font-size:13px;
-    line-height:1.4;
-    margin-bottom:10px;
-    color:#41516f;
-}
-
-.menu-user-title{
-    font-size:14px;
-    font-weight:bold;
-    color:#18263f;
-    margin-bottom:10px;
-}
-
-.menu-user-actions{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-}
-
-.menu-user-actions button,
-.menu-user-actions input{
-    width:100%;
-    box-sizing:border-box;
-}
-
-.menu-user-actions input{
-    height:38px;
-    border:1px solid #d8dfeb;
-    border-radius:8px;
-    padding:0 10px;
-    font-size:14px;
-}
-
-.menu-user-actions button{
-    height:38px;
-    border:none;
-    border-radius:8px;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-.btn-user-primary{
-    background:#1f4fb0;
-    color:#fff;
-}
-
-.btn-user-primary:hover{
-    background:#173f90;
-}
-
-.btn-user-secondary{
-    background:#eef2f8;
-    color:#243757;
-}
-
-.btn-user-secondary:hover{
-    background:#dfe7f3;
 }
 
 /* CONTENIDO */
@@ -932,21 +824,6 @@ textarea{
         height:32px;
         font-size:13px;
     }
-
-    .menu-user-wrap{
-        right:6px;
-    }
-
-    .menu-user-btn{
-        width:30px;
-        height:30px;
-        font-size:14px;
-    }
-
-    .menu-user-dropdown{
-        right:-4px;
-        min-width:220px;
-    }
 }
 @media (max-width: 650px){
     .filtros-jugadas{
@@ -1016,13 +893,13 @@ textarea{
         top:80px !important;
         height:58px !important;
         min-height:58px !important;
-        padding:0 44px 0 0 !important;
+        padding:0 !important;
         gap:0 !important;
         display:grid !important;
         grid-template-columns:repeat(5, minmax(0, 1fr)) !important;
         align-items:stretch !important;
         justify-content:stretch !important;
-        overflow:visible !important;
+        overflow:hidden !important;
         white-space:normal !important;
     }
 
@@ -1054,13 +931,6 @@ textarea{
         display:block !important;
     }
 
-    .menu-user-wrap{
-        position:absolute !important;
-        right:8px !important;
-        top:50% !important;
-        transform:translateY(-50%) !important;
-    }
-
     .contenido{
         margin-top:138px !important;
         min-height:calc(100vh - 138px) !important;
@@ -1071,19 +941,12 @@ textarea{
     .menu{
         height:56px !important;
         min-height:56px !important;
-        padding-right:42px !important;
     }
 
     .menu a{
         height:56px !important;
         font-size:8.6px !important;
         padding:4px 2px !important;
-    }
-
-    .menu-user-btn{
-        width:28px !important;
-        height:28px !important;
-        font-size:13px !important;
     }
 
     .contenido{
@@ -1261,11 +1124,6 @@ textarea{
     <a href="resultados-var.html"><span>RESULTADOS</span></a>
     <a href="quien-ha-sido-mas-favorecido.html"><span>EQUIPO MÁS<br>FAVORECIDO</span></a>
     <a href="arbitros-mas-influyentes.html"><span>ÁRBITROS MÁS<br>INFLUYENTES</span></a>
-
-    <div class="menu-user-wrap">
-        <button id="menuUserBtn" class="menu-user-btn" type="button" title="Usuario" onclick="window.toggleMenuUsuario && window.toggleMenuUsuario(event)">👤</button>
-        <div id="menuUserDropdown" class="menu-user-dropdown"></div>
-    </div>
 </nav>
 
 <div class="contenido">
@@ -1276,6 +1134,19 @@ textarea{
         <p>Ordenadas de la más reciente a la más antigua.</p>
     </section>
 
+<div style="text-align:center; margin:15px 0;">
+    <button id="btnLoginGoogle" onclick="DecisionVarData.loginConGoogle()" style="
+    padding:10px 18px;
+    font-weight:bold;
+    border:none;
+    border-radius:6px;
+    background:#ffffff;
+    cursor:pointer;
+">
+    Entrar con Google para votar
+</button>
+</div>
+<div id="bloqueUsuario" style="text-align:center; margin:10px 0 18px; color:white;"></div>
     <section class="filtros-jugadas">
         <div class="filtro-grupo">
             <label for="filtroJornada">Jornada</label>
@@ -1356,22 +1227,19 @@ textarea{
 </div>
 
 <script>
-const DecisionVarAPI = window.DecisionVarData || {};
-
-const supabase = DecisionVarAPI.supabase || null;
-const escapeHtml = DecisionVarAPI.escapeHtml || ((t) => String(t || ""));
-const loadDataset = DecisionVarAPI.loadDataset || (async () => ({ jugadas: [] }));
-const getComments = DecisionVarAPI.getComments || (async () => []);
-const addComment = DecisionVarAPI.addComment || (async () => { throw new Error("No disponible"); });
-const addVote = DecisionVarAPI.addVote || (async () => { throw new Error("No disponible"); });
-const formatDate = DecisionVarAPI.formatDate || ((v) => v || "");
-const getUsuarioActual = DecisionVarAPI.getUsuarioActual || (async () => null);
-const getPerfilActual = DecisionVarAPI.getPerfilActual || (async () => null);
-const crearPerfil = DecisionVarAPI.crearPerfil || (async () => { throw new Error("No disponible"); });
-const logout = DecisionVarAPI.logout || (async () => {});
-const getCurrentUserVote = DecisionVarAPI.getCurrentUserVote || (async () => "");
-const loginConGoogle = DecisionVarAPI.loginConGoogle || (async () => alert("Inicio de sesión no disponible"));
-
+const {
+    supabase,
+    escapeHtml,
+    loadDataset,
+    getComments,
+    addComment,
+    addVote,
+    formatDate,
+    getUsuarioActual,
+    getPerfilActual,
+    crearPerfil,
+    logout
+} = window.DecisionVarData;
 const filtroJornada = document.getElementById("filtroJornada");
 const filtroEquipo = document.getElementById("filtroEquipo");
 const filtroCompeticion = document.getElementById("filtroCompeticion");
@@ -1379,8 +1247,6 @@ const filtroTipo = document.getElementById("filtroTipo");
 const btnLimpiarFiltros = document.getElementById("btnLimpiarFiltros");
 const sinResultados = document.getElementById("sinResultados");
 const contenedorJugadas = document.getElementById("contenedorJugadas");
-const menuUserBtn = document.getElementById("menuUserBtn");
-const menuUserDropdown = document.getElementById("menuUserDropdown");
 
 function normalizarTexto(txt){ return (txt||"").toString().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); }
 function capitalizarCategoria(v){ const n=normalizarTexto(v); if(n==='penalti') return 'Penalti'; if(n==='gol') return 'Gol'; if(n==='roja') return 'Roja'; return v||''; }
@@ -1656,26 +1522,6 @@ function renderComments(article, comments, visibles){
     article.querySelector('.btn-mostrar-mas').style.display = visibles>0 && visibles<comments.length ? 'inline-block' : 'none';
 }
 
-function updateCommentUI(article, logueado, conPerfil){
-    const textarea = article.querySelector('textarea');
-    const boton = article.querySelector('.boton-comentar');
-
-    if(!logueado){
-        textarea.placeholder = 'Inicia sesión con Google para comentar...';
-        boton.textContent = 'Inicia sesión para comentar';
-        return;
-    }
-
-    if(!conPerfil){
-        textarea.placeholder = 'Primero crea tu nombre de usuario para comentar...';
-        boton.textContent = 'Guardar usuario antes de comentar';
-        return;
-    }
-
-    textarea.placeholder = 'Escribe tu comentario...';
-    boton.textContent = 'Publicar comentario';
-}
-
 async function initComments(article, jugada){
     const initial=createInitialComments(jugada);
     let online=[];
@@ -1687,48 +1533,18 @@ async function initComments(article, jugada){
     let visibles=0;
     renderComments(article, [...online, ...initial], visibles);
 
-    let logueado = false;
-    let conPerfil = false;
-
-    try{
-        const user = await getUsuarioActual();
-        logueado = !!user;
-        if(user){
-            const perfil = await getPerfilActual();
-            conPerfil = !!(perfil && perfil.username);
-        }
-    }catch(e){}
-
-    updateCommentUI(article, logueado, conPerfil);
-
     article.querySelector('.boton-comentar').onclick=async()=>{
         const ta=article.querySelector('textarea');
         const txt=ta.value.trim();
+        if(!txt) return;
 
         try{
-            const user = await getUsuarioActual();
-            if(!user){
-                alert('Debes iniciar sesión con Google para comentar.');
-                return;
-            }
-
-            const perfil = await getPerfilActual();
-            if(!perfil || !perfil.username){
-                alert('Antes de comentar debes elegir un nombre de usuario.');
-                await renderMenuUsuario();
-                abrirMenuUsuario();
-                return;
-            }
-
-            if(!txt) return;
-
             await addComment('jugada', txt, jugada.id);
             ta.value='';
             online=await getComments('jugada', jugada.id);
             visibles=Math.max(visibles,5);
             renderComments(article, [...online, ...initial], visibles);
         }catch(e){
-            console.error(e);
             alert('No se pudo guardar el comentario');
         }
     };
@@ -1749,28 +1565,6 @@ async function initComments(article, jugada){
     };
 }
 
-function disableVoteButtons(article){
-    const btnSi = article.querySelector('.btn-voto-si');
-    const btnNo = article.querySelector('.btn-voto-no');
-
-    [btnSi, btnNo].forEach(btn => {
-        btn.disabled = true;
-        btn.style.opacity = '0.65';
-        btn.style.cursor = 'default';
-    });
-}
-
-function enableVoteButtons(article){
-    const btnSi = article.querySelector('.btn-voto-si');
-    const btnNo = article.querySelector('.btn-voto-no');
-
-    [btnSi, btnNo].forEach(btn => {
-        btn.disabled = false;
-        btn.style.opacity = '1';
-        btn.style.cursor = 'pointer';
-    });
-}
-
 function updateVoteUI(article, jugada){
     const votosSi=Number(jugada.votosSi||0);
     const votosNo=Number(jugada.votosNo||0);
@@ -1785,40 +1579,13 @@ function updateVoteUI(article, jugada){
     article.querySelector('.detalle-incorrecto').textContent=`${votosNo} de ${total} votos`;
     article.querySelector('.detalle-correcto').textContent=`${votosSi} de ${total} votos`;
     article.querySelector('.resultado-cabecera').textContent=total?`${total} votos totales`:'Sin votos todavía';
+
     article.querySelector('.mensaje-voto').textContent='Debes iniciar sesión para votar.';
     article.dataset.resumenEncuesta = jugada.encuesta || '';
 }
 
 async function initVote(article, jugada){
     updateVoteUI(article,jugada);
-
-    try{
-        const user = await getUsuarioActual();
-        if(!user){
-            article.querySelector('.mensaje-voto').textContent='Debes iniciar sesión con Google para votar.';
-            enableVoteButtons(article);
-            return;
-        }
-
-        const perfil = await getPerfilActual();
-        if(!perfil || !perfil.username){
-            article.querySelector('.mensaje-voto').textContent='Antes de votar debes elegir un nombre de usuario.';
-            enableVoteButtons(article);
-            return;
-        }
-
-        const votoPrevio = await getCurrentUserVote(jugada.id);
-
-        if(votoPrevio){
-            article.querySelector('.mensaje-voto').textContent=`Ya has votado que se arbitró ${votoPrevio==='si'?'bien':'mal'}.`;
-            disableVoteButtons(article);
-        }else{
-            article.querySelector('.mensaje-voto').textContent='Tu voto se guardará en tu cuenta.';
-            enableVoteButtons(article);
-        }
-    }catch(e){
-        console.error(e);
-    }
 
     async function send(v){
         try{
@@ -1833,8 +1600,7 @@ async function initVote(article, jugada){
 
             if(!perfil || !perfil.username){
                 alert('Antes de votar debes elegir un nombre de usuario.');
-                await renderMenuUsuario();
-                abrirMenuUsuario();
+                await pintarEstadoUsuario();
                 return;
             }
 
@@ -1849,9 +1615,14 @@ async function initVote(article, jugada){
             }
 
             article.querySelector('.mensaje-voto').textContent =
-                `Ya has votado que se arbitró ${v === 'si' ? 'bien' : 'mal'}.`;
+                `Has votado que se arbitró ${v === 'si' ? 'bien' : 'mal'}.`;
 
-            disableVoteButtons(article);
+            article.querySelector('.btn-voto-si').disabled = true;
+            article.querySelector('.btn-voto-no').disabled = true;
+            article.querySelector('.btn-voto-si').style.opacity = '0.65';
+            article.querySelector('.btn-voto-no').style.opacity = '0.65';
+            article.querySelector('.btn-voto-si').style.cursor = 'default';
+            article.querySelector('.btn-voto-no').style.cursor = 'default';
 
         }catch(e){
             console.error(e);
@@ -1859,7 +1630,12 @@ async function initVote(article, jugada){
             if(e.code === '23505'){
                 alert('Ya has votado en esta jugada.');
                 article.querySelector('.mensaje-voto').textContent = 'Ya has votado en esta jugada.';
-                disableVoteButtons(article);
+                article.querySelector('.btn-voto-si').disabled = true;
+                article.querySelector('.btn-voto-no').disabled = true;
+                article.querySelector('.btn-voto-si').style.opacity = '0.65';
+                article.querySelector('.btn-voto-no').style.opacity = '0.65';
+                article.querySelector('.btn-voto-si').style.cursor = 'default';
+                article.querySelector('.btn-voto-no').style.cursor = 'default';
                 return;
             }
 
@@ -1870,7 +1646,6 @@ async function initVote(article, jugada){
     article.querySelector('.btn-voto-si').onclick = () => send('si');
     article.querySelector('.btn-voto-no').onclick = () => send('no');
 }
-
 function createArticle(jugada){
     const cat=capitalizarCategoria(jugada.categoria);
     const commentsInitial=createInitialComments(jugada);
@@ -1883,7 +1658,7 @@ function createArticle(jugada){
     article.dataset.competicion=jugada.competicion;
     article.dataset.tipo=normalizarTexto(jugada.categoria);
 
-    article.innerHTML=`<div class="etiqueta-jornada">Jornada ${escapeHtml(jugada.jornada)}</div><section class="jugada-principal"><div class="cabecera-jugada"><h2>${escapeHtml(jugada.pregunta)}</h2><p>${escapeHtml(jugada.partido)} · Min ${escapeHtml(jugada.minuto)} · ${escapeHtml(jugada.competicion)}</p><div class="badge-categoria">${escapeHtml(cat)} · ${escapeHtml(jugada.subtipo)}</div><div class="meta-extra"><strong>Equipo afectado:</strong> ${escapeHtml(jugada.equipoAfectado||'')}<br><strong>Árbitro:</strong> ${escapeHtml(jugada.arbitro||'')}<br><strong>VAR:</strong> ${escapeHtml(jugada.var||'')}</div></div><div class="zona-superior"><div><div class="imagen-jugada"><div class="visor-media"></div><div class="zoom-controles"><button class="zoom-btn zoom-mas" type="button">+</button><button class="zoom-btn zoom-menos" type="button">−</button><button class="zoom-btn zoom-reset" type="button">100%</button><button class="zoom-btn zoom-expandir" type="button">Ampliar</button></div></div><div class="galeria-miniaturas" style="display:none;"></div><div class="descripcion-jugada"><strong>Tipo:</strong> ${escapeHtml(cat)}<br><strong>Decisión árbitro:</strong> ${escapeHtml(jugada.decision||'')}<br><br>${escapeHtml(jugada.descripcion||'')}</div></div><div class="panel-votacion"><div class="panel-votacion-top"><h3>Vota la jugada</h3><p>${escapeHtml((jugada.pregunta||'').trim()||'¿Te pareció correcta la decisión arbitral?')}</p></div><div class="botones-voto"><button class="btn-voto btn-voto-si" type="button">${escapeHtml(jugada.respuestaSi||'Sí')}</button><button class="btn-voto btn-voto-no" type="button">${escapeHtml(jugada.respuestaNo||'No')}</button></div><div class="mensaje-voto">Debes iniciar sesión para votar.</div><div class="resultado-box"><div class="resultado-cabecera">Sin votos todavía</div><div class="resumen-votos-bloques"><div class="resumen-voto-card incorrecto"><div class="resumen-voto-porcentaje porcentaje-incorrecto">0%</div><div class="resumen-voto-texto">Cree que se arbitró mal</div><div class="resumen-voto-detalle detalle-incorrecto">0 de 0 votos</div><div class="barra-resultado"><div class="barra-no barra-incorrecto" style="width:0%"></div></div></div><div class="resumen-voto-card correcto"><div class="resumen-voto-porcentaje porcentaje-correcto">0%</div><div class="resumen-voto-texto">Cree que se arbitró bien</div><div class="resumen-voto-detalle detalle-correcto">0 de 0 votos</div><div class="barra-resultado"><div class="barra-si barra-correcto" style="width:0%"></div></div></div></div></div></div></div></section><section class="seccion-comentarios comentarios-box"><div class="cabecera-comentarios"><h3>Comentarios</h3><p>${commentsInitial.length} comentarios</p></div><div class="cuerpo-comentarios"><textarea placeholder="Escribe tu comentario..."></textarea><br><button class="boton-comentar" type="button">Publicar comentario</button><button class="btn-mostrar-inicial" type="button">Mostrar comentarios</button><div class="lista-comentarios"></div><div class="mostrar-mas-wrap"><button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button></div><div class="ocultar-wrap"><button class="btn-ocultar" type="button">Ocultar comentarios</button></div></div></section>`;
+    article.innerHTML=`<div class="etiqueta-jornada">Jornada ${escapeHtml(jugada.jornada)}</div><section class="jugada-principal"><div class="cabecera-jugada"><h2>${escapeHtml(jugada.pregunta)}</h2><p>${escapeHtml(jugada.partido)} · Min ${escapeHtml(jugada.minuto)} · ${escapeHtml(jugada.competicion)}</p><div class="badge-categoria">${escapeHtml(cat)} · ${escapeHtml(jugada.subtipo)}</div><div class="meta-extra"><strong>Equipo afectado:</strong> ${escapeHtml(jugada.equipoAfectado||'')}<br><strong>Árbitro:</strong> ${escapeHtml(jugada.arbitro||'')}<br><strong>VAR:</strong> ${escapeHtml(jugada.var||'')}</div></div><div class="zona-superior"><div><div class="imagen-jugada"><div class="visor-media"></div><div class="zoom-controles"><button class="zoom-btn zoom-mas" type="button">+</button><button class="zoom-btn zoom-menos" type="button">−</button><button class="zoom-btn zoom-reset" type="button">100%</button><button class="zoom-btn zoom-expandir" type="button">Ampliar</button></div></div><div class="galeria-miniaturas" style="display:none;"></div><div class="descripcion-jugada"><strong>Tipo:</strong> ${escapeHtml(cat)}<br><strong>Decisión árbitro:</strong> ${escapeHtml(jugada.decision||'')}<br><br>${escapeHtml(jugada.descripcion||'')}</div></div><div class="panel-votacion"><div class="panel-votacion-top"><h3>Vota la jugada</h3><p>${escapeHtml((jugada.pregunta||'').trim()||'¿Te pareció correcta la decisión arbitral?')}</p></div><div class="botones-voto"><button class="btn-voto btn-voto-si" type="button">${escapeHtml(jugada.respuestaSi||'Sí')}</button><button class="btn-voto btn-voto-no" type="button">${escapeHtml(jugada.respuestaNo||'No')}</button></div><div class="mensaje-voto">Tu voto ya se guarda online.</div><div class="resultado-box"><div class="resultado-cabecera">Sin votos todavía</div><div class="resumen-votos-bloques"><div class="resumen-voto-card incorrecto"><div class="resumen-voto-porcentaje porcentaje-incorrecto">0%</div><div class="resumen-voto-texto">Cree que se arbitró mal</div><div class="resumen-voto-detalle detalle-incorrecto">0 de 0 votos</div><div class="barra-resultado"><div class="barra-no barra-incorrecto" style="width:0%"></div></div></div><div class="resumen-voto-card correcto"><div class="resumen-voto-porcentaje porcentaje-correcto">0%</div><div class="resumen-voto-texto">Cree que se arbitró bien</div><div class="resumen-voto-detalle detalle-correcto">0 de 0 votos</div><div class="barra-resultado"><div class="barra-si barra-correcto" style="width:0%"></div></div></div></div></div></div></div></section><section class="seccion-comentarios comentarios-box"><div class="cabecera-comentarios"><h3>Comentarios</h3><p>${commentsInitial.length} comentarios</p></div><div class="cuerpo-comentarios"><textarea placeholder="Escribe tu comentario..."></textarea><br><button class="boton-comentar" type="button">Publicar comentario</button><button class="btn-mostrar-inicial" type="button">Mostrar comentarios</button><div class="lista-comentarios"></div><div class="mostrar-mas-wrap"><button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button></div><div class="ocultar-wrap"><button class="btn-ocultar" type="button">Ocultar comentarios</button></div></div></section>`;
 
     initMedia(article);
     initVote(article,jugada);
@@ -1891,103 +1666,93 @@ function createArticle(jugada){
     return article;
 }
 
-function abrirMenuUsuario(){
-    menuUserDropdown.classList.add('activo');
-}
+async function pintarEstadoUsuario() {
+    const bloque = document.getElementById("bloqueUsuario");
+    const btnLogin = document.getElementById("btnLoginGoogle");
+    if (!bloque) return;
 
-function cerrarMenuUsuario(){
-    menuUserDropdown.classList.remove('activo');
-}
-
-async function renderMenuUsuario() {
     try {
         const user = await getUsuarioActual();
 
         if (!user) {
-            menuUserDropdown.innerHTML = `
-                <div class="menu-user-title">Usuario</div>
-                <div class="menu-user-line">Puedes ver todo el contenido sin iniciar sesión. Para votar o comentar, entra con Google.</div>
-                <div class="menu-user-actions">
-                    <button id="btnMenuLoginGoogle" class="btn-user-primary" type="button">Iniciar sesión con Google</button>
-                </div>
-            `;
-            document.getElementById('btnMenuLoginGoogle').onclick = () => loginConGoogle();
+            bloque.innerHTML = '<span>No has iniciado sesión.</span>';
+            if (btnLogin) {
+                btnLogin.style.display = 'inline-block';
+                btnLogin.textContent = 'Entrar con Google para votar';
+            }
             return;
         }
 
         const perfil = await getPerfilActual();
 
-        if (perfil && perfil.username) {
-            menuUserDropdown.innerHTML = `
-                <div class="menu-user-title">Sesión iniciada</div>
-                <div class="menu-user-line">Has iniciado sesión como <strong>${escapeHtml(perfil.username)}</strong>.</div>
-                <div class="menu-user-actions">
-                    <button id="btnMenuLogout" class="btn-user-secondary" type="button">Cerrar sesión</button>
-                </div>
-            `;
-            document.getElementById('btnMenuLogout').onclick = async () => {
-                try {
-                    await logout();
-                    window.location.reload();
-                } catch (e) {
-                    console.error(e);
-                    alert('No se pudo cerrar sesión');
-                }
-            };
-            return;
+     if (perfil && perfil.username) {
+    bloque.innerHTML = `
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:center;">
+            <span>Has iniciado sesión como <strong>${escapeHtml(perfil.username)}</strong>.</span>
+            <button id="btnLogoutUsuario" type="button" style="height:38px; padding:0 14px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">
+                Cerrar sesión
+            </button>
+        </div>
+    `;
+
+    if (btnLogin) {
+        btnLogin.textContent = 'Sesión iniciada con Google';
+        btnLogin.disabled = true;
+        btnLogin.style.opacity = '0.7';
+        btnLogin.style.cursor = 'default';
+    }
+
+    document.getElementById("btnLogoutUsuario").onclick = async () => {
+        try {
+            await logout();
+            window.location.reload();
+        } catch (e) {
+            console.error(e);
+            alert("No se pudo cerrar sesión");
+        }
+    };
+
+    return;
+}
+
+        if (btnLogin) {
+            btnLogin.textContent = 'Sesión iniciada con Google';
+            btnLogin.disabled = true;
+            btnLogin.style.opacity = '0.7';
+            btnLogin.style.cursor = 'default';
         }
 
-        menuUserDropdown.innerHTML = `
-            <div class="menu-user-title">Completa tu usuario</div>
-            <div class="menu-user-line">Ya has iniciado sesión. Ahora elige tu nombre de usuario para poder votar y comentar.</div>
-            <div class="menu-user-actions">
-                <input id="inputUsernameMenu" type="text" placeholder="Elige tu nombre de usuario">
-                <button id="btnGuardarUsernameMenu" class="btn-user-primary" type="button">Guardar nombre</button>
-                <button id="btnMenuLogout" class="btn-user-secondary" type="button">Cerrar sesión</button>
+        bloque.innerHTML = `
+            <div style="display:inline-flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:center;">
+                <input id="inputUsername" type="text" placeholder="Elige tu nombre de usuario" style="height:38px; padding:0 12px; border:none; border-radius:8px; min-width:240px;">
+                <button id="btnGuardarUsername" type="button" style="height:38px; padding:0 14px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">
+                    Guardar nombre
+                </button>
             </div>
         `;
 
-        document.getElementById('btnGuardarUsernameMenu').onclick = async () => {
-            const input = document.getElementById('inputUsernameMenu');
+        document.getElementById("btnGuardarUsername").onclick = async () => {
+            const input = document.getElementById("inputUsername");
             const username = input.value.trim();
 
             if (!username) {
-                alert('Escribe un nombre de usuario');
+                alert("Escribe un nombre de usuario");
                 return;
             }
 
             try {
                 await crearPerfil(username);
-                window.location.reload();
+                await pintarEstadoUsuario();
             } catch (e) {
                 console.error(e);
-                if (e.code === '23505') {
-                    alert('Ese nombre de usuario ya está en uso');
-                    return;
-                }
-                alert('No se pudo guardar el nombre de usuario');
+                alert("No se pudo guardar el nombre de usuario");
             }
         };
-
-        document.getElementById('btnMenuLogout').onclick = async () => {
-            try {
-                await logout();
-                window.location.reload();
-            } catch (e) {
-                console.error(e);
-                alert('No se pudo cerrar sesión');
-            }
-        };
-
     } catch (e) {
         console.error(e);
-        menuUserDropdown.innerHTML = `
-            <div class="menu-user-title">Usuario</div>
-            <div class="menu-user-line">No se pudo comprobar el estado de la sesión.</div>
-        `;
+        bloque.innerHTML = '<span>No se pudo comprobar el usuario.</span>';
     }
 }
-
 function aplicarFiltros(){
     const jornada=filtroJornada.value;
     const equipo=filtroEquipo.value;
@@ -2007,37 +1772,9 @@ function aplicarFiltros(){
     sinResultados.style.display=visibles===0?'block':'none';
 }
 
-window.toggleMenuUsuario = async function(e){
-    if(e) e.stopPropagation();
-    try{
-        if (menuUserDropdown.classList.contains('activo')) {
-            cerrarMenuUsuario();
-        } else {
-            await renderMenuUsuario();
-            abrirMenuUsuario();
-        }
-    }catch(err){
-        console.error(err);
-        menuUserDropdown.innerHTML = `
-            <div class="menu-user-title">Usuario</div>
-            <div class="menu-user-line">No se pudo abrir el menú de usuario.</div>
-        `;
-        abrirMenuUsuario();
-    }
-};
-
-menuUserBtn.addEventListener('click', window.toggleMenuUsuario);
-
-document.addEventListener('click', (e) => {
-    if (!menuUserDropdown.contains(e.target) && !menuUserBtn.contains(e.target)) {
-        cerrarMenuUsuario();
-    }
-});
-
 (async()=>{
     try{
-        await renderMenuUsuario();
-
+        await pintarEstadoUsuario();
         const data=await loadDataset();
         const jugadas=[...data.jugadas].sort((a,b)=>
             (parseInt(b.jornada)||0)-(parseInt(a.jornada)||0) ||
@@ -2073,15 +1810,13 @@ document.addEventListener('click', (e) => {
     }
 })();
 
-if (supabase && supabase.auth && typeof supabase.auth.onAuthStateChange === 'function') {
-    supabase.auth.onAuthStateChange(async () => {
-        try {
-            await renderMenuUsuario();
-        } catch (e) {
-            console.error(e);
-        }
-    });
-}
+supabase.auth.onAuthStateChange(async () => {
+    try {
+        await pintarEstadoUsuario();
+    } catch (e) {
+        console.error(e);
+    }
+});
 
 [filtroJornada,filtroEquipo,filtroCompeticion,filtroTipo].forEach(f=>f&&f.addEventListener('change',aplicarFiltros));
 
