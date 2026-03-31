@@ -2123,56 +2123,72 @@ document.addEventListener('click', (e) => {
 
 (async()=>{
     try{
-        await renderMenuUsuario();
+        try{
+            await renderMenuUsuario();
+        }catch(e){
+            console.warn('No se pudo renderizar el menú de usuario, pero se sigue cargando la página.', e);
+        }
 
-        const jugadasPublicas = await loadJugadasPublicasDesdeCSV();
-        const jugadas=[...jugadasPublicas].sort((a,b)=>
+        let jugadas = [];
+
+        try{
+            const data = await loadDataset();
+            jugadas = Array.isArray(data?.jugadas) ? data.jugadas : [];
+        }catch(e){
+            console.warn('No se pudo cargar el dataset completo. Intentando cargar solo las jugadas públicas...', e);
+            jugadas = await loadJugadasPublicasDesdeCSV();
+        }
+
+        jugadas = [...jugadas].sort((a,b)=>
             (parseInt(b.jornada)||0)-(parseInt(a.jornada)||0) ||
             (parseInt((b.minuto||'').match(/\d+/)?.[0]||0))-(parseInt((a.minuto||'').match(/\d+/)?.[0]||0))
         );
 
         contenedorJugadas.innerHTML='';
 
+        if(!jugadas.length){
+            sinResultados.textContent='No hay jugadas disponibles.';
+            sinResultados.style.display='block';
+            return;
+        }
+
         for(const j of jugadas){
-            const article=createArticle(j);
-            const media=[];
-            const v1=await primerTextoDisponible(rutasVideoTxt(j.jornada,j.slugVideo));
-            const v2=await primerTextoDisponible(rutasVideoTxt(j.jornada,j.slugVideo2));
+            try{
+                const article=createArticle(j);
+                const media=[];
 
-            if(v1) media.push({tipo:'video',url:v1});
-            if(v2) media.push({tipo:'video',url:v2});
+                try{
+                    const v1=await primerTextoDisponible(rutasVideoTxt(j.jornada,j.slugVideo));
+                    const v2=await primerTextoDisponible(rutasVideoTxt(j.jornada,j.slugVideo2));
 
-            [j.slugImagen,j.slugImagen2,j.slugImagen3,j.slugImagen4,j.slugImagen5]
-                .filter(Boolean)
-                .forEach(slug=>media.push({tipo:'imagen',rutas:rutasImagenSlug(j.jornada,slug)}));
-
-            if(!media.length) media.push({tipo:'imagen',rutas:[]});
-
-            article.cargarMedia(media);
-            contenedorJugadas.appendChild(article);
-        }
-
-       filtroJornada.value = '';
-filtroEquipo.value = '';
-filtroCompeticion.value = '';
-filtroTipo.value = '';
-aplicarFiltros();
-
-        try{
-            const dataOnline = await loadDataset();
-            (dataOnline.jugadas || []).forEach(jOnline=>{
-                const article = contenedorJugadas.querySelector(`.bloque-jugada[data-id="${String(jOnline.id)}"]`);
-                if(article){
-                    updateVoteUI(article, jOnline);
+                    if(v1) media.push({tipo:'video',url:v1});
+                    if(v2) media.push({tipo:'video',url:v2});
+                }catch(e){
+                    console.warn('No se pudieron cargar los vídeos de una jugada.', e);
                 }
-            });
-        }catch(e){
-            console.warn('No se pudieron refrescar los votos online, pero las jugadas ya están visibles.', e);
+
+                [j.slugImagen,j.slugImagen2,j.slugImagen3,j.slugImagen4,j.slugImagen5]
+                    .filter(Boolean)
+                    .forEach(slug=>media.push({tipo:'imagen',rutas:rutasImagenSlug(j.jornada,slug)}));
+
+                if(!media.length) media.push({tipo:'imagen',rutas:[]});
+
+                article.cargarMedia(media);
+                contenedorJugadas.appendChild(article);
+            }catch(e){
+                console.error('Error renderizando la jugada', j, e);
+            }
         }
+
+        filtroJornada.value = '';
+        filtroEquipo.value = '';
+        filtroCompeticion.value = '';
+        filtroTipo.value = '';
+        aplicarFiltros();
 
     }catch(e){
         console.error(e);
-        sinResultados.textContent='No se pudo cargar jugadas.csv';
+        sinResultados.textContent='No se pudieron cargar las jugadas.';
         sinResultados.style.display='block';
     }
 })();
