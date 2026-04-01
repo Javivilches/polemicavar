@@ -1364,6 +1364,7 @@ const loadDataset = DecisionVarAPI.loadDataset || (async () => ({ jugadas: [] })
 const loadJugadasPublicas = DecisionVarAPI.loadJugadasPublicas || (async () => []);
 const getComments = DecisionVarAPI.getComments || (async () => []);
 const addComment = DecisionVarAPI.addComment || (async () => { throw new Error("No disponible"); });
+const addAudioComment = DecisionVarAPI.addAudioComment || (async () => { throw new Error("No disponible"); });
 const addVote = DecisionVarAPI.addVote || (async () => { throw new Error("No disponible"); });
 const formatDate = DecisionVarAPI.formatDate || ((v) => v || "");
 const getUsuarioActual = DecisionVarAPI.getUsuarioActual || (async () => null);
@@ -1725,7 +1726,22 @@ function renderComments(article, comments, visibles){
     comments.slice(0, visibles).forEach(c=>{
         const div=document.createElement('div');
         div.className='comentario visible';
-        div.innerHTML=`<div style="font-size:12px;color:#667791;font-weight:700;margin-bottom:4px;">${escapeHtml(c.autor||'Usuario')} ${c.created_at ? '· '+escapeHtml(formatDate(c.created_at)) : ''}</div>${escapeHtml(c.texto||'')}`;
+
+        const cabecera = `<div style="font-size:12px;color:#667791;font-weight:700;margin-bottom:6px;">${escapeHtml(c.autor||'Usuario')} ${c.created_at ? '· '+escapeHtml(formatDate(c.created_at)) : ''}</div>`;
+
+        let cuerpo = '';
+        if ((c.tipo || '') === 'audio' && c.audio_url) {
+            cuerpo = `
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                    <span style="font-weight:700;color:#1f4fb0;">🎤 Audio</span>
+                    <audio controls preload="none" src="${escapeHtml(c.audio_url)}" style="width:min(100%,320px);"></audio>
+                </div>
+            `;
+        } else {
+            cuerpo = `${escapeHtml(c.texto||'')}`;
+        }
+
+        div.innerHTML = cabecera + cuerpo;
         list.appendChild(div);
     });
 
@@ -1778,6 +1794,129 @@ async function initComments(article, jugada){
     }catch(e){}
 
     updateCommentUI(article, logueado, conPerfil);
+
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let audioBlobFinal = null;
+    let audioDuracionSeg = 0;
+    let audioInicio = 0;
+
+    const btnGrabar = article.querySelector('.btn-audio-grabar');
+    const btnParar = article.querySelector('.btn-audio-parar');
+    const btnEnviarAudio = article.querySelector('.btn-audio-enviar');
+    const audioPreview = article.querySelector('.audio-comment-preview');
+    const audioStatus = article.querySelector('.audio-comment-status');
+
+    btnGrabar.onclick = async () => {
+        try {
+            const user = await getUsuarioActual();
+            if(!user){
+                alert('Debes iniciar sesión con Google para comentar.');
+                return;
+            }
+
+            const perfil = await getPerfilActual();
+            if(!perfil || !perfil.username){
+                alert('Antes de comentar debes elegir un nombre de usuario.');
+                await renderMenuUsuario();
+                abrirMenuUsuario();
+                return;
+            }
+
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+            const mimeType =
+                MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus' :
+                MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' :
+                '';
+
+            mediaRecorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
+            audioChunks = [];
+            audioBlobFinal = null;
+            audioDuracionSeg = 0;
+            audioInicio = Date.now();
+
+            mediaRecorder.ondataavailable = (ev) => {
+                if (ev.data && ev.data.size > 0) audioChunks.push(ev.data);
+            };
+
+            mediaRecorder.onstop = () => {
+                audioDuracionSeg = Math.max(1, Math.round((Date.now() - audioInicio) / 1000));
+                audioBlobFinal = new Blob(audioChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
+                audioPreview.src = URL.createObjectURL(audioBlobFinal);
+                audioPreview.style.display = 'block';
+                audioStatus.textContent = `Audio grabado (${audioDuracionSeg}s). Ya puedes enviarlo.`;
+                btnEnviarAudio.disabled = false;
+                btnParar.disabled = true;
+                btnGrabar.disabled = false;
+
+                stream.getTracks().forEach(t => t.stop());
+            };
+
+            mediaRecorder.start();
+            btnGrabar.disabled = true;
+            btnParar.disabled = false;
+            btnEnviarAudio.disabled = true;
+            audioPreview.style.display = 'none';
+            audioPreview.removeAttribute('src');
+            audioStatus.textContent = 'Grabando audio...';
+        } catch (e) {
+            console.error(e);
+            alert('No se pudo acceder al micrófono');
+        }
+    };
+
+    btnParar.onclick = () => {
+        try {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    btnEnviarAudio.onclick = async () => {
+        try {
+            const user = await getUsuarioActual();
+            if(!user){
+                alert('Debes iniciar sesión con Google para comentar.');
+                return;
+            }
+
+            const perfil = await getPerfilActual();
+            if(!perfil || !perfil.username){
+                alert('Antes de comentar debes elegir un nombre de usuario.');
+                await renderMenuUsuario();
+                abrirMenuUsuario();
+                return;
+            }
+
+            if (!audioBlobFinal) {
+                alert('Primero debes grabar un audio.');
+                return;
+            }
+
+            await addAudioComment('jugada', audioBlobFinal, jugada.id, audioDuracionSeg);
+
+            audioBlobFinal = null;
+            audioDuracionSeg = 0;
+            audioPreview.pause();
+            audioPreview.removeAttribute('src');
+            audioPreview.style.display = 'none';
+            audioStatus.textContent = 'Audio enviado correctamente.';
+            btnEnviarAudio.disabled = true;
+            btnGrabar.disabled = false;
+            btnParar.disabled = true;
+
+            online = await getComments('jugada', jugada.id);
+            visibles = Math.max(visibles, 5);
+            renderComments(article, [...online, ...initial], visibles);
+        } catch (e) {
+            console.error(e);
+            alert('No se pudo enviar el audio');
+        }
+    };
 
     article.querySelector('.boton-comentar').onclick=async()=>{
         const ta=article.querySelector('textarea');
@@ -1960,7 +2099,7 @@ function createArticle(jugada){
     article.dataset.competicion=jugada.competicion;
     article.dataset.tipo=normalizarTexto(jugada.categoria);
 
-    article.innerHTML=`<div class="etiqueta-jornada">Jornada ${escapeHtml(jugada.jornada)}</div><section class="jugada-principal"><div class="cabecera-jugada"><h2>${escapeHtml(jugada.pregunta)}</h2><p>${escapeHtml(jugada.partido)} · Min ${escapeHtml(jugada.minuto)} · ${escapeHtml(jugada.competicion)}</p><div class="badge-categoria">${escapeHtml(cat)} · ${escapeHtml(jugada.subtipo)}</div><div class="meta-extra"><strong>Equipo afectado:</strong> ${escapeHtml(jugada.equipoAfectado||'')}<br><strong>Árbitro:</strong> ${escapeHtml(jugada.arbitro||'')}<br><strong>VAR:</strong> ${escapeHtml(jugada.var||'')}</div></div><div class="zona-superior"><div><div class="imagen-jugada"><div class="visor-media"></div><div class="zoom-controles"><button class="zoom-btn zoom-mas" type="button">+</button><button class="zoom-btn zoom-menos" type="button">−</button><button class="zoom-btn zoom-reset" type="button">100%</button><button class="zoom-btn zoom-expandir" type="button">Ampliar</button></div></div><div class="galeria-miniaturas" style="display:none;"></div><div class="descripcion-jugada"><strong>Tipo:</strong> ${escapeHtml(cat)}<br><strong>Decisión árbitro:</strong> ${escapeHtml(jugada.decision||'')}<br><br>${escapeHtml(jugada.descripcion||'')}</div></div><div class="panel-votacion"><div class="panel-votacion-top"><h3>Vota la jugada</h3><p>${escapeHtml((jugada.pregunta||'').trim()||'¿Te pareció correcta la decisión arbitral?')}</p></div><div class="botones-voto"><button class="btn-voto btn-voto-si" type="button">${escapeHtml(jugada.respuestaSi||'Sí')}</button><button class="btn-voto btn-voto-no" type="button">${escapeHtml(jugada.respuestaNo||'No')}</button></div><div class="mensaje-voto">Debes iniciar sesión para votar.</div><div class="resultado-box"><div class="resultado-cabecera">Sin votos todavía</div><div class="resumen-votos-bloques"><div class="resumen-voto-card incorrecto"><div class="resumen-voto-porcentaje porcentaje-incorrecto">0%</div><div class="resumen-voto-texto">Cree que se arbitró mal</div><div class="resumen-voto-detalle detalle-incorrecto">0 de 0 votos</div><div class="barra-resultado"><div class="barra-no barra-incorrecto" style="width:0%"></div></div></div><div class="resumen-voto-card correcto"><div class="resumen-voto-porcentaje porcentaje-correcto">0%</div><div class="resumen-voto-texto">Cree que se arbitró bien</div><div class="resumen-voto-detalle detalle-correcto">0 de 0 votos</div><div class="barra-resultado"><div class="barra-si barra-correcto" style="width:0%"></div></div></div></div></div></div></div></section><section class="seccion-comentarios comentarios-box"><div class="cabecera-comentarios"><h3>Comentarios</h3><p>${commentsInitial.length} comentarios</p></div><div class="cuerpo-comentarios"><textarea placeholder="Escribe tu comentario..."></textarea><br><button class="boton-comentar" type="button">Publicar comentario</button><button class="btn-mostrar-inicial" type="button">Mostrar comentarios</button><div class="lista-comentarios"></div><div class="mostrar-mas-wrap"><button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button></div><div class="ocultar-wrap"><button class="btn-ocultar" type="button">Ocultar comentarios</button></div></div></section>`;
+    article.innerHTML=`<div class="etiqueta-jornada">Jornada ${escapeHtml(jugada.jornada)}</div><section class="jugada-principal"><div class="cabecera-jugada"><h2>${escapeHtml(jugada.pregunta)}</h2><p>${escapeHtml(jugada.partido)} · Min ${escapeHtml(jugada.minuto)} · ${escapeHtml(jugada.competicion)}</p><div class="badge-categoria">${escapeHtml(cat)} · ${escapeHtml(jugada.subtipo)}</div><div class="meta-extra"><strong>Equipo afectado:</strong> ${escapeHtml(jugada.equipoAfectado||'')}<br><strong>Árbitro:</strong> ${escapeHtml(jugada.arbitro||'')}<br><strong>VAR:</strong> ${escapeHtml(jugada.var||'')}</div></div><div class="zona-superior"><div><div class="imagen-jugada"><div class="visor-media"></div><div class="zoom-controles"><button class="zoom-btn zoom-mas" type="button">+</button><button class="zoom-btn zoom-menos" type="button">−</button><button class="zoom-btn zoom-reset" type="button">100%</button><button class="zoom-btn zoom-expandir" type="button">Ampliar</button></div></div><div class="galeria-miniaturas" style="display:none;"></div><div class="descripcion-jugada"><strong>Tipo:</strong> ${escapeHtml(cat)}<br><strong>Decisión árbitro:</strong> ${escapeHtml(jugada.decision||'')}<br><br>${escapeHtml(jugada.descripcion||'')}</div></div><div class="panel-votacion"><div class="panel-votacion-top"><h3>Vota la jugada</h3><p>${escapeHtml((jugada.pregunta||'').trim()||'¿Te pareció correcta la decisión arbitral?')}</p></div><div class="botones-voto"><button class="btn-voto btn-voto-si" type="button">${escapeHtml(jugada.respuestaSi||'Sí')}</button><button class="btn-voto btn-voto-no" type="button">${escapeHtml(jugada.respuestaNo||'No')}</button></div><div class="mensaje-voto">Debes iniciar sesión para votar.</div><div class="resultado-box"><div class="resultado-cabecera">Sin votos todavía</div><div class="resumen-votos-bloques"><div class="resumen-voto-card incorrecto"><div class="resumen-voto-porcentaje porcentaje-incorrecto">0%</div><div class="resumen-voto-texto">Cree que se arbitró mal</div><div class="resumen-voto-detalle detalle-incorrecto">0 de 0 votos</div><div class="barra-resultado"><div class="barra-no barra-incorrecto" style="width:0%"></div></div></div><div class="resumen-voto-card correcto"><div class="resumen-voto-porcentaje porcentaje-correcto">0%</div><div class="resumen-voto-texto">Cree que se arbitró bien</div><div class="resumen-voto-detalle detalle-correcto">0 de 0 votos</div><div class="barra-resultado"><div class="barra-si barra-correcto" style="width:0%"></div></div></div></div></div></div></div></section><section class="seccion-comentarios comentarios-box"><div class="cabecera-comentarios"><h3>Comentarios</h3><p>${commentsInitial.length} comentarios</p></div><div class="cuerpo-comentarios"><textarea placeholder="Escribe tu comentario..."></textarea><br><div class="audio-comment-box" style="margin-top:10px;padding:10px;border:1px solid #d8e0ec;border-radius:10px;background:#f8faff;"><div style="font-size:12px;font-weight:bold;color:#42536f;margin-bottom:8px;">Comentario de audio</div><div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn-audio-grabar" type="button" style="background:#c62828;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-weight:bold;cursor:pointer;">Grabar</button><button class="btn-audio-parar" type="button" style="background:#555;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-weight:bold;cursor:pointer;" disabled>Parar</button><button class="btn-audio-enviar" type="button" style="background:#1f4fb0;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-weight:bold;cursor:pointer;" disabled>Enviar audio</button></div><div class="audio-comment-status" style="margin-top:8px;font-size:12px;color:#667791;">Pulsa “Grabar” para comenzar.</div><audio class="audio-comment-preview" controls style="display:none;width:100%;margin-top:8px;"></audio></div><button class="boton-comentar" type="button">Publicar comentario</button><button class="btn-mostrar-inicial" type="button">Mostrar comentarios</button><div class="lista-comentarios"></div><div class="mostrar-mas-wrap"><button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button></div><div class="ocultar-wrap"><button class="btn-ocultar" type="button">Ocultar comentarios</button></div></div></section>`;
 
     initMedia(article);
     initVote(article,jugada);
