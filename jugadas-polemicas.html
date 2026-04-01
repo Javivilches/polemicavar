@@ -2129,14 +2129,18 @@ document.addEventListener('click', (e) => {
             console.warn('No se pudo renderizar el menú de usuario, pero se sigue cargando la página.', e);
         }
 
-        let jugadas = [];
+        // 1) CARGAR SIEMPRE LAS JUGADAS PÚBLICAS DESDE CSV
+        let jugadas = await loadJugadasPublicasDesdeCSV();
 
+        // 2) SI ADEMÁS SE PUEDE, MEJORAR LOS VOTOS CON LOS DATOS ONLINE
         try{
-            const data = await loadDataset();
-            jugadas = Array.isArray(data?.jugadas) ? data.jugadas : [];
+            const dataOnline = await loadDataset();
+            if (Array.isArray(dataOnline?.jugadas) && dataOnline.jugadas.length) {
+                const mapOnline = new Map(dataOnline.jugadas.map(j => [String(j.id), j]));
+                jugadas = jugadas.map(j => mapOnline.get(String(j.id)) || j);
+            }
         }catch(e){
-            console.warn('No se pudo cargar el dataset completo. Intentando cargar solo las jugadas públicas...', e);
-            jugadas = await loadJugadasPublicasDesdeCSV();
+            console.warn('No se pudieron mezclar los votos online. Se muestran igualmente las jugadas públicas.', e);
         }
 
         jugadas = [...jugadas].sort((a,b)=>
