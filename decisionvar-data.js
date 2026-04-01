@@ -519,7 +519,7 @@ window.DecisionVarData = (() => {
     try {
       let query = supabase
         .from("comentarios")
-        .select("id,autor,texto,created_at,jugada_id")
+        .select("id,autor,texto,created_at,jugada_id,tipo,audio_url,audio_path,mime_type,duracion_seg")
         .eq("scope", scope)
         .order("created_at", { ascending: false });
 
@@ -548,7 +548,59 @@ window.DecisionVarData = (() => {
       texto: text,
       autor: perfil.username,
       scope: scope || null,
-      jugada_id: jugadaId || null
+      jugada_id: jugadaId || null,
+      tipo: "texto"
+    };
+
+    let { error } = await supabase.from("comentarios").insert(payload);
+
+    if (error) {
+      delete payload.scope;
+      const retry = await supabase.from("comentarios").insert(payload);
+      if (retry.error) throw retry.error;
+    }
+  }
+
+  async function addAudioComment(scope, audioBlob, jugadaId = "", duracionSeg = 0) {
+    if (!supabase) throw new Error("Servicio no disponible");
+
+    const user = await getUsuarioActual();
+    if (!user) throw new Error("Debes iniciar sesión para comentar");
+
+    const perfil = await getPerfilActual();
+    if (!perfil?.username) throw new Error("Debes crear un nombre de usuario antes de comentar");
+
+    if (!(audioBlob instanceof Blob) || !audioBlob.size) {
+      throw new Error("Audio inválido");
+    }
+
+    const ext = (audioBlob.type || "").includes("mp4") ? "m4a" : "webm";
+    const safeJugada = String(jugadaId || "general").replace(/[^a-zA-Z0-9_-]/g, "");
+    const fileName = `${user.id}/${safeJugada}/${Date.now()}.${ext}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("comentarios-audio")
+      .upload(fileName, audioBlob, {
+        contentType: audioBlob.type || "audio/webm",
+        upsert: false
+      });
+
+    if (uploadError) throw uploadError;
+
+    const { data: pub } = supabase.storage
+      .from("comentarios-audio")
+      .getPublicUrl(fileName);
+
+    const payload = {
+      texto: "",
+      autor: perfil.username,
+      scope: scope || null,
+      jugada_id: jugadaId || null,
+      tipo: "audio",
+      audio_url: pub?.publicUrl || "",
+      audio_path: fileName,
+      mime_type: audioBlob.type || "audio/webm",
+      duracion_seg: Number(duracionSeg || 0)
     };
 
     let { error } = await supabase.from("comentarios").insert(payload);
@@ -660,6 +712,7 @@ window.DecisionVarData = (() => {
     loadJugadasPublicas,
     getComments,
     addComment,
+    addAudioComment,
     addVote,
     formatDate,
     obtenerImpacto,
