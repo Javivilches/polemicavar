@@ -2454,27 +2454,25 @@ body{
 }
 
 .marcador-imagen .dato-stat{
-    top:59.1%;
-    width:8.4%;
-    height:12.2%;
-    font-size:clamp(22px,4.5vw,66px);
+    width:10%;
+    height:10%;
+    font-size:clamp(20px,3.8vw,56px);
 }
-
-.barca-penaltis{left:8.7%;}
-.barca-rojas{left:18.8%;}
-.barca-goles{left:29.0%;}
-.madrid-penaltis{left:70.6%;}
-.madrid-rojas{left:80.1%;}
-.madrid-goles{left:90.6%;}
+.barca-penaltis{left:11.9%;top:49.8%;}
+.barca-rojas{left:25.2%;top:49.8%;}
+.madrid-penaltis{left:73.8%;top:49.8%;}
+.madrid-rojas{left:87.2%;top:49.8%;}
+.barca-goles{left:27.4%;top:60.5%;width:12%;}
+.madrid-goles{left:88.2%;top:60.5%;width:12%;}
 
 .score-dinamico{
     position:absolute;
     z-index:3;
     left:50%;
-    top:53.2%;
+    top:49.6%;
     transform:translate(-50%,-50%);
-    width:29.8%;
-    height:22.5%;
+    width:31.5%;
+    height:24%;
     display:grid;
     grid-template-columns:1fr auto 1fr;
     align-items:center;
@@ -2491,7 +2489,7 @@ body{
 }
 
 .score-dato{
-    font-size:clamp(56px,8.8vw,130px);
+    font-size:clamp(50px,7.8vw,116px);
     text-shadow:0 5px 18px rgba(0,0,0,.78),0 0 18px rgba(255,255,255,.08);
 }
 
@@ -2506,15 +2504,15 @@ body{
 }
 
 .marcador-imagen .dato-total{
-    top:84.6%;
+    top:82.5%;
     width:13%;
     height:13%;
     font-size:clamp(34px,5.8vw,84px);
     text-shadow:0 5px 18px rgba(0,0,0,.76),0 0 16px rgba(255,255,255,.08);
 }
 
-.total-barca{left:19.7%;}
-.total-madrid{left:78.3%;}
+.total-barca{left:19.3%;}
+.total-madrid{left:80.6%;}
 
 .tarjeta-aviso-legal{
     margin-top:28px;
@@ -2523,21 +2521,18 @@ body{
 @media (max-width:768px){
     .marcador-visual-wrap{padding:18px 6px 10px !important;}
     .marcador-imagen{width:100%;border-radius:14px;}
-    .marcador-imagen .dato-stat{
-        font-size:clamp(17px,6.3vw,36px);
-        top:59.2%;
-    }
+    .marcador-imagen .dato-stat{font-size:clamp(15px,5.4vw,31px);}
     .score-dinamico{
-        width:30%;
-        height:21.4%;
-        top:53.2%;
+        width:31.5%;
+        height:23%;
+        top:49.6%;
         border-radius:12px;
     }
     .score-dato{font-size:clamp(34px,10.5vw,64px);}
     .score-separador{font-size:clamp(21px,6.8vw,42px);}
     .marcador-imagen .dato-total{
         font-size:clamp(24px,7.3vw,46px);
-        top:84.6%;
+        top:82.5%;
     }
     .tarjeta-aviso-legal{margin-top:20px;}
 }
