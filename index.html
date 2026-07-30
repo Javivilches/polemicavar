@@ -2405,11 +2405,11 @@ body{
 
 
 /* =========================================================
-   MARCADOR GLOBAL SOBRE PLANTILLA VISUAL
-   Imagen de fondo + superposición profesional y datos dinámicos
+   MARCADOR GLOBAL DINÁMICO
+   La imagen conserva todo el diseño y el HTML solo añade cifras.
    ========================================================= */
 .marcador-visual-wrap{
-    padding:34px 22px 18px !important;
+    padding:30px 18px 20px !important;
 }
 
 .marcador-visual-container{
@@ -2420,13 +2420,12 @@ body{
 
 .marcador-imagen{
     position:relative;
-    width:min(1220px,100%);
+    width:min(1280px,100%);
     aspect-ratio:1664 / 922;
     overflow:hidden;
-    border-radius:clamp(18px,2.3vw,34px);
-    box-shadow:0 26px 58px rgba(0,0,0,.38),0 5px 16px rgba(0,0,0,.22);
+    border-radius:clamp(16px,2.3vw,34px);
+    box-shadow:0 24px 54px rgba(0,0,0,.38),0 4px 14px rgba(0,0,0,.22);
     background:#06101d;
-    isolation:isolate;
 }
 
 .marcador-imagen > img{
@@ -2440,317 +2439,105 @@ body{
     pointer-events:none;
 }
 
-.marcador-imagen::after{
-    content:"";
+.marcador-imagen .dato{
     position:absolute;
-    inset:0;
-    z-index:1;
-    pointer-events:none;
-    background:linear-gradient(180deg,rgba(4,10,18,.06),rgba(4,10,18,.16));
-}
-
-.marcador-overlay{
-    position:absolute;
-    inset:0;
     z-index:3;
-}
-
-.marcador-team-header{
-    position:absolute;
-    top:8.8%;
-    width:34%;
+    transform:translate(-50%,-50%);
     display:flex;
     align-items:center;
     justify-content:center;
-    gap:14px;
-}
-
-.marcador-team-header.barca{
-    left:4.2%;
-}
-
-.marcador-team-header.madrid{
-    right:4.2%;
-}
-
-.marcador-team-header.barca .team-name{order:1; text-align:center;}
-.marcador-team-header.barca .team-crest{order:2;}
-.marcador-team-header.madrid .team-crest{order:1;}
-.marcador-team-header.madrid .team-name{order:2; text-align:center;}
-
-.team-name{
-    font-family:"Oswald",Arial,sans-serif;
-    font-size:clamp(24px,2.5vw,46px);
+    font-family:"Oswald",Arial,sans-serif !important;
     font-weight:700;
-    line-height:.94;
-    letter-spacing:.35px;
-    text-transform:uppercase;
-    color:#ffffff;
-    text-shadow:0 4px 14px rgba(0,0,0,.42);
+    line-height:1;
+    color:#fff;
+    text-shadow:0 4px 14px rgba(0,0,0,.72);
 }
 
-.team-crest{
-    width:clamp(56px,5.2vw,98px);
-    height:auto;
-    display:block;
-    filter:drop-shadow(0 6px 12px rgba(0,0,0,.28));
+.marcador-imagen .dato-stat{
+    top:57.2%;
+    width:8.4%;
+    height:12.2%;
+    font-size:clamp(22px,4.5vw,66px);
 }
 
-.marcador-team-header.barca .team-name{ text-shadow:0 4px 14px rgba(0,0,0,.42), 0 0 18px rgba(197,17,73,.20); }
-.marcador-team-header.madrid .team-name{ text-shadow:0 4px 14px rgba(0,0,0,.42), 0 0 18px rgba(255,255,255,.16); }
+.barca-penaltis{left:9.7%;}
+.barca-rojas{left:20.1%;}
+.barca-goles{left:30.5%;}
+.madrid-penaltis{left:69.1%;}
+.madrid-rojas{left:79.6%;}
+.madrid-goles{left:90%;}
 
-.stat-group{
+.score-dinamico{
     position:absolute;
-    top:31.6%;
-    width:33.8%;
-    display:grid;
-    grid-template-columns:repeat(3, minmax(0, 1fr));
-    gap:12px;
-}
-
-.stat-group.barca{left:5%;}
-.stat-group.madrid{right:5%;}
-
-.stat-card{
-    min-height:clamp(118px,13vw,184px);
-    padding:12px 10px 11px;
-    border-radius:18px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:space-between;
-    text-align:center;
-    box-sizing:border-box;
-    backdrop-filter:blur(3px);
-    -webkit-backdrop-filter:blur(3px);
-    box-shadow:0 14px 26px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.06);
-}
-
-.stat-group.barca .stat-card{
-    background:linear-gradient(180deg,rgba(9,18,33,.88),rgba(7,15,28,.92));
-    border:1px solid rgba(89,144,255,.26);
-}
-
-.stat-group.barca .stat-card:first-child{
-    border-color:rgba(255,78,133,.48);
-    box-shadow:0 14px 26px rgba(0,0,0,.24), 0 0 20px rgba(212,34,91,.14), inset 0 1px 0 rgba(255,255,255,.06);
-}
-
-.stat-group.madrid .stat-card{
-    background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(223,228,238,.12));
-    border:1px solid rgba(255,255,255,.26);
-}
-
-.stat-icon{
-    width:clamp(24px,2.15vw,38px);
-    height:clamp(24px,2.15vw,38px);
-    fill:none;
-    stroke:rgba(255,255,255,.96);
-    stroke-width:1.8;
-    stroke-linecap:round;
-    stroke-linejoin:round;
-    opacity:.95;
-    flex:0 0 auto;
-}
-
-.stat-group.madrid .stat-icon{ stroke:rgba(255,255,255,.92); }
-
-.stat-label{
-    font-family:"Oswald",Arial,sans-serif;
-    font-size:clamp(12px,1.15vw,20px);
-    font-weight:500;
-    line-height:1.04;
-    letter-spacing:.4px;
-    text-transform:uppercase;
-    color:#f2f6fc;
-}
-
-.stat-group.madrid .stat-label{ color:#ffffff; }
-
-.stat-value{
-    font-family:"Oswald",Arial,sans-serif;
-    font-size:clamp(30px,4.6vw,74px);
-    font-weight:700;
-    line-height:.95;
-    color:#ffffff;
-    text-shadow:0 4px 14px rgba(0,0,0,.55);
-}
-
-.score-panel{
-    position:absolute;
+    z-index:3;
     left:50%;
-    top:24%;
-    transform:translateX(-50%);
-    width:29%;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-}
-
-.score-title{
-    font-family:"Oswald",Arial,sans-serif;
-    font-size:clamp(18px,2vw,34px);
-    font-weight:700;
-    letter-spacing:.75px;
-    text-transform:uppercase;
-    color:#ffffff;
-    text-shadow:0 3px 12px rgba(0,0,0,.42);
-}
-
-.score-card{
-    margin-top:12px;
-    width:100%;
-    min-height:clamp(158px,20vw,248px);
-    border-radius:28px;
-    background:linear-gradient(180deg,rgba(9,17,31,.96),rgba(6,12,24,.97));
-    border:1px solid rgba(255,255,255,.18);
-    box-shadow:0 20px 38px rgba(0,0,0,.30), 0 0 24px rgba(255,255,255,.05), inset 0 1px 0 rgba(255,255,255,.06);
+    top:52.2%;
+    transform:translate(-50%,-50%);
+    width:28%;
+    height:20%;
     display:grid;
     grid-template-columns:1fr auto 1fr;
     align-items:center;
     justify-items:center;
-    padding:10px 16px;
-    box-sizing:border-box;
+    gap:4%;
+    border-radius:20px;
+    background:rgba(3,10,19,.22);
+    box-shadow:0 0 32px rgba(0,0,0,.24);
 }
 
-.score-value{
-    font-family:"Oswald",Arial,sans-serif;
-    font-size:clamp(62px,8.4vw,138px);
-    font-weight:700;
-    line-height:.9;
-    color:#ffffff;
-    text-shadow:0 5px 18px rgba(0,0,0,.56);
+.score-dinamico .dato{
+    position:static;
+    transform:none;
+}
+
+.score-dato{
+    font-size:clamp(54px,8.7vw,128px);
+    text-shadow:0 5px 18px rgba(0,0,0,.78),0 0 18px rgba(255,255,255,.08);
 }
 
 .score-separador{
     font-family:"Oswald",Arial,sans-serif;
     font-weight:700;
-    color:#ffffff;
-    font-size:clamp(34px,4.7vw,76px);
+    color:#fff;
+    font-size:clamp(32px,5.2vw,78px);
     line-height:1;
-    text-shadow:0 3px 12px rgba(0,0,0,.62);
+    text-shadow:0 4px 14px rgba(0,0,0,.72);
 }
 
-.score-subtext{
-    margin-top:14px;
-    max-width:88%;
-    text-align:center;
-    font-family:"Roboto Condensed",Arial,sans-serif;
-    font-size:clamp(12px,1.2vw,21px);
-    line-height:1.16;
-    color:#edf3fc;
-    text-shadow:0 2px 8px rgba(0,0,0,.40);
+.marcador-imagen .dato-total{
+    top:84.2%;
+    width:13%;
+    height:13%;
+    font-size:clamp(34px,5.8vw,84px);
+    text-shadow:0 5px 18px rgba(0,0,0,.76),0 0 16px rgba(255,255,255,.08);
 }
 
-.total-panel{
-    position:absolute;
-    bottom:7.5%;
-    width:31.5%;
-}
-
-.total-panel.barca{left:4.8%;}
-.total-panel.madrid{right:4.8%;}
-
-.total-card{
-    min-height:clamp(96px,11.4vw,142px);
-    border-radius:20px;
-    padding:10px 12px;
-    box-sizing:border-box;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:space-between;
-    backdrop-filter:blur(3px);
-    -webkit-backdrop-filter:blur(3px);
-}
-
-.total-panel.barca .total-card{
-    background:linear-gradient(180deg,rgba(8,18,34,.95),rgba(5,13,26,.98));
-    border:1px solid rgba(73,136,255,.42);
-    box-shadow:0 18px 34px rgba(0,0,0,.28), 0 0 22px rgba(41,96,205,.14), inset 0 1px 0 rgba(255,255,255,.06);
-}
-
-.total-panel.madrid .total-card{
-    background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(211,218,229,.14));
-    border:1px solid rgba(255,255,255,.34);
-    box-shadow:0 18px 34px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.08);
-}
-
-.total-label{
-    font-family:"Oswald",Arial,sans-serif;
-    font-size:clamp(15px,1.35vw,24px);
-    font-weight:500;
-    line-height:1;
-    letter-spacing:.55px;
-    text-transform:uppercase;
-    color:#ffffff;
-    text-align:center;
-}
-
-.total-value{
-    font-family:"Oswald",Arial,sans-serif;
-    font-size:clamp(44px,5.6vw,92px);
-    font-weight:700;
-    line-height:.92;
-    color:#ffffff;
-    text-shadow:0 4px 14px rgba(0,0,0,.55);
-}
+.total-barca{left:19.4%;}
+.total-madrid{left:79.4%;}
 
 .tarjeta-aviso-legal{
     margin-top:28px;
 }
 
 @media (max-width:768px){
-    .marcador-visual-wrap{padding:18px 8px 8px !important;}
-    .marcador-team-header{
-        top:8.2%;
-        width:37%;
-        gap:6px;
+    .marcador-visual-wrap{padding:18px 6px 10px !important;}
+    .marcador-imagen{width:100%;border-radius:14px;}
+    .marcador-imagen .dato-stat{
+        font-size:clamp(17px,6.3vw,36px);
+        top:57.6%;
     }
-    .team-name{font-size:clamp(14px,2.8vw,22px);}
-    .team-crest{width:clamp(28px,6.6vw,46px);}
-    .stat-group{
-        top:33.2%;
-        width:36.5%;
-        gap:5px;
-    }
-    .stat-group.barca{left:3.8%;}
-    .stat-group.madrid{right:3.8%;}
-    .stat-card{
-        min-height:70px;
-        padding:6px 4px 5px;
-        border-radius:10px;
-    }
-    .stat-icon{width:17px;height:17px;stroke-width:1.7;}
-    .stat-label{font-size:8px;letter-spacing:.2px;}
-    .stat-value{font-size:clamp(17px,4.4vw,28px);}
-    .score-panel{top:24.8%; width:31%;}
-    .score-title{font-size:10px; letter-spacing:.45px;}
-    .score-card{
-        margin-top:6px;
-        min-height:88px;
-        border-radius:14px;
-        padding:6px 8px;
-    }
-    .score-value{font-size:clamp(28px,8vw,50px);}
-    .score-separador{font-size:clamp(18px,5vw,28px);}
-    .score-subtext{
-        margin-top:7px;
-        max-width:96%;
-        font-size:7px;
-        line-height:1.08;
-    }
-    .total-panel{
-        bottom:6.2%;
-        width:34%;
-    }
-    .total-card{
-        min-height:52px;
+    .score-dinamico{
+        width:29%;
+        height:21%;
+        top:52.4%;
         border-radius:12px;
-        padding:5px 6px;
     }
-    .total-label{font-size:8px;letter-spacing:.2px;}
-    .total-value{font-size:clamp(22px,5.5vw,36px);}
+    .score-dato{font-size:clamp(34px,10.5vw,64px);}
+    .score-separador{font-size:clamp(21px,6.8vw,42px);}
+    .marcador-imagen .dato-total{
+        font-size:clamp(24px,7.3vw,46px);
+        top:84.4%;
+    }
     .tarjeta-aviso-legal{margin-top:20px;}
 }
 </style>
@@ -2796,80 +2583,26 @@ body{
                     <div class="marcador-imagen" id="marcadorGlobal" aria-label="Marcador global de las encuestas">
                         <img src="marcador-global-fondo-sin-numeros.png" alt="Marcador global FC Barcelona - Real Madrid">
 
-                        <div class="marcador-overlay">
-                            <div class="marcador-team-header barca">
-                                <div class="team-name">FC BARCELONA</div>
-                                <img src="escudo-barcelona.png" class="team-crest" alt="Escudo FC Barcelona">
-                            </div>
+                        <span class="dato dato-stat barca-penaltis" id="marcador-barca-penaltis">0</span>
+                        <span class="dato dato-stat barca-rojas" id="marcador-barca-rojas">0</span>
+                        <span class="dato dato-stat barca-goles" id="marcador-barca-goles">0</span>
 
-                            <div class="marcador-team-header madrid">
-                                <img src="escudo-madrid.png" class="team-crest" alt="Escudo Real Madrid">
-                                <div class="team-name">REAL MADRID</div>
-                            </div>
+                        <span class="dato dato-stat madrid-penaltis" id="marcador-madrid-penaltis">0</span>
+                        <span class="dato dato-stat madrid-rojas" id="marcador-madrid-rojas">0</span>
+                        <span class="dato dato-stat madrid-goles" id="marcador-madrid-goles">0</span>
 
-                            <div class="stat-group barca">
-                                <div class="stat-card">
-                                    <svg class="stat-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 4.5 19 9l-7.5 7.5-4.5-4.5z"/><path d="M6.5 12.5 4 15a2.2 2.2 0 0 0 3.1 3.1l2.5-2.5"/><path d="M14.5 4.5 12 2"/><circle cx="6.2" cy="17.8" r="1.1"/></svg>
-                                    <div class="stat-label">Total<br>penaltis</div>
-                                    <div class="stat-value" id="marcador-barca-penaltis">0</div>
-                                </div>
-                                <div class="stat-card">
-                                    <svg class="stat-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="3" width="10" height="18" rx="1.6"/></svg>
-                                    <div class="stat-label">Tarjetas<br>rojas</div>
-                                    <div class="stat-value" id="marcador-barca-rojas">0</div>
-                                </div>
-                                <div class="stat-card">
-                                    <svg class="stat-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="m12 3.5 2.8 3 4 .8-1 4 2.2 3.2-3.4 2-1.1 4h-7l-1.1-4-3.4-2 2.2-3.2-1-4 4-.8z"/></svg>
-                                    <div class="stat-label">Total<br>goles</div>
-                                    <div class="stat-value" id="marcador-barca-goles">0</div>
-                                </div>
-                            </div>
-
-                            <div class="score-panel" aria-label="Resultado global">
-                                <div class="score-title">Marcador global</div>
-                                <div class="score-card">
-                                    <div class="score-value" id="marcador-score-barca">0</div>
-                                    <div class="score-separador">-</div>
-                                    <div class="score-value" id="marcador-score-madrid">0</div>
-                                </div>
-                                <div class="score-subtext">Balance global según resultados de las encuestas de las jugadas polémicas</div>
-                            </div>
-
-                            <div class="stat-group madrid">
-                                <div class="stat-card">
-                                    <svg class="stat-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 4.5 19 9l-7.5 7.5-4.5-4.5z"/><path d="M6.5 12.5 4 15a2.2 2.2 0 0 0 3.1 3.1l2.5-2.5"/><path d="M14.5 4.5 12 2"/><circle cx="6.2" cy="17.8" r="1.1"/></svg>
-                                    <div class="stat-label">Total<br>penaltis</div>
-                                    <div class="stat-value" id="marcador-madrid-penaltis">0</div>
-                                </div>
-                                <div class="stat-card">
-                                    <svg class="stat-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="3" width="10" height="18" rx="1.6"/></svg>
-                                    <div class="stat-label">Tarjetas<br>rojas</div>
-                                    <div class="stat-value" id="marcador-madrid-rojas">0</div>
-                                </div>
-                                <div class="stat-card">
-                                    <svg class="stat-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="m12 3.5 2.8 3 4 .8-1 4 2.2 3.2-3.4 2-1.1 4h-7l-1.1-4-3.4-2 2.2-3.2-1-4 4-.8z"/></svg>
-                                    <div class="stat-label">Total<br>goles</div>
-                                    <div class="stat-value" id="marcador-madrid-goles">0</div>
-                                </div>
-                            </div>
-
-                            <div class="total-panel barca">
-                                <div class="total-card">
-                                    <div class="total-label">Total global</div>
-                                    <div class="total-value" id="marcador-barca-total">0</div>
-                                </div>
-                            </div>
-
-                            <div class="total-panel madrid">
-                                <div class="total-card">
-                                    <div class="total-label">Total global</div>
-                                    <div class="total-value" id="marcador-madrid-total">0</div>
-                                </div>
-                            </div>
+                        <div class="score-dinamico" aria-label="Resultado global">
+                            <span class="dato score-dato" id="marcador-score-barca">0</span>
+                            <span class="score-separador">-</span>
+                            <span class="dato score-dato" id="marcador-score-madrid">0</span>
                         </div>
+
+                        <span class="dato dato-total total-barca" id="marcador-barca-total">0</span>
+                        <span class="dato dato-total total-madrid" id="marcador-madrid-total">0</span>
                     </div>
                 </div>
             </div>
+
         </section>
 
         <section class="tarjeta-aviso-legal">
@@ -3309,43 +3042,43 @@ function createArticle(jugada){
     return article;
 }
 
-function formatSignedValue(v){
-    const n = Number(v) || 0;
-    if(n > 0) return `+${n}`;
-    if(n < 0) return `${n}`;
+function formatearConSigno(v){
+    const n=Number(v)||0;
+    if(n>0) return `+${n}`;
+    if(n<0) return `${n}`;
     return '0';
 }
 
-function setVal(id,v,signed=false){
+function setVal(id,v,conSigno=false){
     const el=document.getElementById(id);
-    if(el) el.textContent = signed ? formatSignedValue(v) : v;
+    if(el) el.textContent=conSigno?formatearConSigno(v):v;
 }
 
 function renderMarker(bloques){
     const map={};
     bloques.forEach(b=>map[b.key]=b);
 
-    const barcaPenaltis = Number(map.penalti?.barca||0);
-    const barcaGoles = Number(map.gol?.barca||0);
-    const barcaRojas = Number(map.roja?.barca||0);
-    const madridPenaltis = Number(map.penalti?.madrid||0);
-    const madridGoles = Number(map.gol?.madrid||0);
-    const madridRojas = Number(map.roja?.madrid||0);
+    const bp=Number(map.penalti?.barca||0);
+    const bg=Number(map.gol?.barca||0);
+    const br=Number(map.roja?.barca||0);
+    const mp=Number(map.penalti?.madrid||0);
+    const mg=Number(map.gol?.madrid||0);
+    const mr=Number(map.roja?.madrid||0);
 
-    setVal('marcador-barca-penaltis', barcaPenaltis, true);
-    setVal('marcador-barca-goles', barcaGoles, true);
-    setVal('marcador-barca-rojas', barcaRojas, true);
-    setVal('marcador-madrid-penaltis', madridPenaltis, true);
-    setVal('marcador-madrid-goles', madridGoles, true);
-    setVal('marcador-madrid-rojas', madridRojas, true);
+    setVal('marcador-barca-penaltis',bp,true);
+    setVal('marcador-barca-goles',bg,true);
+    setVal('marcador-barca-rojas',br,true);
+    setVal('marcador-madrid-penaltis',mp,true);
+    setVal('marcador-madrid-goles',mg,true);
+    setVal('marcador-madrid-rojas',mr,true);
 
-    const tb = barcaPenaltis + barcaGoles + barcaRojas;
-    const tm = madridPenaltis + madridGoles + madridRojas;
+    const tb=bp+bg+br;
+    const tm=mp+mg+mr;
 
-    setVal('marcador-barca-total', tb, true);
-    setVal('marcador-madrid-total', tm, true);
-    setVal('marcador-score-barca', tb, true);
-    setVal('marcador-score-madrid', tm, true);
+    setVal('marcador-barca-total',tb,true);
+    setVal('marcador-madrid-total',tm,true);
+    setVal('marcador-score-barca',tb,true);
+    setVal('marcador-score-madrid',tm,true);
 }
 
 (async()=>{
