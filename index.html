@@ -2690,6 +2690,141 @@ body{
     border-right:1px solid rgba(255,255,255,.055);
 }
 
+
+/* =========================================================
+   AJUSTE ESPECÍFICO PARA ESCRITORIO
+   Mantiene intacta la versión móvil.
+   ========================================================= */
+@media (min-width: 1000px){
+
+    .wrap{
+        width:min(1320px,94%) !important;
+    }
+
+    .contenido{
+        padding:38px 0 78px !important;
+    }
+
+    .bloque-portada > .cabecera-portada,
+    .bloque-resultados{
+        border-radius:22px !important;
+    }
+
+    .cabecera-portada,
+    .cabecera-resultados{
+        padding:25px 30px 22px !important;
+    }
+
+    .cabecera-portada h1,
+    .cabecera-resultados h1{
+        font-size:34px !important;
+    }
+
+    .cabecera-portada p,
+    .cabecera-resultados p{
+        font-size:15px !important;
+        line-height:1.45 !important;
+    }
+
+    #ultimasJugadasContainer{
+        gap:28px !important;
+    }
+
+    .jugada-principal{
+        border-radius:20px !important;
+    }
+
+    .cabecera-jugada{
+        padding:21px 25px 20px !important;
+    }
+
+    .cabecera-jugada h2{
+        font-size:29px !important;
+        line-height:1.12 !important;
+    }
+
+    .descripcion-cabecera-jugada{
+        max-width:1050px !important;
+    }
+
+    .contenido-jugada{
+        display:grid !important;
+        grid-template-columns:minmax(0,1.75fr) minmax(320px,.75fr) !important;
+        grid-template-areas:
+            "media votacion"
+            "comentarios comentarios";
+        align-items:start !important;
+        gap:18px !important;
+        padding:18px !important;
+    }
+
+    .bloque-media-jugada{
+        grid-area:media;
+        min-width:0;
+    }
+
+    .panel-votacion{
+        grid-area:votacion;
+        width:100% !important;
+        margin:0 !important;
+    }
+
+    .seccion-comentarios{
+        grid-area:comentarios;
+        margin:0 !important;
+    }
+
+    .visor-media{
+        aspect-ratio:16 / 9 !important;
+        max-height:560px;
+    }
+
+    .visor-media img{
+        max-height:560px !important;
+    }
+
+    .botones-voto{
+        grid-template-columns:1fr !important;
+    }
+
+    .resumen-votos-bloques{
+        grid-template-columns:1fr !important;
+    }
+
+    .panel-votacion-top p{
+        font-size:23px !important;
+    }
+
+    .marcador-visual-wrap{
+        padding:24px 28px 26px !important;
+    }
+
+    .marcador-imagen{
+        width:min(1080px,100%) !important;
+        border-radius:24px !important;
+    }
+
+    .tarjeta-aviso-legal{
+        max-width:1320px;
+    }
+
+    .tarjeta-aviso-legal .aviso-legal{
+        text-align:justify !important;
+        text-align-last:center;
+        line-height:1.55 !important;
+    }
+}
+
+@media (min-width: 1000px) and (max-width: 1180px){
+    .contenido-jugada{
+        grid-template-columns:minmax(0,1.5fr) minmax(300px,.8fr) !important;
+    }
+
+    .panel-votacion-top p{
+        font-size:21px !important;
+    }
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
