@@ -2004,548 +2004,78 @@ body{
 }
 
 
-
-/* =========================================================
-   AJUSTES DE ESTRUCTURA — PORTADA, VOTACIÓN Y COMENTARIOS
-   ========================================================= */
-
-/* La cabecera de "Última jornada con polémica" queda como tarjeta independiente */
-.bloque-portada{
-    background:transparent !important;
-    border:none !important;
-    box-shadow:none !important;
+/* ===== BARRA Y TARJETA IGUALES A JUGADAS POLÉMICAS ===== */
+.menu{
+    padding:0 48px 0 0 !important;
     overflow:visible !important;
 }
 
-.bloque-portada > .cabecera-portada{
-    border-radius:24px !important;
-    overflow:hidden;
-    margin-bottom:24px;
-    border:1px solid rgba(160,194,235,.24) !important;
-    box-shadow:0 18px 40px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.05) !important;
+.menu-user-wrap{
+    position:absolute;
+    right:10px;
+    top:50%;
+    transform:translateY(-50%);
+    z-index:5000;
+    pointer-events:auto;
 }
 
-/* La tarjeta de la pregunta usa exactamente el mismo azul que la cabecera anterior */
-.cabecera-jugada{
-    background:
-      radial-gradient(circle at 48% 38%, rgba(28,91,173,.34) 0%, rgba(20,65,128,.18) 34%, transparent 66%),
-      linear-gradient(115deg,#061a3d 0%,#082758 43%,#0a3472 68%,#082550 100%) !important;
-}
-
-/* Más separación entre la cabecera general y la primera jugada */
-#ultimasJugadasContainer{
-    display:flex;
-    flex-direction:column;
-    gap:24px;
-}
-
-#ultimasJugadasContainer .bloque-jugada{
-    margin:0 28px 0;
-}
-
-/* Tarjeta de votación más compacta */
-.panel-votacion{
-    align-self:start;
-}
-
-.panel-votacion-top{
-    padding:10px 12px 6px !important;
-}
-
-.panel-votacion-top h3{
-    font-size:17px !important;
-    margin-bottom:4px !important;
-}
-
-.panel-votacion-top p{
-    font-size:13px !important;
-    line-height:1.3;
-}
-
-.botones-voto{
-    padding:8px 12px !important;
-    gap:6px !important;
-}
-
-.btn-voto{
-    min-height:36px !important;
-    padding:8px 10px !important;
-    font-size:13px !important;
-}
-
-.mensaje-voto{
-    padding:0 12px 7px !important;
-    font-size:11px !important;
-}
-
-.resultado-box{
-    padding:9px 10px !important;
-}
-
-.resultado-cabecera{
-    margin-bottom:7px !important;
-    font-size:12px !important;
-}
-
-.resumen-votos-bloques{
-    gap:7px !important;
-}
-
-.resumen-voto-card{
-    padding:9px 10px !important;
-    border-radius:10px !important;
-}
-
-.resumen-voto-porcentaje{
-    font-size:23px !important;
-    margin-bottom:3px !important;
-}
-
-.resumen-voto-texto{
-    font-size:12px !important;
-}
-
-.resumen-voto-detalle{
-    margin-top:2px !important;
-    font-size:11px !important;
-}
-
-.barra-resultado{
-    height:13px !important;
-    margin-top:7px !important;
-}
-
-/* Comentarios con el mismo blanco y contraste que la votación */
-.seccion-comentarios,
-.comentarios-box{
-    background:#f7f9fc !important;
-    border:1px solid #d8e0ec !important;
-    box-shadow:0 12px 28px rgba(0,0,0,.20) !important;
-    color:#1f2f49 !important;
-}
-
-.cabecera-comentarios{
-    background:#f7f9fc !important;
-    border-bottom:1px solid #dde4ef !important;
-    color:#1f2f49 !important;
-}
-
-.cabecera-comentarios p{
-    color:#667791 !important;
-}
-
-.cuerpo-comentarios textarea{
-    background:#ffffff !important;
-    border:1px solid #cfd8e5 !important;
-    color:#1f2f49 !important;
-}
-
-.cuerpo-comentarios textarea::placeholder{
-    color:#7b8798;
-}
-
-.comentario{
-    background:#eef2f8 !important;
-    border-left:4px solid #1f4fb0 !important;
-    color:#1f2f49 !important;
-}
-
-@media (max-width:768px){
-    .bloque-portada > .cabecera-portada{
-        border-radius:20px !important;
-        margin-bottom:18px;
-    }
-
-    #ultimasJugadasContainer{
-        gap:18px;
-    }
-
-    #ultimasJugadasContainer .bloque-jugada{
-        margin:0 10px;
-    }
-
-    .panel-votacion{
-        width:100%;
-    }
-}
-
-
-/* =========================================================
-   NUEVA ESTRUCTURA DE PORTADA — JULIO 2026
-   ========================================================= */
-.cabecera-portada{
-    text-align:center !important;
-}
-
-.cabecera-portada p{
-    margin-left:auto !important;
-    margin-right:auto !important;
-}
-
-#ultimasJugadasContainer .bloque-jugada{
-    margin:0 !important;
-}
-
-.jugada-principal{
-    overflow:hidden;
-}
-
-.cabecera-jugada{
-    padding:22px 24px 21px !important;
-}
-
-.cabecera-jugada .etiqueta-jornada{
-    margin:0 0 13px !important;
-}
-
-.cabecera-jugada h2{
-    margin-bottom:8px !important;
-}
-
-.datos-jugada{
-    margin:0 !important;
-}
-
-.descripcion-cabecera-jugada{
-    margin:12px 0 0 !important;
-    max-width:920px;
-    color:#f2f6fc !important;
-    font-size:15px !important;
-    line-height:1.5;
-}
-
-.contenido-jugada{
-    display:flex;
-    flex-direction:column;
-    gap:18px;
-    padding:18px;
-    background:linear-gradient(180deg,rgba(13,32,61,.76),rgba(7,20,40,.86));
-}
-
-.bloque-media-jugada{
-    width:100%;
-}
-
-.imagen-jugada{
-    min-height:0 !important;
-}
-
-.visor-media{
-    min-height:0 !important;
-    aspect-ratio:16/9;
-}
-
-.panel-votacion{
-    width:100%;
-    align-self:stretch !important;
-    box-sizing:border-box;
-}
-
-.botones-voto{
-    display:grid !important;
-    grid-template-columns:1fr 1fr;
-}
-
-.resumen-votos-bloques{
-    grid-template-columns:1fr 1fr !important;
-}
-
-.seccion-comentarios{
-    margin-top:0 !important;
-    width:100%;
-    box-sizing:border-box;
-}
-
-.tarjeta-aviso-legal{
-    margin-top:0;
-    background:linear-gradient(180deg,rgba(5,24,52,.96),rgba(4,18,40,.97));
-    border:1px solid rgba(160,194,235,.24);
-    border-radius:18px;
-    box-shadow:0 16px 38px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.035);
-    overflow:hidden;
-}
-
-.tarjeta-aviso-legal .aviso-legal{
-    margin:0;
-    padding:18px 22px;
-    color:#e7edf7;
-}
-
-@media (max-width:768px){
-    .cabecera-jugada{
-        padding:17px 16px 16px !important;
-    }
-
-    .contenido-jugada{
-        padding:12px;
-        gap:13px;
-    }
-
-    .descripcion-cabecera-jugada{
-        font-size:14px !important;
-        line-height:1.45;
-    }
-
-    .botones-voto,
-    .resumen-votos-bloques{
-        grid-template-columns:1fr !important;
-    }
-
-    .tarjeta-aviso-legal{
-        border-radius:15px;
-    }
-}
-
-
-/* =========================================================
-   AJUSTE FINAL 3 — MENÚ, VOTACIÓN Y COMENTARIOS
-   ========================================================= */
-.menu a{
-    flex-direction:column !important;
-    gap:5px !important;
-    font-size:13px !important;
-    line-height:1.08 !important;
-    padding:6px 8px !important;
-}
-
-.menu-icono{
-    width:25px;
-    height:25px;
-    fill:none;
-    stroke:currentColor;
-    stroke-width:1.8;
-    stroke-linecap:round;
-    stroke-linejoin:round;
-    opacity:.92;
-    flex:0 0 auto;
-}
-
-.panel-votacion-top{
-    padding:14px 16px 8px !important;
-}
-
-.panel-votacion-top h3{
-    font-size:16px !important;
-    margin:0 0 2px !important;
-    color:#52627a;
-    text-transform:uppercase;
-    letter-spacing:.35px;
-}
-
-.panel-votacion-top p{
-    margin:0 !important;
-    font-family:"Oswald",Arial,sans-serif !important;
-    font-size:28px !important;
-    font-weight:700 !important;
-    line-height:1.12 !important;
-    color:#16243a !important;
-}
-
-.cabecera-comentarios{
-    display:flex !important;
-    align-items:center !important;
-    justify-content:space-between !important;
-    gap:14px !important;
-    padding:12px 14px !important;
-}
-
-.cabecera-comentarios h3{
-    margin:0 0 2px !important;
-}
-
-.cabecera-comentarios .btn-mostrar-mas{
-    margin:0 !important;
-    min-height:36px !important;
-    padding:7px 12px !important;
-    white-space:nowrap;
-    align-items:center;
-    justify-content:center;
-}
-
-.cuerpo-comentarios{
-    padding:12px 14px 14px !important;
-}
-
-.cuerpo-comentarios textarea{
-    margin:0 0 8px !important;
-}
-
-.lista-comentarios{
-    margin-top:14px !important;
-}
-
-.comentario{
-    color:#26364f !important;
-    background:#eef2f8 !important;
-    border-left:4px solid #1f4fb0 !important;
-}
-
-@media (max-width:768px){
-    .menu a{
-        font-size:9.8px !important;
-        gap:3px !important;
-        padding:4px 2px !important;
-    }
-    .menu-icono{
-        width:20px;
-        height:20px;
-    }
-    .panel-votacion-top p{
-        font-size:24px !important;
-    }
-    .cabecera-comentarios{
-        align-items:flex-start !important;
-    }
-    .cabecera-comentarios .btn-mostrar-mas{
-        font-size:11px !important;
-        padding:7px 9px !important;
-    }
-}
-
-
-
-/* =========================================================
-   MARCADOR GLOBAL DINÁMICO
-   La imagen conserva todo el diseño y el HTML solo añade cifras.
-   ========================================================= */
-.marcador-visual-wrap{
-    padding:30px 18px 20px !important;
-}
-
-.marcador-visual-container{
-    width:100%;
-    display:flex;
-    justify-content:center;
-}
-
-.marcador-imagen{
+.menu-user-btn{
     position:relative;
-    width:min(1380px,100%);
-    aspect-ratio:1672 / 941;
-    overflow:hidden;
-    border-radius:clamp(16px,2.3vw,34px);
-    box-shadow:0 24px 54px rgba(0,0,0,.38),0 4px 14px rgba(0,0,0,.22);
-    background:#06101d;
-}
-
-.marcador-imagen > img{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    display:block;
-    user-select:none;
-    pointer-events:none;
-}
-
-.marcador-imagen .dato{
-    position:absolute;
-    z-index:3;
-    transform:translate(-50%,-50%);
+    z-index:5001;
+    width:34px;
+    height:34px;
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:50%;
+    background:rgba(10,18,34,.92);
+    color:#fff;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-family:"Oswald",Arial,sans-serif !important;
-    font-weight:700;
-    line-height:1;
-    color:#fff;
-    text-shadow:0 4px 14px rgba(0,0,0,.72);
+    cursor:pointer;
+    box-shadow:0 6px 16px rgba(0,0,0,.28);
+    font-size:16px;
 }
 
-.marcador-imagen .dato-stat{
-    font-size:clamp(20px,3vw,42px);
-    width:9%;
-    height:9%;
-    font-weight:600;
-    opacity:.96;
-}
+.menu-user-btn:hover{background:rgba(20,34,58,.95);}
 
-.barca-penaltis{left:9.9%;top:43.7%;}
-.barca-rojas{left:23.4%;top:43.7%;}
-.barca-goles{left:16.8%;top:66.3%;}
-.madrid-penaltis{left:75.4%;top:43.7%;}
-.madrid-rojas{left:88.6%;top:43.7%;}
-.madrid-goles{left:82.3%;top:66.3%;}
-
-.score-dinamico{
+.menu-user-dropdown{
     position:absolute;
-    z-index:3;
-    left:49.7%;
-    top:53.5%;
-    transform:translate(-50%,-50%);
-    width:31%;
-    height:25%;
-    display:grid;
-    grid-template-columns:1fr auto 1fr;
-    align-items:center;
-    justify-items:center;
-    gap:4%;
-    background:transparent;
-    box-shadow:none;
+    right:0;
+    top:42px;
+    min-width:240px;
+    background:#fff;
+    border-radius:12px;
+    box-shadow:0 12px 28px rgba(0,0,0,.22);
+    padding:12px;
+    display:none;
+    color:#1e2b46;
 }
+.menu-user-dropdown.activo{display:block;}
+.menu-user-line{font-size:13px;line-height:1.4;margin-bottom:10px;color:#41516f;}
+.menu-user-title{font-size:14px;font-weight:bold;color:#18263f;margin-bottom:10px;}
+.menu-user-actions{display:flex;flex-direction:column;gap:8px;}
+.menu-user-actions button,.menu-user-actions input{width:100%;box-sizing:border-box;}
+.menu-user-actions input{height:38px;border:1px solid #d8dfeb;border-radius:8px;padding:0 10px;font-size:14px;}
+.menu-user-actions button{height:38px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;}
+.btn-user-primary{background:#1f4fb0;color:#fff;}
+.btn-user-primary:hover{background:#173f90;}
+.btn-user-secondary{background:#eef2f8;color:#243757;}
+.btn-user-secondary:hover{background:#dfe7f3;}
 
-.score-dinamico .dato{
-    position:static;
-    transform:none;
-}
-
-.score-dato{
-    font-size:clamp(58px,7.6vw,112px);
-    text-shadow:0 5px 18px rgba(0,0,0,.78),0 0 18px rgba(255,255,255,.08);
-}
-
-.score-separador{
-    font-family:"Oswald",Arial,sans-serif;
-    font-weight:500;
-    color:#8f99a8;
-    font-size:clamp(24px,3vw,44px);
-    line-height:1;
-    opacity:.88;
-    text-shadow:none;
-}
-
-.marcador-imagen .dato-total{
-    font-size:clamp(38px,5vw,72px);
-    width:12%;
-    height:10%;
-    text-shadow:0 5px 18px rgba(0,0,0,.76),0 0 16px rgba(255,255,255,.08);
-}
-
-.total-barca{left:16.8%;top:90.0%;}
-.total-madrid{left:82.3%;top:90.0%;}
-
-.tarjeta-aviso-legal{
-    margin-top:28px;
+/* Mismo azul marino que “Todas las jugadas polémicas” */
+.cabecera-portada{
+    background:linear-gradient(180deg,rgba(5,24,52,.98),rgba(4,18,40,.99)) !important;
+    border-bottom:1px solid rgba(160,194,235,.24) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.035) !important;
 }
 
 @media (max-width:768px){
-    .marcador-visual-wrap{padding:18px 4px 10px !important;}
-    .marcador-imagen{width:100%;border-radius:14px;}
-    .marcador-imagen .dato-stat{
-        font-size:clamp(12px,3.8vw,19px);
-    }
-    .barca-penaltis{left:9.9%;top:43.7%;}
-    .barca-rojas{left:23.4%;top:43.7%;}
-    .barca-goles{left:16.8%;top:66.3%;}
-    .madrid-penaltis{left:75.4%;top:43.7%;}
-    .madrid-rojas{left:88.6%;top:43.7%;}
-    .madrid-goles{left:82.3%;top:66.3%;}
-    .score-dinamico{
-        width:31%;
-        height:25%;
-        top:53.5%;
-    }
-    .score-dato{font-size:clamp(34px,9vw,56px);}
-    .score-separador{font-size:clamp(18px,4.4vw,28px);}
-    .marcador-imagen .dato-total{
-        font-size:clamp(25px,6.4vw,38px);
-        top:90.0%;
-    }
-    .total-barca{left:16.8%;}
-    .total-madrid{left:82.3%;}
-    .tarjeta-aviso-legal{margin-top:20px;}
+    .menu{padding:0 42px 0 0 !important;overflow:visible !important;}
+    .menu-user-wrap{right:7px !important;}
+    .menu-user-btn{width:30px;height:30px;font-size:14px;}
+    .menu-user-dropdown{right:-4px;min-width:220px;}
 }
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2557,11 +2087,16 @@ body{
 <div class="cabecera"></div>
 
 <nav class="menu">
-    <a href="index.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5h-5v-6h-5v6h-5A1.5 1.5 0 0 1 3 19.5z"/></svg><span>INICIO</span></a>
-    <a href="jugadas-polemicas.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg><span>JUGADAS<br>POLÉMICAS</span></a>
-    <a href="resultados-var.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v3a4 4 0 0 1-8 0zM6 5H3v2a4 4 0 0 0 4 4M18 5h3v2a4 4 0 0 1-4 4M12 11v5M8 21h8M9 16h6v5H9z"/></svg><span>RESULTADOS</span></a>
-    <a href="quien-ha-sido-mas-favorecido.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M10 20V8M15 20V4M20 20V10"/></svg><span>EQUIPO MÁS<br>FAVORECIDO</span></a>
-    <a href="arbitros-mas-influyentes.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 7-7h7l2 2v7l-7 7-9-9z"/><circle cx="16.5" cy="7.5" r="1"/></svg><span>ÁRBITROS MÁS<br>INFLUYENTES</span></a>
+    <a href="index.html"><span>INICIO</span></a>
+    <a href="jugadas-polemicas.html"><span>JUGADAS<br>POLÉMICAS</span></a>
+    <a href="resultados-var.html"><span>RESULTADOS</span></a>
+    <a href="quien-ha-sido-mas-favorecido.html"><span>EQUIPO MÁS<br>FAVORECIDO</span></a>
+    <a href="arbitros-mas-influyentes.html"><span>ÁRBITROS MÁS<br>INFLUYENTES</span></a>
+
+    <div class="menu-user-wrap">
+        <button id="menuUserBtn" class="menu-user-btn" type="button" title="Usuario">👤</button>
+        <div id="menuUserDropdown" class="menu-user-dropdown"></div>
+    </div>
 </nav>
 
 <div class="contenido">
@@ -2569,7 +2104,7 @@ body{
 
         <section class="bloque-portada">
             <div class="cabecera-portada">
-                <h1>Última jornada polémica</h1>
+                <h1>Última jornada con polémica</h1>
                 <p>En esta portada se muestran automáticamente todas las jugadas de la jornada más reciente registrada.</p>
             </div>
 
@@ -2584,34 +2119,84 @@ body{
                 <p>Resumen acumulado tras las encuestas de las jugadas polémicas.</p>
             </div>
 
-            <div class="marcador-wrap marcador-visual-wrap">
-                <div id="marcadorGlobalContainer" class="marcador-visual-container">
-                    <div class="marcador-imagen" id="marcadorGlobal" aria-label="Marcador global de las encuestas">
-                        <img src="marcador-global-fondo-alto-v2-sin-numeros.png" alt="Marcador global FC Barcelona - Real Madrid">
+            <div class="marcador-wrap">
+                <div id="marcadorGlobalContainer">
+                    <div class="marcador-global" id="marcadorGlobal">
+                        <div class="marcador-grid">
 
-                        <span class="dato dato-stat barca-penaltis" id="marcador-barca-penaltis">0</span>
-                        <span class="dato dato-stat barca-rojas" id="marcador-barca-rojas">0</span>
-                        <span class="dato dato-stat barca-goles" id="marcador-barca-goles">0</span>
+                            <div class="equipo-panel barca">
+                                <div class="equipo-head">
+                                    <img src="escudo-barcelona.png" class="escudo" alt="Escudo FC Barcelona">
+                                    <div class="equipo-nombre">FC Barcelona</div>
+                                </div>
 
-                        <span class="dato dato-stat madrid-penaltis" id="marcador-madrid-penaltis">0</span>
-                        <span class="dato dato-stat madrid-rojas" id="marcador-madrid-rojas">0</span>
-                        <span class="dato dato-stat madrid-goles" id="marcador-madrid-goles">0</span>
+                                <div class="subdatos">
+                                    <div class="mini-dato">
+                                        <span class="et">Total Penaltis</span>
+                                        <span class="vl" id="marcador-barca-penaltis">0</span>
+                                    </div>
+                                    <div class="mini-dato">
+                                        <span class="et">Total Rojas</span>
+                                        <span class="vl" id="marcador-barca-rojas">0</span>
+                                    </div>
+                                    <div class="mini-dato">
+                                        <span class="et">Total Goles</span>
+                                        <span class="vl" id="marcador-barca-goles">0</span>
+                                    </div>
+                                </div>
 
-                        <div class="score-dinamico" aria-label="Resultado global">
-                            <span class="dato score-dato" id="marcador-score-barca">0</span>
-                            <span class="score-separador">-</span>
-                            <span class="dato score-dato" id="marcador-score-madrid">0</span>
+                                <div class="total-global-wrap">
+                                    <div class="total-global">
+                                        <span class="et">Total Global</span>
+                                        <span class="vl" id="marcador-barca-total">0</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="marcador-centro">
+                                <div class="marcador-titulo">Marcador global</div>
+                                <div class="score-box">
+                                    <div class="score" id="marcador-score-barca">0</div>
+                                    <div class="score-sep">-</div>
+                                    <div class="score" id="marcador-score-madrid">0</div>
+                                </div>
+                                <div class="score-leyenda">Balance global según resultados de las encuestas de las jugadas polémicas</div>
+                            </div>
+
+                            <div class="equipo-panel madrid">
+                                <div class="equipo-head">
+                                    <img src="escudo-madrid.png" class="escudo" alt="Escudo Real Madrid">
+                                    <div class="equipo-nombre">Real Madrid</div>
+                                </div>
+
+                                <div class="subdatos">
+                                    <div class="mini-dato">
+                                        <span class="et">Total Penaltis</span>
+                                        <span class="vl" id="marcador-madrid-penaltis">0</span>
+                                    </div>
+                                    <div class="mini-dato">
+                                        <span class="et">Total Rojas</span>
+                                        <span class="vl" id="marcador-madrid-rojas">0</span>
+                                    </div>
+                                    <div class="mini-dato">
+                                        <span class="et">Total Goles</span>
+                                        <span class="vl" id="marcador-madrid-goles">0</span>
+                                    </div>
+                                </div>
+
+                                <div class="total-global-wrap">
+                                    <div class="total-global">
+                                        <span class="et">Total Global</span>
+                                        <span class="vl" id="marcador-madrid-total">0</span>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
-
-                        <span class="dato dato-total total-barca" id="marcador-barca-total">0</span>
-                        <span class="dato dato-total total-madrid" id="marcador-madrid-total">0</span>
                     </div>
                 </div>
             </div>
 
-        </section>
-
-        <section class="tarjeta-aviso-legal">
             <div class="aviso-legal">
                 POLÉMICA VAR es una plataforma independiente y neutral cuyo objetivo es analizar jugadas polémicas a través de la opinión de los usuarios.
                 Los contenidos audiovisuales mostrados pertenecen a sus respectivos autores y son compartidos desde plataformas públicas. Esta web no almacena ni modifica dichos contenidos.
@@ -2637,6 +2222,12 @@ body{
 
 <script>
 const { escapeHtml, loadDataset, getComments, addComment, addVote, getUserVote, setUserVote, formatDate } = window.DecisionVarData;
+const getUsuarioActual = window.DecisionVarData.getUsuarioActual || (async () => null);
+const getPerfilActual = window.DecisionVarData.getPerfilActual || (async () => null);
+const crearPerfil = window.DecisionVarData.crearPerfil || (async () => { throw new Error("No disponible"); });
+const logout = window.DecisionVarData.logout || (async () => {});
+const loginConGoogle = window.DecisionVarData.loginConGoogle || (async () => alert("Inicio de sesión no disponible"));
+const supabaseClient = window.DecisionVarData.supabase || null;
 const ultimasJugadasContainer = document.getElementById("ultimasJugadasContainer");
 
 function normalizarTexto(txt){ return (txt||"").toString().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); }
@@ -2848,31 +2439,22 @@ function createInitialComments(j){
         }));
 }
 
-function ordenarComentarios(comments){
-    return [...comments].sort((a,b)=>{
-        const fa=a.created_at ? new Date(a.created_at).getTime() : 0;
-        const fb=b.created_at ? new Date(b.created_at).getTime() : 0;
-        return fb-fa;
-    });
-}
-
 function renderComments(article, comments, visibles){
     const list=article.querySelector('.lista-comentarios');
     const counter=article.querySelector('.cabecera-comentarios p');
-    const btnMas=article.querySelector('.btn-mostrar-mas');
-    const ordenados=ordenarComentarios(comments);
-
     list.innerHTML='';
-    counter.textContent=`${ordenados.length} comentarios`;
+    counter.textContent=`${comments.length} comentarios`;
 
-    ordenados.slice(0, visibles).forEach(c=>{
+    comments.slice(0, visibles).forEach(c=>{
         const div=document.createElement('div');
         div.className='comentario visible';
         div.innerHTML=`<div style="font-size:12px;color:#667791;font-weight:700;margin-bottom:4px;">${escapeHtml(c.autor||'Usuario')} ${c.created_at ? '· '+escapeHtml(formatDate(c.created_at)) : ''}</div>${escapeHtml(c.texto||'')}`;
         list.appendChild(div);
     });
 
-    btnMas.style.display = visibles < ordenados.length ? 'inline-flex' : 'none';
+    article.querySelector('.btn-mostrar-inicial').style.display = comments.length>0 && visibles===0 ? 'inline-block' : 'none';
+    article.querySelector('.btn-ocultar').style.display = visibles>0 ? 'inline-block' : 'none';
+    article.querySelector('.btn-mostrar-mas').style.display = visibles>0 && visibles<comments.length ? 'inline-block' : 'none';
 }
 
 async function initComments(article, jugada){
@@ -2885,11 +2467,13 @@ async function initComments(article, jugada){
         online=[];
     }
 
-    let visibles=3;
+    let visibles=0;
     renderComments(article, [...online, ...initial], visibles);
 
     const btnPublicar = article.querySelector('.boton-comentar');
+    const btnInicial = article.querySelector('.btn-mostrar-inicial');
     const btnMas = article.querySelector('.btn-mostrar-mas');
+    const btnOcultar = article.querySelector('.btn-ocultar');
 
     if(btnPublicar){
         btnPublicar.onclick=async()=>{
@@ -2901,7 +2485,7 @@ async function initComments(article, jugada){
                 await addComment('jugada', txt, jugada.id);
                 ta.value='';
                 online=await getComments('jugada', jugada.id);
-                visibles=Math.max(visibles,3);
+                visibles=Math.max(visibles,5);
                 renderComments(article, [...online, ...initial], visibles);
             }catch(e){
                 alert('No se pudo guardar el comentario');
@@ -2909,9 +2493,23 @@ async function initComments(article, jugada){
         };
     }
 
+    if(btnInicial){
+        btnInicial.onclick=()=>{
+            visibles=5;
+            renderComments(article, [...online, ...initial], visibles);
+        };
+    }
+
     if(btnMas){
         btnMas.onclick=()=>{
-            visibles+=3;
+            visibles+=5;
+            renderComments(article, [...online, ...initial], visibles);
+        };
+    }
+
+    if(btnOcultar){
+        btnOcultar.onclick=()=>{
+            visibles=0;
             renderComments(article, [...online, ...initial], visibles);
         };
     }
@@ -2967,6 +2565,7 @@ async function initVote(article, jugada){
 }
 
 function createArticle(jugada){
+    const cat=capitalizarCategoria(jugada.categoria);
     const commentsInitial=createInitialComments(jugada);
     const article=document.createElement('section');
 
@@ -2977,70 +2576,7 @@ function createArticle(jugada){
     article.dataset.competicion=jugada.competicion;
     article.dataset.tipo=normalizarTexto(jugada.categoria);
 
-    article.innerHTML=`<section class="jugada-principal">
-        <div class="cabecera-jugada">
-            <div class="etiqueta-jornada">Jornada ${escapeHtml(jugada.jornada)}</div>
-            <h2>${escapeHtml(jugada.pregunta)}</h2>
-            <p class="datos-jugada">${escapeHtml(jugada.partido)} · Min ${escapeHtml(jugada.minuto)} · ${escapeHtml(jugada.competicion)}</p>
-            <p class="descripcion-cabecera-jugada">${escapeHtml(jugada.descripcion||'')}</p>
-        </div>
-
-        <div class="contenido-jugada">
-            <div class="bloque-media-jugada">
-                <div class="imagen-jugada">
-                    <div class="visor-media"></div>
-                    <div class="zoom-controles">
-                        <button class="zoom-btn zoom-mas" type="button">+</button>
-                        <button class="zoom-btn zoom-menos" type="button">−</button>
-                        <button class="zoom-btn zoom-reset" type="button">100%</button>
-                        <button class="zoom-btn zoom-expandir" type="button">Ampliar</button>
-                    </div>
-                </div>
-                <div class="galeria-miniaturas" style="display:none;"></div>
-            </div>
-
-            <div class="panel-votacion">
-                <div class="panel-votacion-top">
-                    <h3>Vota la jugada</h3>
-                    <p>${escapeHtml((jugada.pregunta||'').trim()||'¿Te pareció correcta la decisión arbitral?')}</p>
-                </div>
-                <div class="botones-voto">
-                    <button class="btn-voto btn-voto-si" type="button">${escapeHtml(jugada.respuestaSi||'Sí')}</button>
-                    <button class="btn-voto btn-voto-no" type="button">${escapeHtml(jugada.respuestaNo||'No')}</button>
-                </div>
-                <div class="mensaje-voto">Tu voto ya se guarda online.</div>
-                <div class="resultado-box">
-                    <div class="resultado-cabecera">Sin votos todavía</div>
-                    <div class="resumen-votos-bloques">
-                        <div class="resumen-voto-card incorrecto">
-                            <div class="resumen-voto-porcentaje porcentaje-incorrecto">0%</div>
-                            <div class="resumen-voto-texto">Cree que se arbitró mal</div>
-                            <div class="resumen-voto-detalle detalle-incorrecto">0 de 0 votos</div>
-                            <div class="barra-resultado"><div class="barra-no barra-incorrecto" style="width:0%"></div></div>
-                        </div>
-                        <div class="resumen-voto-card correcto">
-                            <div class="resumen-voto-porcentaje porcentaje-correcto">0%</div>
-                            <div class="resumen-voto-texto">Cree que se arbitró bien</div>
-                            <div class="resumen-voto-detalle detalle-correcto">0 de 0 votos</div>
-                            <div class="barra-resultado"><div class="barra-si barra-correcto" style="width:0%"></div></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <section class="seccion-comentarios comentarios-box">
-                <div class="cabecera-comentarios">
-                    <div><h3>Comentarios</h3><p>${commentsInitial.length} comentarios</p></div>
-                    <button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button>
-                </div>
-                <div class="cuerpo-comentarios">
-                    <textarea placeholder="Escribe tu comentario..."></textarea>
-                    <button class="boton-comentar" type="button">Publicar comentario</button>
-                    <div class="lista-comentarios"></div>
-                </div>
-            </section>
-        </div>
-    </section>`;
+    article.innerHTML=`<div class="etiqueta-jornada">Jornada ${escapeHtml(jugada.jornada)}</div><section class="jugada-principal"><div class="cabecera-jugada"><h2>${escapeHtml(jugada.pregunta)}</h2><p>${escapeHtml(jugada.partido)} · Min ${escapeHtml(jugada.minuto)} · ${escapeHtml(jugada.competicion)}</p><div class="badge-categoria">${escapeHtml(cat)} · ${escapeHtml(jugada.subtipo)}</div><div class="meta-extra"><strong>Equipo afectado:</strong> ${escapeHtml(jugada.equipoAfectado||'')}<br><strong>Árbitro:</strong> ${escapeHtml(jugada.arbitro||'')}<br><strong>VAR:</strong> ${escapeHtml(jugada.var||'')}</div></div><div class="zona-superior"><div><div class="imagen-jugada"><div class="visor-media"></div><div class="zoom-controles"><button class="zoom-btn zoom-mas" type="button">+</button><button class="zoom-btn zoom-menos" type="button">−</button><button class="zoom-btn zoom-reset" type="button">100%</button><button class="zoom-btn zoom-expandir" type="button">Ampliar</button></div></div><div class="galeria-miniaturas" style="display:none;"></div><div class="descripcion-jugada"><strong>Tipo:</strong> ${escapeHtml(cat)}<br><strong>Decisión árbitro:</strong> ${escapeHtml(jugada.decision||'')}<br><br>${escapeHtml(jugada.descripcion||'')}</div></div><div class="panel-votacion"><div class="panel-votacion-top"><h3>Vota la jugada</h3><p>${escapeHtml((jugada.pregunta||'').trim()||'¿Te pareció correcta la decisión arbitral?')}</p></div><div class="botones-voto"><button class="btn-voto btn-voto-si" type="button">${escapeHtml(jugada.respuestaSi||'Sí')}</button><button class="btn-voto btn-voto-no" type="button">${escapeHtml(jugada.respuestaNo||'No')}</button></div><div class="mensaje-voto">Tu voto ya se guarda online.</div><div class="resultado-box"><div class="resultado-cabecera">Sin votos todavía</div><div class="resumen-votos-bloques"><div class="resumen-voto-card incorrecto"><div class="resumen-voto-porcentaje porcentaje-incorrecto">0%</div><div class="resumen-voto-texto">Cree que se arbitró mal</div><div class="resumen-voto-detalle detalle-incorrecto">0 de 0 votos</div><div class="barra-resultado"><div class="barra-no barra-incorrecto" style="width:0%"></div></div></div><div class="resumen-voto-card correcto"><div class="resumen-voto-porcentaje porcentaje-correcto">0%</div><div class="resumen-voto-texto">Cree que se arbitró bien</div><div class="resumen-voto-detalle detalle-correcto">0 de 0 votos</div><div class="barra-resultado"><div class="barra-si barra-correcto" style="width:0%"></div></div></div></div></div></div></div></section><section class="seccion-comentarios comentarios-box"><div class="cabecera-comentarios"><h3>Comentarios</h3><p>${commentsInitial.length} comentarios</p></div><div class="cuerpo-comentarios"><textarea placeholder="Escribe tu comentario..."></textarea><br><button class="boton-comentar" type="button">Publicar comentario</button><button class="btn-mostrar-inicial" type="button">Mostrar comentarios</button><div class="lista-comentarios"></div><div class="mostrar-mas-wrap"><button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button></div><div class="ocultar-wrap"><button class="btn-ocultar" type="button">Ocultar comentarios</button></div></div></section>`;
 
     initMedia(article);
     initVote(article,jugada);
@@ -3048,43 +2584,95 @@ function createArticle(jugada){
     return article;
 }
 
-function formatearConSigno(v){
-    const n=Number(v)||0;
-    if(n>0) return `+${n}`;
-    if(n<0) return `${n}`;
-    return '0';
-}
-
-function setVal(id,v,conSigno=false){
+function setVal(id,v){
     const el=document.getElementById(id);
-    if(el) el.textContent=conSigno?formatearConSigno(v):v;
+    if(el) el.textContent=v;
 }
 
 function renderMarker(bloques){
     const map={};
     bloques.forEach(b=>map[b.key]=b);
 
-    const bp=Number(map.penalti?.barca||0);
-    const bg=Number(map.gol?.barca||0);
-    const br=Number(map.roja?.barca||0);
-    const mp=Number(map.penalti?.madrid||0);
-    const mg=Number(map.gol?.madrid||0);
-    const mr=Number(map.roja?.madrid||0);
+    setVal('marcador-barca-penaltis', map.penalti?.barca||0);
+    setVal('marcador-barca-goles', map.gol?.barca||0);
+    setVal('marcador-barca-rojas', map.roja?.barca||0);
+    setVal('marcador-madrid-penaltis', map.penalti?.madrid||0);
+    setVal('marcador-madrid-goles', map.gol?.madrid||0);
+    setVal('marcador-madrid-rojas', map.roja?.madrid||0);
 
-    setVal('marcador-barca-penaltis',bp,true);
-    setVal('marcador-barca-goles',bg,true);
-    setVal('marcador-barca-rojas',br,true);
-    setVal('marcador-madrid-penaltis',mp,true);
-    setVal('marcador-madrid-goles',mg,true);
-    setVal('marcador-madrid-rojas',mr,true);
+    const tb=(map.penalti?.barca||0)+(map.gol?.barca||0)+(map.roja?.barca||0);
+    const tm=(map.penalti?.madrid||0)+(map.gol?.madrid||0)+(map.roja?.madrid||0);
 
-    const tb=bp+bg+br;
-    const tm=mp+mg+mr;
+    setVal('marcador-barca-total',tb);
+    setVal('marcador-madrid-total',tm);
+    setVal('marcador-score-barca',tb);
+    setVal('marcador-score-madrid',tm);
+}
 
-    setVal('marcador-barca-total',tb,true);
-    setVal('marcador-madrid-total',tm,true);
-    setVal('marcador-score-barca',tb,true);
-    setVal('marcador-score-madrid',tm,true);
+const menuUserBtn = document.getElementById("menuUserBtn");
+const menuUserDropdown = document.getElementById("menuUserDropdown");
+
+function abrirMenuUsuario(){ menuUserDropdown.classList.add('activo'); }
+function cerrarMenuUsuario(){ menuUserDropdown.classList.remove('activo'); }
+
+async function renderMenuUsuario(){
+    try{
+        const user = await getUsuarioActual();
+        if(!user){
+            menuUserDropdown.innerHTML = `
+                <div class="menu-user-title">Usuario</div>
+                <div class="menu-user-line">Puedes ver todo el contenido sin iniciar sesión. Para votar o comentar, entra con Google.</div>
+                <div class="menu-user-actions">
+                    <button id="btnMenuLoginGoogle" class="btn-user-primary" type="button">Iniciar sesión con Google</button>
+                </div>`;
+            document.getElementById('btnMenuLoginGoogle').onclick = () => loginConGoogle();
+            return;
+        }
+
+        const perfil = await getPerfilActual();
+        if(perfil && perfil.username){
+            menuUserDropdown.innerHTML = `
+                <div class="menu-user-title">Sesión iniciada</div>
+                <div class="menu-user-line">Has iniciado sesión como <strong>${escapeHtml(perfil.username)}</strong>.</div>
+                <div class="menu-user-actions">
+                    <button id="btnMenuLogout" class="btn-user-secondary" type="button">Cerrar sesión</button>
+                </div>`;
+            document.getElementById('btnMenuLogout').onclick = async () => { await logout(); window.location.reload(); };
+            return;
+        }
+
+        menuUserDropdown.innerHTML = `
+            <div class="menu-user-title">Completa tu usuario</div>
+            <div class="menu-user-line">Elige tu nombre de usuario para poder votar y comentar.</div>
+            <div class="menu-user-actions">
+                <input id="inputUsernameMenu" type="text" placeholder="Elige tu nombre de usuario">
+                <button id="btnGuardarUsernameMenu" class="btn-user-primary" type="button">Guardar nombre</button>
+                <button id="btnMenuLogout" class="btn-user-secondary" type="button">Cerrar sesión</button>
+            </div>`;
+        document.getElementById('btnGuardarUsernameMenu').onclick = async () => {
+            const username = document.getElementById('inputUsernameMenu').value.trim();
+            if(!username) return alert('Escribe un nombre de usuario');
+            try{ await crearPerfil(username); window.location.reload(); }
+            catch(e){ alert(e.code === '23505' ? 'Ese nombre de usuario ya está en uso' : 'No se pudo guardar el nombre de usuario'); }
+        };
+        document.getElementById('btnMenuLogout').onclick = async () => { await logout(); window.location.reload(); };
+    }catch(e){
+        menuUserDropdown.innerHTML='<div class="menu-user-title">Usuario</div><div class="menu-user-line">No se pudo comprobar el estado de la sesión.</div>';
+    }
+}
+
+menuUserBtn.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    if(menuUserDropdown.classList.contains('activo')) cerrarMenuUsuario();
+    else{ await renderMenuUsuario(); abrirMenuUsuario(); }
+});
+
+document.addEventListener('click', (e) => {
+    if(!menuUserDropdown.contains(e.target) && !menuUserBtn.contains(e.target)) cerrarMenuUsuario();
+});
+
+if(supabaseClient?.auth?.onAuthStateChange){
+    supabaseClient.auth.onAuthStateChange(() => renderMenuUsuario());
 }
 
 (async()=>{
