@@ -2402,6 +2402,125 @@ body{
     }
 }
 
+
+
+/* =========================================================
+   MARCADOR GLOBAL SOBRE PLANTILLA VISUAL
+   La imagen aporta el diseño; los números se actualizan por JavaScript.
+   ========================================================= */
+.marcador-visual-wrap{
+    padding:30px 28px 22px !important;
+}
+
+.marcador-visual-container{
+    width:100%;
+    display:flex;
+    justify-content:center;
+}
+
+.marcador-imagen{
+    position:relative;
+    width:min(1180px,100%);
+    aspect-ratio:1664 / 922;
+    overflow:hidden;
+    border-radius:clamp(16px,2.3vw,34px);
+    box-shadow:0 24px 54px rgba(0,0,0,.38),0 4px 14px rgba(0,0,0,.22);
+    background:#06101d;
+}
+
+.marcador-imagen > img{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    user-select:none;
+    pointer-events:none;
+}
+
+.marcador-imagen .dato{
+    position:absolute;
+    z-index:3;
+    transform:translate(-50%,-50%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:"Oswald",Arial,sans-serif !important;
+    font-weight:700;
+    line-height:1;
+    color:#fff;
+    text-shadow:0 3px 12px rgba(0,0,0,.62);
+}
+
+/* Cubre los números impresos en la plantilla y muestra encima el dato real. */
+.marcador-imagen .dato-stat{
+    width:7.4%;
+    height:10.2%;
+    top:56.9%;
+    font-size:clamp(20px,4.2vw,58px);
+}
+
+.barca-penaltis{left:9.7%;}
+.barca-rojas{left:20.1%;}
+.barca-goles{left:30.5%;}
+.madrid-penaltis{left:69.1%;}
+.madrid-rojas{left:79.6%;}
+.madrid-goles{left:90%;}
+
+.score-dinamico{
+    position:absolute;
+    z-index:3;
+    left:50%;
+    top:51.5%;
+    transform:translate(-50%,-50%);
+    width:25%;
+    height:18%;
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    justify-items:center;
+    gap:5%;
+    border-radius:13%;
+}
+
+.score-dinamico .dato{
+    position:static;
+    transform:none;
+}
+
+.score-dato{
+    font-size:clamp(44px,8.1vw,112px);
+}
+
+.score-separador{
+    font-family:"Oswald",Arial,sans-serif;
+    font-weight:700;
+    color:#fff;
+    font-size:clamp(30px,5vw,72px);
+    line-height:1;
+    text-shadow:0 3px 12px rgba(0,0,0,.62);
+}
+
+.marcador-imagen .dato-total{
+    top:83.8%;
+    width:10%;
+    height:10%;
+    font-size:clamp(25px,5.2vw,72px);
+}
+
+.total-barca{left:19.4%;}
+.total-madrid{left:79.4%;}
+
+@media (max-width:768px){
+    .marcador-visual-wrap{padding:18px 8px 12px !important;}
+    .marcador-imagen{width:100%;border-radius:14px;}
+    .marcador-imagen .dato-stat{font-size:clamp(16px,6vw,34px);}
+    .score-dato{font-size:clamp(31px,10vw,62px);}
+    .score-separador{font-size:clamp(22px,7vw,42px);}
+    .marcador-imagen .dato-total{font-size:clamp(21px,7vw,42px);}
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2440,87 +2559,31 @@ body{
                 <p>Resumen acumulado tras las encuestas de las jugadas polémicas.</p>
             </div>
 
-            <div class="marcador-wrap">
-                <div id="marcadorGlobalContainer">
-                    <div class="marcador-global" id="marcadorGlobal">
-                        <div class="marcador-grid">
+            <div class="marcador-wrap marcador-visual-wrap">
+                <div id="marcadorGlobalContainer" class="marcador-visual-container">
+                    <div class="marcador-imagen" id="marcadorGlobal" aria-label="Marcador global de las encuestas">
+                        <img src="marcador-global-fondo-sin-numeros.png" alt="Marcador global FC Barcelona - Real Madrid">
 
-                            <div class="equipo-panel barca">
-                                <div class="equipo-head">
-                                    <img src="escudo-barcelona.png" class="escudo" alt="Escudo FC Barcelona">
-                                    <div class="equipo-nombre">FC Barcelona</div>
-                                </div>
+                        <span class="dato dato-stat barca-penaltis" id="marcador-barca-penaltis">0</span>
+                        <span class="dato dato-stat barca-rojas" id="marcador-barca-rojas">0</span>
+                        <span class="dato dato-stat barca-goles" id="marcador-barca-goles">0</span>
 
-                                <div class="subdatos">
-                                    <div class="mini-dato">
-                                        <span class="et">Total Penaltis</span>
-                                        <span class="vl" id="marcador-barca-penaltis">0</span>
-                                    </div>
-                                    <div class="mini-dato">
-                                        <span class="et">Total Rojas</span>
-                                        <span class="vl" id="marcador-barca-rojas">0</span>
-                                    </div>
-                                    <div class="mini-dato">
-                                        <span class="et">Total Goles</span>
-                                        <span class="vl" id="marcador-barca-goles">0</span>
-                                    </div>
-                                </div>
+                        <span class="dato dato-stat madrid-penaltis" id="marcador-madrid-penaltis">0</span>
+                        <span class="dato dato-stat madrid-rojas" id="marcador-madrid-rojas">0</span>
+                        <span class="dato dato-stat madrid-goles" id="marcador-madrid-goles">0</span>
 
-                                <div class="total-global-wrap">
-                                    <div class="total-global">
-                                        <span class="et">Total Global</span>
-                                        <span class="vl" id="marcador-barca-total">0</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="marcador-centro">
-                                <div class="marcador-titulo">Marcador global</div>
-                                <div class="score-box">
-                                    <div class="score" id="marcador-score-barca">0</div>
-                                    <div class="score-sep">-</div>
-                                    <div class="score" id="marcador-score-madrid">0</div>
-                                </div>
-                                <div class="score-leyenda">Balance global según resultados de las encuestas de las jugadas polémicas</div>
-                            </div>
-
-                            <div class="equipo-panel madrid">
-                                <div class="equipo-head">
-                                    <img src="escudo-madrid.png" class="escudo" alt="Escudo Real Madrid">
-                                    <div class="equipo-nombre">Real Madrid</div>
-                                </div>
-
-                                <div class="subdatos">
-                                    <div class="mini-dato">
-                                        <span class="et">Total Penaltis</span>
-                                        <span class="vl" id="marcador-madrid-penaltis">0</span>
-                                    </div>
-                                    <div class="mini-dato">
-                                        <span class="et">Total Rojas</span>
-                                        <span class="vl" id="marcador-madrid-rojas">0</span>
-                                    </div>
-                                    <div class="mini-dato">
-                                        <span class="et">Total Goles</span>
-                                        <span class="vl" id="marcador-madrid-goles">0</span>
-                                    </div>
-                                </div>
-
-                                <div class="total-global-wrap">
-                                    <div class="total-global">
-                                        <span class="et">Total Global</span>
-                                        <span class="vl" id="marcador-madrid-total">0</span>
-                                    </div>
-                                </div>
-                            </div>
-
+                        <div class="score-dinamico" aria-label="Resultado global">
+                            <span class="dato score-dato" id="marcador-score-barca">0</span>
+                            <span class="score-separador">-</span>
+                            <span class="dato score-dato" id="marcador-score-madrid">0</span>
                         </div>
+
+                        <span class="dato dato-total total-barca" id="marcador-barca-total">0</span>
+                        <span class="dato dato-total total-madrid" id="marcador-madrid-total">0</span>
                     </div>
                 </div>
             </div>
 
-        </section>
-
-        <section class="tarjeta-aviso-legal">
             <div class="aviso-legal">
                 POLÉMICA VAR es una plataforma independiente y neutral cuyo objetivo es analizar jugadas polémicas a través de la opinión de los usuarios.
                 Los contenidos audiovisuales mostrados pertenecen a sus respectivos autores y son compartidos desde plataformas públicas. Esta web no almacena ni modifica dichos contenidos.
