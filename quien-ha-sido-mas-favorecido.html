@@ -2132,11 +2132,20 @@ h1,h2,h3,h4,
 </div>
 
 <script>
-const { loadDataset, getComments, addComment, escapeHtml, formatDate } = window.DecisionVarData;
 const DecisionVarAPI = window.DecisionVarData || {};
+const loadDataset = DecisionVarAPI.loadDataset || (async () => ({ resumenBloques: [], jornadasData: [] }));
+const getComments = DecisionVarAPI.getComments || (async () => []);
+const addComment = DecisionVarAPI.addComment || (async () => { throw new Error("No disponible"); });
+const escapeHtml = DecisionVarAPI.escapeHtml || ((t) => String(t || ""));
+const formatDate = DecisionVarAPI.formatDate || ((v) => v || "");
 const getUsuarioActual = DecisionVarAPI.getUsuarioActual || (async () => null);
 const getPerfilActual = DecisionVarAPI.getPerfilActual || (async () => null);
-const crearPerfil = DecisionVarAPI.crearPerfil || 
+const crearPerfil = DecisionVarAPI.crearPerfil || (async () => { throw new Error("No disponible"); });
+const logout = DecisionVarAPI.logout || (async () => {});
+const loginConGoogle = DecisionVarAPI.loginConGoogle || (async () => alert("Inicio de sesión no disponible"));
+const menuUserBtn = document.getElementById("menuUserBtn");
+const menuUserDropdown = document.getElementById("menuUserDropdown");
+
 function abrirMenuUsuario(){ menuUserDropdown.classList.add('activo'); }
 function cerrarMenuUsuario(){ menuUserDropdown.classList.remove('activo'); }
 async function renderMenuUsuario(){
@@ -2156,14 +2165,10 @@ async function renderMenuUsuario(){
         document.getElementById('btnMenuLogout').onclick=async()=>{await logout();window.location.reload();};
     }catch(e){menuUserDropdown.innerHTML='<div class="menu-user-title">Usuario</div><div class="menu-user-line">No se pudo comprobar el estado de la sesión.</div>';}
 }
-menuUserBtn.addEventListener('click',async(e)=>{e.stopPropagation();if(menuUserDropdown.classList.contains('activo'))cerrarMenuUsuario();else{await renderMenuUsuario();abrirMenuUsuario();}});
-document.addEventListener('click',(e)=>{if(!menuUserDropdown.contains(e.target)&&!menuUserBtn.contains(e.target))cerrarMenuUsuario();});
-
-(async () => { throw new Error("No disponible"); });
-const logout = DecisionVarAPI.logout || (async () => {});
-const loginConGoogle = DecisionVarAPI.loginConGoogle || (async () => alert("Inicio de sesión no disponible"));
-const menuUserBtn = document.getElementById("menuUserBtn");
-const menuUserDropdown = document.getElementById("menuUserDropdown");
+if(menuUserBtn && menuUserDropdown){
+    menuUserBtn.addEventListener('click',async(e)=>{e.stopPropagation();if(menuUserDropdown.classList.contains('activo'))cerrarMenuUsuario();else{await renderMenuUsuario();abrirMenuUsuario();}});
+    document.addEventListener('click',(e)=>{if(!menuUserDropdown.contains(e.target)&&!menuUserBtn.contains(e.target))cerrarMenuUsuario();});
+}
 
 function formatearConSigno(v){
     const n=Number(v)||0;
@@ -2578,13 +2583,14 @@ async function initComments(){
 (async () => {
     const data = await loadDataset();
 
-    renderMarker(data.resumenBloques);
-    renderHorizontales(data.resumenBloques);
+    const bloques = Array.isArray(data.resumenBloques) ? data.resumenBloques : [];
+    renderMarker(bloques);
+    renderHorizontales(bloques);
 
-    crearGraficoVertical("graficoVerticalPenaltis", data.resumenBloques[0]);
-    crearGraficoVertical("graficoVerticalGoles", data.resumenBloques[1]);
-    crearGraficoVertical("graficoVerticalRojas", data.resumenBloques[2]);
-    crearGraficoJornadas(data.jornadasData);
+    if(bloques[0]) crearGraficoVertical("graficoVerticalPenaltis", bloques[0]);
+    if(bloques[1]) crearGraficoVertical("graficoVerticalGoles", bloques[1]);
+    if(bloques[2]) crearGraficoVertical("graficoVerticalRojas", bloques[2]);
+    crearGraficoJornadas(Array.isArray(data.jornadasData) ? data.jornadasData : []);
 
     document.getElementById("btnTotales").onclick = () => {
         document.getElementById("btnTotales").classList.add("activo");
