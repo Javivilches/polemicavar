@@ -2547,90 +2547,32 @@ body{
     .tarjeta-aviso-legal{margin-top:20px;}
 }
 
-/* =========================================================
-   BARRA UNIFICADA CON JUGADAS POLÉMICAS
-   ========================================================= */
+
+/* ===== BARRA FINAL IDÉNTICA A JUGADAS POLÉMICAS, CON ICONOS ===== */
 .menu{
-    position:fixed !important;
-    top:142px !important;
-    left:0 !important;
-    width:100% !important;
-    height:62px !important;
-    display:grid !important;
-    grid-template-columns:repeat(5,minmax(0,1fr)) !important;
-    align-items:stretch !important;
-    gap:0 !important;
     padding:0 48px 0 0 !important;
     box-sizing:border-box !important;
-    z-index:999 !important;
     overflow:visible !important;
-    background:rgba(7,11,18,.97) !important;
-    border-bottom:1px solid rgba(255,255,255,.08) !important;
-    backdrop-filter:blur(14px);
-    -webkit-backdrop-filter:blur(14px);
-    box-shadow:0 10px 26px rgba(0,0,0,.28) !important;
 }
-
-.menu::before{
-    content:"" !important;
-    position:absolute !important;
-    inset:0 auto 0 0 !important;
-    width:30% !important;
-    background:linear-gradient(90deg,rgba(202,10,54,.13),transparent) !important;
-    pointer-events:none !important;
-    display:block !important;
-}
-
-.menu::after{
-    content:"" !important;
-    position:absolute !important;
-    inset:0 0 0 auto !important;
-    width:30% !important;
-    height:auto !important;
-    transform:none !important;
-    background:linear-gradient(270deg,rgba(255,255,255,.09),transparent) !important;
-    pointer-events:none !important;
-    display:block !important;
-}
-
 .menu a{
-    position:relative !important;
-    z-index:2 !important;
-    min-width:0 !important;
-    color:#dbe3ef !important;
-    text-decoration:none !important;
+    flex-direction:column !important;
+    gap:5px !important;
     font-family:"Oswald",Arial,sans-serif !important;
     font-size:12px !important;
     line-height:1.05 !important;
-    font-weight:700 !important;
-    letter-spacing:.25px !important;
-    text-transform:uppercase !important;
-    padding:0 14px !important;
-    display:flex !important;
-    flex-direction:row !important;
-    gap:0 !important;
-    align-items:center !important;
-    justify-content:center !important;
-    text-align:center !important;
-    border-radius:0 !important;
-    transition:color .2s ease,background .2s ease !important;
+    padding:6px 8px !important;
 }
-
-.menu a + a{border-left:1px solid rgba(255,255,255,.055) !important;}
-.menu a:hover{background:rgba(255,255,255,.045) !important;color:#fff !important;}
-.menu a:first-child{color:#fff !important;}
-.menu a:first-child::after{
-    content:"" !important;
-    position:absolute !important;
-    left:22% !important;
-    right:22% !important;
-    bottom:0 !important;
-    height:3px !important;
-    border-radius:99px 99px 0 0 !important;
-    background:linear-gradient(90deg,#d3123f,#f1cd79) !important;
-    box-shadow:0 0 18px rgba(211,18,63,.38) !important;
+.menu-icono{
+    width:24px !important;
+    height:24px !important;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.8;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    opacity:.92;
+    flex:0 0 auto;
 }
-
 .menu-user-wrap{
     position:absolute;
     right:10px;
@@ -2639,7 +2581,6 @@ body{
     z-index:5000;
     pointer-events:auto;
 }
-
 .menu-user-btn{
     position:relative;
     z-index:5001;
@@ -2656,9 +2597,7 @@ body{
     box-shadow:0 6px 16px rgba(0,0,0,.28);
     font-size:16px;
 }
-
 .menu-user-btn:hover{background:rgba(20,34,58,.95);}
-
 .menu-user-dropdown{
     position:absolute;
     right:0;
@@ -2671,49 +2610,34 @@ body{
     display:none;
     color:#1e2b46;
 }
-
 .menu-user-dropdown.activo{display:block;}
 .menu-user-line{font-size:13px;line-height:1.4;margin-bottom:10px;color:#41516f;}
 .menu-user-title{font-size:14px;font-weight:bold;color:#18263f;margin-bottom:10px;}
 .menu-user-actions{display:flex;flex-direction:column;gap:8px;}
 .menu-user-actions button,.menu-user-actions input{width:100%;box-sizing:border-box;}
-.menu-user-actions input{
-    height:38px;border:1px solid #d8dfeb;border-radius:8px;padding:0 10px;font-size:14px;
-}
-.menu-user-actions button{
-    height:38px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;
-}
+.menu-user-actions input{height:38px;border:1px solid #d8dfeb;border-radius:8px;padding:0 10px;font-size:14px;}
+.menu-user-actions button{height:38px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;}
 .btn-user-primary{background:#1f4fb0;color:#fff;}
 .btn-user-primary:hover{background:#173f90;}
 .btn-user-secondary{background:#eef2f8;color:#243757;}
 .btn-user-secondary:hover{background:#dfe7f3;}
 
-/* Mismo azul que la tarjeta "Todas las jugadas polémicas" */
+/* La tarjeta superior usa exactamente el azul de “Todas las jugadas polémicas” */
 .bloque-portada > .cabecera-portada{
     background:linear-gradient(180deg,rgba(5,24,52,.98),rgba(4,18,40,.99)) !important;
-    border:1px solid rgba(160,194,235,.24) !important;
-    box-shadow:0 22px 48px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.035) !important;
 }
 
 @media (max-width:768px){
     .menu{
-        top:92px !important;
-        height:64px !important;
-        min-height:64px !important;
         padding:0 42px 0 0 !important;
-        grid-template-columns:repeat(5,minmax(0,1fr)) !important;
         overflow:visible !important;
     }
-    .menu::before,.menu::after{display:none !important;}
     .menu a{
-        height:64px !important;
-        padding:6px 4px !important;
         font-size:9px !important;
-        line-height:1.05 !important;
-        color:#cfd8e5 !important;
-        white-space:normal !important;
+        gap:3px !important;
+        padding:4px 2px !important;
     }
-    .menu a:first-child::after{left:18% !important;right:18% !important;height:3px !important;}
+    .menu-icono{width:20px !important;height:20px !important;}
     .menu-user-wrap{right:7px !important;}
     .menu-user-btn{width:30px;height:30px;font-size:14px;}
     .menu-user-dropdown{right:-4px;min-width:220px;}
@@ -2730,11 +2654,11 @@ body{
 <div class="cabecera"></div>
 
 <nav class="menu">
-    <a href="index.html"><span>INICIO</span></a>
-    <a href="jugadas-polemicas.html"><span>JUGADAS<br>POLÉMICAS</span></a>
-    <a href="resultados-var.html"><span>RESULTADOS</span></a>
-    <a href="quien-ha-sido-mas-favorecido.html"><span>EQUIPO MÁS<br>FAVORECIDO</span></a>
-    <a href="arbitros-mas-influyentes.html"><span>ÁRBITROS MÁS<br>INFLUYENTES</span></a>
+    <a href="index.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5h-5v-6h-5v6h-5A1.5 1.5 0 0 1 3 19.5z"/></svg><span>INICIO</span></a>
+    <a href="jugadas-polemicas.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg><span>JUGADAS<br>POLÉMICAS</span></a>
+    <a href="resultados-var.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v3a4 4 0 0 1-8 0zM6 5H3v2a4 4 0 0 0 4 4M18 5h3v2a4 4 0 0 1-4 4M12 11v5M8 21h8M9 16h6v5H9z"/></svg><span>RESULTADOS</span></a>
+    <a href="quien-ha-sido-mas-favorecido.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M10 20V8M15 20V4M20 20V10"/></svg><span>EQUIPO MÁS<br>FAVORECIDO</span></a>
+    <a href="arbitros-mas-influyentes.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 7-7h7l2 2v7l-7 7-9-9z"/><circle cx="16.5" cy="7.5" r="1"/></svg><span>ÁRBITROS MÁS<br>INFLUYENTES</span></a>
 
     <div class="menu-user-wrap">
         <button id="menuUserBtn" class="menu-user-btn" type="button" title="Usuario">👤</button>
@@ -2748,7 +2672,7 @@ body{
         <section class="bloque-portada">
             <div class="cabecera-portada">
                 <h1>Última jornada polémica</h1>
-                <p>Se muestran todas las jugadas discutibles de la jornada más reciente con polémica</p>
+                <p>En esta portada se muestran todas las jugadas discutibles de la jornada más reciente con polémica</p>
             </div>
 
             <div id="ultimasJugadasContainer">
@@ -2815,8 +2739,6 @@ body{
 
 <script>
 const { escapeHtml, loadDataset, getComments, addComment, addVote, getUserVote, setUserVote, formatDate } = window.DecisionVarData;
-const ultimasJugadasContainer = document.getElementById("ultimasJugadasContainer");
-
 const DecisionVarAPI = window.DecisionVarData || {};
 const getUsuarioActual = DecisionVarAPI.getUsuarioActual || (async () => null);
 const getPerfilActual = DecisionVarAPI.getPerfilActual || (async () => null);
@@ -2825,7 +2747,7 @@ const logout = DecisionVarAPI.logout || (async () => {});
 const loginConGoogle = DecisionVarAPI.loginConGoogle || (async () => alert("Inicio de sesión no disponible"));
 const menuUserBtn = document.getElementById("menuUserBtn");
 const menuUserDropdown = document.getElementById("menuUserDropdown");
-
+const ultimasJugadasContainer = document.getElementById("ultimasJugadasContainer");
 
 function normalizarTexto(txt){ return (txt||"").toString().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); }
 function capitalizarCategoria(v){ const n=normalizarTexto(v); if(n==='penalti') return 'Penalti'; if(n==='gol') return 'Gol'; if(n==='roja') return 'Roja'; return v||''; }
@@ -3281,86 +3203,52 @@ function cerrarMenuUsuario(){ menuUserDropdown.classList.remove('activo'); }
 
 async function renderMenuUsuario(){
     try{
-        const user = await getUsuarioActual();
-
+        const user=await getUsuarioActual();
         if(!user){
-            menuUserDropdown.innerHTML = `
+            menuUserDropdown.innerHTML=`
                 <div class="menu-user-title">Usuario</div>
                 <div class="menu-user-line">Puedes ver todo el contenido sin iniciar sesión. Para votar o comentar, entra con Google.</div>
-                <div class="menu-user-actions">
-                    <button id="btnMenuLoginGoogle" class="btn-user-primary" type="button">Iniciar sesión con Google</button>
-                </div>`;
-            document.getElementById('btnMenuLoginGoogle').onclick = () => loginConGoogle();
+                <div class="menu-user-actions"><button id="btnMenuLoginGoogle" class="btn-user-primary" type="button">Iniciar sesión con Google</button></div>`;
+            document.getElementById('btnMenuLoginGoogle').onclick=()=>loginConGoogle();
             return;
         }
-
-        const perfil = await getPerfilActual();
-
-        if(perfil && perfil.username){
-            menuUserDropdown.innerHTML = `
+        const perfil=await getPerfilActual();
+        if(perfil&&perfil.username){
+            menuUserDropdown.innerHTML=`
                 <div class="menu-user-title">Sesión iniciada</div>
                 <div class="menu-user-line">Has iniciado sesión como <strong>${escapeHtml(perfil.username)}</strong>.</div>
-                <div class="menu-user-actions">
-                    <button id="btnMenuLogout" class="btn-user-secondary" type="button">Cerrar sesión</button>
-                </div>`;
-            document.getElementById('btnMenuLogout').onclick = async () => {
-                await logout();
-                window.location.reload();
-            };
+                <div class="menu-user-actions"><button id="btnMenuLogout" class="btn-user-secondary" type="button">Cerrar sesión</button></div>`;
+            document.getElementById('btnMenuLogout').onclick=async()=>{await logout();window.location.reload();};
             return;
         }
-
-        menuUserDropdown.innerHTML = `
+        menuUserDropdown.innerHTML=`
             <div class="menu-user-title">Completa tu usuario</div>
-            <div class="menu-user-line">Elige tu nombre de usuario para poder votar y comentar.</div>
+            <div class="menu-user-line">Elige tu nombre de usuario para votar y comentar.</div>
             <div class="menu-user-actions">
                 <input id="inputUsernameMenu" type="text" placeholder="Elige tu nombre de usuario">
                 <button id="btnGuardarUsernameMenu" class="btn-user-primary" type="button">Guardar nombre</button>
                 <button id="btnMenuLogout" class="btn-user-secondary" type="button">Cerrar sesión</button>
             </div>`;
-
-        document.getElementById('btnGuardarUsernameMenu').onclick = async () => {
-            const username = document.getElementById('inputUsernameMenu').value.trim();
-            if(!username){ alert('Escribe un nombre de usuario'); return; }
-            try{
-                await crearPerfil(username);
-                window.location.reload();
-            }catch(e){
-                if(e.code === '23505') alert('Ese nombre de usuario ya está en uso');
-                else alert('No se pudo guardar el nombre de usuario');
-            }
+        document.getElementById('btnGuardarUsernameMenu').onclick=async()=>{
+            const username=document.getElementById('inputUsernameMenu').value.trim();
+            if(!username){alert('Escribe un nombre de usuario');return;}
+            try{await crearPerfil(username);window.location.reload();}
+            catch(e){alert(e&&e.code==='23505'?'Ese nombre de usuario ya está en uso':'No se pudo guardar el nombre de usuario');}
         };
-
-        document.getElementById('btnMenuLogout').onclick = async () => {
-            await logout();
-            window.location.reload();
-        };
+        document.getElementById('btnMenuLogout').onclick=async()=>{await logout();window.location.reload();};
     }catch(e){
-        console.error(e);
-        menuUserDropdown.innerHTML = `
-            <div class="menu-user-title">Usuario</div>
-            <div class="menu-user-line">No se pudo comprobar el estado de la sesión.</div>`;
+        menuUserDropdown.innerHTML='<div class="menu-user-title">Usuario</div><div class="menu-user-line">No se pudo comprobar el estado de la sesión.</div>';
     }
 }
 
-menuUserBtn.addEventListener('click', async (e)=>{
+menuUserBtn.addEventListener('click',async(e)=>{
     e.stopPropagation();
-    if(menuUserDropdown.classList.contains('activo')){
-        cerrarMenuUsuario();
-    }else{
-        await renderMenuUsuario();
-        abrirMenuUsuario();
-    }
+    if(menuUserDropdown.classList.contains('activo')) cerrarMenuUsuario();
+    else{await renderMenuUsuario();abrirMenuUsuario();}
 });
-
 document.addEventListener('click',(e)=>{
-    if(!menuUserDropdown.contains(e.target) && !menuUserBtn.contains(e.target)){
-        cerrarMenuUsuario();
-    }
+    if(!menuUserDropdown.contains(e.target)&&!menuUserBtn.contains(e.target)) cerrarMenuUsuario();
 });
-
-renderMenuUsuario();
-
 
 (async()=>{
     try{
