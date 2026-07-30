@@ -2691,137 +2691,117 @@ body{
 }
 
 
-/* =========================================================
-   AJUSTE ESPECÍFICO PARA ESCRITORIO
-   Mantiene intacta la versión móvil.
-   ========================================================= */
-@media (min-width: 1000px){
 
-    .wrap{
-        width:min(1320px,94%) !important;
+/* =========================================================
+   AJUSTE REAL PARA ESCRITORIO — NO MODIFICA MÓVIL
+   ========================================================= */
+@media (min-width:769px){
+    :root{
+        --cabecera-escritorio:clamp(178px,12.4vw,238px);
+    }
+
+    .cabecera{
+        height:var(--cabecera-escritorio) !important;
+        background-size:100% auto !important;
+        background-position:center top !important;
+        background-repeat:no-repeat !important;
+        background-color:#02050a !important;
+    }
+
+    .menu{
+        top:var(--cabecera-escritorio) !important;
+        height:62px !important;
     }
 
     .contenido{
-        padding:38px 0 78px !important;
+        margin-top:calc(var(--cabecera-escritorio) + 62px) !important;
+        min-height:calc(100vh - var(--cabecera-escritorio) - 62px) !important;
+        padding:30px 0 68px !important;
+    }
+
+    .contenido::before{
+        inset:calc(var(--cabecera-escritorio) + 62px) 0 0 !important;
+    }
+
+    .wrap{
+        width:min(1120px,88%) !important;
     }
 
     .bloque-portada > .cabecera-portada,
     .bloque-resultados{
-        border-radius:22px !important;
+        border-radius:20px !important;
     }
 
     .cabecera-portada,
     .cabecera-resultados{
-        padding:25px 30px 22px !important;
+        padding:23px 26px 21px !important;
     }
 
     .cabecera-portada h1,
     .cabecera-resultados h1{
-        font-size:34px !important;
+        font-size:32px !important;
     }
 
     .cabecera-portada p,
     .cabecera-resultados p{
-        font-size:15px !important;
-        line-height:1.45 !important;
-    }
-
-    #ultimasJugadasContainer{
-        gap:28px !important;
+        font-size:14px !important;
     }
 
     .jugada-principal{
-        border-radius:20px !important;
+        border-radius:18px !important;
     }
 
     .cabecera-jugada{
-        padding:21px 25px 20px !important;
+        padding:19px 22px 18px !important;
     }
 
     .cabecera-jugada h2{
-        font-size:29px !important;
-        line-height:1.12 !important;
-    }
-
-    .descripcion-cabecera-jugada{
-        max-width:1050px !important;
+        font-size:27px !important;
     }
 
     .contenido-jugada{
         display:grid !important;
-        grid-template-columns:minmax(0,1.75fr) minmax(320px,.75fr) !important;
-        grid-template-areas:
-            "media votacion"
-            "comentarios comentarios";
+        grid-template-columns:minmax(0,1.55fr) minmax(300px,.72fr) !important;
+        gap:16px !important;
+        padding:16px !important;
         align-items:start !important;
-        gap:18px !important;
-        padding:18px !important;
     }
 
     .bloque-media-jugada{
-        grid-area:media;
-        min-width:0;
+        grid-column:1 !important;
+        grid-row:1 !important;
+        min-width:0 !important;
     }
 
     .panel-votacion{
-        grid-area:votacion;
+        grid-column:2 !important;
+        grid-row:1 !important;
         width:100% !important;
-        margin:0 !important;
     }
 
     .seccion-comentarios{
-        grid-area:comentarios;
-        margin:0 !important;
+        grid-column:1 / -1 !important;
+        grid-row:2 !important;
     }
 
     .visor-media{
-        aspect-ratio:16 / 9 !important;
-        max-height:560px;
-    }
-
-    .visor-media img{
-        max-height:560px !important;
-    }
-
-    .botones-voto{
-        grid-template-columns:1fr !important;
-    }
-
-    .resumen-votos-bloques{
-        grid-template-columns:1fr !important;
+        max-height:520px !important;
     }
 
     .panel-votacion-top p{
         font-size:23px !important;
     }
 
-    .marcador-visual-wrap{
-        padding:24px 28px 26px !important;
-    }
-
     .marcador-imagen{
-        width:min(1080px,100%) !important;
-        border-radius:24px !important;
+        width:min(980px,100%) !important;
     }
 
-    .tarjeta-aviso-legal{
-        max-width:1320px;
+    .marcador-visual-wrap{
+        padding:24px 22px 20px !important;
     }
 
     .tarjeta-aviso-legal .aviso-legal{
         text-align:justify !important;
-        text-align-last:center;
-        line-height:1.55 !important;
-    }
-}
-
-@media (min-width: 1000px) and (max-width: 1180px){
-    .contenido-jugada{
-        grid-template-columns:minmax(0,1.5fr) minmax(300px,.8fr) !important;
-    }
-
-    .panel-votacion-top p{
-        font-size:21px !important;
     }
 }
 
