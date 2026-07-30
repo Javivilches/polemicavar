@@ -2169,6 +2169,133 @@ body{
     }
 }
 
+
+/* =========================================================
+   NUEVA ESTRUCTURA DE PORTADA — JULIO 2026
+   ========================================================= */
+.cabecera-portada{
+    text-align:center !important;
+}
+
+.cabecera-portada p{
+    margin-left:auto !important;
+    margin-right:auto !important;
+}
+
+#ultimasJugadasContainer .bloque-jugada{
+    margin:0 !important;
+}
+
+.jugada-principal{
+    overflow:hidden;
+}
+
+.cabecera-jugada{
+    padding:22px 24px 21px !important;
+}
+
+.cabecera-jugada .etiqueta-jornada{
+    margin:0 0 13px !important;
+}
+
+.cabecera-jugada h2{
+    margin-bottom:8px !important;
+}
+
+.datos-jugada{
+    margin:0 !important;
+}
+
+.descripcion-cabecera-jugada{
+    margin:12px 0 0 !important;
+    max-width:920px;
+    color:#f2f6fc !important;
+    font-size:15px !important;
+    line-height:1.5;
+}
+
+.contenido-jugada{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    padding:18px;
+    background:linear-gradient(180deg,rgba(13,32,61,.76),rgba(7,20,40,.86));
+}
+
+.bloque-media-jugada{
+    width:100%;
+}
+
+.imagen-jugada{
+    min-height:0 !important;
+}
+
+.visor-media{
+    min-height:0 !important;
+    aspect-ratio:16/9;
+}
+
+.panel-votacion{
+    width:100%;
+    align-self:stretch !important;
+    box-sizing:border-box;
+}
+
+.botones-voto{
+    display:grid !important;
+    grid-template-columns:1fr 1fr;
+}
+
+.resumen-votos-bloques{
+    grid-template-columns:1fr 1fr !important;
+}
+
+.seccion-comentarios{
+    margin-top:0 !important;
+    width:100%;
+    box-sizing:border-box;
+}
+
+.tarjeta-aviso-legal{
+    margin-top:0;
+    background:linear-gradient(180deg,rgba(5,24,52,.96),rgba(4,18,40,.97));
+    border:1px solid rgba(160,194,235,.24);
+    border-radius:18px;
+    box-shadow:0 16px 38px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.035);
+    overflow:hidden;
+}
+
+.tarjeta-aviso-legal .aviso-legal{
+    margin:0;
+    padding:18px 22px;
+    color:#e7edf7;
+}
+
+@media (max-width:768px){
+    .cabecera-jugada{
+        padding:17px 16px 16px !important;
+    }
+
+    .contenido-jugada{
+        padding:12px;
+        gap:13px;
+    }
+
+    .descripcion-cabecera-jugada{
+        font-size:14px !important;
+        line-height:1.45;
+    }
+
+    .botones-voto,
+    .resumen-votos-bloques{
+        grid-template-columns:1fr !important;
+    }
+
+    .tarjeta-aviso-legal{
+        border-radius:15px;
+    }
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2192,7 +2319,7 @@ body{
 
         <section class="bloque-portada">
             <div class="cabecera-portada">
-                <h1>Última jornada con polémica</h1>
+                <h1>Última jornada polémica</h1>
                 <p>En esta portada se muestran automáticamente todas las jugadas de la jornada más reciente registrada.</p>
             </div>
 
@@ -2285,6 +2412,9 @@ body{
                 </div>
             </div>
 
+        </section>
+
+        <section class="tarjeta-aviso-legal">
             <div class="aviso-legal">
                 POLÉMICA VAR es una plataforma independiente y neutral cuyo objetivo es analizar jugadas polémicas a través de la opinión de los usuarios.
                 Los contenidos audiovisuales mostrados pertenecen a sus respectivos autores y son compartidos desde plataformas públicas. Esta web no almacena ni modifica dichos contenidos.
@@ -2647,7 +2777,6 @@ async function initVote(article, jugada){
 }
 
 function createArticle(jugada){
-    const cat=capitalizarCategoria(jugada.categoria);
     const commentsInitial=createInitialComments(jugada);
     const article=document.createElement('section');
 
@@ -2658,7 +2787,70 @@ function createArticle(jugada){
     article.dataset.competicion=jugada.competicion;
     article.dataset.tipo=normalizarTexto(jugada.categoria);
 
-    article.innerHTML=`<div class="etiqueta-jornada">Jornada ${escapeHtml(jugada.jornada)}</div><section class="jugada-principal"><div class="cabecera-jugada"><h2>${escapeHtml(jugada.pregunta)}</h2><p>${escapeHtml(jugada.partido)} · Min ${escapeHtml(jugada.minuto)} · ${escapeHtml(jugada.competicion)}</p><div class="badge-categoria">${escapeHtml(cat)} · ${escapeHtml(jugada.subtipo)}</div><div class="meta-extra"><strong>Equipo afectado:</strong> ${escapeHtml(jugada.equipoAfectado||'')}<br><strong>Árbitro:</strong> ${escapeHtml(jugada.arbitro||'')}<br><strong>VAR:</strong> ${escapeHtml(jugada.var||'')}</div></div><div class="zona-superior"><div><div class="imagen-jugada"><div class="visor-media"></div><div class="zoom-controles"><button class="zoom-btn zoom-mas" type="button">+</button><button class="zoom-btn zoom-menos" type="button">−</button><button class="zoom-btn zoom-reset" type="button">100%</button><button class="zoom-btn zoom-expandir" type="button">Ampliar</button></div></div><div class="galeria-miniaturas" style="display:none;"></div><div class="descripcion-jugada"><strong>Tipo:</strong> ${escapeHtml(cat)}<br><strong>Decisión árbitro:</strong> ${escapeHtml(jugada.decision||'')}<br><br>${escapeHtml(jugada.descripcion||'')}</div></div><div class="panel-votacion"><div class="panel-votacion-top"><h3>Vota la jugada</h3><p>${escapeHtml((jugada.pregunta||'').trim()||'¿Te pareció correcta la decisión arbitral?')}</p></div><div class="botones-voto"><button class="btn-voto btn-voto-si" type="button">${escapeHtml(jugada.respuestaSi||'Sí')}</button><button class="btn-voto btn-voto-no" type="button">${escapeHtml(jugada.respuestaNo||'No')}</button></div><div class="mensaje-voto">Tu voto ya se guarda online.</div><div class="resultado-box"><div class="resultado-cabecera">Sin votos todavía</div><div class="resumen-votos-bloques"><div class="resumen-voto-card incorrecto"><div class="resumen-voto-porcentaje porcentaje-incorrecto">0%</div><div class="resumen-voto-texto">Cree que se arbitró mal</div><div class="resumen-voto-detalle detalle-incorrecto">0 de 0 votos</div><div class="barra-resultado"><div class="barra-no barra-incorrecto" style="width:0%"></div></div></div><div class="resumen-voto-card correcto"><div class="resumen-voto-porcentaje porcentaje-correcto">0%</div><div class="resumen-voto-texto">Cree que se arbitró bien</div><div class="resumen-voto-detalle detalle-correcto">0 de 0 votos</div><div class="barra-resultado"><div class="barra-si barra-correcto" style="width:0%"></div></div></div></div></div></div></div></section><section class="seccion-comentarios comentarios-box"><div class="cabecera-comentarios"><h3>Comentarios</h3><p>${commentsInitial.length} comentarios</p></div><div class="cuerpo-comentarios"><textarea placeholder="Escribe tu comentario..."></textarea><br><button class="boton-comentar" type="button">Publicar comentario</button><button class="btn-mostrar-inicial" type="button">Mostrar comentarios</button><div class="lista-comentarios"></div><div class="mostrar-mas-wrap"><button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button></div><div class="ocultar-wrap"><button class="btn-ocultar" type="button">Ocultar comentarios</button></div></div></section>`;
+    article.innerHTML=`<section class="jugada-principal">
+        <div class="cabecera-jugada">
+            <div class="etiqueta-jornada">Jornada ${escapeHtml(jugada.jornada)}</div>
+            <h2>${escapeHtml(jugada.pregunta)}</h2>
+            <p class="datos-jugada">${escapeHtml(jugada.partido)} · Min ${escapeHtml(jugada.minuto)} · ${escapeHtml(jugada.competicion)}</p>
+            <p class="descripcion-cabecera-jugada">${escapeHtml(jugada.descripcion||'')}</p>
+        </div>
+
+        <div class="contenido-jugada">
+            <div class="bloque-media-jugada">
+                <div class="imagen-jugada">
+                    <div class="visor-media"></div>
+                    <div class="zoom-controles">
+                        <button class="zoom-btn zoom-mas" type="button">+</button>
+                        <button class="zoom-btn zoom-menos" type="button">−</button>
+                        <button class="zoom-btn zoom-reset" type="button">100%</button>
+                        <button class="zoom-btn zoom-expandir" type="button">Ampliar</button>
+                    </div>
+                </div>
+                <div class="galeria-miniaturas" style="display:none;"></div>
+            </div>
+
+            <div class="panel-votacion">
+                <div class="panel-votacion-top">
+                    <h3>Vota la jugada</h3>
+                    <p>${escapeHtml((jugada.pregunta||'').trim()||'¿Te pareció correcta la decisión arbitral?')}</p>
+                </div>
+                <div class="botones-voto">
+                    <button class="btn-voto btn-voto-si" type="button">${escapeHtml(jugada.respuestaSi||'Sí')}</button>
+                    <button class="btn-voto btn-voto-no" type="button">${escapeHtml(jugada.respuestaNo||'No')}</button>
+                </div>
+                <div class="mensaje-voto">Tu voto ya se guarda online.</div>
+                <div class="resultado-box">
+                    <div class="resultado-cabecera">Sin votos todavía</div>
+                    <div class="resumen-votos-bloques">
+                        <div class="resumen-voto-card incorrecto">
+                            <div class="resumen-voto-porcentaje porcentaje-incorrecto">0%</div>
+                            <div class="resumen-voto-texto">Cree que se arbitró mal</div>
+                            <div class="resumen-voto-detalle detalle-incorrecto">0 de 0 votos</div>
+                            <div class="barra-resultado"><div class="barra-no barra-incorrecto" style="width:0%"></div></div>
+                        </div>
+                        <div class="resumen-voto-card correcto">
+                            <div class="resumen-voto-porcentaje porcentaje-correcto">0%</div>
+                            <div class="resumen-voto-texto">Cree que se arbitró bien</div>
+                            <div class="resumen-voto-detalle detalle-correcto">0 de 0 votos</div>
+                            <div class="barra-resultado"><div class="barra-si barra-correcto" style="width:0%"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <section class="seccion-comentarios comentarios-box">
+                <div class="cabecera-comentarios"><h3>Comentarios</h3><p>${commentsInitial.length} comentarios</p></div>
+                <div class="cuerpo-comentarios">
+                    <textarea placeholder="Escribe tu comentario..."></textarea><br>
+                    <button class="boton-comentar" type="button">Publicar comentario</button>
+                    <button class="btn-mostrar-inicial" type="button">Mostrar comentarios</button>
+                    <div class="lista-comentarios"></div>
+                    <div class="mostrar-mas-wrap"><button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button></div>
+                    <div class="ocultar-wrap"><button class="btn-ocultar" type="button">Ocultar comentarios</button></div>
+                </div>
+            </section>
+        </div>
+    </section>`;
 
     initMedia(article);
     initVote(article,jugada);
