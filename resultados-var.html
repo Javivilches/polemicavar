@@ -1673,8 +1673,54 @@ h1,h2,h3,h4,.cabecera-resultados h1,.tarjeta-top,.categoria-titulo,.equipo-nombr
 .menu a + a{border-left:1px solid rgba(255,255,255,.055) !important;}
 .menu > a:last-of-type{border-right:1px solid rgba(255,255,255,.055) !important;}
 .menu-icono{width:24px !important;height:24px !important;}
-.menu-user-wrap{right:10px !important;}
-.menu-user-btn{width:34px;height:34px;border:1px solid rgba(255,255,255,.10);background:rgba(10,18,34,.92);box-shadow:0 6px 16px rgba(0,0,0,.28);}
+.menu-user-wrap{
+    position:absolute !important;
+    right:10px !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+    z-index:5000 !important;
+    pointer-events:auto !important;
+}
+.menu-user-btn{
+    position:relative;
+    z-index:5001;
+    width:34px;
+    height:34px;
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:50%;
+    background:rgba(10,18,34,.92);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    box-shadow:0 6px 16px rgba(0,0,0,.28);
+    font-size:16px;
+}
+.menu-user-btn:hover{background:rgba(20,34,58,.95);}
+.menu-user-dropdown{
+    position:absolute;
+    right:0;
+    top:42px;
+    min-width:240px;
+    background:#fff;
+    border-radius:12px;
+    box-shadow:0 12px 28px rgba(0,0,0,.22);
+    padding:12px;
+    display:none;
+    color:#1e2b46;
+}
+.menu-user-dropdown.activo{display:block;}
+.menu-user-line{font-size:13px;line-height:1.4;margin-bottom:10px;color:#41516f;}
+.menu-user-title{font-size:14px;font-weight:bold;color:#18263f;margin-bottom:10px;}
+.menu-user-actions{display:flex;flex-direction:column;gap:8px;}
+.menu-user-actions button,.menu-user-actions input{width:100%;box-sizing:border-box;}
+.menu-user-actions input{height:38px;border:1px solid #d8dfeb;border-radius:8px;padding:0 10px;font-size:14px;}
+.menu-user-actions button{height:38px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;}
+.btn-user-primary{background:#1f4fb0;color:#fff;}
+.btn-user-primary:hover{background:#173f90;}
+.btn-user-secondary{background:#eef2f8;color:#243757;}
+.btn-user-secondary:hover{background:#dfe7f3;color:#243757;}
 .contenido{
     margin-top:210px !important;
     min-height:calc(100vh - 210px) !important;
@@ -1760,6 +1806,23 @@ h1,h2,h3,h4,.cabecera-resultados h1,.tarjeta-top,.categoria-titulo,.equipo-nombr
     .tarjeta-tablas-resultados .columnas-equipos{padding:0 10px 14px !important;}
     .tarjeta-tablas-resultados .seccion-comentarios{margin:0 10px 12px !important;}
 }
+
+/* CORRECCIÓN FINAL: usuario idéntico al index y totales centrados */
+.fila-total-bloque .total-label{
+    text-align:center !important;
+    padding-left:8px !important;
+    padding-right:8px !important;
+}
+
+@media(max-width:768px){
+    .menu-user-wrap{
+        position:absolute !important;
+        right:7px !important;
+        top:50% !important;
+        transform:translateY(-50%) !important;
+    }
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="decisionvar-data.js"></script>
