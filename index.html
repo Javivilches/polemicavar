@@ -2296,6 +2296,112 @@ body{
     }
 }
 
+
+/* =========================================================
+   AJUSTE FINAL 3 — MENÚ, VOTACIÓN Y COMENTARIOS
+   ========================================================= */
+.menu a{
+    flex-direction:column !important;
+    gap:5px !important;
+    font-size:13px !important;
+    line-height:1.08 !important;
+    padding:6px 8px !important;
+}
+
+.menu-icono{
+    width:25px;
+    height:25px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.8;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    opacity:.92;
+    flex:0 0 auto;
+}
+
+.panel-votacion-top{
+    padding:14px 16px 8px !important;
+}
+
+.panel-votacion-top h3{
+    font-size:16px !important;
+    margin:0 0 2px !important;
+    color:#52627a;
+    text-transform:uppercase;
+    letter-spacing:.35px;
+}
+
+.panel-votacion-top p{
+    margin:0 !important;
+    font-family:"Oswald",Arial,sans-serif !important;
+    font-size:28px !important;
+    font-weight:700 !important;
+    line-height:1.12 !important;
+    color:#16243a !important;
+}
+
+.cabecera-comentarios{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    gap:14px !important;
+    padding:12px 14px !important;
+}
+
+.cabecera-comentarios h3{
+    margin:0 0 2px !important;
+}
+
+.cabecera-comentarios .btn-mostrar-mas{
+    margin:0 !important;
+    min-height:36px !important;
+    padding:7px 12px !important;
+    white-space:nowrap;
+    align-items:center;
+    justify-content:center;
+}
+
+.cuerpo-comentarios{
+    padding:12px 14px 14px !important;
+}
+
+.cuerpo-comentarios textarea{
+    margin:0 0 8px !important;
+}
+
+.lista-comentarios{
+    margin-top:14px !important;
+}
+
+.comentario{
+    color:#26364f !important;
+    background:#eef2f8 !important;
+    border-left:4px solid #1f4fb0 !important;
+}
+
+@media (max-width:768px){
+    .menu a{
+        font-size:9.8px !important;
+        gap:3px !important;
+        padding:4px 2px !important;
+    }
+    .menu-icono{
+        width:20px;
+        height:20px;
+    }
+    .panel-votacion-top p{
+        font-size:24px !important;
+    }
+    .cabecera-comentarios{
+        align-items:flex-start !important;
+    }
+    .cabecera-comentarios .btn-mostrar-mas{
+        font-size:11px !important;
+        padding:7px 9px !important;
+    }
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2307,11 +2413,11 @@ body{
 <div class="cabecera"></div>
 
 <nav class="menu">
-    <a href="index.html"><span>INICIO</span></a>
-    <a href="jugadas-polemicas.html"><span>JUGADAS<br>POLÉMICAS</span></a>
-    <a href="resultados-var.html"><span>RESULTADOS</span></a>
-    <a href="quien-ha-sido-mas-favorecido.html"><span>EQUIPO MÁS<br>FAVORECIDO</span></a>
-    <a href="arbitros-mas-influyentes.html"><span>ÁRBITROS MÁS<br>INFLUYENTES</span></a>
+    <a href="index.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5h-5v-6h-5v6h-5A1.5 1.5 0 0 1 3 19.5z"/></svg><span>INICIO</span></a>
+    <a href="jugadas-polemicas.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg><span>JUGADAS<br>POLÉMICAS</span></a>
+    <a href="resultados-var.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v3a4 4 0 0 1-8 0zM6 5H3v2a4 4 0 0 0 4 4M18 5h3v2a4 4 0 0 1-4 4M12 11v5M8 21h8M9 16h6v5H9z"/></svg><span>RESULTADOS</span></a>
+    <a href="quien-ha-sido-mas-favorecido.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M10 20V8M15 20V4M20 20V10"/></svg><span>EQUIPO MÁS<br>FAVORECIDO</span></a>
+    <a href="arbitros-mas-influyentes.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 7-7h7l2 2v7l-7 7-9-9z"/><circle cx="16.5" cy="7.5" r="1"/></svg><span>ÁRBITROS MÁS<br>INFLUYENTES</span></a>
 </nav>
 
 <div class="contenido">
@@ -2651,22 +2757,31 @@ function createInitialComments(j){
         }));
 }
 
+function ordenarComentarios(comments){
+    return [...comments].sort((a,b)=>{
+        const fa=a.created_at ? new Date(a.created_at).getTime() : 0;
+        const fb=b.created_at ? new Date(b.created_at).getTime() : 0;
+        return fb-fa;
+    });
+}
+
 function renderComments(article, comments, visibles){
     const list=article.querySelector('.lista-comentarios');
     const counter=article.querySelector('.cabecera-comentarios p');
-    list.innerHTML='';
-    counter.textContent=`${comments.length} comentarios`;
+    const btnMas=article.querySelector('.btn-mostrar-mas');
+    const ordenados=ordenarComentarios(comments);
 
-    comments.slice(0, visibles).forEach(c=>{
+    list.innerHTML='';
+    counter.textContent=`${ordenados.length} comentarios`;
+
+    ordenados.slice(0, visibles).forEach(c=>{
         const div=document.createElement('div');
         div.className='comentario visible';
         div.innerHTML=`<div style="font-size:12px;color:#667791;font-weight:700;margin-bottom:4px;">${escapeHtml(c.autor||'Usuario')} ${c.created_at ? '· '+escapeHtml(formatDate(c.created_at)) : ''}</div>${escapeHtml(c.texto||'')}`;
         list.appendChild(div);
     });
 
-    article.querySelector('.btn-mostrar-inicial').style.display = comments.length>0 && visibles===0 ? 'inline-block' : 'none';
-    article.querySelector('.btn-ocultar').style.display = visibles>0 ? 'inline-block' : 'none';
-    article.querySelector('.btn-mostrar-mas').style.display = visibles>0 && visibles<comments.length ? 'inline-block' : 'none';
+    btnMas.style.display = visibles < ordenados.length ? 'inline-flex' : 'none';
 }
 
 async function initComments(article, jugada){
@@ -2679,13 +2794,11 @@ async function initComments(article, jugada){
         online=[];
     }
 
-    let visibles=0;
+    let visibles=3;
     renderComments(article, [...online, ...initial], visibles);
 
     const btnPublicar = article.querySelector('.boton-comentar');
-    const btnInicial = article.querySelector('.btn-mostrar-inicial');
     const btnMas = article.querySelector('.btn-mostrar-mas');
-    const btnOcultar = article.querySelector('.btn-ocultar');
 
     if(btnPublicar){
         btnPublicar.onclick=async()=>{
@@ -2697,7 +2810,7 @@ async function initComments(article, jugada){
                 await addComment('jugada', txt, jugada.id);
                 ta.value='';
                 online=await getComments('jugada', jugada.id);
-                visibles=Math.max(visibles,5);
+                visibles=Math.max(visibles,3);
                 renderComments(article, [...online, ...initial], visibles);
             }catch(e){
                 alert('No se pudo guardar el comentario');
@@ -2705,23 +2818,9 @@ async function initComments(article, jugada){
         };
     }
 
-    if(btnInicial){
-        btnInicial.onclick=()=>{
-            visibles=5;
-            renderComments(article, [...online, ...initial], visibles);
-        };
-    }
-
     if(btnMas){
         btnMas.onclick=()=>{
-            visibles+=5;
-            renderComments(article, [...online, ...initial], visibles);
-        };
-    }
-
-    if(btnOcultar){
-        btnOcultar.onclick=()=>{
-            visibles=0;
+            visibles+=3;
             renderComments(article, [...online, ...initial], visibles);
         };
     }
@@ -2839,14 +2938,14 @@ function createArticle(jugada){
             </div>
 
             <section class="seccion-comentarios comentarios-box">
-                <div class="cabecera-comentarios"><h3>Comentarios</h3><p>${commentsInitial.length} comentarios</p></div>
+                <div class="cabecera-comentarios">
+                    <div><h3>Comentarios</h3><p>${commentsInitial.length} comentarios</p></div>
+                    <button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button>
+                </div>
                 <div class="cuerpo-comentarios">
-                    <textarea placeholder="Escribe tu comentario..."></textarea><br>
+                    <textarea placeholder="Escribe tu comentario..."></textarea>
                     <button class="boton-comentar" type="button">Publicar comentario</button>
-                    <button class="btn-mostrar-inicial" type="button">Mostrar comentarios</button>
                     <div class="lista-comentarios"></div>
-                    <div class="mostrar-mas-wrap"><button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button></div>
-                    <div class="ocultar-wrap"><button class="btn-ocultar" type="button">Ocultar comentarios</button></div>
                 </div>
             </section>
         </div>
