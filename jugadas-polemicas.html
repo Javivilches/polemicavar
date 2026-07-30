@@ -1672,6 +1672,176 @@ h1,h2,h3,h4,
     .marcador-imagen .dato-total{font-size:clamp(22px,5.6vw,32px);top:84.9%;}
 }
 
+
+
+/* =========================================================
+   AJUSTE FINAL — MISMO DISEÑO DE JUGADAS QUE EL INDEX
+   ========================================================= */
+.boton-filtros-wrap{
+    margin:0 0 18px;
+    display:flex;
+    justify-content:flex-start;
+}
+.btn-toggle-filtros{
+    min-height:44px;
+    padding:10px 18px;
+    border:1px solid rgba(255,255,255,.16);
+    border-radius:11px;
+    background:linear-gradient(135deg,#174d9c,#2567c7);
+    color:#fff;
+    font-family:"Oswald",Arial,sans-serif;
+    font-size:15px;
+    font-weight:700;
+    letter-spacing:.25px;
+    cursor:pointer;
+    box-shadow:0 9px 22px rgba(0,0,0,.22);
+}
+.btn-toggle-filtros:hover{filter:brightness(1.08);}
+.filtros-jugadas{
+    display:none !important;
+    margin-bottom:24px !important;
+}
+.filtros-jugadas.desplegados{
+    display:grid !important;
+}
+
+.bloque-jugada{margin-bottom:30px !important;}
+.jugada-principal{
+    overflow:hidden;
+    border-radius:22px !important;
+}
+.cabecera-jugada{
+    position:relative;
+    padding:22px 24px 20px !important;
+}
+.cabecera-jugada .etiqueta-jornada{
+    display:inline-flex;
+    margin:0 0 13px !important;
+}
+.cabecera-jugada h2{
+    margin:0 0 7px !important;
+    font-size:31px !important;
+}
+.datos-jugada{
+    margin:0 !important;
+    color:#edf4ff !important;
+    font-size:14px !important;
+}
+.descripcion-cabecera-jugada{
+    margin:13px 0 0 !important;
+    color:#f1f5fb !important;
+    font-size:15px !important;
+    line-height:1.5 !important;
+    max-width:900px;
+}
+.contenido-jugada{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    padding:18px;
+    background:linear-gradient(180deg,rgba(6,25,54,.90),rgba(4,17,37,.98));
+}
+.bloque-media-jugada{width:100%;}
+.imagen-jugada{min-height:0 !important;}
+.visor-media{min-height:0 !important;aspect-ratio:16/9;}
+.panel-votacion{
+    width:100%;
+    box-sizing:border-box;
+    align-self:stretch !important;
+}
+.panel-votacion-top{padding:14px 16px 8px !important;}
+.panel-votacion-top h3{
+    margin:0 0 2px !important;
+    color:#52627a;
+    font-size:16px !important;
+    text-transform:uppercase;
+}
+.panel-votacion-top p{
+    margin:0 !important;
+    color:#16243a !important;
+    font-family:"Oswald",Arial,sans-serif !important;
+    font-size:28px !important;
+    line-height:1.12 !important;
+    font-weight:700 !important;
+}
+.botones-voto{
+    display:grid !important;
+    grid-template-columns:1fr 1fr;
+    gap:10px !important;
+}
+.resumen-votos-bloques{
+    grid-template-columns:1fr 1fr !important;
+}
+.seccion-comentarios{
+    margin-top:0 !important;
+    width:100%;
+    box-sizing:border-box;
+    background:#f7f9fc !important;
+}
+.cabecera-comentarios{
+    display:flex !important;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:12px 14px !important;
+    background:#f7f9fc !important;
+    color:#17243b !important;
+}
+.cabecera-comentarios h3{color:#17243b !important;margin:0 0 2px !important;}
+.cabecera-comentarios p{color:#667791 !important;}
+.cabecera-comentarios .btn-mostrar-mas{
+    margin:0 !important;
+    white-space:nowrap;
+    min-height:36px;
+}
+.cuerpo-comentarios{padding:12px 14px 14px !important;}
+.comentario{
+    color:#26364f !important;
+    background:#eef2f8 !important;
+    border-left:4px solid #1f4fb0 !important;
+}
+.btn-mostrar-inicial,.btn-ocultar,.mostrar-mas-wrap,.ocultar-wrap{display:none !important;}
+
+/* Coordenadas exactas del marcador usado en el index */
+.marcador-imagen .dato-stat{
+    font-size:clamp(20px,3vw,42px) !important;
+    width:9% !important;
+    height:9% !important;
+    font-weight:600 !important;
+}
+.barca-penaltis{left:9.9% !important;top:43.7% !important;}
+.barca-rojas{left:23.4% !important;top:43.7% !important;}
+.barca-goles{left:16.8% !important;top:66.3% !important;}
+.madrid-penaltis{left:75.4% !important;top:43.7% !important;}
+.madrid-rojas{left:88.6% !important;top:43.7% !important;}
+.madrid-goles{left:82.3% !important;top:66.3% !important;}
+.score-dinamico{
+    left:49.7% !important;
+    top:53.5% !important;
+    width:31% !important;
+    height:25% !important;
+}
+.score-dato{font-size:clamp(58px,7.6vw,112px) !important;}
+.marcador-imagen .dato-total{font-size:clamp(38px,5vw,72px) !important;}
+.total-barca{left:16.8% !important;top:90% !important;}
+.total-madrid{left:82.3% !important;top:90% !important;}
+
+@media(max-width:768px){
+    .boton-filtros-wrap{margin-bottom:14px;}
+    .btn-toggle-filtros{width:100%;font-size:14px;}
+    .cabecera-jugada{padding:18px 17px 16px !important;}
+    .cabecera-jugada h2{font-size:25px !important;}
+    .descripcion-cabecera-jugada{font-size:14px !important;}
+    .contenido-jugada{padding:12px;gap:13px;}
+    .panel-votacion-top p{font-size:24px !important;}
+    .botones-voto,.resumen-votos-bloques{grid-template-columns:1fr !important;}
+    .cabecera-comentarios{align-items:flex-start;}
+    .cabecera-comentarios .btn-mostrar-mas{font-size:11px;padding:7px 9px;}
+    .marcador-imagen .dato-stat{font-size:clamp(12px,3.8vw,19px) !important;}
+    .score-dato{font-size:clamp(34px,9vw,56px) !important;}
+    .marcador-imagen .dato-total{font-size:clamp(25px,6.4vw,38px) !important;}
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1703,7 +1873,11 @@ h1,h2,h3,h4,
         <p>Ordenadas de la más reciente a la más antigua.</p>
     </section>
 
-    <section class="filtros-jugadas">
+    <div class="boton-filtros-wrap">
+        <button id="btnToggleFiltros" class="btn-toggle-filtros" type="button" aria-expanded="false">Filtrar jugadas</button>
+    </div>
+
+    <section class="filtros-jugadas" id="panelFiltros">
         <div class="filtro-grupo">
             <label for="filtroJornada">Jornada</label>
             <select id="filtroJornada">
@@ -1839,6 +2013,16 @@ const sinResultados = document.getElementById("sinResultados");
 const contenedorJugadas = document.getElementById("contenedorJugadas");
 const menuUserBtn = document.getElementById("menuUserBtn");
 const menuUserDropdown = document.getElementById("menuUserDropdown");
+const btnToggleFiltros = document.getElementById("btnToggleFiltros");
+const panelFiltros = document.getElementById("panelFiltros");
+
+if(btnToggleFiltros && panelFiltros){
+    btnToggleFiltros.addEventListener('click',()=>{
+        const abierto=panelFiltros.classList.toggle('desplegados');
+        btnToggleFiltros.setAttribute('aria-expanded',abierto?'true':'false');
+        btnToggleFiltros.textContent=abierto?'Ocultar filtros':'Filtrar jugadas';
+    });
+}
 
 function normalizarTexto(txt){ return (txt||"").toString().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); }
 function capitalizarCategoria(v){ const n=normalizarTexto(v); if(n==='penalti') return 'Penalti'; if(n==='gol') return 'Gol'; if(n==='roja') return 'Roja'; return v||''; }
@@ -2201,9 +2385,12 @@ function renderComments(article, comments, visibles){
         list.appendChild(div);
     });
 
-    article.querySelector('.btn-mostrar-inicial').style.display = comments.length>0 && visibles===0 ? 'inline-block' : 'none';
-    article.querySelector('.btn-ocultar').style.display = visibles>0 ? 'inline-block' : 'none';
-    article.querySelector('.btn-mostrar-mas').style.display = visibles>0 && visibles<comments.length ? 'inline-block' : 'none';
+    const btnInicial=article.querySelector('.btn-mostrar-inicial');
+    const btnOcultar=article.querySelector('.btn-ocultar');
+    const btnMas=article.querySelector('.btn-mostrar-mas');
+    if(btnInicial) btnInicial.style.display='none';
+    if(btnOcultar) btnOcultar.style.display='none';
+    if(btnMas) btnMas.style.display = visibles<comments.length ? 'inline-flex' : 'none';
 }
 
 function updateCommentUI(article, logueado, conPerfil){
@@ -2234,7 +2421,7 @@ async function initComments(article, jugada){
         online=await getComments('jugada', jugada.id);
     }catch(e){}
 
-    let visibles=0;
+    let visibles=3;
     renderComments(article, [...online, ...initial], visibles);
 
     let logueado = false;
@@ -2544,7 +2731,6 @@ async function initVote(article, jugada){
 }
 
 function createArticle(jugada){
-    const cat=capitalizarCategoria(jugada.categoria);
     const commentsInitial=createInitialComments(jugada);
     const article=document.createElement('section');
 
@@ -2555,7 +2741,83 @@ function createArticle(jugada){
     article.dataset.competicion=jugada.competicion;
     article.dataset.tipo=normalizarTexto(jugada.categoria);
 
-    article.innerHTML=`<div class="etiqueta-jornada">Jornada ${escapeHtml(jugada.jornada)}</div><section class="jugada-principal"><div class="cabecera-jugada"><h2>${escapeHtml(jugada.pregunta)}</h2><p>${escapeHtml(jugada.partido)} · Min ${escapeHtml(jugada.minuto)} · ${escapeHtml(jugada.competicion)}</p><div class="badge-categoria">${escapeHtml(cat)} · ${escapeHtml(jugada.subtipo)}</div><div class="meta-extra"><strong>Equipo afectado:</strong> ${escapeHtml(jugada.equipoAfectado||'')}<br><strong>Árbitro:</strong> ${escapeHtml(jugada.arbitro||'')}<br><strong>VAR:</strong> ${escapeHtml(jugada.var||'')}</div></div><div class="zona-superior"><div><div class="imagen-jugada"><div class="visor-media"></div><div class="zoom-controles"><button class="zoom-btn zoom-mas" type="button">+</button><button class="zoom-btn zoom-menos" type="button">−</button><button class="zoom-btn zoom-reset" type="button">100%</button><button class="zoom-btn zoom-expandir" type="button">Ampliar</button></div></div><div class="galeria-miniaturas" style="display:none;"></div><div class="descripcion-jugada"><strong>Tipo:</strong> ${escapeHtml(cat)}<br><strong>Decisión árbitro:</strong> ${escapeHtml(jugada.decision||'')}<br><br>${escapeHtml(jugada.descripcion||'')}</div></div><div class="panel-votacion"><div class="panel-votacion-top"><h3>Vota la jugada</h3><p>${escapeHtml((jugada.pregunta||'').trim()||'¿Te pareció correcta la decisión arbitral?')}</p></div><div class="botones-voto"><button class="btn-voto btn-voto-si" type="button">${escapeHtml(jugada.respuestaSi||'Sí')}</button><button class="btn-voto btn-voto-no" type="button">${escapeHtml(jugada.respuestaNo||'No')}</button></div><div class="mensaje-voto">Debes iniciar sesión para votar.</div><div class="resultado-box"><div class="resultado-cabecera">Sin votos todavía</div><div class="resumen-votos-bloques"><div class="resumen-voto-card incorrecto"><div class="resumen-voto-porcentaje porcentaje-incorrecto">0%</div><div class="resumen-voto-texto">Cree que se arbitró mal</div><div class="resumen-voto-detalle detalle-incorrecto">0 de 0 votos</div><div class="barra-resultado"><div class="barra-no barra-incorrecto" style="width:0%"></div></div></div><div class="resumen-voto-card correcto"><div class="resumen-voto-porcentaje porcentaje-correcto">0%</div><div class="resumen-voto-texto">Cree que se arbitró bien</div><div class="resumen-voto-detalle detalle-correcto">0 de 0 votos</div><div class="barra-resultado"><div class="barra-si barra-correcto" style="width:0%"></div></div></div></div></div></div></div></section><section class="seccion-comentarios comentarios-box"><div class="cabecera-comentarios"><h3>Comentarios</h3><p>${commentsInitial.length} comentarios</p></div><div class="cuerpo-comentarios"><textarea placeholder="Escribe tu comentario..."></textarea><br><div class="audio-comment-box" style="margin-top:10px;padding:10px;border:1px solid #d8e0ec;border-radius:10px;background:#f8faff;"><div style="font-size:12px;font-weight:bold;color:#42536f;margin-bottom:8px;">Comentario de audio</div><div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn-audio-grabar" type="button" style="background:#c62828;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-weight:bold;cursor:pointer;">Grabar</button><button class="btn-audio-parar" type="button" style="background:#555;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-weight:bold;cursor:pointer;" disabled>Parar</button><button class="btn-audio-enviar" type="button" style="background:#1f4fb0;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-weight:bold;cursor:pointer;" disabled>Enviar audio</button></div><div class="audio-comment-status" style="margin-top:8px;font-size:12px;color:#667791;">Pulsa “Grabar” para comenzar.</div><audio class="audio-comment-preview" controls style="display:none;width:100%;margin-top:8px;"></audio></div><button class="boton-comentar" type="button">Publicar comentario</button><button class="btn-mostrar-inicial" type="button">Mostrar comentarios</button><div class="lista-comentarios"></div><div class="mostrar-mas-wrap"><button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button></div><div class="ocultar-wrap"><button class="btn-ocultar" type="button">Ocultar comentarios</button></div></div></section>`;
+    article.innerHTML=`<section class="jugada-principal">
+        <div class="cabecera-jugada">
+            <div class="etiqueta-jornada">Jornada ${escapeHtml(jugada.jornada)}</div>
+            <h2>${escapeHtml(jugada.pregunta)}</h2>
+            <p class="datos-jugada">${escapeHtml(jugada.partido)} · Min ${escapeHtml(jugada.minuto)} · ${escapeHtml(jugada.competicion)}</p>
+            <p class="descripcion-cabecera-jugada">${escapeHtml(jugada.descripcion||'')}</p>
+        </div>
+
+        <div class="contenido-jugada">
+            <div class="bloque-media-jugada">
+                <div class="imagen-jugada">
+                    <div class="visor-media"></div>
+                    <div class="zoom-controles">
+                        <button class="zoom-btn zoom-mas" type="button">+</button>
+                        <button class="zoom-btn zoom-menos" type="button">−</button>
+                        <button class="zoom-btn zoom-reset" type="button">100%</button>
+                        <button class="zoom-btn zoom-expandir" type="button">Ampliar</button>
+                    </div>
+                </div>
+                <div class="galeria-miniaturas" style="display:none;"></div>
+            </div>
+
+            <div class="panel-votacion">
+                <div class="panel-votacion-top">
+                    <h3>Vota la jugada</h3>
+                    <p>${escapeHtml((jugada.pregunta||'').trim()||'¿Te pareció correcta la decisión arbitral?')}</p>
+                </div>
+                <div class="botones-voto">
+                    <button class="btn-voto btn-voto-si" type="button">${escapeHtml(jugada.respuestaSi||'Sí')}</button>
+                    <button class="btn-voto btn-voto-no" type="button">${escapeHtml(jugada.respuestaNo||'No')}</button>
+                </div>
+                <div class="mensaje-voto">Debes iniciar sesión para votar.</div>
+                <div class="resultado-box">
+                    <div class="resultado-cabecera">Sin votos todavía</div>
+                    <div class="resumen-votos-bloques">
+                        <div class="resumen-voto-card incorrecto">
+                            <div class="resumen-voto-porcentaje porcentaje-incorrecto">0%</div>
+                            <div class="resumen-voto-texto">Cree que se arbitró mal</div>
+                            <div class="resumen-voto-detalle detalle-incorrecto">0 de 0 votos</div>
+                            <div class="barra-resultado"><div class="barra-no barra-incorrecto" style="width:0%"></div></div>
+                        </div>
+                        <div class="resumen-voto-card correcto">
+                            <div class="resumen-voto-porcentaje porcentaje-correcto">0%</div>
+                            <div class="resumen-voto-texto">Cree que se arbitró bien</div>
+                            <div class="resumen-voto-detalle detalle-correcto">0 de 0 votos</div>
+                            <div class="barra-resultado"><div class="barra-si barra-correcto" style="width:0%"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <section class="seccion-comentarios comentarios-box">
+                <div class="cabecera-comentarios">
+                    <div><h3>Comentarios</h3><p>${commentsInitial.length} comentarios</p></div>
+                    <button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button>
+                </div>
+                <div class="cuerpo-comentarios">
+                    <textarea placeholder="Escribe tu comentario..."></textarea>
+                    <div class="audio-comment-box" style="margin-top:10px;padding:10px;border:1px solid #d8e0ec;border-radius:10px;background:#f8faff;">
+                        <div style="font-size:12px;font-weight:bold;color:#42536f;margin-bottom:8px;">Comentario de audio</div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <button class="btn-audio-grabar" type="button" style="background:#c62828;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-weight:bold;cursor:pointer;">Grabar</button>
+                            <button class="btn-audio-parar" type="button" style="background:#555;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-weight:bold;cursor:pointer;" disabled>Parar</button>
+                            <button class="btn-audio-enviar" type="button" style="background:#1f4fb0;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-weight:bold;cursor:pointer;" disabled>Enviar audio</button>
+                        </div>
+                        <div class="audio-comment-status" style="margin-top:8px;font-size:12px;color:#667791;">Pulsa “Grabar” para comenzar.</div>
+                        <audio class="audio-comment-preview" controls style="display:none;width:100%;margin-top:8px;"></audio>
+                    </div>
+                    <button class="boton-comentar" type="button">Publicar comentario</button>
+                    <button class="btn-mostrar-inicial" type="button" style="display:none;">Mostrar comentarios</button>
+                    <div class="lista-comentarios"></div>
+                    <div class="mostrar-mas-wrap" style="display:none;"></div>
+                    <div class="ocultar-wrap" style="display:none;"><button class="btn-ocultar" type="button">Ocultar comentarios</button></div>
+                </div>
+            </section>
+        </div>
+    </section>`;
 
     initMedia(article);
     initVote(article,jugada);
