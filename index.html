@@ -2643,6 +2643,50 @@ body{
     .menu-user-dropdown{right:-4px;min-width:220px;}
 }
 
+
+/* =========================================================
+   AJUSTE RESPONSIVE DE CABECERA
+   Evita que el escudo y el logotipo queden cortados en móvil.
+   ========================================================= */
+@media (max-width:768px){
+    :root{
+        --cabecera-movil:clamp(118px,25vw,136px);
+    }
+
+    .cabecera{
+        height:var(--cabecera-movil) !important;
+        background-size:100% auto !important;
+        background-position:center 38% !important;
+        background-color:#000 !important;
+    }
+
+    .menu{
+        top:var(--cabecera-movil) !important;
+    }
+
+    .contenido{
+        margin-top:calc(var(--cabecera-movil) + 64px) !important;
+        min-height:calc(100vh - var(--cabecera-movil) - 64px) !important;
+    }
+
+    .contenido::before{
+        inset:calc(var(--cabecera-movil) + 64px) 0 0 !important;
+    }
+}
+
+
+/* =========================================================
+   CENTRADO DEL BLOQUE "MARCADOR GLOBAL"
+   ========================================================= */
+.cabecera-resultados{
+    text-align:center !important;
+}
+
+.cabecera-resultados p{
+    margin-left:auto !important;
+    margin-right:auto !important;
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
