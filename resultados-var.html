@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Resultados VAR</title>
 <link rel="icon" href="Imagenes/favicon.png" type="image/png">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Barlow+Condensed:wght@600;700;800&family=Oswald:wght@400;500;600;700&family=Roboto+Condensed:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 body{
@@ -1445,6 +1445,51 @@ thead .pregunta-arbitro{
 
 }
 
+
+/* =========================================================
+   ESTILO PREMIUM UNIFICADO — RESULTADOS VAR
+   ========================================================= */
+:root{
+    --pv-text:#f7f9fc;
+    --pv-line:rgba(160,194,235,.22);
+}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+body{margin:0!important;zoom:1!important;overflow-x:hidden;background:#081427!important;color:var(--pv-text);font-family:"Roboto Condensed",Arial,Helvetica,sans-serif!important;}
+h1,h2,h3,h4,.cabecera-resultados h1,.tarjeta-top,.categoria-titulo,.equipo-nombre,.marcador-titulo,.score,.score-sep,.mini-dato .et,.mini-dato .vl,.total-global .et,.total-global .vl{font-family:"Oswald",Arial,sans-serif!important;}
+
+.cabecera{height:142px!important;background-image:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.22)),url("cabecera-premium.png")!important;background-size:cover!important;background-position:center 48%!important;border-bottom:1px solid rgba(255,255,255,.08);box-shadow:0 12px 34px rgba(0,0,0,.42);}
+.menu{top:142px!important;height:62px!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:0!important;align-items:stretch!important;background:rgba(7,11,18,.975)!important;border-bottom:1px solid rgba(255,255,255,.08);box-shadow:0 10px 26px rgba(0,0,0,.28);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
+.menu::before{content:""!important;position:absolute!important;inset:0 auto 0 0!important;width:30%!important;height:auto!important;background:linear-gradient(90deg,rgba(202,10,54,.13),transparent)!important;pointer-events:none;}
+.menu::after{content:""!important;position:absolute!important;inset:0 0 0 auto!important;width:30%!important;height:auto!important;transform:none!important;background:linear-gradient(270deg,rgba(255,255,255,.09),transparent)!important;pointer-events:none;}
+.menu a{position:relative;z-index:2;min-width:0;padding:0 14px!important;border-radius:0!important;display:flex!important;align-items:center;justify-content:center;text-align:center;color:#dbe3ef!important;font-size:12px!important;line-height:1.05;font-weight:700;letter-spacing:.25px;transition:background .2s ease,color .2s ease;}
+.menu a+a{border-left:1px solid rgba(255,255,255,.055);}.menu a:hover{background:rgba(255,255,255,.045)!important;color:#fff!important;}.menu a:nth-child(3){color:#fff!important;}.menu a:nth-child(3)::after{content:"";position:absolute;left:22%;right:22%;bottom:0;height:3px;border-radius:99px 99px 0 0;background:linear-gradient(90deg,#d3123f,#f1cd79);box-shadow:0 0 18px rgba(211,18,63,.38);}
+
+.contenido{position:relative!important;isolation:isolate!important;overflow:hidden!important;margin-top:204px!important;min-height:calc(100vh - 204px)!important;padding:42px 0 90px!important;background:radial-gradient(ellipse 30% 140% at -6% 50%,rgba(138,10,58,.92) 0%,rgba(138,10,58,.78) 22%,rgba(138,10,58,.52) 42%,rgba(138,10,58,.16) 64%,rgba(138,10,58,0) 78%),linear-gradient(90deg,#5e0d2f 0%,#6f1138 8%,#53183b 14%,#243a73 26%,#173b7b 37%,#4d5f7a 50%,#98a3b1 67%,#d6dce4 84%,#f7f9fc 100%)!important;}
+.contenido::before{content:"";position:absolute;inset:0;z-index:-2;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.02),transparent 32%,rgba(0,0,0,.07))!important;}
+.contenido::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.10),rgba(0,0,0,.06) 26%,rgba(0,0,0,.04) 50%,rgba(255,255,255,.02) 82%,transparent),radial-gradient(ellipse 58% 90% at 102% 50%,rgba(255,255,255,.18),rgba(255,255,255,.07) 28%,transparent 68%)!important;}
+.wrap{width:min(1240px,92%)!important;position:relative;z-index:1;}
+
+.bloque-resultados{background:linear-gradient(180deg,rgba(5,24,52,.98),rgba(4,18,40,.99))!important;border:1px solid var(--pv-line)!important;border-radius:24px!important;box-shadow:0 22px 48px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.035)!important;}
+.cabecera-resultados{padding:30px 32px 26px!important;background:radial-gradient(circle at 48% 38%,rgba(28,91,173,.34),rgba(20,65,128,.18) 34%,transparent 66%),linear-gradient(115deg,#061a3d 0%,#082758 43%,#0a3472 68%,#082550 100%)!important;border-bottom:1px solid rgba(255,255,255,.16)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),inset 0 -1px 0 rgba(0,0,0,.32)!important;}
+.cabecera-resultados h1{font-size:38px!important;line-height:1.05;margin-bottom:9px!important;font-weight:700;letter-spacing:-.7px;}.cabecera-resultados p{font-family:"Roboto Condensed",Arial,sans-serif!important;color:#f1f4fa!important;font-size:15px!important;line-height:1.55;}
+.marcador-global{background:linear-gradient(90deg,rgba(7,22,58,.96),rgba(19,28,43,.96) 48%,rgba(223,228,235,.93))!important;border:1px solid rgba(255,255,255,.10)!important;box-shadow:0 20px 44px rgba(0,0,0,.34),inset 2px 0 0 rgba(29,95,209,.75),inset -2px 0 0 rgba(255,255,255,.78)!important;}.marcador-global::before{opacity:.34!important;filter:saturate(.78) contrast(1.05);}
+
+.tarjeta-equipo{border-radius:22px!important;box-shadow:0 20px 44px rgba(0,0,0,.30)!important;}
+.tabla-barca{background:linear-gradient(180deg,rgba(8,31,66,.98),rgba(4,18,40,.99))!important;border:1px solid rgba(160,194,235,.22)!important;}
+.tabla-barca .tarjeta-top{background:radial-gradient(circle at 50% 35%,rgba(25,88,170,.30),transparent 65%),linear-gradient(115deg,#061a3d,#082758 45%,#0a3472 72%,#082550)!important;border-bottom:1px solid rgba(255,255,255,.15);}
+.tabla-madrid{background:linear-gradient(180deg,rgba(242,245,249,.98),rgba(211,218,227,.98))!important;border:1px solid rgba(255,255,255,.55)!important;}
+.tabla-madrid .tarjeta-top{background:linear-gradient(115deg,#f8fafc,#e7ebf0 55%,#cfd6df)!important;color:#17324d!important;border-bottom:1px solid rgba(0,0,0,.10);}
+.tarjeta-top{font-size:30px!important;letter-spacing:-.2px!important;text-transform:none!important;padding:20px 22px!important;}
+.tabla-barca .bloque-categoria{background:rgba(255,255,255,.045)!important;border-color:rgba(255,255,255,.10)!important;}.tabla-madrid .bloque-categoria{background:rgba(255,255,255,.60)!important;border-color:rgba(24,50,77,.10)!important;}
+.tabla-barca .categoria-titulo{background:linear-gradient(115deg,#0b2b61,#0c3c81 62%,#124b9a)!important;color:#fff!important;}.tabla-madrid .categoria-titulo{background:linear-gradient(90deg,#e6ebf1,#cfd7e0)!important;color:#17324d!important;}
+.categoria-titulo{font-size:22px!important;letter-spacing:.2px!important;}
+.resumen-table th,.resumen-table td{font-family:"Roboto Condensed",Arial,sans-serif!important;}
+.seccion-comentarios{background:#f7f9fc!important;border-radius:16px!important;box-shadow:0 12px 28px rgba(0,0,0,.22)!important;}.textarea-comentario{font-family:"Roboto Condensed",Arial,sans-serif!important;}.boton-comentar,.btn-mostrar-mas{background:linear-gradient(135deg,#174d9c,#2567c7)!important;}.aviso-legal{font-family:"Roboto Condensed",Arial,sans-serif!important;color:#cdd7e6!important;background:rgba(4,18,40,.56)!important;border:1px solid rgba(255,255,255,.08);}
+
+@media(max-width:768px){
+.cabecera{height:92px!important;background-position:center 50%!important;}.menu{top:92px!important;height:64px!important;min-height:64px!important;padding:0!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;overflow:hidden!important;}.menu::before,.menu::after{display:block!important;}.menu a{height:64px!important;padding:6px 4px!important;font-size:9px!important;line-height:1.05!important;white-space:normal!important;}.menu a:nth-child(3)::after{left:18%;right:18%;height:3px;}.contenido{margin-top:156px!important;min-height:calc(100vh - 156px)!important;padding:20px 0 60px!important;background:radial-gradient(ellipse 44% 120% at -10% 50%,rgba(138,10,58,.88),rgba(138,10,58,.72) 24%,rgba(138,10,58,.36) 48%,transparent 74%),linear-gradient(90deg,#5b0d2d 0%,#691336 12%,#3e234f 20%,#224179 34%,#40607f 50%,#a3adbb 71%,#e0e5eb 88%,#fafbfd 100%)!important;}.wrap{width:94%!important;}.bloque-resultados{border-radius:20px!important;}.cabecera-resultados{padding:24px 22px 21px!important;}.cabecera-resultados h1{font-size:29px!important;}.cabecera-resultados p{font-size:14px!important;line-height:1.45!important;}.tarjeta-top{font-size:24px!important;padding:17px 14px!important;}
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1886,7 +1931,7 @@ thead .pregunta-arbitro{
             </section>
 
             <div class="aviso-legal">
-                Decisión VAR es una plataforma independiente y neutral cuyo objetivo es analizar jugadas polémicas a través de la opinión de los usuarios.
+                POLÉMICA VAR es una plataforma independiente y neutral cuyo objetivo es analizar jugadas polémicas a través de la opinión de los usuarios.
                 Los contenidos audiovisuales mostrados pertenecen a sus respectivos autores y son compartidos desde plataformas públicas. Esta web no almacena ni modifica dichos contenidos.
             </div>
 

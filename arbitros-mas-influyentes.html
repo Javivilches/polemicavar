@@ -6,7 +6,7 @@
 <title>Árbitros más influyentes</title>
 <link rel="icon" href="Imagenes/favicon.png" type="image/png">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Barlow+Condensed:wght@600;700;800&family=Oswald:wght@400;500;600;700&family=Roboto+Condensed:wght@300;400;500;700&display=swap" rel="stylesheet">
 
 <style>
 body{
@@ -960,6 +960,183 @@ textarea{
         margin:0 auto !important;
     }
 }
+
+/* =========================================================
+   ESTILO PREMIUM UNIFICADO — POLÉMICA VAR
+   ========================================================= */
+:root{
+    --pv-bg:#081427;
+    --pv-card:#071a3d;
+    --pv-card-2:#082758;
+    --pv-line:rgba(255,255,255,.16);
+    --pv-text:#f7f9fc;
+    --pv-muted:#dbe4f0;
+}
+
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;}
+body{
+    margin:0;
+    zoom:1;
+    overflow-x:hidden;
+    color:var(--pv-text);
+    background:var(--pv-bg) !important;
+    font-family:"Roboto Condensed",Arial,Helvetica,sans-serif !important;
+}
+
+h1,h2,h3,h4,
+.cabecera-seccion h1,
+.tarjeta-arbitros-top,
+.tabla-arbitros thead th,
+.tabla-arbitros-mobile thead th{
+    font-family:"Oswald",Arial,sans-serif !important;
+}
+
+.cabecera{
+    height:142px !important;
+    background-image:linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.20)),url("cabecera-premium.png") !important;
+    background-size:cover !important;
+    background-position:center 48% !important;
+    border-bottom:1px solid rgba(255,255,255,.08);
+    box-shadow:0 12px 34px rgba(0,0,0,.42);
+}
+
+.menu{
+    top:142px !important;
+    height:62px !important;
+    display:grid !important;
+    grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+    gap:0 !important;
+    padding:0 !important;
+    overflow:hidden !important;
+    background:rgba(7,11,18,.97) !important;
+    border-bottom:1px solid rgba(255,255,255,.08);
+    box-shadow:0 10px 26px rgba(0,0,0,.28);
+    backdrop-filter:blur(14px);
+}
+.menu::before{
+    content:"";
+    position:absolute;
+    inset:0 auto 0 0;
+    width:30%;
+    background:linear-gradient(90deg,rgba(202,10,54,.13),transparent);
+}
+.menu::after{
+    content:"";
+    position:absolute;
+    inset:0 0 0 auto;
+    width:30%;
+    height:100%;
+    transform:none;
+    background:linear-gradient(270deg,rgba(255,255,255,.09),transparent);
+}
+.menu a{
+    min-width:0;
+    color:#dbe3ef !important;
+    font-size:12px !important;
+    font-weight:700;
+    line-height:1.05;
+    padding:0 14px !important;
+    border-radius:0 !important;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+}
+.menu a+a{border-left:1px solid rgba(255,255,255,.055);}
+.menu a:hover{background:rgba(255,255,255,.045);color:#fff !important;}
+.menu a:nth-child(5){color:#fff !important;}
+.menu a:nth-child(5)::after{
+    content:"";
+    position:absolute;
+    left:22%;right:22%;bottom:0;height:3px;
+    border-radius:99px 99px 0 0;
+    background:linear-gradient(90deg,#d3123f,#f1cd79);
+    box-shadow:0 0 18px rgba(211,18,63,.38);
+}
+
+.contenido{
+    position:relative !important;
+    isolation:isolate;
+    overflow:hidden;
+    margin-top:204px !important;
+    min-height:calc(100vh - 204px) !important;
+    padding:42px 0 90px !important;
+    background:
+      radial-gradient(ellipse 30% 140% at -6% 50%, rgba(138,10,58,.92) 0%, rgba(138,10,58,.78) 22%, rgba(138,10,58,.52) 42%, rgba(138,10,58,.16) 64%, transparent 78%),
+      linear-gradient(90deg,#5e0d2f 0%,#6f1138 8%,#53183b 14%,#243a73 26%,#173b7b 37%,#4d5f7a 50%,#98a3b1 67%,#d6dce4 84%,#f7f9fc 100%) !important;
+}
+.contenido::before{
+    content:"";position:absolute;inset:0;z-index:-2;pointer-events:none;
+    background:linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.03) 18%,rgba(255,255,255,.02) 40%,transparent 100%),linear-gradient(180deg,rgba(255,255,255,.02),transparent 32%,rgba(0,0,0,.07));
+}
+.contenido::after{
+    content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+    background:linear-gradient(90deg,rgba(0,0,0,.10),rgba(0,0,0,.06) 26%,rgba(0,0,0,.04) 50%,rgba(255,255,255,.02) 82%,transparent 100%);
+}
+.wrap{width:min(1240px,92%) !important;position:relative;z-index:1;}
+
+.bloque-principal{
+    background:linear-gradient(180deg,rgba(5,24,52,.98),rgba(4,18,40,.99)) !important;
+    border:1px solid rgba(160,194,235,.24);
+    border-radius:24px !important;
+    box-shadow:0 22px 48px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.035) !important;
+}
+.cabecera-seccion{
+    padding:30px 32px 26px !important;
+    background:radial-gradient(circle at 48% 38%,rgba(28,91,173,.34),rgba(20,65,128,.18) 34%,transparent 66%),linear-gradient(115deg,#061a3d 0%,#082758 43%,#0a3472 68%,#082550 100%) !important;
+    border-bottom:1px solid rgba(255,255,255,.16);
+}
+.cabecera-seccion h1{font-size:38px !important;line-height:1;letter-spacing:-.7px;}
+.cabecera-seccion p{font-size:15px;color:#f1f4fa !important;line-height:1.55;}
+
+.panel-tabla{padding:28px !important;}
+.tarjeta-arbitros{
+    border-radius:20px !important;
+    background:linear-gradient(180deg,#101925,#0b121d) !important;
+    border:1px solid rgba(255,255,255,.12) !important;
+    box-shadow:0 18px 44px rgba(3,15,37,.30),inset 0 1px 0 rgba(255,255,255,.08) !important;
+}
+.tarjeta-arbitros-top{
+    padding:20px 22px !important;
+    font-size:29px !important;
+    background:radial-gradient(circle at 100% 0%,rgba(255,255,255,.10),transparent 38%),linear-gradient(135deg,#061a3d,#0a3472) !important;
+    border-bottom:1px solid rgba(255,255,255,.16);
+}
+.tarjeta-arbitros-body{padding:16px !important;}
+
+.tabla-arbitros th,.tabla-arbitros td{border-color:rgba(255,255,255,.10);}
+.th-arbitro,.tabla-arbitros-mobile .th-arbitro-mobile{background:#0b213f !important;}
+.grupo-madrid,.sub-madrid{background:linear-gradient(180deg,#f7f9fc,#dfe5ec) !important;color:#17324d !important;}
+.grupo-barca,.sub-barca{background:linear-gradient(135deg,#123b7d,#5e153c) !important;color:#fff !important;}
+.celda-arbitro,.td-arbitro-mobile{background:#0a1d38 !important;}
+.celda-madrid,.td-balance-madrid{background:#f4f7fa !important;color:#17324d !important;}
+.celda-barca,.td-balance-barca{background:linear-gradient(135deg,#10284d,#28162d) !important;color:#eef3fa !important;}
+.info-claves{background:rgba(255,255,255,.055) !important;border:1px solid rgba(255,255,255,.09);}
+
+.seccion-comentarios{
+    background:#f7f9fc !important;
+    border-radius:16px !important;
+    box-shadow:0 12px 28px rgba(0,0,0,.22) !important;
+}
+textarea{font-family:"Roboto Condensed",Arial,sans-serif !important;}
+.boton-comentar,.btn-mostrar-mas{background:linear-gradient(135deg,#174d9c,#2567c7) !important;}
+.aviso-legal{color:#b8c4d4 !important;background:rgba(5,18,40,.76) !important;border:1px solid rgba(255,255,255,.08);}
+
+@media(max-width:768px){
+    .cabecera{height:92px !important;}
+    .menu{top:92px !important;height:64px !important;min-height:64px !important;grid-template-columns:repeat(5,minmax(0,1fr)) !important;}
+    .menu::before,.menu::after{display:none !important;}
+    .menu a{height:64px !important;font-size:9px !important;padding:6px 4px !important;white-space:normal !important;}
+    .menu a:nth-child(5)::after{left:18%;right:18%;}
+    .contenido{margin-top:156px !important;min-height:calc(100vh - 156px) !important;padding:20px 0 60px !important;background:radial-gradient(ellipse 44% 120% at -10% 50%,rgba(138,10,58,.88),rgba(138,10,58,.72) 24%,rgba(138,10,58,.36) 48%,transparent 74%),linear-gradient(90deg,#5b0d2d 0%,#691336 12%,#3e234f 20%,#224179 34%,#40607f 50%,#a3adbb 71%,#e0e5eb 88%,#fafbfd 100%) !important;}
+    .wrap{width:94% !important;}
+    .cabecera-seccion{padding:24px 22px 21px !important;}
+    .cabecera-seccion h1{font-size:29px !important;}
+    .panel-tabla{padding:14px !important;}
+    .tarjeta-arbitros-top{font-size:22px !important;padding:16px 12px !important;}
+    .tarjeta-arbitros-body{padding:10px !important;}
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1061,7 +1238,7 @@ textarea{
             </section>
 
             <div class="aviso-legal">
-                Decisión VAR es una plataforma independiente y neutral cuyo objetivo es analizar jugadas polémicas a través de la opinión de los usuarios.
+                POLÉMICA VAR es una plataforma independiente y neutral cuyo objetivo es analizar jugadas polémicas a través de la opinión de los usuarios.
                 Los contenidos audiovisuales mostrados pertenecen a sus respectivos autores y son compartidos desde plataformas públicas. Esta web no almacena ni modifica dichos contenidos.
             </div>
         </section>

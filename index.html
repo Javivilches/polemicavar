@@ -8,7 +8,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/genfavicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/genfavicon-16.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto+Condensed:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 body{
@@ -1230,6 +1230,779 @@ textarea{
         margin:0 auto !important;
     }
 }
+
+
+/* =========================================================
+   REDISEÑO PREMIUM POLÉMICAVAR — JULIO 2026
+   ========================================================= */
+:root{
+    --bg:#070b12;
+    --bg-soft:#0b111b;
+    --card:#0f1723;
+    --card-2:#111c2a;
+    --line:rgba(255,255,255,.08);
+    --text:#f7f9fc;
+    --muted:#aab5c6;
+    --gold:#d9ab43;
+    --gold-soft:#f1cd79;
+    --red:#d3123f;
+    --blue:#164fa3;
+}
+
+html{scroll-behavior:smooth;}
+body{
+    margin:0;
+    font-family:Inter,Arial,Helvetica,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    zoom:1;
+    overflow-x:hidden;
+}
+
+/* CABECERA PREMIUM */
+.cabecera{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:142px;
+    background-image:
+        linear-gradient(180deg,rgba(0,0,0,.06),rgba(0,0,0,.24)),
+        url("cabecera-premium.png");
+    background-size:cover;
+    background-position:center 48%;
+    background-repeat:no-repeat;
+    z-index:1000;
+    border-bottom:1px solid rgba(255,255,255,.08);
+    box-shadow:0 12px 34px rgba(0,0,0,.42);
+}
+
+/* MENÚ PREMIUM */
+.menu{
+    position:fixed;
+    top:142px;
+    left:0;
+    width:100%;
+    height:62px;
+    display:grid;
+    grid-template-columns:repeat(5,minmax(0,1fr));
+    justify-content:center;
+    align-items:stretch;
+    gap:0;
+    z-index:999;
+    overflow:hidden;
+    background:rgba(7,11,18,.96);
+    border-bottom:1px solid rgba(255,255,255,.08);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    box-shadow:0 10px 26px rgba(0,0,0,.28);
+}
+.menu::before{
+    content:"";
+    position:absolute;
+    inset:0 auto 0 0;
+    width:30%;
+    background:linear-gradient(90deg,rgba(202,10,54,.13),transparent);
+    pointer-events:none;
+}
+.menu::after{
+    content:"";
+    position:absolute;
+    inset:0 0 0 auto;
+    width:30%;
+    background:linear-gradient(270deg,rgba(255,255,255,.09),transparent);
+    pointer-events:none;
+}
+.menu a{
+    position:relative;
+    z-index:2;
+    min-width:0;
+    text-decoration:none;
+    color:#dbe3ef !important;
+    font-size:12px;
+    line-height:1.05;
+    font-weight:700;
+    letter-spacing:.25px;
+    text-transform:uppercase;
+    padding:0 14px;
+    border-radius:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    transition:color .2s ease,background .2s ease;
+}
+.menu a + a{border-left:1px solid rgba(255,255,255,.055);}
+.menu a:hover{
+    background:rgba(255,255,255,.045);
+    color:#fff !important;
+}
+.menu a:first-child{
+    color:#fff !important;
+}
+.menu a:first-child::after{
+    content:"";
+    position:absolute;
+    left:22%;
+    right:22%;
+    bottom:0;
+    height:3px;
+    border-radius:99px 99px 0 0;
+    background:linear-gradient(90deg,var(--red),var(--gold-soft));
+    box-shadow:0 0 18px rgba(211,18,63,.38);
+}
+
+/* FONDO GENERAL */
+.contenido{
+    position:relative;
+    isolation:isolate;
+    margin-top:204px;
+    min-height:calc(100vh - 204px);
+    padding:42px 0 90px;
+    background:
+      radial-gradient(circle at 3% 18%,rgba(117,0,39,.23),transparent 28%),
+      radial-gradient(circle at 97% 18%,rgba(208,218,232,.11),transparent 30%),
+      linear-gradient(180deg,#070b12 0%,#090f18 52%,#070b12 100%);
+}
+.contenido::before{
+    content:"";
+    position:fixed;
+    inset:204px 0 0;
+    pointer-events:none;
+    z-index:-1;
+    background:
+      linear-gradient(90deg,rgba(16,44,96,.08),transparent 34%),
+      linear-gradient(270deg,rgba(255,255,255,.035),transparent 34%);
+}
+.wrap{width:min(1240px,92%);margin:auto;}
+
+/* CONTENEDORES PRINCIPALES */
+.bloque-portada,.bloque-resultados{
+    background:linear-gradient(180deg,rgba(15,23,35,.97),rgba(9,15,25,.97));
+    border:1px solid var(--line);
+    border-radius:24px;
+    overflow:hidden;
+    box-shadow:0 22px 50px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.025);
+    margin-bottom:32px;
+}
+.cabecera-portada,.cabecera-resultados{
+    padding:30px 32px 26px;
+    background:
+      linear-gradient(90deg,rgba(211,18,63,.10),transparent 28%),
+      linear-gradient(270deg,rgba(255,255,255,.045),transparent 28%),
+      #101925;
+    border-bottom:1px solid rgba(255,255,255,.07);
+    color:#fff;
+}
+.cabecera-portada h1,.cabecera-resultados h1{
+    font-size:38px;
+    line-height:1;
+    margin:0 0 9px;
+    font-weight:800;
+}
+.cabecera-portada p,.cabecera-resultados p{
+    margin:0;
+    max-width:760px;
+    font-size:15px;
+    line-height:1.55;
+    color:var(--muted);
+}
+
+/* JUGADAS */
+.bloque-jugada{margin:28px 28px 24px;}
+.etiqueta-jornada{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:rgba(217,171,67,.11);
+    color:var(--gold-soft);
+    border:1px solid rgba(217,171,67,.32);
+    font-weight:800;
+    padding:7px 13px;
+    border-radius:999px;
+    font-size:12px;
+    letter-spacing:.45px;
+    text-transform:uppercase;
+    margin-bottom:12px;
+}
+.jugada-principal{
+    background:linear-gradient(180deg,#101925,#0b121d);
+    border:1px solid rgba(255,255,255,.07);
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 16px 36px rgba(0,0,0,.30);
+}
+.cabecera-jugada{
+    padding:22px 24px 20px;
+    background:
+       linear-gradient(90deg,rgba(18,72,151,.26),transparent 48%),
+       linear-gradient(270deg,rgba(211,18,63,.08),transparent 34%),
+       #121d2b;
+    border-bottom:1px solid rgba(255,255,255,.065);
+    color:white;
+}
+.cabecera-jugada h2{font-size:31px;line-height:1.05;margin:0 0 7px;}
+.cabecera-jugada p{margin:0;color:#d7e0ed;font-size:14px;}
+.badge-categoria{
+    margin-top:11px;
+    padding:6px 11px;
+    border:1px solid rgba(255,255,255,.09);
+    background:rgba(255,255,255,.055);
+    color:#eaf0f8;
+}
+.meta-extra{margin-top:11px;color:#c4cedd;line-height:1.65;}
+
+.zona-superior{gap:18px;padding:18px;}
+.imagen-jugada{
+    background:#0a111c;
+    border:1px solid rgba(255,255,255,.07);
+    border-radius:16px;
+    padding:12px;
+}
+.visor-media{background:#111e31;border-radius:13px;}
+.descripcion-jugada{
+    margin-top:12px;
+    padding:15px 16px;
+    background:rgba(255,255,255,.035);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:13px;
+    color:#dce4ef;
+    line-height:1.55;
+}
+.panel-votacion{
+    background:#f7f9fc;
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:15px;
+    box-shadow:0 14px 30px rgba(0,0,0,.24);
+}
+.btn-voto,.boton-comentar,.btn-mostrar-mas{
+    background:linear-gradient(135deg,#174d9c,#2567c7);
+    border-radius:10px;
+    min-height:44px;
+}
+.btn-voto:hover,.boton-comentar:hover,.btn-mostrar-mas:hover{filter:brightness(1.08);}
+
+/* COMENTARIOS */
+.seccion-comentarios{
+    background:#f7f9fc;
+    border-radius:16px;
+    box-shadow:0 12px 28px rgba(0,0,0,.22);
+}
+
+/* MARCADOR */
+.marcador-wrap{padding:30px 28px 18px;}
+.marcador-global{
+    background:linear-gradient(90deg,rgba(7,22,58,.95),rgba(19,28,43,.96) 48%,rgba(223,228,235,.93));
+    border:1px solid rgba(255,255,255,.10);
+    box-shadow:0 20px 44px rgba(0,0,0,.34),inset 2px 0 0 rgba(29,95,209,.75),inset -2px 0 0 rgba(255,255,255,.78);
+}
+.marcador-global::before{opacity:.34;filter:saturate(.78) contrast(1.05);}
+.aviso-legal{color:#8f9caf;padding:16px 24px 28px;}
+
+/* DETALLES */
+.zoom-btn{background:rgba(5,10,18,.88);border:1px solid rgba(255,255,255,.10);}
+textarea{font-family:Inter,Arial,sans-serif;}
+
+@media (max-width:768px){
+    .cabecera{
+        height:92px !important;
+        background-position:center 50% !important;
+        background-size:cover !important;
+    }
+    .menu{
+        top:92px !important;
+        height:64px !important;
+        min-height:64px !important;
+        padding:0 !important;
+        grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+        background:rgba(7,11,18,.985) !important;
+    }
+    .menu a{
+        height:64px !important;
+        padding:6px 4px !important;
+        font-size:9px !important;
+        line-height:1.05 !important;
+        color:#cfd8e5 !important;
+    }
+    .menu a + a{border-left:1px solid rgba(255,255,255,.045);}
+    .menu a:first-child::after{left:18%;right:18%;height:3px;}
+    .contenido{
+        margin-top:156px !important;
+        min-height:calc(100vh - 156px) !important;
+        padding:20px 0 60px !important;
+        background:
+          radial-gradient(circle at 0 12%,rgba(115,0,38,.16),transparent 35%),
+          radial-gradient(circle at 100% 12%,rgba(220,228,239,.08),transparent 38%),
+          linear-gradient(180deg,#070b12,#090f18 55%,#070b12) !important;
+    }
+    .contenido::before{inset:156px 0 0;}
+    .wrap{width:94%;}
+    .bloque-portada,.bloque-resultados{border-radius:20px;margin-bottom:20px;}
+    .cabecera-portada,.cabecera-resultados{padding:24px 22px 21px;}
+    .cabecera-portada h1,.cabecera-resultados h1{font-size:29px;}
+    .cabecera-portada p,.cabecera-resultados p{font-size:14px;line-height:1.45;}
+    .bloque-jugada{margin:20px 14px 18px;}
+    .jugada-principal{border-radius:17px;}
+    .cabecera-jugada{padding:18px 17px 16px;}
+    .cabecera-jugada h2{font-size:25px;}
+    .zona-superior{padding:12px;gap:13px;}
+    .imagen-jugada{padding:9px;border-radius:14px;}
+    .descripcion-jugada{padding:13px;font-size:13px;}
+    .marcador-wrap{padding:20px 12px 12px;}
+}
+
+
+/* =========================================================
+   EVOLUCIÓN PROFESIONAL DE LA PALETA ORIGINAL
+   Más luminosa, deportiva y claramente Barça / Madrid
+   Mantiene intactas la cabecera y el menú premium.
+   ========================================================= */
+
+:root{
+    --pv-blue-950:#081b42;
+    --pv-blue-900:#0b285b;
+    --pv-blue-800:#123b7d;
+    --pv-blue-700:#1d56a9;
+    --pv-blue-600:#2e6fc7;
+    --pv-silver:#e9edf3;
+    --pv-silver-2:#cfd6e0;
+    --pv-red:#9d174d;
+}
+
+body{
+    background:#102a59;
+}
+
+/* Fondo continuo: azulgrana a la izquierda, blanco/plata a la derecha,
+   con transición amplia, suave y sin corte central. */
+.contenido{
+    position:relative;
+    isolation:isolate;
+    overflow:hidden;
+    background:
+      radial-gradient(ellipse 62% 48% at -2% 15%,rgba(158,0,57,.78) 0%,rgba(158,0,57,.34) 36%,transparent 69%),
+      radial-gradient(ellipse 66% 58% at 18% 54%,rgba(0,73,151,.94) 0%,rgba(14,67,143,.66) 48%,transparent 78%),
+      radial-gradient(ellipse 64% 52% at 103% 18%,rgba(255,255,255,.98) 0%,rgba(241,245,250,.84) 42%,transparent 73%),
+      radial-gradient(ellipse 74% 62% at 87% 73%,rgba(188,198,213,.82) 0%,rgba(218,225,234,.54) 46%,transparent 77%),
+      linear-gradient(90deg,
+        #0d3476 0%,
+        #123d80 24%,
+        #273f68 44%,
+        #66758b 58%,
+        #c8d0db 78%,
+        #eef1f5 100%);
+}
+
+.contenido::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:-2;
+    pointer-events:none;
+    background:
+      linear-gradient(115deg,rgba(255,255,255,.08),transparent 26%),
+      radial-gradient(circle at 50% 0%,rgba(255,255,255,.15),transparent 35%);
+}
+
+/* Velo central sutil para que el contenido tenga una base homogénea sin
+   ocultar la identidad de cada mitad. */
+.contenido::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:-1;
+    pointer-events:none;
+    background:linear-gradient(90deg,
+      rgba(7,22,50,.08) 0%,
+      rgba(9,26,55,.12) 34%,
+      rgba(18,32,51,.18) 49%,
+      rgba(38,48,62,.12) 64%,
+      rgba(255,255,255,.03) 100%);
+}
+
+.wrap{
+    position:relative;
+    z-index:1;
+}
+
+/* Contenedores: recuperan el azul deportivo de la versión original,
+   pero con más profundidad, mejor borde y sombra profesional. */
+.bloque-portada,
+.bloque-resultados{
+    background:linear-gradient(180deg,rgba(20,40,73,.93),rgba(10,24,47,.94));
+    border:1px solid rgba(255,255,255,.20);
+    box-shadow:
+      0 24px 60px rgba(3,15,37,.34),
+      0 4px 14px rgba(3,15,37,.22),
+      inset 0 1px 0 rgba(255,255,255,.10);
+}
+
+.cabecera-portada,
+.cabecera-resultados{
+    background:
+      linear-gradient(90deg,rgba(111,16,73,.34),transparent 34%),
+      linear-gradient(115deg,#17478f 0%,#255eae 58%,#3575c7 100%);
+    border-bottom:1px solid rgba(255,255,255,.18);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.13);
+}
+
+.cabecera-portada p,
+.cabecera-resultados p{
+    color:#edf4ff;
+}
+
+/* Cada jugada vuelve a sentirse luminosa y deportiva. */
+.jugada-principal{
+    background:linear-gradient(180deg,rgba(18,45,83,.97),rgba(9,25,50,.98));
+    border:1px solid rgba(255,255,255,.16);
+    box-shadow:
+      0 18px 44px rgba(3,15,37,.30),
+      inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+.cabecera-jugada{
+    background:
+      radial-gradient(circle at 100% 0%,rgba(255,255,255,.12),transparent 38%),
+      linear-gradient(135deg,#1b4c97 0%,#2b65b8 58%,#3677ca 100%);
+    border-bottom:1px solid rgba(255,255,255,.20);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.12);
+}
+
+.cabecera-jugada p,
+.meta-extra{
+    color:#edf4ff;
+}
+
+.badge-categoria{
+    background:rgba(255,255,255,.13);
+    border-color:rgba(255,255,255,.20);
+    color:#fff;
+}
+
+.etiqueta-jornada{
+    background:linear-gradient(180deg,#ffdb72,#e5ad32);
+    color:#4a3300;
+    border:1px solid rgba(255,244,195,.78);
+    box-shadow:0 7px 18px rgba(85,55,0,.22),inset 0 1px 0 rgba(255,255,255,.55);
+}
+
+.zona-superior{
+    background:linear-gradient(180deg,rgba(13,32,61,.76),rgba(7,20,40,.86));
+}
+
+.imagen-jugada{
+    background:linear-gradient(180deg,#102748,#091a33);
+    border-color:rgba(255,255,255,.15);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 10px 28px rgba(2,10,25,.24);
+}
+
+.visor-media{
+    background:linear-gradient(180deg,#1b3d6a,#142f55);
+    border:1px solid rgba(255,255,255,.08);
+}
+
+.descripcion-jugada{
+    background:linear-gradient(135deg,rgba(38,84,151,.32),rgba(255,255,255,.05));
+    border-color:rgba(255,255,255,.14);
+    color:#f2f6fc;
+}
+
+/* Comentarios: menos negros y más integrados con la nueva paleta. */
+.seccion-comentarios,
+.comentarios-box{
+    background:linear-gradient(180deg,rgba(19,47,85,.96),rgba(10,27,52,.98));
+    border-color:rgba(255,255,255,.15);
+    box-shadow:0 16px 36px rgba(3,15,37,.26),inset 0 1px 0 rgba(255,255,255,.07);
+}
+
+.cabecera-comentarios{
+    background:linear-gradient(90deg,rgba(35,88,164,.96),rgba(44,105,191,.94));
+    border-bottom-color:rgba(255,255,255,.16);
+}
+
+.cuerpo-comentarios textarea{
+    background:rgba(7,22,44,.68);
+    border-color:rgba(255,255,255,.17);
+    color:#fff;
+}
+
+.comentario{
+    background:rgba(255,255,255,.07);
+    border-color:rgba(255,255,255,.10);
+    color:#edf3fb;
+}
+
+/* El marcador y otros paneles oscuros mantienen contraste, pero ya no
+   parecen bloques negros desconectados. */
+#marcadorGlobal,
+.marcador-global,
+.resultado-box{
+    box-shadow:0 16px 36px rgba(3,15,37,.25);
+}
+
+.caja-cargando,
+.caja-error{
+    color:#fff;
+}
+
+@media (max-width:700px){
+    .contenido{
+        background:
+          radial-gradient(ellipse 90% 32% at -8% 6%,rgba(157,0,57,.65),transparent 68%),
+          radial-gradient(ellipse 105% 55% at 5% 48%,rgba(0,67,147,.88),transparent 76%),
+          radial-gradient(ellipse 92% 35% at 108% 8%,rgba(255,255,255,.92),transparent 70%),
+          radial-gradient(ellipse 105% 58% at 100% 70%,rgba(198,207,220,.72),transparent 78%),
+          linear-gradient(90deg,#103b83 0%,#263e67 47%,#aab4c2 72%,#e7ebf0 100%);
+    }
+
+    .bloque-portada,
+    .bloque-resultados{
+        border-color:rgba(255,255,255,.18);
+        box-shadow:0 16px 38px rgba(3,15,37,.28);
+    }
+
+    .cabecera-portada,
+    .cabecera-resultados{
+        background:
+          linear-gradient(90deg,rgba(108,12,68,.28),transparent 36%),
+          linear-gradient(135deg,#194993,#2b66b9 72%,#3678ca 100%);
+    }
+}
+
+
+/* =========================================================
+   AJUSTE FINAL — TARJETAS Y TIPOGRAFÍA SEGÚN REFERENCIA
+   ========================================================= */
+body{
+    font-family:"Roboto Condensed", Arial, Helvetica, sans-serif;
+}
+
+h1,h2,h3,h4,
+.cabecera-portada h1,
+.cabecera-resultados h1,
+.cabecera-jugada h2,
+.equipo-nombre,
+.marcador-titulo,
+.score,
+.score-sep,
+.score-leyenda,
+.mini-dato .et,
+.mini-dato .vl,
+.total-global .et,
+.total-global .vl{
+    font-family:"Oswald", Arial, sans-serif !important;
+}
+
+.cabecera-portada h1,
+.cabecera-resultados h1{
+    font-weight:700;
+    letter-spacing:-0.7px;
+}
+
+.cabecera-portada p,
+.cabecera-resultados p,
+.caja-cargando,
+.caja-error,
+.aviso-legal{
+    font-family:"Roboto Condensed", Arial, sans-serif;
+}
+
+/* Azul marino profundo con ligero brillo central, como en la imagen */
+.cabecera-portada,
+.cabecera-resultados{
+    background:
+      radial-gradient(circle at 48% 38%, rgba(28,91,173,.34) 0%, rgba(20,65,128,.18) 34%, transparent 66%),
+      linear-gradient(115deg,#061a3d 0%,#082758 43%,#0a3472 68%,#082550 100%) !important;
+    border-bottom:1px solid rgba(255,255,255,.16) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.08),
+      inset 0 -1px 0 rgba(0,0,0,.32) !important;
+}
+
+.bloque-portada,
+.bloque-resultados{
+    background:linear-gradient(180deg,rgba(5,24,52,.98),rgba(4,18,40,.99)) !important;
+    border:1px solid rgba(160,194,235,.24) !important;
+    box-shadow:
+      0 22px 48px rgba(0,0,0,.34),
+      inset 0 1px 0 rgba(255,255,255,.035) !important;
+}
+
+.cabecera-portada p,
+.cabecera-resultados p{
+    color:#f1f4fa !important;
+    font-weight:300;
+}
+
+@media (max-width:768px){
+    .cabecera-portada h1,
+    .cabecera-resultados h1{
+        font-size:31px !important;
+        line-height:1.08 !important;
+    }
+    .cabecera-portada p,
+    .cabecera-resultados p{
+        font-size:15px !important;
+        line-height:1.5 !important;
+    }
+}
+
+
+/* =========================================================
+   AJUSTE FINAL — FONDO EXACTO SEGÚN REFERENCIA
+   Mitad izquierda: halo horizontal grana → azul.
+   Mitad derecha: halo horizontal gris → blanco.
+   ========================================================= */
+body{
+    background:#08142b !important;
+    font-family:"Roboto Condensed", Arial, Helvetica, sans-serif !important;
+}
+
+.contenido{
+    position:relative !important;
+    isolation:isolate !important;
+    overflow:hidden !important;
+    background:
+      radial-gradient(ellipse 64% 94% at -4% 52%, rgba(123, 9, 53, 0.88) 0%, rgba(123, 9, 53, 0.58) 20%, rgba(123, 9, 53, 0.18) 42%, rgba(123, 9, 53, 0.00) 72%),
+      radial-gradient(ellipse 72% 96% at 24% 50%, rgba(18, 63, 136, 0.92) 0%, rgba(18, 63, 136, 0.62) 24%, rgba(18, 63, 136, 0.20) 46%, rgba(18, 63, 136, 0.00) 76%),
+      radial-gradient(ellipse 64% 94% at 104% 50%, rgba(255,255,255,0.96) 0%, rgba(244,247,251,0.76) 24%, rgba(214,220,229,0.34) 46%, rgba(214,220,229,0.00) 74%),
+      radial-gradient(ellipse 76% 96% at 80% 50%, rgba(170,180,193,0.56) 0%, rgba(170,180,193,0.28) 24%, rgba(170,180,193,0.00) 60%),
+      linear-gradient(90deg,
+        #081427 0%,
+        #0c2350 19%,
+        #143a80 33%,
+        #344865 50%,
+        #8d98a7 66%,
+        #d7dde5 84%,
+        #f7f9fc 100%) !important;
+}
+
+.contenido::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:-2;
+    pointer-events:none;
+    background:
+      linear-gradient(90deg,
+        rgba(8,20,39,0.18) 0%,
+        rgba(8,20,39,0.10) 24%,
+        rgba(8,20,39,0.08) 50%,
+        rgba(255,255,255,0.02) 74%,
+        rgba(255,255,255,0.00) 100%),
+      linear-gradient(180deg,
+        rgba(255,255,255,0.03) 0%,
+        rgba(255,255,255,0.00) 24%,
+        rgba(0,0,0,0.08) 100%) !important;
+}
+
+.contenido::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:-1;
+    pointer-events:none;
+    background:
+      linear-gradient(90deg,
+        rgba(0,0,0,0.10) 0%,
+        rgba(0,0,0,0.06) 18%,
+        rgba(0,0,0,0.04) 50%,
+        rgba(255,255,255,0.02) 82%,
+        rgba(255,255,255,0.00) 100%) !important;
+}
+
+@media (max-width:768px){
+    .contenido{
+        background:
+          radial-gradient(ellipse 92% 54% at -8% 18%, rgba(123, 9, 53, 0.84) 0%, rgba(123, 9, 53, 0.40) 32%, rgba(123, 9, 53, 0.00) 72%),
+          radial-gradient(ellipse 112% 70% at 18% 46%, rgba(18, 63, 136, 0.84) 0%, rgba(18, 63, 136, 0.42) 34%, rgba(18, 63, 136, 0.00) 76%),
+          radial-gradient(ellipse 98% 56% at 108% 18%, rgba(255,255,255,0.94) 0%, rgba(233,237,243,0.56) 34%, rgba(233,237,243,0.00) 76%),
+          radial-gradient(ellipse 112% 70% at 92% 64%, rgba(170,180,193,0.42) 0%, rgba(170,180,193,0.18) 28%, rgba(170,180,193,0.00) 72%),
+          linear-gradient(90deg,
+            #081427 0%,
+            #0d2759 26%,
+            #22457f 40%,
+            #4a5f79 54%,
+            #a0aaba 72%,
+            #e1e5eb 88%,
+            #f9fbfd 100%) !important;
+    }
+}
+
+
+/* =========================================================
+   AJUSTE FINAL 2 — MÁS GRANA EN TODA LA MITAD IZQUIERDA
+   Se refuerza el grana de arriba abajo, no solo arriba.
+   ========================================================= */
+body{
+    background:#081427 !important;
+}
+
+.contenido{
+    background:
+      radial-gradient(ellipse 30% 140% at -6% 50%, rgba(138, 10, 58, 0.92) 0%, rgba(138, 10, 58, 0.78) 22%, rgba(138, 10, 58, 0.52) 42%, rgba(138, 10, 58, 0.16) 64%, rgba(138, 10, 58, 0.00) 78%),
+      linear-gradient(90deg,
+        #5e0d2f 0%,
+        #6f1138 8%,
+        #53183b 14%,
+        #243a73 26%,
+        #173b7b 37%,
+        #4d5f7a 50%,
+        #98a3b1 67%,
+        #d6dce4 84%,
+        #f7f9fc 100%) !important;
+}
+
+.contenido::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:-2;
+    pointer-events:none;
+    background:
+      linear-gradient(90deg,
+        rgba(255,255,255,0.06) 0%,
+        rgba(255,255,255,0.03) 18%,
+        rgba(255,255,255,0.02) 40%,
+        rgba(255,255,255,0.00) 100%),
+      linear-gradient(180deg,
+        rgba(255,255,255,0.02) 0%,
+        rgba(255,255,255,0.00) 32%,
+        rgba(0,0,0,0.07) 100%) !important;
+}
+
+.contenido::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:-1;
+    pointer-events:none;
+    background:
+      linear-gradient(90deg,
+        rgba(0,0,0,0.10) 0%,
+        rgba(0,0,0,0.06) 26%,
+        rgba(0,0,0,0.04) 50%,
+        rgba(255,255,255,0.02) 82%,
+        rgba(255,255,255,0.00) 100%),
+      radial-gradient(ellipse 58% 90% at 102% 50%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.07) 28%, rgba(255,255,255,0.00) 68%) !important;
+}
+
+@media (max-width:768px){
+    .contenido{
+        background:
+          radial-gradient(ellipse 44% 120% at -10% 50%, rgba(138, 10, 58, 0.88) 0%, rgba(138, 10, 58, 0.72) 24%, rgba(138, 10, 58, 0.36) 48%, rgba(138, 10, 58, 0.00) 74%),
+          linear-gradient(90deg,
+            #5b0d2d 0%,
+            #691336 12%,
+            #3e234f 20%,
+            #224179 34%,
+            #40607f 50%,
+            #a3adbb 71%,
+            #e0e5eb 88%,
+            #fafbfd 100%) !important;
+    }
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
