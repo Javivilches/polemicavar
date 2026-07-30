@@ -1897,6 +1897,83 @@ h1,h2,h3,h4,
  .marcador-imagen .dato-total{font-size:clamp(22px,5.6vw,32px);top:84.9%;}.total-barca{left:17.3%;}.total-madrid{left:82.7%;}
 }
 
+
+
+/* ===== AJUSTE FINAL IDÉNTICO AL INDEX ===== */
+.cabecera{
+    height:148px !important;
+    background-image:linear-gradient(180deg,rgba(0,0,0,.06),rgba(0,0,0,.24)),url("cabecera-premium.png") !important;
+    background-size:cover !important;
+    background-position:center 48% !important;
+}
+.menu{
+    top:148px !important;
+    height:62px !important;
+    padding:0 48px 0 0 !important;
+    box-sizing:border-box !important;
+    overflow:visible !important;
+    display:grid !important;
+    grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+    gap:0 !important;
+    background:rgba(7,11,18,.96) !important;
+}
+.menu a{
+    flex-direction:column !important;
+    gap:5px !important;
+    font-family:"Oswald",Arial,sans-serif !important;
+    font-size:12px !important;
+    line-height:1.05 !important;
+    padding:6px 8px !important;
+    color:#dbe3ef !important;
+}
+.menu a + a{border-left:1px solid rgba(255,255,255,.055) !important;}
+.menu > a:last-of-type{border-right:1px solid rgba(255,255,255,.055) !important;}
+.menu a:nth-child(4){color:#fff !important;}
+.menu-icono{width:24px !important;height:24px !important;}
+.menu-user-wrap{position:absolute;right:10px;top:50%;transform:translateY(-50%);z-index:5000;pointer-events:auto;}
+.menu-user-btn{position:relative;z-index:5001;width:34px;height:34px;border:1px solid rgba(255,255,255,.10);border-radius:50%;background:rgba(10,18,34,.92);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.28);font-size:16px;}
+.menu-user-btn:hover{background:rgba(20,34,58,.95);}
+.menu-user-dropdown{position:absolute;right:0;top:42px;min-width:240px;background:#fff;border-radius:12px;box-shadow:0 12px 28px rgba(0,0,0,.22);padding:12px;display:none;color:#1e2b46;}
+.menu-user-dropdown.activo{display:block;}
+.menu-user-line{font-size:13px;line-height:1.4;margin-bottom:10px;color:#41516f;}
+.menu-user-title{font-size:14px;font-weight:bold;color:#18263f;margin-bottom:10px;}
+.menu-user-actions{display:flex;flex-direction:column;gap:8px;}
+.menu-user-actions button,.menu-user-actions input{width:100%;box-sizing:border-box;}
+.menu-user-actions input{height:38px;border:1px solid #d8dfeb;border-radius:8px;padding:0 10px;font-size:14px;}
+.menu-user-actions button{height:38px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;}
+.btn-user-primary{background:#1f4fb0;color:#fff;}.btn-user-secondary{background:#eef2f8;color:#243757;}
+.contenido{margin-top:210px !important;min-height:calc(100vh - 210px) !important;}
+
+.titulo-favorecido{margin-bottom:28px;}
+.titulo-favorecido .cabecera-resultados{border-radius:24px;overflow:hidden;text-align:center;background:linear-gradient(180deg,rgba(5,24,52,.98),rgba(4,18,40,.99)) !important;border:1px solid rgba(160,194,235,.24);box-shadow:0 18px 40px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.05);}
+.titulo-favorecido .cabecera-resultados p{margin-left:auto;margin-right:auto;}
+.marcador-favorecido{margin-bottom:28px;}
+.marcador-favorecido .marcador-wrap{padding:0 !important;}
+.contenido-favorecido-card{background:linear-gradient(180deg,rgba(5,24,52,.98),rgba(4,18,40,.99));border:1px solid rgba(160,194,235,.24);border-radius:24px;box-shadow:0 22px 48px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.035);overflow:hidden;padding-top:14px;}
+.contenido-favorecido-card .secciones{padding-top:0;}
+.tarjeta-aviso-legal{margin-top:28px;background:linear-gradient(180deg,rgba(5,24,52,.96),rgba(4,18,40,.97));border:1px solid rgba(160,194,235,.24);border-radius:18px;box-shadow:0 16px 38px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.035);overflow:hidden;}
+.tarjeta-aviso-legal .aviso-legal{margin:0 !important;padding:18px 22px !important;color:#e7edf7 !important;background:transparent !important;border:0 !important;box-shadow:none !important;text-align:justify !important;}
+
+/* Coordenadas exactas del marcador del index */
+.marcador-imagen{width:min(1380px,100%) !important;border-radius:clamp(16px,2.3vw,34px) !important;}
+.marcador-imagen .dato-stat{font-size:clamp(20px,3vw,42px) !important;width:9% !important;height:9% !important;font-weight:600 !important;}
+.barca-penaltis{left:9.9% !important;top:43.7% !important;}.barca-rojas{left:23.4% !important;top:43.7% !important;}.barca-goles{left:16.8% !important;top:66.3% !important;}
+.madrid-penaltis{left:75.4% !important;top:43.7% !important;}.madrid-rojas{left:88.6% !important;top:43.7% !important;}.madrid-goles{left:82.3% !important;top:66.3% !important;}
+.score-dinamico{left:49.7% !important;top:53.5% !important;width:31% !important;height:25% !important;}
+.score-dato{font-size:clamp(58px,7.6vw,112px) !important;}.marcador-imagen .dato-total{font-size:clamp(38px,5vw,72px) !important;}
+.total-barca{left:16.8% !important;top:90% !important;}.total-madrid{left:82.3% !important;top:90% !important;}
+
+@media(max-width:768px){
+ :root{--cabecera-movil:clamp(124px,26vw,142px);}
+ .cabecera{height:var(--cabecera-movil) !important;background-size:100% auto !important;background-position:center 38% !important;background-color:#000 !important;}
+ .menu{top:var(--cabecera-movil) !important;height:64px !important;min-height:64px !important;padding:0 42px 0 0 !important;overflow:visible !important;}
+ .menu a{height:64px !important;font-size:9px !important;gap:3px !important;padding:4px 2px !important;}
+ .menu-icono{width:20px !important;height:20px !important;}.menu-user-wrap{right:7px !important;}.menu-user-btn{width:30px;height:30px;font-size:14px;}.menu-user-dropdown{right:-4px;min-width:220px;}
+ .contenido{margin-top:calc(var(--cabecera-movil) + 64px) !important;min-height:calc(100vh - var(--cabecera-movil) - 64px) !important;}
+ .titulo-favorecido{margin-bottom:20px;}.titulo-favorecido .cabecera-resultados{border-radius:20px;}.marcador-favorecido{margin-bottom:20px;}.contenido-favorecido-card{border-radius:20px;}.tarjeta-aviso-legal{margin-top:20px;border-radius:15px;}
+ .marcador-imagen .dato-stat{font-size:clamp(12px,3.8vw,19px) !important;}.score-dato{font-size:clamp(34px,9vw,56px) !important;}.marcador-imagen .dato-total{font-size:clamp(25px,6.4vw,38px) !important;}
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1913,17 +1990,24 @@ h1,h2,h3,h4,
     <a href="resultados-var.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v3a4 4 0 0 1-8 0zM6 5H3v2a4 4 0 0 0 4 4M18 5h3v2a4 4 0 0 1-4 4M12 11v5M8 21h8M9 16h6v5H9z"/></svg><span>RESULTADOS</span></a>
     <a href="quien-ha-sido-mas-favorecido.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M10 20V8M15 20V4M20 20V10"/></svg><span>EQUIPO MÁS<br>FAVORECIDO</span></a>
     <a href="arbitros-mas-influyentes.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 7-7h7l2 2v7l-7 7-9-9z"/><circle cx="16.5" cy="7.5" r="1"/></svg><span>ÁRBITROS MÁS<br>INFLUYENTES</span></a>
+
+    <div class="menu-user-wrap">
+        <button id="menuUserBtn" class="menu-user-btn" type="button" title="Usuario">👤</button>
+        <div id="menuUserDropdown" class="menu-user-dropdown"></div>
+    </div>
 </nav>
 
 <div class="contenido">
     <div class="wrap">
 
-        <section class="bloque-resultados">
+        <section class="titulo-favorecido">
             <div class="cabecera-resultados">
                 <h1>¿Quién ha sido más favorecido?</h1>
                 <p>Comparativa directa entre FC Barcelona y Real Madrid en los balances globales y jornada a jornada.</p>
             </div>
+        </section>
 
+        <section class="marcador-favorecido">
             <div class="marcador-wrap marcador-visual-wrap">
                 <div id="marcadorGlobalContainer" class="marcador-visual-container">
                     <div class="marcador-imagen" id="marcadorGlobal" aria-label="Marcador global de las encuestas">
@@ -1944,9 +2028,9 @@ h1,h2,h3,h4,
                     </div>
                 </div>
             </div>
+        </section>
 
-
-
+        <section class="contenido-favorecido-card">
 <div class="secciones">
                 <section class="tarjeta">
                     <div class="tarjeta-top">Resultados frente a frente</div>
@@ -2035,11 +2119,13 @@ h1,h2,h3,h4,
                 </div>
             </section>
 
+        </section>
+
+        <section class="tarjeta-aviso-legal">
             <div class="aviso-legal">
                 POLÉMICA VAR es una plataforma independiente y neutral cuyo objetivo es analizar jugadas polémicas a través de la opinión de los usuarios.
                 Los contenidos audiovisuales mostrados pertenecen a sus respectivos autores y son compartidos desde plataformas públicas. Esta web no almacena ni modifica dichos contenidos.
             </div>
-
         </section>
 
     </div>
@@ -2047,6 +2133,37 @@ h1,h2,h3,h4,
 
 <script>
 const { loadDataset, getComments, addComment, escapeHtml, formatDate } = window.DecisionVarData;
+const DecisionVarAPI = window.DecisionVarData || {};
+const getUsuarioActual = DecisionVarAPI.getUsuarioActual || (async () => null);
+const getPerfilActual = DecisionVarAPI.getPerfilActual || (async () => null);
+const crearPerfil = DecisionVarAPI.crearPerfil || 
+function abrirMenuUsuario(){ menuUserDropdown.classList.add('activo'); }
+function cerrarMenuUsuario(){ menuUserDropdown.classList.remove('activo'); }
+async function renderMenuUsuario(){
+    try{
+        const user=await getUsuarioActual();
+        if(!user){
+            menuUserDropdown.innerHTML=`<div class="menu-user-title">Usuario</div><div class="menu-user-line">Puedes ver todo el contenido sin iniciar sesión. Para votar o comentar, entra con Google.</div><div class="menu-user-actions"><button id="btnMenuLoginGoogle" class="btn-user-primary" type="button">Iniciar sesión con Google</button></div>`;
+            document.getElementById('btnMenuLoginGoogle').onclick=()=>loginConGoogle(); return;
+        }
+        const perfil=await getPerfilActual();
+        if(perfil&&perfil.username){
+            menuUserDropdown.innerHTML=`<div class="menu-user-title">Sesión iniciada</div><div class="menu-user-line">Has iniciado sesión como <strong>${escapeHtml(perfil.username)}</strong>.</div><div class="menu-user-actions"><button id="btnMenuLogout" class="btn-user-secondary" type="button">Cerrar sesión</button></div>`;
+            document.getElementById('btnMenuLogout').onclick=async()=>{await logout();window.location.reload();}; return;
+        }
+        menuUserDropdown.innerHTML=`<div class="menu-user-title">Completa tu usuario</div><div class="menu-user-line">Elige tu nombre de usuario para votar y comentar.</div><div class="menu-user-actions"><input id="inputUsernameMenu" type="text" placeholder="Elige tu nombre de usuario"><button id="btnGuardarUsernameMenu" class="btn-user-primary" type="button">Guardar nombre</button><button id="btnMenuLogout" class="btn-user-secondary" type="button">Cerrar sesión</button></div>`;
+        document.getElementById('btnGuardarUsernameMenu').onclick=async()=>{const username=document.getElementById('inputUsernameMenu').value.trim();if(!username){alert('Escribe un nombre de usuario');return;}try{await crearPerfil(username);window.location.reload();}catch(e){alert(e&&e.code==='23505'?'Ese nombre de usuario ya está en uso':'No se pudo guardar el nombre de usuario');}};
+        document.getElementById('btnMenuLogout').onclick=async()=>{await logout();window.location.reload();};
+    }catch(e){menuUserDropdown.innerHTML='<div class="menu-user-title">Usuario</div><div class="menu-user-line">No se pudo comprobar el estado de la sesión.</div>';}
+}
+menuUserBtn.addEventListener('click',async(e)=>{e.stopPropagation();if(menuUserDropdown.classList.contains('activo'))cerrarMenuUsuario();else{await renderMenuUsuario();abrirMenuUsuario();}});
+document.addEventListener('click',(e)=>{if(!menuUserDropdown.contains(e.target)&&!menuUserBtn.contains(e.target))cerrarMenuUsuario();});
+
+(async () => { throw new Error("No disponible"); });
+const logout = DecisionVarAPI.logout || (async () => {});
+const loginConGoogle = DecisionVarAPI.loginConGoogle || (async () => alert("Inicio de sesión no disponible"));
+const menuUserBtn = document.getElementById("menuUserBtn");
+const menuUserDropdown = document.getElementById("menuUserDropdown");
 
 function formatearConSigno(v){
     const n=Number(v)||0;
