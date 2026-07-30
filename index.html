@@ -2830,6 +2830,68 @@ body{
     }
 }
 
+
+
+/* =========================================================
+   CORRECCIÓN REAL DE ESCRITORIO — SIN ALTERAR MÓVIL
+   Restaura la escala original y muestra completa la cabecera.
+   ========================================================= */
+@media (min-width:769px){
+    body{
+        zoom:.90 !important;
+    }
+
+    .cabecera{
+        height:170px !important;
+        background-size:100% 100% !important;
+        background-position:center center !important;
+        background-repeat:no-repeat !important;
+    }
+
+    .menu{
+        top:170px !important;
+        height:62px !important;
+    }
+
+    .contenido{
+        margin-top:232px !important;
+        min-height:calc(100vh - 232px) !important;
+        padding-top:34px !important;
+    }
+
+    .contenido::before{
+        inset:232px 0 0 !important;
+    }
+
+    .wrap{
+        width:min(1180px,90%) !important;
+    }
+
+    .cabecera-portada h1,
+    .cabecera-resultados h1{
+        font-size:34px !important;
+    }
+
+    .cabecera-jugada h2{
+        font-size:27px !important;
+    }
+
+    .contenido-jugada{
+        display:grid !important;
+        grid-template-columns:minmax(0,1.58fr) minmax(310px,.72fr) !important;
+        align-items:start !important;
+        gap:16px !important;
+    }
+
+    .contenido-jugada > .seccion-comentarios{
+        grid-column:1 / -1 !important;
+    }
+
+    .marcador-imagen{
+        width:min(980px,100%) !important;
+    }
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
