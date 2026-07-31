@@ -3870,3 +3870,62 @@ document.addEventListener('click',(e)=>{
 
 </body>
 </html>
+
+<style>
+/* =========================================================
+   AJUSTE DEFINITIVO DEL MENÚ SIN LOGIN
+   Cinco accesos iguales, centrados y con iconos más visibles.
+   ========================================================= */
+.menu{
+    display:grid !important;
+    grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+    padding:0 !important;
+    gap:0 !important;
+    overflow:hidden !important;
+}
+
+.menu > a{
+    width:100% !important;
+    min-width:0 !important;
+    height:100% !important;
+    box-sizing:border-box !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:6px !important;
+    padding:5px 10px !important;
+    text-align:center !important;
+}
+
+.menu > a:last-of-type{
+    padding-right:10px !important;
+}
+
+.menu-icono{
+    width:28px !important;
+    height:28px !important;
+    flex:0 0 28px !important;
+    stroke-width:1.9 !important;
+}
+
+@media (max-width:768px){
+    .menu{
+        grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+        padding:0 !important;
+    }
+
+    .menu > a{
+        gap:4px !important;
+        padding:4px 3px !important;
+        font-size:9.5px !important;
+        line-height:1.04 !important;
+    }
+
+    .menu-icono{
+        width:23px !important;
+        height:23px !important;
+        flex-basis:23px !important;
+    }
+}
+</style>
