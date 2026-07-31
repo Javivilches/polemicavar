@@ -3015,8 +3015,22 @@ async function initComments(){
         const autorActual=guardarNombre();
 
         if(!autorActual){
+            btnMic?.blur();
+
             alert("Escribe primero tu nombre para poder grabar un comentario de voz.");
-            nombre?.focus();
+
+            setTimeout(()=>{
+                if(nombre){
+                    nombre.disabled=false;
+                    nombre.readOnly=false;
+                    nombre.focus();
+                    nombre.click();
+
+                    const longitud=nombre.value.length;
+                    nombre.setSelectionRange?.(longitud,longitud);
+                }
+            },120);
+
             return;
         }
 
@@ -3161,14 +3175,14 @@ async function initComments(){
     }
 
     function detenerGrabacion(e){
-        e?.preventDefault();
-
         if(
             !grabando ||
             !mediaRecorder
         ){
             return;
         }
+
+        e?.preventDefault();
 
         if(
             mediaRecorder.state!=="inactive"
