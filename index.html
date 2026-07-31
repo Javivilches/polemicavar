@@ -3340,6 +3340,240 @@ body{
     .acciones-comentario{justify-content:space-between;}
     .boton-comentar{flex:1;}
 }
+
+
+/* =========================================================
+   VERSIÓN DE ESCRITORIO RECONSTRUIDA — MÓVIL INTACTO
+   ========================================================= */
+@media (min-width:769px){
+    html,body{
+        zoom:1 !important;
+    }
+
+    body{
+        background:#081426 !important;
+    }
+
+    .cabecera{
+        height:128px !important;
+        background-image:
+            linear-gradient(180deg,rgba(0,0,0,.03),rgba(0,0,0,.18)),
+            url("cabecera-premium.png") !important;
+        background-size:cover !important;
+        background-position:center center !important;
+        background-repeat:no-repeat !important;
+    }
+
+    .menu{
+        top:128px !important;
+        height:70px !important;
+        min-height:70px !important;
+        grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+        padding:0 !important;
+        overflow:hidden !important;
+    }
+
+    .menu > a{
+        height:70px !important;
+        padding:7px 10px !important;
+        gap:5px !important;
+        font-size:11px !important;
+        line-height:1.04 !important;
+    }
+
+    .menu-icono{
+        width:25px !important;
+        height:25px !important;
+        flex-basis:25px !important;
+    }
+
+    .contenido{
+        margin-top:198px !important;
+        min-height:calc(100vh - 198px) !important;
+        padding:30px 0 72px !important;
+    }
+
+    .contenido::before{
+        inset:198px 0 0 !important;
+    }
+
+    .wrap{
+        width:min(980px,92%) !important;
+        max-width:980px !important;
+        margin:0 auto !important;
+    }
+
+    .bloque-portada,
+    .bloque-resultados{
+        border-radius:20px !important;
+        margin-bottom:24px !important;
+    }
+
+    .cabecera-portada,
+    .cabecera-resultados{
+        padding:24px 26px 22px !important;
+    }
+
+    .cabecera-portada h1,
+    .cabecera-resultados h1{
+        font-size:32px !important;
+        line-height:1.08 !important;
+    }
+
+    .cabecera-portada p,
+    .cabecera-resultados p{
+        font-size:14px !important;
+        line-height:1.5 !important;
+    }
+
+    .bloque-jugada{
+        margin:22px 18px 20px !important;
+    }
+
+    .jugada-principal{
+        border-radius:18px !important;
+    }
+
+    .cabecera-jugada{
+        padding:20px 22px 18px !important;
+    }
+
+    .cabecera-jugada h2{
+        font-size:27px !important;
+        line-height:1.1 !important;
+    }
+
+    .descripcion-cabecera-jugada{
+        max-width:none !important;
+        font-size:14px !important;
+        line-height:1.5 !important;
+    }
+
+    /* Misma lectura vertical y cómoda de la versión móvil */
+    .contenido-jugada{
+        display:flex !important;
+        flex-direction:column !important;
+        gap:15px !important;
+        padding:15px !important;
+    }
+
+    .bloque-media-jugada,
+    .panel-votacion,
+    .seccion-comentarios{
+        width:100% !important;
+        min-width:0 !important;
+        grid-column:auto !important;
+        grid-row:auto !important;
+    }
+
+    .imagen-jugada{
+        min-height:390px !important;
+        padding:11px !important;
+    }
+
+    .visor-media{
+        min-height:370px !important;
+        max-height:600px !important;
+    }
+
+    .visor-media img{
+        max-height:600px !important;
+    }
+
+    .galeria-miniaturas{
+        grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+    }
+
+    .panel-votacion{
+        border-radius:14px !important;
+    }
+
+    .panel-votacion-top{
+        padding:16px 18px 10px !important;
+        text-align:center !important;
+    }
+
+    .panel-votacion-top h3{
+        font-size:21px !important;
+    }
+
+    .panel-votacion-top p{
+        font-size:18px !important;
+        line-height:1.35 !important;
+    }
+
+    .botones-voto{
+        display:grid !important;
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+        gap:10px !important;
+        padding:12px 18px !important;
+    }
+
+    .btn-voto{
+        min-height:48px !important;
+        font-size:15px !important;
+    }
+
+    .mensaje-voto{
+        text-align:center !important;
+        padding:0 18px 12px !important;
+    }
+
+    .resultado-box{
+        padding:16px 18px 18px !important;
+    }
+
+    .resumen-votos-bloques{
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+        gap:12px !important;
+    }
+
+    .resumen-voto-card{
+        min-height:112px !important;
+    }
+
+    .seccion-comentarios{
+        margin-top:0 !important;
+        border-radius:14px !important;
+    }
+
+    .cabecera-comentarios{
+        padding:12px 16px !important;
+    }
+
+    .cuerpo-comentarios{
+        padding:14px 16px 16px !important;
+    }
+
+    .nombre-comentario{
+        font-size:14px !important;
+        padding:11px 13px !important;
+    }
+
+    .comentario-editor textarea{
+        min-height:62px !important;
+        font-size:14px !important;
+    }
+
+    .boton-comentar{
+        min-width:190px !important;
+    }
+
+    .marcador-wrap,
+    .marcador-visual-wrap{
+        padding-left:18px !important;
+        padding-right:18px !important;
+    }
+
+    .marcador-imagen{
+        width:100% !important;
+        max-width:900px !important;
+    }
+
+    .tarjeta-aviso-legal .aviso-legal{
+        text-align:left !important;
+    }
+}
 </style>
 
 </head>
