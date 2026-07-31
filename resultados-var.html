@@ -2531,6 +2531,36 @@ h1,h2,h3,h4,.cabecera-resultados h1,.tarjeta-top,.categoria-titulo,.equipo-nombr
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="decisionvar-data.js"></script>
+
+<style>
+/* CONTROLES DEFINITIVOS DE COMENTARIOS */
+#btnMostrarMasResultadosVar,
+#btnOcultarComentariosResultadosVar{
+    display:none;
+}
+#seccionComentariosResultadosVar .mostrar-mas-wrap,
+#seccionComentariosResultadosVar .ocultar-wrap{
+    display:none;
+    margin:10px 8px 0 0;
+    text-align:left;
+}
+#seccionComentariosResultadosVar .lista-comentarios:empty{
+    margin-top:0 !important;
+}
+@media(max-width:768px){
+    #seccionComentariosResultadosVar .mostrar-mas-wrap,
+    #seccionComentariosResultadosVar .ocultar-wrap{
+        width:100%;
+        margin:9px 0 0;
+    }
+    #btnMostrarMasResultadosVar,
+    #btnOcultarComentariosResultadosVar{
+        width:100%;
+        justify-content:center;
+    }
+}
+</style>
+
 </head>
 <body>
 <div class="cabecera"></div>
@@ -2955,7 +2985,6 @@ h1,h2,h3,h4,.cabecera-resultados h1,.tarjeta-top,.categoria-titulo,.equipo-nombr
 <div class="estado-audio" id="estadoAudioResultadosVar"></div>
 <div class="acciones-comentario">
 <button class="boton-comentar" id="btnPublicarComentarioResultadosVar" type="button">Publicar comentario</button>
-<button class="btn-mostrar-inicial" id="btnMostrarComentariosResultadosVar" type="button">Mostrar comentarios</button>
 </div>
 <div class="lista-comentarios" id="listaComentariosResultadosVar"></div>
 <div class="mostrar-mas-wrap">
@@ -3006,13 +3035,21 @@ async function initComments(){
     const ta = document.getElementById('textoComentarioResultadosVar');
     const nombre = document.getElementById('nombreComentarioResultadosVar');
     const btnPub = document.getElementById('btnPublicarComentarioResultadosVar');
-    const btnShow = document.getElementById('btnMostrarComentariosResultadosVar');
     const btnMore = document.getElementById('btnMostrarMasResultadosVar');
     const btnHide = document.getElementById('btnOcultarComentariosResultadosVar');
+    const moreWrap = btnMore?.closest('.mostrar-mas-wrap');
+    const hideWrap = btnHide?.closest('.ocultar-wrap');
     const btnMic = document.getElementById('btnMicrofonoResultadosVar');
     const estadoAudio = document.getElementById('estadoAudioResultadosVar');
 
+    if(!list || !count || !ta || !nombre || !btnPub || !btnMore || !btnHide){
+        console.warn('No se encontró el bloque completo de comentarios.');
+        return;
+    }
+
     const CLAVE_NOMBRE = 'polemicavar_nombre_comentarios';
+    const COMENTARIOS_INICIALES = 3;
+
     try{
         nombre.value = localStorage.getItem(CLAVE_NOMBRE) || '';
     }catch(e){}
@@ -3028,49 +3065,89 @@ async function initComments(){
     nombre.addEventListener('change', guardarNombre);
     nombre.addEventListener('blur', guardarNombre);
 
-    let visibles = 0;
+    let visibles = COMENTARIOS_INICIALES;
     let comments = [];
+
+    function ordenarComentarios(lista){
+        return [...lista].sort((a,b)=>{
+            const fechaA = new Date(a.created_at || a.creado_en || 0).getTime() || 0;
+            const fechaB = new Date(b.created_at || b.creado_en || 0).getTime() || 0;
+            return fechaB - fechaA;
+        });
+    }
 
     function renderAudio(c){
         const url = c.audio_url || c.audioUrl || '';
-        if(!url) return '';
+        if(!url) return '<div class="comentario-texto">Audio no disponible.</div>';
+
+        const duracion = Number(c.duracion_segundos || c.duracion || 0);
+        const etiqueta = duracion
+            ? `Audio · ${Math.floor(duracion/60)}:${String(duracion%60).padStart(2,'0')}`
+            : 'Mensaje de audio';
+
         return `<div class="comentario-audio">
-            <audio controls preload="metadata" src="${escapeHtml(url)}"></audio>
+            <audio controls preload="metadata" playsinline src="${escapeHtml(url)}"></audio>
+            <span style="font-size:12px;color:#667791;">${etiqueta}</span>
         </div>`;
     }
 
-    async function reload(){
-        try{
-            comments = await getComments('resultados','');
-        }catch(e){
-            comments = [];
-        }
+    function render(){
+        const ordenados = ordenarComentarios(comments);
+        const total = ordenados.length;
 
-        count.textContent = `${comments.length} ${comments.length === 1 ? 'comentario' : 'comentarios'}`;
+        count.textContent = `${total} ${total === 1 ? 'comentario' : 'comentarios'}`;
         list.innerHTML = '';
 
-        comments.slice(0, visibles).forEach(c=>{
+        ordenados.slice(0, visibles).forEach(c=>{
             const div = document.createElement('div');
             div.className = 'comentario-item visible';
 
-            const esAudio = String(c.tipo || '').toLowerCase() === 'audio' || !!c.audio_url;
-            const contenido = esAudio
-                ? renderAudio(c)
-                : `<div class="comentario-texto">${escapeHtml(c.texto || '')}</div>`;
+            const esAudio =
+                String(c.tipo || '').toLowerCase() === 'audio' ||
+                Boolean(c.audio_url || c.audioUrl);
+
+            const fecha = c.created_at || c.creado_en || '';
+            const fechaHtml = fecha
+                ? `<span class="comentario-fecha">${escapeHtml(formatDate(fecha))}</span>`
+                : '';
 
             div.innerHTML = `
                 <div class="comentario-cabecera-item">
                     <span class="comentario-autor">${escapeHtml(c.autor || 'Usuario')}</span>
-                    <span class="comentario-fecha">${escapeHtml(formatDate(c.created_at || c.creado_en))}</span>
+                    ${fechaHtml}
                 </div>
-                ${contenido}
+                ${esAudio
+                    ? renderAudio(c)
+                    : `<div class="comentario-texto">${escapeHtml(c.texto || '')}</div>`
+                }
             `;
             list.appendChild(div);
         });
 
-        btnShow.style.display = comments.length > 0 && visibles === 0 ? 'inline-block' : 'none';
-        btnHide.style.display = visibles > 0 ? 'inline-block' : 'none';
-        btnMore.style.display = visibles > 0 && visibles < comments.length ? 'inline-block' : 'none';
+        // "Mostrar más" solo aparece cuando existen más de tres comentarios
+        // y la lista continúa replegada.
+        const mostrarMas = total > COMENTARIOS_INICIALES && visibles < total;
+        btnMore.style.display = mostrarMas ? 'inline-flex' : 'none';
+        if(moreWrap) moreWrap.style.display = mostrarMas ? 'inline-flex' : 'none';
+
+        // "Ocultar" aparece después de desplegar todos los comentarios.
+        const mostrarOcultar =
+            total > COMENTARIOS_INICIALES &&
+            visibles >= total;
+
+        btnHide.style.display = mostrarOcultar ? 'inline-flex' : 'none';
+        if(hideWrap) hideWrap.style.display = mostrarOcultar ? 'inline-flex' : 'none';
+    }
+
+    async function reload(){
+        try{
+            const cargados = await getComments('resultados','');
+            comments = Array.isArray(cargados) ? cargados : [];
+        }catch(e){
+            console.error('No se pudieron cargar los comentarios:', e);
+            comments = [];
+        }
+        render();
     }
 
     btnPub.onclick = async()=>{
@@ -3091,124 +3168,113 @@ async function initComments(){
 
         btnPub.disabled = true;
         try{
+            if(typeof api.ensureAnonymousSession === 'function'){
+                await api.ensureAnonymousSession();
+            }
             await addComment('resultados', txt, '', autor);
             ta.value = '';
-            visibles = Math.max(visibles, 5);
+            visibles = Math.max(visibles, COMENTARIOS_INICIALES);
             await reload();
         }catch(e){
+            console.error(e);
             alert(e?.message || 'No se pudo publicar el comentario');
         }finally{
             btnPub.disabled = false;
         }
     };
 
-    btnShow.onclick = ()=>{ visibles = 5; reload(); };
-    btnMore.onclick = ()=>{ visibles += 5; reload(); };
-    btnHide.onclick = ()=>{ visibles = 0; reload(); };
+    btnMore.onclick = ()=>{
+        visibles = comments.length;
+        render();
+    };
 
-    let mediaRecorder=null;
-    let audioChunks=[];
-    let audioStream=null;
-    let inicioGrabacion=0;
-    let intervaloAudio=null;
-    let grabando=false;
-    let audioPendiente=null;
-    let duracionPendiente=0;
+    btnHide.onclick = ()=>{
+        visibles = COMENTARIOS_INICIALES;
+        render();
+        document.getElementById('seccionComentariosResultadosVar')
+            ?.scrollIntoView({behavior:'smooth', block:'nearest'});
+    };
+
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let audioStream = null;
+    let inicioGrabacion = 0;
+    let intervaloAudio = null;
+    let grabando = false;
+    let enviandoAudio = false;
 
     function actualizarEstadoAudio(texto, activo=false){
         if(!estadoAudio) return;
-        estadoAudio.textContent=texto;
-        estadoAudio.classList.toggle('grabando',activo);
+        estadoAudio.textContent = texto;
+        estadoAudio.classList.toggle('grabando', activo);
     }
 
-    function limpiarGrabacion(){
+    function cerrarMicrofono(){
         if(intervaloAudio){
             clearInterval(intervaloAudio);
-            intervaloAudio=null;
+            intervaloAudio = null;
         }
-
         if(audioStream){
-            audioStream.getTracks().forEach(t=>t.stop());
-            audioStream=null;
+            audioStream.getTracks().forEach(track=>track.stop());
+            audioStream = null;
         }
-
-        grabando=false;
+        grabando = false;
         btnMic?.classList.remove('grabando');
     }
 
-    async function enviarAudioPendiente(){
-        if(!audioPendiente) return false;
-
-        const autor=guardarNombre();
+    async function publicarAudio(blob, duracion){
+        const autor = guardarNombre();
 
         if(!autor){
-            actualizarEstadoAudio(
-                'Audio guardado. Escribe tu nombre y vuelve a pulsar el micrófono para enviarlo.'
-            );
-            nombre?.focus();
-            return false;
+            actualizarEstadoAudio('Escribe tu nombre antes de grabar.');
+            nombre.focus();
+            return;
         }
 
-        const blob=audioPendiente;
-        const duracion=duracionPendiente;
-
+        enviandoAudio = true;
+        btnMic.disabled = true;
         actualizarEstadoAudio('Enviando audio…');
-        btnMic.disabled=true;
 
         try{
-            await addAudioComment(
-                'resultados',
-                blob,
-                '',
-                autor,
-                duracion
-            );
+            if(typeof api.ensureAnonymousSession === 'function'){
+                await api.ensureAnonymousSession();
+            }
 
-            audioPendiente=null;
-            duracionPendiente=0;
-            visibles=Math.max(visibles,5);
-
-            actualizarEstadoAudio('Audio enviado.');
+            await addAudioComment('resultados', blob, '', autor, duracion);
+            visibles = Math.max(visibles, COMENTARIOS_INICIALES);
             await reload();
+            actualizarEstadoAudio('Audio enviado.');
 
             setTimeout(()=>{
-                if(estadoAudio?.textContent==='Audio enviado.'){
-                    actualizarEstadoAudio('');
+                if(estadoAudio?.textContent === 'Audio enviado.'){
+                    actualizarEstadoAudio('Mantén pulsado el micrófono y suelta para enviar.');
                 }
             },1800);
-
-            return true;
-
         }catch(err){
-            console.error('Error al publicar audio en Resultados VAR:',err);
-
-            const mensaje=
+            console.error('Error al publicar audio:', err);
+            const mensaje =
                 err?.message ||
                 err?.error_description ||
                 'No se pudo guardar el audio';
-
             actualizarEstadoAudio(`No se pudo enviar: ${mensaje}`);
             alert(mensaje);
-            return false;
-
         }finally{
-            btnMic.disabled=false;
+            enviandoAudio = false;
+            btnMic.disabled = false;
         }
     }
 
     async function comenzarGrabacion(e){
         e.preventDefault();
 
-        /*
-         * Si ya existe un audio pendiente, el siguiente toque intenta
-         * enviarlo en lugar de borrar la grabación y comenzar otra.
-         */
-        if(audioPendiente){
-            await enviarAudioPendiente();
+        if(grabando || enviandoAudio) return;
+
+        const autor = guardarNombre();
+        if(!autor){
+            alert('Escribe tu nombre antes de grabar el audio.');
+            nombre.focus();
             return;
         }
-
-        if(grabando) return;
 
         if(!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder){
             alert('Este navegador no permite grabar audio. Prueba con Chrome, Edge o Safari actualizado.');
@@ -3216,251 +3282,117 @@ async function initComments(){
         }
 
         try{
-            audioStream=await navigator.mediaDevices.getUserMedia({audio:true});
+            if(e.pointerId != null && btnMic?.setPointerCapture){
+                try{ btnMic.setPointerCapture(e.pointerId); }catch(_){}
+            }
 
-            const tipos=[
+            audioStream = await navigator.mediaDevices.getUserMedia({audio:true});
+
+            const tipos = [
                 'audio/webm;codecs=opus',
                 'audio/webm',
                 'audio/mp4',
                 'audio/ogg;codecs=opus'
             ];
 
-            const mimeType=
-                tipos.find(t=>MediaRecorder.isTypeSupported?.(t)) || '';
+            const mimeType = tipos.find(tipo=>
+                typeof MediaRecorder.isTypeSupported !== 'function' ||
+                MediaRecorder.isTypeSupported(tipo)
+            ) || '';
 
-            mediaRecorder=new MediaRecorder(
+            mediaRecorder = new MediaRecorder(
                 audioStream,
                 mimeType ? {mimeType} : undefined
             );
 
-            audioChunks=[];
+            audioChunks = [];
 
-            mediaRecorder.ondataavailable=ev=>{
-                if(ev.data?.size) audioChunks.push(ev.data);
+            mediaRecorder.ondataavailable = evento=>{
+                if(evento.data?.size) audioChunks.push(evento.data);
             };
 
-            mediaRecorder.onstop=async()=>{
-                const duracion=Math.max(
+            mediaRecorder.onerror = evento=>{
+                console.error('Error de MediaRecorder:', evento.error || evento);
+                cerrarMicrofono();
+                actualizarEstadoAudio('No se pudo completar la grabación.');
+            };
+
+            mediaRecorder.onstop = async()=>{
+                const duracion = Math.max(
                     1,
-                    Math.round((Date.now()-inicioGrabacion)/1000)
+                    Math.round((Date.now() - inicioGrabacion) / 1000)
                 );
 
-                const tipoBase=String(
-                    mediaRecorder.mimeType ||
+                const tipoBlob =
+                    mediaRecorder?.mimeType ||
                     audioChunks[0]?.type ||
-                    'audio/webm'
-                ).split(';')[0];
+                    'audio/webm';
 
-                const blob=new Blob(audioChunks,{type:tipoBase});
+                const blob = new Blob(audioChunks, {type:tipoBlob});
+                cerrarMicrofono();
 
-                limpiarGrabacion();
-
-                if(blob.size<500){
-                    actualizarEstadoAudio('Audio demasiado corto.');
+                if(blob.size < 500){
+                    actualizarEstadoAudio('Audio demasiado corto. Mantén pulsado un poco más.');
                     return;
                 }
 
-                /*
-                 * Se conserva siempre la grabación antes de pedir el nombre.
-                 * Así nunca se pierde aunque el usuario aún no lo haya escrito.
-                 */
-                audioPendiente=blob;
-                duracionPendiente=duracion;
-
-                const autor=guardarNombre();
-
-                if(!autor){
-                    actualizarEstadoAudio(
-                        'Audio guardado. Escribe tu nombre y vuelve a pulsar el micrófono para enviarlo.'
-                    );
-                    nombre?.focus();
-                    return;
-                }
-
-                await enviarAudioPendiente();
+                await publicarAudio(blob, duracion);
             };
 
-            mediaRecorder.start();
-            grabando=true;
-            inicioGrabacion=Date.now();
-
-            btnMic?.classList.add('grabando');
-            actualizarEstadoAudio(
-                'Grabando 0:00 · suelta para enviar',
-                true
-            );
-
-            intervaloAudio=setInterval(()=>{
-                const s=Math.floor(
-                    (Date.now()-inicioGrabacion)/1000
-                );
-
-                actualizarEstadoAudio(
-                    `Grabando ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')} · suelta para enviar`,
-                    true
-                );
-
-                if(s>=120) detenerGrabacion();
-            },250);
-
-        }catch(err){
-            console.error('Error de micrófono:',err);
-            limpiarGrabacion();
-            actualizarEstadoAudio('Permiso de micrófono no concedido.');
-        }
-    }
-
-    function detenerGrabacion(e){
-        e?.preventDefault();
-
-        if(!grabando || !mediaRecorder) return;
-
-        if(mediaRecorder.state!=='inactive'){
-            mediaRecorder.stop();
-        }
-    }
-
-    /*
-     * Al escribir el nombre después de grabar, se conserva el audio.
-     * El usuario puede enviarlo pulsando de nuevo el micrófono.
-     */
-    nombre?.addEventListener('input',()=>{
-        if(audioPendiente && String(nombre.value || '').trim()){
-            actualizarEstadoAudio(
-                'Audio preparado. Pulsa el micrófono para enviarlo.'
-            );
-        }
-    });
-
-    if(btnMic){
-        btnMic.addEventListener('pointerdown',comenzarGrabacion);
-        btnMic.addEventListener('pointerup',detenerGrabacion);
-        btnMic.addEventListener('pointercancel',detenerGrabacion);
-        btnMic.addEventListener('pointerleave',e=>{
-            if(grabando && e.buttons===0){
-                detenerGrabacion(e);
-            }
-        });
-        btnMic.addEventListener('contextmenu',e=>e.preventDefault());
-    }
-
-    await reload();
-
-                    setTimeout(()=>{
-                        if(estadoAudio?.textContent==='Audio enviado.'){
-                            actualizarEstadoAudio('');
-                        }
-                    },1800);
-
-                }catch(err){
-                    console.error('Error al publicar audio en Resultados VAR:',err);
-
-                    const mensaje=
-                        err?.message ||
-                        err?.error_description ||
-                        'No se pudo guardar el audio';
-
-                    actualizarEstadoAudio(`No se pudo enviar: ${mensaje}`);
-                    alert(mensaje);
-                }
-            };
-
-            mediaRecorder.start();
-            grabando=true;
-            inicioGrabacion=Date.now();
-
-            btnMic?.classList.add('grabando');
-            actualizarEstadoAudio(
-                'Grabando 0:00 · suelta para enviar',
-                true
-            );
-
-            intervaloAudio=setInterval(()=>{
-                const s=Math.floor(
-                    (Date.now()-inicioGrabacion)/1000
-                );
-
-                actualizarEstadoAudio(
-                    `Grabando ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')} · suelta para enviar`,
-                    true
-                );
-
-                if(s>=120) detenerGrabacion();
-            },250);
-
-        }catch(err){
-            console.error('Error de micrófono:',err);
-            limpiarGrabacion();
-            actualizarEstadoAudio('Permiso de micrófono no concedido.');
-        }
-    }
-
-    function detenerGrabacion(e){
-        e?.preventDefault();
-
-        if(!grabando || !mediaRecorder) return;
-
-        if(mediaRecorder.state!=='inactive'){
-            mediaRecorder.stop();
-        }
-    }
-
-    if(btnMic){
-        btnMic.addEventListener('pointerdown',comenzarGrabacion);
-        btnMic.addEventListener('pointerup',detenerGrabacion);
-        btnMic.addEventListener('pointercancel',detenerGrabacion);
-        btnMic.addEventListener('pointerleave',e=>{
-            if(grabando && e.buttons===0){
-                detenerGrabacion(e);
-            }
-        });
-        btnMic.addEventListener('contextmenu',e=>e.preventDefault());
-    }
-
-    await reload();
-                    setTimeout(()=>{ estadoAudio.textContent = ''; }, 1800);
-                }catch(e){
-                    estadoAudio.textContent = '';
-                    alert(e?.message || 'No se pudo publicar el audio');
-                }finally{
-                    btnMic.disabled = false;
-                    detenerPistas();
-                }
-            };
-
-            mediaRecorder.start();
-            inicioGrabacion = Date.now();
+            mediaRecorder.start(250);
             grabando = true;
+            inicioGrabacion = Date.now();
             btnMic.classList.add('grabando');
-            estadoAudio.textContent = 'Grabando... suelta para enviar';
-        }catch(e){
-            detenerPistas();
-            alert('No se pudo acceder al micrófono');
+            actualizarEstadoAudio('Grabando 0:00 · suelta para enviar', true);
+
+            intervaloAudio = setInterval(()=>{
+                const segundos = Math.floor((Date.now() - inicioGrabacion) / 1000);
+                actualizarEstadoAudio(
+                    `Grabando ${Math.floor(segundos/60)}:${String(segundos%60).padStart(2,'0')} · suelta para enviar`,
+                    true
+                );
+
+                if(segundos >= 120){
+                    detenerGrabacion();
+                }
+            },250);
+
+        }catch(err){
+            console.error('No se pudo acceder al micrófono:', err);
+            cerrarMicrofono();
+
+            if(err?.name === 'NotAllowedError' || err?.name === 'PermissionDeniedError'){
+                actualizarEstadoAudio('Permiso de micrófono no concedido.');
+                alert('Debes permitir el acceso al micrófono para enviar audios.');
+            }else{
+                actualizarEstadoAudio('No se pudo iniciar la grabación.');
+                alert('No se pudo acceder al micrófono.');
+            }
         }
     }
 
-    function finalizarGrabacion(ev){
-        if(ev) ev.preventDefault();
-        if(!grabando) return;
+    function detenerGrabacion(e){
+        e?.preventDefault();
 
-        grabando = false;
-        btnMic.classList.remove('grabando');
+        if(!grabando || !mediaRecorder) return;
 
-        if(mediaRecorder && mediaRecorder.state !== 'inactive'){
+        if(mediaRecorder.state !== 'inactive'){
             mediaRecorder.stop();
-        }else{
-            detenerPistas();
-            estadoAudio.textContent = '';
         }
     }
 
-    btnMic.addEventListener('pointerdown', iniciarGrabacion);
-    btnMic.addEventListener('pointerup', finalizarGrabacion);
-    btnMic.addEventListener('pointercancel', finalizarGrabacion);
-    btnMic.addEventListener('pointerleave', e=>{
-        if(grabando && e.buttons === 0) finalizarGrabacion(e);
-    });
-    btnMic.addEventListener('contextmenu', e=>e.preventDefault());
+    if(btnMic){
+        actualizarEstadoAudio('Mantén pulsado el micrófono y suelta para enviar.');
+
+        btnMic.addEventListener('pointerdown', comenzarGrabacion);
+        btnMic.addEventListener('pointerup', detenerGrabacion);
+        btnMic.addEventListener('pointercancel', detenerGrabacion);
+        btnMic.addEventListener('lostpointercapture', ()=>{
+            if(grabando) detenerGrabacion();
+        });
+        btnMic.addEventListener('contextmenu', e=>e.preventDefault());
+        btnMic.addEventListener('dragstart', e=>e.preventDefault());
+    }
 
     await reload();
 }
