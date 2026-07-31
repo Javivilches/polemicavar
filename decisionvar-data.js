@@ -445,57 +445,54 @@ window.DecisionVarData = (() => {
     };
   }
 
+  async function ensureAnonymousSession() {
+    if (!supabase) return null;
+
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (sessionData?.session?.user) return sessionData.session.user;
+
+    const { data, error } = await supabase.auth.signInAnonymously();
+    if (error) throw error;
+    return data?.user || data?.session?.user || null;
+  }
+
   async function getUsuarioActual() {
     if (!supabase) return null;
     try {
-      const { data, error } = await supabase.auth.getUser();
-      if (error) throw error;
-      return data?.user || null;
+      return await ensureAnonymousSession();
     } catch (e) {
-      console.error("No se pudo obtener el usuario actual", e);
+      console.error("No se pudo iniciar la sesión anónima", e);
       return null;
     }
   }
 
   async function getPerfilActual() {
-    if (!supabase) return null;
     const user = await getUsuarioActual();
-    if (!user) return null;
-
-    try {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("id,username")
-        .eq("id", user.id)
-        .maybeSingle();
-
-      if (error) throw error;
-      return data || null;
-    } catch (e) {
-      console.error("No se pudo obtener el perfil actual", e);
-      return null;
-    }
+    return user ? { id: user.id, username: "Usuario" } : null;
   }
 
-  async function crearPerfil(username) {
-    if (!supabase) throw new Error("Supabase no disponible");
-    const user = await getUsuarioActual();
-    if (!user) throw new Error("No hay usuario autenticado");
+  async function crearPerfil() {
+    return true;
+  }
 
-    const limpio = String(username || "").trim();
-    if (!limpio) throw new Error("Nombre de usuario vacío");
+  function voteStorageKey(jugadaId) {
+    return `polemicavar_voto_${String(jugadaId || "")}`;
+  }
 
-    const { error } = await supabase
-      .from("profiles")
-      .insert({ id: user.id, username: limpio });
+  function getUserVote(jugadaId) {
+    try { return localStorage.getItem(voteStorageKey(jugadaId)) || ""; }
+    catch { return ""; }
+  }
 
-    if (error) throw error;
+  function setUserVote(jugadaId, voto) {
+    try { localStorage.setItem(voteStorageKey(jugadaId), String(voto || "")); }
+    catch {}
   }
 
   async function getCurrentUserVote(jugadaId) {
-    if (!supabase) return "";
+    if (!supabase) return getUserVote(jugadaId);
     const user = await getUsuarioActual();
-    if (!user) return "";
+    if (!user) return getUserVote(jugadaId);
 
     try {
       const { data, error } = await supabase
@@ -506,128 +503,107 @@ window.DecisionVarData = (() => {
         .maybeSingle();
 
       if (error) throw error;
-      return data?.voto || "";
+      if (data?.voto) setUserVote(jugadaId, data.voto);
+      return data?.voto || getUserVote(jugadaId);
     } catch (e) {
-      console.error("No se pudo obtener el voto del usuario", e);
-      return "";
+      console.error("No se pudo obtener el voto del navegador", e);
+      return getUserVote(jugadaId);
     }
   }
 
   async function getComments(scope, jugadaId = "") {
     if (!supabase) return [];
 
+    // Primero intenta el esquema moderno usado por la web.
     try {
       let query = supabase
         .from("comentarios")
-        .select("id,autor,texto,created_at,jugada_id,tipo,audio_url,audio_path,mime_type,duracion_seg")
-        .eq("scope", scope)
-        .order("created_at", { ascending: false });
+        .select("*")
+        .order("creado_en", { ascending: false });
 
+      if (scope) query = query.eq("alcance", scope);
       if (jugadaId) query = query.eq("jugada_id", jugadaId);
       else query = query.is("jugada_id", null);
 
       const { data, error } = await query;
       if (error) throw error;
-      return data || [];
-    } catch (e) {
-      console.error("No se pudieron cargar comentarios online", e);
-      return [];
+      return (data || []).map(c => ({ ...c, created_at: c.created_at || c.creado_en }));
+    } catch (firstError) {
+      try {
+        let query = supabase
+          .from("comentarios")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        if (scope) query = query.eq("scope", scope);
+        if (jugadaId) query = query.eq("jugada_id", jugadaId);
+        else query = query.is("jugada_id", null);
+
+        const { data, error } = await query;
+        if (error) throw error;
+        return data || [];
+      } catch (e) {
+        console.error("No se pudieron cargar comentarios online", e);
+        return [];
+      }
     }
   }
 
-  async function addComment(scope, text, jugadaId = "") {
+  async function addComment(scope, text, jugadaId = "", autor = "") {
     if (!supabase) throw new Error("Servicio no disponible");
 
-    const user = await getUsuarioActual();
-    if (!user) throw new Error("Debes iniciar sesión para comentar");
+    const limpioTexto = String(text || "").trim();
+    const limpioAutor = String(autor || "").trim();
+    if (!limpioTexto) throw new Error("Escribe un comentario");
+    if (!limpioAutor) throw new Error("Escribe un nombre");
 
-    const perfil = await getPerfilActual();
-    if (!perfil?.username) throw new Error("Debes crear un nombre de usuario antes de comentar");
+    let payload = {
+      texto: limpioTexto,
+      autor: limpioAutor,
+      alcance: scope || null,
+      jugada_id: jugadaId || null
+    };
 
-    const payload = {
-      texto: text,
-      autor: perfil.username,
+    let { error } = await supabase.from("comentarios").insert(payload);
+    if (!error) return;
+
+    payload = {
+      texto: limpioTexto,
+      autor: limpioAutor,
       scope: scope || null,
       jugada_id: jugadaId || null,
       tipo: "texto"
     };
-
-    let { error } = await supabase.from("comentarios").insert(payload);
-
-    if (error) {
-      delete payload.scope;
-      const retry = await supabase.from("comentarios").insert(payload);
-      if (retry.error) throw retry.error;
-    }
+    const retry = await supabase.from("comentarios").insert(payload);
+    if (retry.error) throw retry.error;
   }
 
-  async function addAudioComment(scope, audioBlob, jugadaId = "", duracionSeg = 0) {
-    if (!supabase) throw new Error("Servicio no disponible");
-
-    const user = await getUsuarioActual();
-    if (!user) throw new Error("Debes iniciar sesión para comentar");
-
-    const perfil = await getPerfilActual();
-    if (!perfil?.username) throw new Error("Debes crear un nombre de usuario antes de comentar");
-
-    if (!(audioBlob instanceof Blob) || !audioBlob.size) {
-      throw new Error("Audio inválido");
-    }
-
-    const ext = (audioBlob.type || "").includes("mp4") ? "m4a" : "webm";
-    const safeJugada = String(jugadaId || "general").replace(/[^a-zA-Z0-9_-]/g, "");
-    const fileName = `${user.id}/${safeJugada}/${Date.now()}.${ext}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from("comentarios-audio")
-      .upload(fileName, audioBlob, {
-        contentType: audioBlob.type || "audio/webm",
-        upsert: false
-      });
-
-    if (uploadError) throw uploadError;
-
-    const { data: pub } = supabase.storage
-      .from("comentarios-audio")
-      .getPublicUrl(fileName);
-
-    const payload = {
-      texto: "",
-      autor: perfil.username,
-      scope: scope || null,
-      jugada_id: jugadaId || null,
-      tipo: "audio",
-      audio_url: pub?.publicUrl || "",
-      audio_path: fileName,
-      mime_type: audioBlob.type || "audio/webm",
-      duracion_seg: Number(duracionSeg || 0)
-    };
-
-    let { error } = await supabase.from("comentarios").insert(payload);
-
-    if (error) {
-      delete payload.scope;
-      const retry = await supabase.from("comentarios").insert(payload);
-      if (retry.error) throw retry.error;
-    }
+  async function addAudioComment() {
+    throw new Error("Los comentarios de audio no están disponibles sin cuenta");
   }
 
   async function addVote(jugadaId, voto) {
     if (!supabase) throw new Error("Servicio no disponible");
 
-    const user = await getUsuarioActual();
-    if (!user) throw new Error("Debes iniciar sesión");
-
-    const perfil = await getPerfilActual();
-    if (!perfil?.username) throw new Error("Debes crear un nombre de usuario antes de votar");
+    const user = await ensureAnonymousSession();
+    if (!user) throw new Error("No se pudo identificar este navegador");
 
     const { error } = await supabase.from("votos").insert({
-      jugada_id: jugadaId,
+      jugada_id: String(jugadaId),
       user_id: user.id,
-      voto
+      voto: String(voto || "").toLowerCase()
     });
 
-    if (error) throw error;
+    if (error) {
+      if (error.code === "23505") {
+        const err = new Error("Ya has votado en esta encuesta desde este navegador");
+        err.code = "ALREADY_VOTED";
+        throw err;
+      }
+      throw error;
+    }
+
+    setUserVote(jugadaId, voto);
   }
 
   function formatDate(dateValue) {
@@ -723,6 +699,9 @@ window.DecisionVarData = (() => {
     getUsuarioActual,
     getPerfilActual,
     crearPerfil,
-    getCurrentUserVote
+    getCurrentUserVote,
+    ensureAnonymousSession,
+    getUserVote,
+    setUserVote
   };
 })();
