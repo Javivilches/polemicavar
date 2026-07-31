@@ -3270,9 +3270,24 @@ async function initComments(){
         if(grabando || enviandoAudio) return;
 
         const autor = guardarNombre();
+
         if(!autor){
-            alert('Escribe tu nombre antes de grabar el audio.');
-            nombre.focus();
+            btnMic?.blur();
+
+            alert('Escribe primero tu nombre para poder grabar un comentario de voz.');
+
+            setTimeout(()=>{
+                if(nombre){
+                    nombre.disabled=false;
+                    nombre.readOnly=false;
+                    nombre.focus();
+                    nombre.click();
+
+                    const longitud=nombre.value.length;
+                    nombre.setSelectionRange?.(longitud,longitud);
+                }
+            },120);
+
             return;
         }
 
@@ -3372,9 +3387,9 @@ async function initComments(){
     }
 
     function detenerGrabacion(e){
-        e?.preventDefault();
-
         if(!grabando || !mediaRecorder) return;
+
+        e?.preventDefault();
 
         if(mediaRecorder.state !== 'inactive'){
             mediaRecorder.stop();
