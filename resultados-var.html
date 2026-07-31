@@ -1,380 +1,3480 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reparar resultados-var.html</title>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Resultados</title>
+<link href="Imagenes/favicon.png" rel="icon" type="image/png"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&amp;family=Barlow+Condensed:wght@600;700;800&amp;family=Oswald:wght@400;500;600;700&amp;family=Roboto+Condensed:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <style>
-:root{color-scheme:dark}
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh;display:grid;place-items:center;background:#071427;color:#f4f7fb;font-family:Arial,sans-serif;padding:24px}
-.card{width:min(720px,100%);background:linear-gradient(180deg,#102a55,#081a38);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:28px;box-shadow:0 22px 60px rgba(0,0,0,.38)}
-h1{margin:0 0 10px;font-size:28px}p{color:#cdd8e8;line-height:1.5}.pasos{margin:18px 0;padding:16px;border-radius:14px;background:rgba(255,255,255,.06)}
-input{display:block;width:100%;padding:13px;border:1px solid rgba(255,255,255,.16);border-radius:10px;background:#fff;color:#15233b;margin:14px 0}
-button{width:100%;border:0;border-radius:10px;padding:13px 16px;background:linear-gradient(135deg,#174d9c,#2974d7);color:#fff;font-weight:700;font-size:15px;cursor:pointer}
-button:disabled{opacity:.45;cursor:not-allowed}.estado{min-height:24px;margin-top:14px;font-weight:700}.ok{color:#7ee2a8}.error{color:#ff9a9a}
-code{color:#ffe28b}
+body{
+    margin:0;
+    font-family:Inter, Arial, Helvetica, sans-serif;
+    background:#111;
+    zoom:0.90;
+}
+
+h1,h2,h3,h4{
+    font-family:"Barlow Condensed", sans-serif;
+    letter-spacing:.5px;
+    margin:0;
+}
+
+/* CABECERA */
+.cabecera{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:170px;
+    background-image:url("cabecera.png");
+    background-size:100% 100%;
+    background-position:center;
+    background-repeat:no-repeat;
+    z-index:1000;
+}
+
+/* MENÚ */
+.menu{
+    position:fixed;
+    top:170px;
+    left:0;
+    width:100%;
+    height:46px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:44px;
+    z-index:1001;
+    overflow:hidden;
+    background:linear-gradient(
+        90deg,
+        #0b2d6b 0%,
+        #123f8c 18%,
+        #5b1232 42%,
+        #c7ccd3 52%,
+        #e3e7ec 72%,
+        #f3f5f7 88%,
+        #ffffff 100%
+    );
+}
+
+.menu::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:50%;
+    height:100%;
+    background:linear-gradient(90deg, rgba(0,0,0,0.18), rgba(0,0,0,0.05));
+    pointer-events:none;
+}
+
+.menu::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:5px;
+    transform:translateX(-50%);
+    width:2px;
+    height:34px;
+    background:linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.10),
+        rgba(255,255,255,0.80),
+        rgba(255,255,255,0.10)
+    );
+    pointer-events:none;
+}
+
+.menu a{
+    position:relative;
+    z-index:2;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:700;
+    text-transform:uppercase;
+    padding:6px 10px;
+    border-radius:6px;
+    transition:all .2s ease;
+}
+
+.menu a:hover{
+    background:rgba(255,255,255,0.15);
+}
+
+/* Inicio + Resultados VAR en blanco */
+.menu a:nth-child(1),
+.menu a:nth-child(3){
+    color:white;
+}
+
+/* Jugadas polémicas (lo dejamos como estaba) */
+.menu a:nth-child(2){
+    color:white;
+}
+
+/* Quién ha sido más favorecido + Árbitros en tono azul */
+.menu a:nth-child(4),
+.menu a:nth-child(5){
+    color:#0a2f6b;
+}
+
+/* CONTENIDO */
+.contenido{
+    margin-top:216px;
+    background:linear-gradient(
+        90deg,
+        #081b48 0%,
+        #113b86 16%,
+        #5f0f32 34%,
+        #1f2430 50%,
+        #9ca7b3 67%,
+        #e7ebef 84%,
+        #ffffff 100%
+    );
+    padding:30px 0 85px;
+    min-height:calc(100vh - 216px);
+}
+
+.wrap{
+    width:min(1380px, 93%);
+    margin:auto;
+}
+
+.bloque-resultados{
+    background:rgba(8,12,20,0.72);
+    border-radius:24px;
+    overflow:hidden;
+    box-shadow:0 14px 30px rgba(0,0,0,0.28);
+}
+
+.cabecera-resultados{
+    padding:24px 28px 18px;
+    background:linear-gradient(90deg,#163b78,#2a5fb0);
+    color:white;
+}
+
+.cabecera-resultados h1{
+    font-size:32px;
+    margin-bottom:6px;
+}
+
+.cabecera-resultados p{
+    margin:0;
+    font-size:15px;
+    color:#dfe8f3;
+}
+
+/* MARCADOR */
+.marcador-wrap{
+    padding:22px 22px 12px;
+    display:flex;
+    justify-content:center;
+}
+
+#marcadorGlobalContainer{
+    width:100%;
+    display:flex;
+    justify-content:center;
+}
+
+.caja-cargando,
+.caja-error{
+    padding:22px 26px;
+    color:white;
+    font-size:15px;
+}
+
+.marcador-global{
+    width:1100px;
+    max-width:95%;
+    position:relative;
+    border-radius:26px;
+    overflow:hidden;
+    box-shadow:
+        0 16px 34px rgba(0,0,0,0.22),
+        inset 3px 0 0 #1d5fd1,
+        inset -3px 0 0 #ffffff;
+    border:1px solid rgba(255,255,255,0.09);
+    background:linear-gradient(90deg, rgba(14,44,106,0.88) 0%, rgba(24,89,190,0.68) 20%, rgba(95,15,50,0.78) 45%, rgba(72,78,88,0.68) 54%, rgba(238,241,245,0.84) 78%, rgba(255,255,255,0.95) 100%);
+}
+
+.marcador-global::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+        linear-gradient(rgba(5,12,22,0.25), rgba(5,12,22,0.38)),
+        url("campnou.jpg") left center / 50% 100% no-repeat,
+        url("bernabeu.jpg") right center / 50% 100% no-repeat;
+    opacity:0.58;
+    pointer-events:none;
+}
+
+.marcador-grid{
+    position:relative;
+    z-index:2;
+    display:grid;
+    grid-template-columns:1fr 230px 1fr;
+    align-items:start;
+    gap:10px;
+    padding:12px 22px 14px;
+    min-height:190px;
+}
+
+.equipo-panel{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.equipo-panel.barca{
+    align-items:flex-start;
+    text-align:left;
+}
+
+.equipo-panel.madrid{
+    align-items:flex-end;
+    text-align:right;
+}
+
+.equipo-head{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.equipo-panel.madrid .equipo-head{
+    flex-direction:row-reverse;
+}
+
+.escudo{
+    width:78px;
+    height:auto;
+    display:block;
+    filter:drop-shadow(0 6px 12px rgba(0,0,0,0.22));
+}
+
+.equipo-nombre{
+    font-family:"Barlow Condensed", sans-serif;
+    font-size:34px;
+    font-weight:700;
+    color:#fff;
+    text-shadow:0 3px 12px rgba(0,0,0,0.30);
+    letter-spacing:.3px;
+}
+
+.subdatos{
+    display:grid;
+    grid-template-columns:repeat(2, 148px);
+    gap:10px;
+}
+
+.equipo-panel.barca .subdatos{
+    justify-content:start;
+}
+
+.equipo-panel.madrid .subdatos{
+    justify-content:end;
+}
+
+.subdatos .mini-dato:nth-child(3){
+    grid-column:1 / span 2;
+    justify-self:center;
+}
+
+.mini-dato{
+    width:148px;
+    min-width:148px;
+    background:rgba(255,255,255,0.96);
+    border:1px solid rgba(0,0,0,0.04);
+    box-shadow:0 3px 8px rgba(0,0,0,0.08);
+    border-radius:14px;
+    padding:4px 4px 3px;
+    text-align:center;
+    backdrop-filter:blur(2px);
+    box-sizing:border-box;
+}
+
+.mini-dato .et{
+    display:block;
+    font-family:"Barlow Condensed", sans-serif;
+    font-size:14px;
+    font-weight:700;
+    color:#526981;
+    margin-bottom:2px;
+    text-transform:uppercase;
+    line-height:1.05;
+    letter-spacing:.3px;
+}
+
+.mini-dato .vl{
+    display:block;
+    font-family:"Barlow Condensed", sans-serif;
+    font-size:32px;
+    font-weight:800;
+    line-height:1;
+    color:#000;
+}
+
+.total-global-wrap{
+    width:306px;
+    margin-top:6px;
+    display:grid;
+    grid-template-columns:148px 148px;
+    gap:10px;
+    justify-content:center;
+}
+
+.total-global{
+    min-width:148px;
+    grid-column:1 / span 2;
+    justify-self:center;
+    background:linear-gradient(180deg, rgba(10,18,34,0.92), rgba(6,11,22,0.96));
+    border:1px solid rgba(255,255,255,0.14);
+    box-shadow:
+        0 10px 22px rgba(0,0,0,0.24),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    border-radius:16px;
+    padding:11px 13px 10px;
+    text-align:center;
+}
+
+.total-global .et{
+    display:block;
+    font-family:"Barlow Condensed", sans-serif;
+    font-size:14px;
+    font-weight:700;
+    color:#dce5f1;
+    margin-bottom:4px;
+    text-transform:uppercase;
+    line-height:1.05;
+    letter-spacing:.4px;
+}
+
+.total-global .vl{
+    display:block;
+    font-family:"Barlow Condensed", sans-serif;
+    font-size:36px;
+    font-weight:800;
+    line-height:1;
+    color:#ffffff;
+}
+
+.marcador-centro{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    padding-top:6px;
+}
+
+.marcador-titulo{
+    font-family:"Barlow Condensed", sans-serif;
+    font-size:18px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:#ffffff;
+    text-shadow:0 2px 8px rgba(0,0,0,0.30);
+}
+
+.score-box{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    width:100%;
+    padding:14px 18px;
+    border-radius:24px;
+    background:rgba(8,14,24,0.78);
+    border:1px solid rgba(255,255,255,0.10);
+    box-shadow:0 14px 24px rgba(0,0,0,0.24);
+}
+
+.score{
+    font-family:"Barlow Condensed", sans-serif;
+    font-size:84px;
+    line-height:.9;
+    font-weight:800;
+    text-shadow:0 3px 12px rgba(0,0,0,0.34);
+    color:#ffffff;
+}
+
+.score-sep{
+    color:#ffffff;
+    font-size:48px;
+    font-weight:900;
+    transform:translateY(-2px);
+}
+
+.score-leyenda{
+    font-family:"Barlow Condensed", sans-serif;
+    font-size:15px;
+    font-weight:700;
+    color:#dce5f1;
+    text-transform:uppercase;
+    letter-spacing:.8px;
+    text-align:center;
+    line-height:1.15;
+}
+
+/* COLUMNAS */
+.columnas-equipos{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+    padding:10px 18px 22px;
+    align-items:start;
+}
+
+.columna-equipo{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.tarjeta-equipo{
+    border-radius:22px;
+    overflow:hidden;
+    box-shadow:0 14px 28px rgba(0,0,0,0.22);
+}
+
+.tarjeta-top{
+    padding:14px 18px;
+    text-align:center;
+    font-weight:900;
+    font-size:28px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    font-family:"Barlow Condensed", sans-serif;
+}
+
+.tabla-madrid{
+    background:linear-gradient(145deg, rgba(247,249,252,0.98), rgba(226,232,239,0.98));
+    border:1px solid rgba(0,0,0,0.08);
+}
+
+.tabla-madrid .tarjeta-top{
+    color:#17324d;
+    background:linear-gradient(90deg,#ffffff 0%, #f1f4f8 30%, #dbe1e8 68%, #c9d0d8 100%);
+    box-shadow:inset 0 -1px 0 rgba(0,0,0,0.08);
+}
+
+.tabla-barca{
+    background:linear-gradient(145deg, rgba(24,26,55,0.96), rgba(49,16,52,0.95));
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+.tabla-barca .tarjeta-top{
+    color:#fff;
+    background:linear-gradient(90deg,#133f97 0%, #1d5dc0 25%, #6d123c 68%, #8e153f 100%);
+    box-shadow:inset 0 -1px 0 rgba(255,255,255,0.12);
+}
+
+.tarjeta-body{
+    padding:14px;
+}
+
+.bloques-categoria{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+.bloque-categoria{
+    border-radius:16px;
+    overflow:hidden;
+}
+
+.tabla-madrid .bloque-categoria{
+    background:rgba(255,255,255,0.48);
+    border:1px solid rgba(0,0,0,0.08);
+}
+
+.tabla-barca .bloque-categoria{
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+.categoria-titulo{
+    padding:12px 16px;
+    font-size:22px;
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    text-align:center;
+    font-family:"Barlow Condensed", sans-serif;
+}
+
+.tabla-madrid .categoria-titulo{
+    color:#17324d;
+    background:linear-gradient(90deg, rgba(220,228,236,0.95), rgba(203,214,224,0.95));
+}
+
+.tabla-barca .categoria-titulo{
+    color:white;
+    background:linear-gradient(90deg, rgba(20,63,151,0.92), rgba(130,21,61,0.92));
+}
+
+.tabla-wrap{
+    overflow-x:auto;
+    display:flex;
+    justify-content:center;
+    padding:0;
+}
+
+.resumen-table{
+    width:100%;
+    border-collapse:collapse;
+    table-layout:auto;
+    min-width:0;
+    margin:0 auto;
+}
+
+.resumen-table th,
+.resumen-table td{
+    padding:13px 14px;
+    border:1px solid transparent;
+    text-align:center;
+    vertical-align:middle;
+    font-size:15px;
+    line-height:1.18;
+}
+
+.tabla-madrid .resumen-table th,
+.tabla-madrid .resumen-table td{
+    border-color:rgba(0,0,0,0.08);
+    color:#17324d;
+}
+
+.tabla-barca .resumen-table th,
+.tabla-barca .resumen-table td{
+    border-color:rgba(255,255,255,0.10);
+    color:#eef3fa;
+}
+
+.resumen-table thead th{
+    font-size:14px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.35px;
+}
+
+.tabla-madrid .resumen-table thead th{
+    background:rgba(18,42,66,0.08);
+}
+
+.tabla-barca .resumen-table thead th{
+    background:rgba(255,255,255,0.07);
+}
+
+thead .pregunta-arbitro{
+    font-size:14px;
+    letter-spacing:.35px;
+    border-bottom:1px solid rgba(0,0,0,0.10);
+}
+
+.tabla-barca thead .pregunta-arbitro{
+    border-bottom:1px solid rgba(255,255,255,0.12);
+}
+
+.col-concepto{
+    width:58%;
+    text-align:left !important;
+    font-weight:700;
+    font-size:15px;
+    padding-left:14px !important;
+    white-space:normal;
+}
+
+.col-total,.col-si,.col-no,.col-balance{
+    width:10.5%;
+    font-weight:800;
+    white-space:nowrap;
+}
+
+.fila-total-bloque td{
+    font-weight:900;
+    font-size:16px;
+}
+
+.tabla-madrid .fila-total-bloque td{
+    background:rgba(23,50,77,0.08);
+}
+
+.tabla-barca .fila-total-bloque td{
+    background:rgba(255,255,255,0.08);
+}
+
+.total-label{
+    text-align:right !important;
+    padding-right:16px !important;
+    letter-spacing:.4px;
+}
+
+.fila-hover:hover td{
+    filter:brightness(1.03);
+}
+
+/* COLORES */
+.valor-pos{
+    color:#18b35a !important;
+    font-weight:900;
+}
+
+.valor-neg{
+    color:#df3b34 !important;
+    font-weight:900;
+}
+
+.valor-neutro{
+    color:#173f7a !important;
+    font-weight:900;
+}
+
+.blanco{
+    color:#ffffff !important;
+}
+
+.rojo{
+    color:#ff2145 !important;
+}
+
+.tabla-barca .valor-neutro{
+    color:#8fc0ff !important;
+}
+
+/* COMENTARIOS */
+.seccion-comentarios{
+    margin:0 18px 18px;
+    background:white;
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 8px 18px rgba(0,0,0,0.16);
+}
+
+.cabecera-comentarios{
+    padding:8px 12px;
+    border-bottom:1px solid #eee;
+}
+
+.cabecera-comentarios h3{
+    margin:0 0 4px;
+    font-size:18px;
+    color:#17324d;
+}
+
+.cabecera-comentarios p{
+    margin:0;
+    font-size:13px;
+    color:#666;
+}
+
+.cuerpo-comentarios{
+    padding:10px 12px;
+}
+
+.textarea-comentario{
+    width:100%;
+    padding:8px;
+    border-radius:8px;
+    border:1px solid #d0d7e2;
+    resize:vertical;
+    min-height:55px;
+    box-sizing:border-box;
+    font-size:13px;
+    font-family:Inter, Arial, Helvetica, sans-serif;
+}
+
+.boton-comentar,
+.btn-mostrar-inicial{
+    margin-top:8px;
+    padding:8px 14px;
+    border:none;
+    border-radius:8px;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    font-size:13px;
+}
+
+.boton-comentar{
+    background:#1f4fb0;
+}
+
+.btn-mostrar-inicial{
+    background:#444;
+    margin-left:8px;
+}
+
+.lista-comentarios{
+    margin-top:14px;
+}
+
+.comentario-item{
+    display:none;
+    padding:10px;
+    background:#f6f8fc;
+    border-left:4px solid #1f4fb0;
+    border-radius:8px;
+    margin-bottom:8px;
+    font-size:14px;
+}
+
+.comentario-item.visible{
+    display:block;
+}
+
+.comentario-cabecera-item{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    align-items:center;
+    margin-bottom:6px;
+}
+
+.comentario-autor{
+    font-weight:700;
+    color:#17324d;
+}
+
+.comentario-fecha{
+    font-size:12px;
+    color:#6c7a91;
+}
+
+.comentario-texto{
+    color:#253750;
+    line-height:1.45;
+    white-space:pre-wrap;
+}
+
+.mostrar-mas-wrap,
+.ocultar-wrap{
+    text-align:center;
+    margin-top:10px;
+}
+
+.btn-mostrar-mas,
+.btn-ocultar{
+    border:none;
+    padding:7px 14px;
+    border-radius:8px;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    font-size:13px;
+}
+
+.btn-mostrar-mas{
+    background:#1f4fb0;
+}
+
+.btn-ocultar{
+    background:#777;
+}
+
+/* AVISO LEGAL */
+.aviso-legal{
+    margin:0 18px 18px;
+    padding:14px 16px;
+    font-size:12px;
+    color:#d7dfef;
+    background:rgba(255,255,255,0.06);
+    border-radius:14px;
+    line-height:1.45;
+    text-align:center;
+    box-shadow:0 8px 18px rgba(0,0,0,0.16);
+}
+
+@media (max-width: 1450px){
+    body{
+        zoom:1;
+    }
+
+    .resumen-table th,
+    .resumen-table td{
+        padding:11px 10px;
+        font-size:14px;
+    }
+
+    .col-concepto{
+        font-size:14px;
+    }
+}
+
+@media (max-width: 1200px){
+    .marcador-grid{
+        grid-template-columns:1fr;
+        gap:18px;
+    }
+
+    .equipo-panel.barca,
+    .equipo-panel.madrid{
+        align-items:center;
+        text-align:center;
+    }
+
+    .equipo-panel.madrid .equipo-head{
+        flex-direction:row;
+    }
+
+    .equipo-panel.madrid .subdatos{
+        justify-content:center;
+    }
+
+    .total-global-wrap{
+        align-self:center;
+    }
+}
+
+@media (max-width: 1100px){
+    .columnas-equipos{
+        grid-template-columns:1fr;
+    }
+}
+
+@media (max-width: 768px){
+    .cabecera{
+        height:130px;
+    }
+
+    .menu{
+        top:130px;
+        height:42px;
+        gap:18px;
+        padding:0 10px;
+    }
+
+    .menu a{
+        font-size:11px;
+    }
+
+    .contenido{
+        margin-top:172px;
+        padding:16px 0 50px;
+    }
+
+    .wrap{
+        width:96%;
+    }
+
+    .cabecera-resultados{
+        padding:18px;
+    }
+
+    .cabecera-resultados h1{
+        font-size:26px;
+    }
+
+    .marcador-wrap{
+        padding:14px 12px 8px;
+    }
+
+    .marcador-grid{
+        padding:16px;
+        min-height:auto;
+    }
+
+    .equipo-nombre{
+        font-size:27px;
+    }
+
+    .escudo{
+        width:64px;
+    }
+
+    .score{
+        font-size:68px;
+    }
+
+    .score-sep{
+        font-size:38px;
+    }
+
+    .mini-dato{
+        width:130px;
+        min-width:130px;
+    }
+
+    .mini-dato .et{
+        font-size:12px;
+    }
+
+    .mini-dato .vl{
+        font-size:25px;
+    }
+
+    .subdatos{
+        grid-template-columns:130px 130px;
+    }
+
+    .total-global-wrap{
+        width:270px;
+        grid-template-columns:130px 130px;
+    }
+
+    .total-global{
+        min-width:126px;
+        padding:9px 10px 8px;
+    }
+
+    .total-global .et{
+        font-size:12px;
+    }
+
+    .total-global .vl{
+        font-size:30px;
+    }
+
+    .columnas-equipos{
+        padding:8px 12px 16px;
+        gap:14px;
+    }
+
+    .tarjeta-top{
+        font-size:23px;
+        padding:14px 12px;
+    }
+
+    .tarjeta-body{
+        padding:10px;
+    }
+
+    .categoria-titulo{
+        font-size:18px;
+    }
+
+    .tabla-wrap{
+        justify-content:flex-start;
+    }
+
+    .resumen-table th,
+    .resumen-table td{
+        font-size:12px;
+        padding:9px 7px;
+    }
+
+    .col-concepto{
+        font-size:12px;
+    }
+
+    .btn-mostrar-inicial{
+        margin-left:0;
+        display:block;
+        width:100%;
+    }
+}
+
+
+/* ===== AJUSTES EXTRA MOVIL ===== */
+@media (max-width: 768px){
+
+    .cabecera{
+        background-size:contain !important;
+        background-position:center center !important;
+        background-repeat:no-repeat !important;
+        background-color:#0b1e3a;
+    }
+
+    .menu{
+        top:78px !important;
+        height:auto !important;
+        min-height:44px !important;
+        padding:6px 8px !important;
+        gap:8px !important;
+        justify-content:flex-start !important;
+        overflow-x:auto !important;
+        overflow-y:hidden !important;
+        flex-wrap:nowrap !important;
+        white-space:nowrap !important;
+        -webkit-overflow-scrolling:touch;
+        scrollbar-width:none;
+    }
+
+    .menu::-webkit-scrollbar{
+        display:none;
+    }
+
+    .menu a{
+        flex:0 0 auto !important;
+        display:inline-flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        min-height:32px !important;
+        padding:7px 10px !important;
+        font-size:11px !important;
+        line-height:1.05 !important;
+        white-space:nowrap !important;
+        border-radius:8px !important;
+    }
+
+    .contenido{
+        margin-top:132px !important;
+    }
+
+    .wrap{
+        width:96% !important;
+    }
+}
+
+@media (max-width: 768px){
+    .marcador-wrap{
+        padding:10px 6px 6px !important;
+    }
+
+    #marcadorGlobalContainer,
+    .marcador-global{
+        width:100% !important;
+        max-width:100% !important;
+        overflow:hidden !important;
+        border-radius:18px !important;
+    }
+
+    #marcadorGlobalContainer .marcador-grid,
+    .marcador-grid{
+        grid-template-columns:1fr !important;
+        gap:12px !important;
+        min-height:auto !important;
+        padding:14px 10px 16px !important;
+    }
+
+    #marcadorGlobalContainer .equipo-panel,
+    .equipo-panel{
+        align-items:center !important;
+        text-align:center !important;
+    }
+
+    #marcadorGlobalContainer .equipo-head,
+    .equipo-head{
+        gap:10px !important;
+        justify-content:center !important;
+        flex-direction:row !important;
+    }
+
+    #marcadorGlobalContainer .equipo-nombre,
+    .equipo-nombre{
+        font-size:17px !important;
+        line-height:1.05 !important;
+    }
+
+    #marcadorGlobalContainer .escudo,
+    .escudo{
+        width:40px !important;
+        height:auto !important;
+    }
+
+    #marcadorGlobalContainer .subdatos,
+    .subdatos{
+        width:100% !important;
+        max-width:240px !important;
+        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+        gap:8px !important;
+        justify-content:center !important;
+        margin:0 auto !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato,
+    .mini-dato{
+        width:100% !important;
+        min-width:0 !important;
+        padding:6px 6px 5px !important;
+        border-radius:10px !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato .et,
+    .mini-dato .et{
+        font-size:10px !important;
+        line-height:1.1 !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato .vl,
+    .mini-dato .vl{
+        font-size:17px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .total-global-wrap,
+    .total-global-wrap{
+        width:100% !important;
+        max-width:240px !important;
+        grid-template-columns:1fr !important;
+        gap:8px !important;
+        margin:0 auto !important;
+    }
+
+    #marcadorGlobalContainer .total-global,
+    .total-global{
+        width:100% !important;
+        min-width:0 !important;
+        padding:8px 8px !important;
+        border-radius:16px !important;
+    }
+
+    #marcadorGlobalContainer .total-global .et,
+    .total-global .et{
+        font-size:10px !important;
+    }
+
+    #marcadorGlobalContainer .total-global .vl,
+    .total-global .vl{
+        font-size:22px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .marcador-centro,
+    .marcador-centro{
+        gap:8px !important;
+        padding-top:2px !important;
+    }
+
+    #marcadorGlobalContainer .marcador-titulo,
+    .marcador-titulo{
+        font-size:13px !important;
+        line-height:1.15 !important;
+    }
+
+    #marcadorGlobalContainer .score-box,
+    .score-box{
+        width:100% !important;
+        max-width:280px !important;
+        margin:0 auto !important;
+        padding:12px 10px !important;
+        gap:8px !important;
+        border-radius:18px !important;
+    }
+
+    #marcadorGlobalContainer .score,
+    .score{
+        font-size:34px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .score-sep,
+    .score-sep{
+        font-size:22px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .score-leyenda,
+    .score-leyenda{
+        max-width:260px !important;
+        margin:0 auto !important;
+        font-size:10px !important;
+        line-height:1.2 !important;
+    }
+}
+
+@media (max-width: 768px){
+    .cabecera-resultados{
+        padding:16px 14px !important;
+    }
+
+    .cabecera-resultados h1{
+        font-size:22px !important;
+    }
+
+    .columnas-equipos{
+        padding:8px 10px 14px !important;
+        gap:12px !important;
+    }
+
+    .tarjeta-top{
+        font-size:20px !important;
+        padding:12px 10px !important;
+    }
+
+    .tarjeta-body{
+        padding:10px !important;
+    }
+
+    .resumen-table th,
+    .resumen-table td{
+        font-size:12px !important;
+        padding:8px 6px !important;
+    }
+}
+
+
+
+/* ===== AJUSTE FINAL MOVIL MENU + MARCADOR ===== */
+@media (max-width: 768px){
+    .menu{
+        top:80px !important;
+        height:58px !important;
+        min-height:58px !important;
+        padding:0 !important;
+        gap:0 !important;
+        display:grid !important;
+        grid-template-columns:repeat(5, minmax(0, 1fr)) !important;
+        align-items:stretch !important;
+        justify-content:stretch !important;
+        overflow:hidden !important;
+        white-space:normal !important;
+    }
+
+    .menu::before,
+    .menu::after{
+        display:none !important;
+    }
+
+    .menu a{
+        min-width:0 !important;
+        width:100% !important;
+        height:58px !important;
+        padding:4px 3px !important;
+        border-radius:0 !important;
+        display:flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        text-align:center !important;
+        font-size:9.5px !important;
+        line-height:1.02 !important;
+        letter-spacing:0 !important;
+        white-space:normal !important;
+        word-break:keep-all !important;
+        overflow-wrap:normal !important;
+        box-sizing:border-box !important;
+    }
+
+    .menu a span{
+        display:block !important;
+    }
+
+    .contenido{
+        margin-top:138px !important;
+        min-height:calc(100vh - 138px) !important;
+    }
+}
+
+@media (max-width: 430px){
+    .menu{
+        height:56px !important;
+        min-height:56px !important;
+    }
+
+    .menu a{
+        height:56px !important;
+        font-size:8.6px !important;
+        padding:4px 2px !important;
+    }
+
+    .contenido{
+        margin-top:136px !important;
+        min-height:calc(100vh - 136px) !important;
+    }
+}
+
+@media (max-width: 768px){
+    #marcadorGlobalContainer,
+    .marcador-global{
+        width:100% !important;
+        max-width:100% !important;
+    }
+
+    #marcadorGlobalContainer .marcador-grid,
+    .marcador-grid{
+        grid-template-columns:minmax(0, 1fr) 108px minmax(0, 1fr) !important;
+        gap:10px !important;
+        padding:10px 10px 12px !important;
+        align-items:start !important;
+    }
+
+    #marcadorGlobalContainer .equipo-panel.barca,
+    #marcadorGlobalContainer .equipo-panel.madrid,
+    .equipo-panel.barca,
+    .equipo-panel.madrid{
+        align-items:center !important;
+        text-align:center !important;
+    }
+
+    #marcadorGlobalContainer .equipo-panel.barca .equipo-head,
+    .equipo-panel.barca .equipo-head{
+        flex-direction:row-reverse !important;
+        gap:6px !important;
+        justify-content:center !important;
+    }
+
+    #marcadorGlobalContainer .equipo-head,
+    .equipo-head{
+        gap:6px !important;
+        justify-content:center !important;
+    }
+
+    #marcadorGlobalContainer .equipo-panel.madrid .equipo-head,
+    .equipo-panel.madrid .equipo-head{
+        flex-direction:row !important;
+    }
+
+    #marcadorGlobalContainer .escudo,
+    .escudo{
+        width:40px !important;
+    }
+
+    #marcadorGlobalContainer .equipo-nombre,
+    .equipo-nombre{
+        font-size:13px !important;
+        line-height:1 !important;
+        letter-spacing:0 !important;
+    }
+
+    #marcadorGlobalContainer .subdatos,
+    .subdatos{
+        width:100% !important;
+        max-width:100% !important;
+        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+        gap:5px !important;
+        justify-content:stretch !important;
+    }
+
+    #marcadorGlobalContainer .subdatos .mini-dato:nth-child(3),
+    .subdatos .mini-dato:nth-child(3){
+        grid-column:1 / span 2 !important;
+        justify-self:stretch !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato,
+    .mini-dato{
+        width:100% !important;
+        min-width:0 !important;
+        border-radius:10px !important;
+        padding:4px 3px 3px !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato .et,
+    .mini-dato .et{
+        font-size:9px !important;
+        line-height:1 !important;
+        margin-bottom:1px !important;
+    }
+
+    #marcadorGlobalContainer .mini-dato .vl,
+    .mini-dato .vl{
+        font-size:18px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .total-global-wrap,
+    .total-global-wrap{
+        width:100% !important;
+        grid-template-columns:1fr !important;
+        gap:5px !important;
+        margin-top:4px !important;
+    }
+
+    #marcadorGlobalContainer .total-global,
+    .total-global{
+        grid-column:1 !important;
+        min-width:0 !important;
+        width:100% !important;
+        padding:7px 6px !important;
+        border-radius:14px !important;
+    }
+
+    #marcadorGlobalContainer .total-global .et,
+    .total-global .et{
+        font-size:9px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .total-global .vl,
+    .total-global .vl{
+        font-size:22px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .marcador-centro,
+    .marcador-centro{
+        gap:5px !important;
+        justify-content:center !important;
+        align-self:center !important;
+        padding-top:16px !important;
+    }
+
+    #marcadorGlobalContainer .marcador-titulo,
+    .marcador-titulo{
+        font-size:10px !important;
+        line-height:1.05 !important;
+    }
+
+    #marcadorGlobalContainer .score-box,
+    .score-box{
+        width:100% !important;
+        padding:9px 6px !important;
+        border-radius:16px !important;
+        gap:4px !important;
+    }
+
+    #marcadorGlobalContainer .score,
+    .score{
+        font-size:34px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .score-sep,
+    .score-sep{
+        font-size:20px !important;
+        line-height:1 !important;
+    }
+
+    #marcadorGlobalContainer .score-leyenda,
+    .score-leyenda{
+        font-size:8px !important;
+        line-height:1.02 !important;
+        letter-spacing:0 !important;
+        max-width:108px !important;
+        margin:0 auto !important;
+    }
+}
+
+
+@media (max-width: 768px){
+
+    .marcador-centro{
+        transform: translateX(-8px);
+    }
+
+    .marcador-titulo,
+    .score-leyenda{
+        transform: translateX(6px);
+    }
+
+}
+
+
+/* =========================================================
+   ESTILO PREMIUM UNIFICADO — RESULTADOS VAR
+   ========================================================= */
+:root{
+    --pv-text:#f7f9fc;
+    --pv-line:rgba(160,194,235,.22);
+}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+body{margin:0!important;zoom:1!important;overflow-x:hidden;background:#081427!important;color:var(--pv-text);font-family:"Roboto Condensed",Arial,Helvetica,sans-serif!important;}
+h1,h2,h3,h4,.cabecera-resultados h1,.tarjeta-top,.categoria-titulo,.equipo-nombre,.marcador-titulo,.score,.score-sep,.mini-dato .et,.mini-dato .vl,.total-global .et,.total-global .vl{font-family:"Oswald",Arial,sans-serif!important;}
+
+.cabecera{height:142px!important;background-image:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.22)),url("cabecera-premium.png")!important;background-size:cover!important;background-position:center 48%!important;border-bottom:1px solid rgba(255,255,255,.08);box-shadow:0 12px 34px rgba(0,0,0,.42);}
+.menu{top:142px!important;height:62px!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:0!important;align-items:stretch!important;background:rgba(7,11,18,.975)!important;border-bottom:1px solid rgba(255,255,255,.08);box-shadow:0 10px 26px rgba(0,0,0,.28);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
+.menu::before{content:""!important;position:absolute!important;inset:0 auto 0 0!important;width:30%!important;height:auto!important;background:linear-gradient(90deg,rgba(202,10,54,.13),transparent)!important;pointer-events:none;}
+.menu::after{content:""!important;position:absolute!important;inset:0 0 0 auto!important;width:30%!important;height:auto!important;transform:none!important;background:linear-gradient(270deg,rgba(255,255,255,.09),transparent)!important;pointer-events:none;}
+.menu a{position:relative;z-index:2;min-width:0;padding:0 14px!important;border-radius:0!important;display:flex!important;align-items:center;justify-content:center;text-align:center;color:#dbe3ef!important;font-size:12px!important;line-height:1.05;font-weight:700;letter-spacing:.25px;transition:background .2s ease,color .2s ease;}
+.menu a+a{border-left:1px solid rgba(255,255,255,.055);}.menu a:hover{background:rgba(255,255,255,.045)!important;color:#fff!important;}.menu a:nth-child(3){color:#fff!important;}.menu a:nth-child(3)::after{content:"";position:absolute;left:22%;right:22%;bottom:0;height:3px;border-radius:99px 99px 0 0;background:linear-gradient(90deg,#d3123f,#f1cd79);box-shadow:0 0 18px rgba(211,18,63,.38);}
+
+.contenido{position:relative!important;isolation:isolate!important;overflow:hidden!important;margin-top:204px!important;min-height:calc(100vh - 204px)!important;padding:42px 0 90px!important;background:radial-gradient(ellipse 30% 140% at -6% 50%,rgba(138,10,58,.92) 0%,rgba(138,10,58,.78) 22%,rgba(138,10,58,.52) 42%,rgba(138,10,58,.16) 64%,rgba(138,10,58,0) 78%),linear-gradient(90deg,#5e0d2f 0%,#6f1138 8%,#53183b 14%,#243a73 26%,#173b7b 37%,#4d5f7a 50%,#98a3b1 67%,#d6dce4 84%,#f7f9fc 100%)!important;}
+.contenido::before{content:"";position:absolute;inset:0;z-index:-2;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.02),transparent 32%,rgba(0,0,0,.07))!important;}
+.contenido::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.10),rgba(0,0,0,.06) 26%,rgba(0,0,0,.04) 50%,rgba(255,255,255,.02) 82%,transparent),radial-gradient(ellipse 58% 90% at 102% 50%,rgba(255,255,255,.18),rgba(255,255,255,.07) 28%,transparent 68%)!important;}
+.wrap{width:min(1240px,92%)!important;position:relative;z-index:1;}
+
+.bloque-resultados{background:linear-gradient(180deg,rgba(5,24,52,.98),rgba(4,18,40,.99))!important;border:1px solid var(--pv-line)!important;border-radius:24px!important;box-shadow:0 22px 48px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.035)!important;}
+.cabecera-resultados{padding:30px 32px 26px!important;background:radial-gradient(circle at 48% 38%,rgba(28,91,173,.34),rgba(20,65,128,.18) 34%,transparent 66%),linear-gradient(115deg,#061a3d 0%,#082758 43%,#0a3472 68%,#082550 100%)!important;border-bottom:1px solid rgba(255,255,255,.16)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),inset 0 -1px 0 rgba(0,0,0,.32)!important;}
+.cabecera-resultados h1{font-size:38px!important;line-height:1.05;margin-bottom:9px!important;font-weight:700;letter-spacing:-.7px;}.cabecera-resultados p{font-family:"Roboto Condensed",Arial,sans-serif!important;color:#f1f4fa!important;font-size:15px!important;line-height:1.55;}
+.marcador-global{background:linear-gradient(90deg,rgba(7,22,58,.96),rgba(19,28,43,.96) 48%,rgba(223,228,235,.93))!important;border:1px solid rgba(255,255,255,.10)!important;box-shadow:0 20px 44px rgba(0,0,0,.34),inset 2px 0 0 rgba(29,95,209,.75),inset -2px 0 0 rgba(255,255,255,.78)!important;}.marcador-global::before{opacity:.34!important;filter:saturate(.78) contrast(1.05);}
+
+.tarjeta-equipo{border-radius:22px!important;box-shadow:0 20px 44px rgba(0,0,0,.30)!important;}
+.tabla-barca{background:linear-gradient(180deg,rgba(8,31,66,.98),rgba(4,18,40,.99))!important;border:1px solid rgba(160,194,235,.22)!important;}
+.tabla-barca .tarjeta-top{background:radial-gradient(circle at 50% 35%,rgba(25,88,170,.30),transparent 65%),linear-gradient(115deg,#061a3d,#082758 45%,#0a3472 72%,#082550)!important;border-bottom:1px solid rgba(255,255,255,.15);}
+.tabla-madrid{background:linear-gradient(180deg,rgba(242,245,249,.98),rgba(211,218,227,.98))!important;border:1px solid rgba(255,255,255,.55)!important;}
+.tabla-madrid .tarjeta-top{background:linear-gradient(115deg,#f8fafc,#e7ebf0 55%,#cfd6df)!important;color:#17324d!important;border-bottom:1px solid rgba(0,0,0,.10);}
+.tarjeta-top{font-size:30px!important;letter-spacing:-.2px!important;text-transform:none!important;padding:20px 22px!important;}
+.tabla-barca .bloque-categoria{background:rgba(255,255,255,.045)!important;border-color:rgba(255,255,255,.10)!important;}.tabla-madrid .bloque-categoria{background:rgba(255,255,255,.60)!important;border-color:rgba(24,50,77,.10)!important;}
+.tabla-barca .categoria-titulo{background:linear-gradient(115deg,#0b2b61,#0c3c81 62%,#124b9a)!important;color:#fff!important;}.tabla-madrid .categoria-titulo{background:linear-gradient(90deg,#e6ebf1,#cfd7e0)!important;color:#17324d!important;}
+.categoria-titulo{font-size:22px!important;letter-spacing:.2px!important;}
+.resumen-table th,.resumen-table td{font-family:"Roboto Condensed",Arial,sans-serif!important;}
+.seccion-comentarios{background:#f7f9fc!important;border-radius:16px!important;box-shadow:0 12px 28px rgba(0,0,0,.22)!important;}.textarea-comentario{font-family:"Roboto Condensed",Arial,sans-serif!important;}.boton-comentar,.btn-mostrar-mas{background:linear-gradient(135deg,#174d9c,#2567c7)!important;}.aviso-legal{font-family:"Roboto Condensed",Arial,sans-serif!important;color:#cdd7e6!important;background:rgba(4,18,40,.56)!important;border:1px solid rgba(255,255,255,.08);}
+
+@media(max-width:768px){
+.cabecera{height:92px!important;background-position:center 50%!important;}.menu{top:92px!important;height:64px!important;min-height:64px!important;padding:0!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;overflow:hidden!important;}.menu::before,.menu::after{display:block!important;}.menu a{height:64px!important;padding:6px 4px!important;font-size:9px!important;line-height:1.05!important;white-space:normal!important;}.menu a:nth-child(3)::after{left:18%;right:18%;height:3px;}.contenido{margin-top:156px!important;min-height:calc(100vh - 156px)!important;padding:20px 0 60px!important;background:radial-gradient(ellipse 44% 120% at -10% 50%,rgba(138,10,58,.88),rgba(138,10,58,.72) 24%,rgba(138,10,58,.36) 48%,transparent 74%),linear-gradient(90deg,#5b0d2d 0%,#691336 12%,#3e234f 20%,#224179 34%,#40607f 50%,#a3adbb 71%,#e0e5eb 88%,#fafbfd 100%)!important;}.wrap{width:94%!important;}.bloque-resultados{border-radius:20px!important;}.cabecera-resultados{padding:24px 22px 21px!important;}.cabecera-resultados h1{font-size:29px!important;}.cabecera-resultados p{font-size:14px!important;line-height:1.45!important;}.tarjeta-top{font-size:24px!important;padding:17px 14px!important;}
+}
+
+/* =========================================================
+   MARCADOR GLOBAL DINÁMICO
+   La imagen conserva todo el diseño y el HTML solo añade cifras.
+   ========================================================= */
+.marcador-visual-wrap{
+    padding:30px 18px 20px !important;
+}
+
+.marcador-visual-container{
+    width:100%;
+    display:flex;
+    justify-content:center;
+}
+
+.marcador-imagen{
+    position:relative;
+    width:min(1380px,100%);
+    aspect-ratio:1672 / 941;
+    overflow:hidden;
+    border-radius:clamp(16px,2.3vw,34px);
+    box-shadow:0 24px 54px rgba(0,0,0,.38),0 4px 14px rgba(0,0,0,.22);
+    background:#06101d;
+}
+
+.marcador-imagen > img{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    user-select:none;
+    pointer-events:none;
+}
+
+.marcador-imagen .dato{
+    position:absolute;
+    z-index:3;
+    transform:translate(-50%,-50%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:"Oswald",Arial,sans-serif !important;
+    font-weight:700;
+    line-height:1;
+    color:#fff;
+    text-shadow:0 4px 14px rgba(0,0,0,.72);
+}
+
+.marcador-imagen .dato-stat{
+    font-size:clamp(20px,3vw,42px);
+    width:9%;
+    height:9%;
+    font-weight:600;
+    opacity:.96;
+}
+
+.barca-penaltis{left:9.9%;top:43.7%;}
+.barca-rojas{left:23.4%;top:43.7%;}
+.barca-goles{left:16.8%;top:66.3%;}
+.madrid-penaltis{left:75.4%;top:43.7%;}
+.madrid-rojas{left:88.6%;top:43.7%;}
+.madrid-goles{left:82.3%;top:66.3%;}
+
+.score-dinamico{
+    position:absolute;
+    z-index:3;
+    left:49.7%;
+    top:53.5%;
+    transform:translate(-50%,-50%);
+    width:31%;
+    height:25%;
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    justify-items:center;
+    gap:4%;
+    background:transparent;
+    box-shadow:none;
+}
+
+.score-dinamico .dato{
+    position:static;
+    transform:none;
+}
+
+.score-dato{
+    font-size:clamp(58px,7.6vw,112px);
+    text-shadow:0 5px 18px rgba(0,0,0,.78),0 0 18px rgba(255,255,255,.08);
+}
+
+.score-separador{
+    font-family:"Oswald",Arial,sans-serif;
+    font-weight:500;
+    color:#8f99a8;
+    font-size:clamp(24px,3vw,44px);
+    line-height:1;
+    opacity:.88;
+    text-shadow:none;
+}
+
+.marcador-imagen .dato-total{
+    font-size:clamp(38px,5vw,72px);
+    width:12%;
+    height:10%;
+    text-shadow:0 5px 18px rgba(0,0,0,.76),0 0 16px rgba(255,255,255,.08);
+}
+
+.total-barca{left:16.8%;top:90.0%;}
+.total-madrid{left:82.3%;top:90.0%;}
+
+.tarjeta-aviso-legal{
+    margin-top:28px;
+}
+
+@media (max-width:768px){
+    .marcador-visual-wrap{padding:18px 4px 10px !important;}
+    .marcador-imagen{width:100%;border-radius:14px;}
+    .marcador-imagen .dato-stat{
+        font-size:clamp(12px,3.8vw,19px);
+    }
+    .barca-penaltis{left:9.9%;top:43.7%;}
+    .barca-rojas{left:23.4%;top:43.7%;}
+    .barca-goles{left:16.8%;top:66.3%;}
+    .madrid-penaltis{left:75.4%;top:43.7%;}
+    .madrid-rojas{left:88.6%;top:43.7%;}
+    .madrid-goles{left:82.3%;top:66.3%;}
+    .score-dinamico{
+        width:31%;
+        height:25%;
+        top:53.5%;
+    }
+    .score-dato{font-size:clamp(34px,9vw,56px);}
+    .score-separador{font-size:clamp(18px,4.4vw,28px);}
+    .marcador-imagen .dato-total{
+        font-size:clamp(25px,6.4vw,38px);
+        top:90.0%;
+    }
+    .total-barca{left:16.8%;}
+    .total-madrid{left:82.3%;}
+    .tarjeta-aviso-legal{margin-top:20px;}
+}
+
+
+/* ===== UNIFICACIÓN FINAL CON INDEX ===== */
+.menu a{flex-direction:column!important;gap:5px!important;font-size:13px!important;line-height:1.08!important;padding:6px 8px!important;}
+.menu-icono{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;opacity:.92;flex:0 0 auto;}
+.marcador-visual-wrap{padding:30px 18px 22px!important;}
+.tarjeta-aviso-legal{margin-top:28px;background:linear-gradient(180deg,rgba(5,24,52,.96),rgba(4,18,40,.97));border:1px solid rgba(160,194,235,.24);border-radius:18px;box-shadow:0 16px 38px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.035);overflow:hidden;}
+.tarjeta-aviso-legal .aviso-legal{margin:0!important;padding:18px 22px!important;color:#e7edf7!important;background:transparent!important;border:0!important;box-shadow:none!important;}
+@media(max-width:768px){.menu a{font-size:9.8px!important;gap:3px!important;padding:4px 2px!important}.menu-icono{width:20px;height:20px}.tarjeta-aviso-legal{margin-top:20px;border-radius:15px}}
+
+
+
+/* =========================================================
+   ESTRUCTURA FINAL RESULTADOS — IGUAL AL INDEX
+   ========================================================= */
+.cabecera{
+    height:148px !important;
+    background-image:linear-gradient(180deg,rgba(0,0,0,.06),rgba(0,0,0,.24)),url("cabecera-premium.png") !important;
+    background-size:cover !important;
+    background-position:center 48% !important;
+    background-repeat:no-repeat !important;
+}
+.menu{
+    top:148px !important;
+    height:62px !important;
+    padding:0 48px 0 0 !important;
+    box-sizing:border-box !important;
+    overflow:visible !important;
+    z-index:999 !important;
+}
+.menu a{
+    flex-direction:column !important;
+    gap:5px !important;
+    font-family:"Oswald",Arial,sans-serif !important;
+    font-size:12px !important;
+    line-height:1.05 !important;
+    padding:6px 8px !important;
+}
+.menu a + a{border-left:1px solid rgba(255,255,255,.055) !important;}
+.menu > a:last-of-type{border-right:1px solid rgba(255,255,255,.055) !important;}
+.menu-icono{width:24px !important;height:24px !important;}
+.menu-user-wrap{
+    position:absolute !important;
+    right:10px !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+    z-index:5000 !important;
+    pointer-events:auto !important;
+}
+.menu-user-btn{
+    position:relative;
+    z-index:5001;
+    width:34px;
+    height:34px;
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:50%;
+    background:rgba(10,18,34,.92);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    box-shadow:0 6px 16px rgba(0,0,0,.28);
+    font-size:16px;
+}
+.menu-user-btn:hover{background:rgba(20,34,58,.95);}
+.menu-user-dropdown{
+    position:absolute;
+    right:0;
+    top:42px;
+    min-width:240px;
+    background:#fff;
+    border-radius:12px;
+    box-shadow:0 12px 28px rgba(0,0,0,.22);
+    padding:12px;
+    display:none;
+    color:#1e2b46;
+}
+.menu-user-dropdown.activo{display:block;}
+.menu-user-line{font-size:13px;line-height:1.4;margin-bottom:10px;color:#41516f;}
+.menu-user-title{font-size:14px;font-weight:bold;color:#18263f;margin-bottom:10px;}
+.menu-user-actions{display:flex;flex-direction:column;gap:8px;}
+.menu-user-actions button,.menu-user-actions input{width:100%;box-sizing:border-box;}
+.menu-user-actions input{height:38px;border:1px solid #d8dfeb;border-radius:8px;padding:0 10px;font-size:14px;}
+.menu-user-actions button{height:38px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;}
+.btn-user-primary{background:#1f4fb0;color:#fff;}
+.btn-user-primary:hover{background:#173f90;}
+.btn-user-secondary{background:#eef2f8;color:#243757;}
+.btn-user-secondary:hover{background:#dfe7f3;color:#243757;}
+.contenido{
+    margin-top:210px !important;
+    min-height:calc(100vh - 210px) !important;
+}
+
+.tarjeta-titulo-resultados,
+.tarjeta-tablas-resultados{
+    background:linear-gradient(180deg,rgba(5,24,52,.98),rgba(4,18,40,.99));
+    border:1px solid rgba(160,194,235,.22);
+    border-radius:24px;
+    overflow:hidden;
+    box-shadow:0 22px 48px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.035);
+}
+.tarjeta-titulo-resultados{margin-bottom:28px;}
+.tarjeta-titulo-resultados .cabecera-resultados{
+    text-align:center !important;
+    padding:30px 32px 26px !important;
+    background:linear-gradient(180deg,rgba(5,24,52,.98),rgba(4,18,40,.99)) !important;
+    border:0 !important;
+    box-shadow:none !important;
+}
+.tarjeta-titulo-resultados .cabecera-resultados p{
+    margin-left:auto !important;
+    margin-right:auto !important;
+}
+
+.tarjeta-marcador-resultados{
+    margin-bottom:28px;
+    background:transparent;
+    border:0;
+    box-shadow:none;
+}
+.tarjeta-marcador-resultados .marcador-visual-wrap{
+    padding:0 !important;
+}
+.tarjeta-marcador-resultados .marcador-imagen{
+    width:min(1380px,100%) !important;
+}
+
+.tarjeta-tablas-resultados{
+    padding-top:18px;
+}
+.tarjeta-tablas-resultados .columnas-equipos{
+    padding:0 18px 22px;
+}
+.tarjeta-tablas-resultados .seccion-comentarios{
+    margin:0 18px 18px;
+}
+.tarjeta-aviso-legal{margin-top:28px !important;}
+
+@media(max-width:768px){
+    :root{--cabecera-movil:clamp(124px,26vw,142px);}
+    .cabecera{
+        height:var(--cabecera-movil) !important;
+        background-size:100% auto !important;
+        background-position:center 38% !important;
+        background-color:#000 !important;
+    }
+    .menu{
+        top:var(--cabecera-movil) !important;
+        height:64px !important;
+        min-height:64px !important;
+        padding:0 42px 0 0 !important;
+        overflow:visible !important;
+    }
+    .menu a{font-size:9px !important;gap:3px !important;padding:4px 2px !important;height:64px !important;}
+    .menu-icono{width:20px !important;height:20px !important;}
+    .menu-user-wrap{right:7px !important;}
+    .menu-user-btn{width:30px;height:30px;font-size:14px;}
+    .menu-user-dropdown{right:-4px;min-width:220px;}
+    .menu > a:last-of-type{border-right:1px solid rgba(255,255,255,.045) !important;}
+    .contenido{
+        margin-top:calc(var(--cabecera-movil) + 64px) !important;
+        min-height:calc(100vh - var(--cabecera-movil) - 64px) !important;
+    }
+    .tarjeta-titulo-resultados,
+    .tarjeta-tablas-resultados{border-radius:20px;}
+    .tarjeta-titulo-resultados{margin-bottom:20px;}
+    .tarjeta-titulo-resultados .cabecera-resultados{padding:24px 22px 21px !important;}
+    .tarjeta-marcador-resultados{margin-bottom:20px;}
+    .tarjeta-marcador-resultados .marcador-visual-wrap{padding:0 !important;}
+    .tarjeta-tablas-resultados{padding-top:12px;}
+    .tarjeta-tablas-resultados .columnas-equipos{padding:0 10px 14px !important;}
+    .tarjeta-tablas-resultados .seccion-comentarios{margin:0 10px 12px !important;}
+}
+
+/* CORRECCIÓN FINAL: usuario idéntico al index y totales centrados */
+.fila-total-bloque .total-label{
+    text-align:center !important;
+    padding-left:8px !important;
+    padding-right:8px !important;
+}
+
+@media(max-width:768px){
+    .menu-user-wrap{
+        position:absolute !important;
+        right:7px !important;
+        top:50% !important;
+        transform:translateY(-50%) !important;
+    }
+}
+
+
+/* COMENTARIOS DE AUDIO */
+.nombre-comentario{
+    width:100%;
+    box-sizing:border-box;
+    margin:0 0 9px;
+    padding:10px 12px;
+    border:1px solid #d0d7e2;
+    border-radius:9px;
+    font-size:13px;
+    font-family:Inter,Arial,sans-serif;
+    background:#fff;
+    color:#24344d;
+}
+.comentario-editor{
+    display:flex;
+    align-items:flex-end;
+    gap:6px;
+    width:100%;
+    box-sizing:border-box;
+    padding:6px;
+    border:1px solid #d0d7e2;
+    border-radius:10px;
+    background:#fff;
+    transition:border-color .2s ease, box-shadow .2s ease;
+}
+.comentario-editor:focus-within{
+    border-color:#2567c7;
+    box-shadow:0 0 0 3px rgba(37,103,199,.12);
+}
+.comentario-editor textarea{
+    flex:1 1 auto;
+    width:auto;
+    min-width:0;
+    min-height:48px;
+    max-height:150px;
+    margin:0;
+    padding:7px 8px;
+    border:0 !important;
+    border-radius:7px;
+    outline:none;
+    resize:vertical;
+    box-shadow:none !important;
+    background:transparent;
+}
+.acciones-comentario{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin-top:9px;
+    flex-wrap:wrap;
+}
+.btn-microfono{
+    position:static;
+    flex:0 0 40px;
+    width:40px;
+    height:40px;
+    margin:0 0 1px;
+    padding:0;
+    border:0;
+    border-radius:50%;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#174d9c,#2567c7);
+    color:#fff;
+    cursor:pointer;
+    box-shadow:0 6px 14px rgba(23,77,156,.22);
+    touch-action:none;
+    user-select:none;
+    -webkit-user-select:none;
+}
+.btn-microfono svg{width:21px;height:21px;fill:currentColor;}
+.btn-microfono.grabando{
+    background:#d62839;
+    transform:scale(1.08);
+    animation:pulsoMicro 1s infinite;
+}
+@keyframes pulsoMicro{
+    0%,100%{box-shadow:0 0 0 0 rgba(214,40,57,.35);}
+    50%{box-shadow:0 0 0 10px rgba(214,40,57,0);}
+}
+.estado-audio{
+    min-height:20px;
+    font-size:12px;
+    color:#667791;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+}
+.estado-audio.grabando{color:#c91f35;}
+.comentario-audio{
+    margin-top:7px;
+    display:flex;
+    align-items:center;
+    gap:9px;
+}
+.comentario-audio audio{
+    width:min(100%,360px);
+    height:38px;
+}
+@media(max-width:768px){
+    .acciones-comentario{justify-content:space-between;}
+    .boton-comentar{flex:1;}
+}
+
+
+/* =========================================================
+   VERSIÓN DE ESCRITORIO RECONSTRUIDA — MÓVIL INTACTO
+   ========================================================= */
+@media (min-width:769px){
+    html,body{
+        zoom:1 !important;
+    }
+
+    body{
+        background:#081426 !important;
+    }
+
+    .cabecera{
+        height:128px !important;
+        background-image:
+            linear-gradient(180deg,rgba(0,0,0,.03),rgba(0,0,0,.18)),
+            url("cabecera-premium.png") !important;
+        background-size:cover !important;
+        background-position:center center !important;
+        background-repeat:no-repeat !important;
+    }
+
+    .menu{
+        top:128px !important;
+        height:70px !important;
+        min-height:70px !important;
+        grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+        padding:0 !important;
+        overflow:hidden !important;
+    }
+
+    .menu > a{
+        height:70px !important;
+        padding:7px 10px !important;
+        gap:5px !important;
+        font-size:11px !important;
+        line-height:1.04 !important;
+    }
+
+    .menu-icono{
+        width:25px !important;
+        height:25px !important;
+        flex-basis:25px !important;
+    }
+
+    .contenido{
+        margin-top:198px !important;
+        min-height:calc(100vh - 198px) !important;
+        padding:30px 0 72px !important;
+    }
+
+    .contenido::before{
+        inset:198px 0 0 !important;
+    }
+
+    .wrap{
+        width:min(980px,92%) !important;
+        max-width:980px !important;
+        margin:0 auto !important;
+    }
+
+    .bloque-portada,
+    .bloque-resultados{
+        border-radius:20px !important;
+        margin-bottom:24px !important;
+    }
+
+    .cabecera-portada,
+    .cabecera-resultados{
+        padding:24px 26px 22px !important;
+    }
+
+    .cabecera-portada h1,
+    .cabecera-resultados h1{
+        font-size:32px !important;
+        line-height:1.08 !important;
+    }
+
+    .cabecera-portada p,
+    .cabecera-resultados p{
+        font-size:14px !important;
+        line-height:1.5 !important;
+    }
+
+    .bloque-jugada{
+        margin:22px 18px 20px !important;
+    }
+
+    .jugada-principal{
+        border-radius:18px !important;
+    }
+
+    .cabecera-jugada{
+        padding:20px 22px 18px !important;
+    }
+
+    .cabecera-jugada h2{
+        font-size:27px !important;
+        line-height:1.1 !important;
+    }
+
+    .descripcion-cabecera-jugada{
+        max-width:none !important;
+        font-size:14px !important;
+        line-height:1.5 !important;
+    }
+
+    /* Misma lectura vertical y cómoda de la versión móvil */
+    .contenido-jugada{
+        display:flex !important;
+        flex-direction:column !important;
+        gap:15px !important;
+        padding:15px !important;
+    }
+
+    .bloque-media-jugada,
+    .panel-votacion,
+    .seccion-comentarios{
+        width:100% !important;
+        min-width:0 !important;
+        grid-column:auto !important;
+        grid-row:auto !important;
+    }
+
+    .imagen-jugada{
+        min-height:390px !important;
+        padding:11px !important;
+    }
+
+    .visor-media{
+        min-height:370px !important;
+        max-height:600px !important;
+    }
+
+    .visor-media img{
+        max-height:600px !important;
+    }
+
+    .galeria-miniaturas{
+        grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+    }
+
+    .panel-votacion{
+        border-radius:14px !important;
+    }
+
+    .panel-votacion-top{
+        padding:16px 18px 10px !important;
+        text-align:center !important;
+    }
+
+    .panel-votacion-top h3{
+        font-size:21px !important;
+    }
+
+    .panel-votacion-top p{
+        font-size:18px !important;
+        line-height:1.35 !important;
+    }
+
+    .botones-voto{
+        display:grid !important;
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+        gap:10px !important;
+        padding:12px 18px !important;
+    }
+
+    .btn-voto{
+        min-height:48px !important;
+        font-size:15px !important;
+    }
+
+    .mensaje-voto{
+        text-align:center !important;
+        padding:0 18px 12px !important;
+    }
+
+    .resultado-box{
+        padding:16px 18px 18px !important;
+    }
+
+    .resumen-votos-bloques{
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+        gap:12px !important;
+    }
+
+    .resumen-voto-card{
+        min-height:112px !important;
+    }
+
+    .seccion-comentarios{
+        margin-top:0 !important;
+        border-radius:14px !important;
+    }
+
+    .cabecera-comentarios{
+        padding:12px 16px !important;
+    }
+
+    .cuerpo-comentarios{
+        padding:14px 16px 16px !important;
+    }
+
+    .nombre-comentario{
+        font-size:14px !important;
+        padding:11px 13px !important;
+    }
+
+    .comentario-editor textarea{
+        min-height:62px !important;
+        font-size:14px !important;
+    }
+
+    .boton-comentar{
+        min-width:190px !important;
+    }
+
+    .marcador-wrap,
+    .marcador-visual-wrap{
+        padding-left:18px !important;
+        padding-right:18px !important;
+    }
+
+    .marcador-imagen{
+        width:100% !important;
+        max-width:900px !important;
+    }
+
+    .tarjeta-aviso-legal .aviso-legal{
+        text-align:left !important;
+    }
+}
+
+
+/* =========================================================
+   ESCRITORIO DEFINITIVO — SOLO PC, MÓVIL INTACTO
+   ========================================================= */
+@media (min-width:769px){
+
+    html, body{
+        zoom:1 !important;
+    }
+
+    body{
+        background:#07101d !important;
+    }
+
+    /* Cabecera diseñada específicamente para monitor.
+       La imagen se muestra completa, sin estirarse ni recortarse. */
+    .cabecera{
+        height:132px !important;
+        background-color:#07101d !important;
+        background-image:
+            url("cabecera-premium.png"),
+            radial-gradient(circle at 16% 50%,rgba(126,0,44,.38),transparent 34%),
+            radial-gradient(circle at 84% 50%,rgba(225,231,239,.18),transparent 35%),
+            linear-gradient(90deg,#071630 0%,#0d2d63 24%,#37152c 43%,#151c29 57%,#626d7d 78%,#d9dee5 100%) !important;
+        background-size:
+            auto 100%,
+            100% 100%,
+            100% 100%,
+            100% 100% !important;
+        background-position:
+            center center,
+            center,
+            center,
+            center !important;
+        background-repeat:no-repeat !important;
+        border-bottom:1px solid rgba(255,255,255,.12) !important;
+        box-shadow:0 10px 30px rgba(0,0,0,.35) !important;
+    }
+
+    .menu{
+        top:132px !important;
+        height:66px !important;
+        min-height:66px !important;
+        background:
+            linear-gradient(90deg,rgba(128,0,42,.10),transparent 30%),
+            linear-gradient(270deg,rgba(230,235,242,.08),transparent 30%),
+            rgba(7,13,23,.98) !important;
+        border-bottom:1px solid rgba(255,255,255,.09) !important;
+        box-shadow:0 8px 24px rgba(0,0,0,.28) !important;
+    }
+
+    .menu > a{
+        height:66px !important;
+        padding:6px 14px !important;
+        gap:4px !important;
+        font-size:11px !important;
+        letter-spacing:.25px !important;
+    }
+
+    .menu-icono{
+        width:24px !important;
+        height:24px !important;
+        flex-basis:24px !important;
+    }
+
+    .contenido{
+        margin-top:198px !important;
+        min-height:calc(100vh - 198px) !important;
+        padding:38px 0 80px !important;
+        background:
+            radial-gradient(ellipse 46% 34% at 0% 9%,rgba(125,0,43,.20),transparent 72%),
+            radial-gradient(ellipse 46% 34% at 100% 9%,rgba(217,224,233,.11),transparent 72%),
+            radial-gradient(circle at 50% 0%,rgba(38,77,132,.13),transparent 32%),
+            linear-gradient(180deg,#08111f 0%,#0a1423 46%,#07101c 100%) !important;
+    }
+
+    .contenido::before{
+        inset:198px 0 0 !important;
+        position:fixed !important;
+        background:
+            linear-gradient(90deg,rgba(12,39,83,.08),transparent 30%),
+            linear-gradient(270deg,rgba(220,226,235,.035),transparent 30%) !important;
+    }
+
+    .contenido::after{
+        background:none !important;
+    }
+
+    .wrap{
+        width:min(1180px,92%) !important;
+        max-width:1180px !important;
+        margin:0 auto !important;
+    }
+
+    .bloque-portada,
+    .bloque-resultados{
+        border-radius:22px !important;
+        margin-bottom:28px !important;
+        background:linear-gradient(180deg,rgba(18,31,50,.98),rgba(9,19,34,.98)) !important;
+        border:1px solid rgba(255,255,255,.10) !important;
+        box-shadow:0 22px 54px rgba(0,0,0,.33),inset 0 1px 0 rgba(255,255,255,.04) !important;
+    }
+
+    .cabecera-portada,
+    .cabecera-resultados{
+        padding:28px 32px 25px !important;
+        background:
+            linear-gradient(90deg,rgba(125,0,43,.20),transparent 35%),
+            linear-gradient(270deg,rgba(255,255,255,.055),transparent 35%),
+            linear-gradient(135deg,#102748,#173968 58%,#1f4d88) !important;
+    }
+
+    .cabecera-portada h1,
+    .cabecera-resultados h1{
+        font-size:36px !important;
+        line-height:1.05 !important;
+    }
+
+    .cabecera-portada p,
+    .cabecera-resultados p{
+        max-width:820px !important;
+        font-size:15px !important;
+        line-height:1.55 !important;
+    }
+
+    .bloque-jugada{
+        margin:26px 24px 24px !important;
+    }
+
+    .jugada-principal{
+        border-radius:20px !important;
+        background:linear-gradient(180deg,#112541,#0a1729) !important;
+        border:1px solid rgba(255,255,255,.11) !important;
+        box-shadow:0 18px 44px rgba(0,0,0,.30) !important;
+    }
+
+    .cabecera-jugada{
+        padding:22px 26px 20px !important;
+        background:
+            radial-gradient(circle at 100% 0%,rgba(255,255,255,.11),transparent 38%),
+            linear-gradient(135deg,#164283 0%,#245da9 58%,#2e70c1 100%) !important;
+    }
+
+    .cabecera-jugada h2{
+        font-size:30px !important;
+        line-height:1.08 !important;
+    }
+
+    .descripcion-cabecera-jugada{
+        max-width:930px !important;
+        font-size:14px !important;
+        line-height:1.55 !important;
+    }
+
+    /* Distribución específica para escritorio:
+       contenido visual y votación en columnas; comentarios debajo. */
+    .contenido-jugada{
+        display:grid !important;
+        grid-template-columns:minmax(0,1.55fr) minmax(330px,.75fr) !important;
+        align-items:start !important;
+        gap:18px !important;
+        padding:18px !important;
+    }
+
+    .bloque-media-jugada{
+        grid-column:1 !important;
+        grid-row:1 !important;
+        min-width:0 !important;
+    }
+
+    .panel-votacion{
+        grid-column:2 !important;
+        grid-row:1 !important;
+        min-width:0 !important;
+        width:100% !important;
+        border-radius:16px !important;
+        overflow:hidden !important;
+        box-shadow:0 14px 32px rgba(0,0,0,.24) !important;
+    }
+
+    .seccion-comentarios{
+        grid-column:1 / -1 !important;
+        grid-row:2 !important;
+        width:100% !important;
+        margin-top:0 !important;
+        border-radius:16px !important;
+    }
+
+    .imagen-jugada{
+        min-height:430px !important;
+        padding:12px !important;
+        border-radius:16px !important;
+    }
+
+    .visor-media{
+        min-height:405px !important;
+        max-height:620px !important;
+    }
+
+    .visor-media img{
+        max-height:620px !important;
+    }
+
+    .galeria-miniaturas{
+        grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+    }
+
+    .panel-votacion-top{
+        padding:19px 20px 12px !important;
+        text-align:center !important;
+    }
+
+    .panel-votacion-top h3{
+        font-size:22px !important;
+    }
+
+    .panel-votacion-top p{
+        font-size:17px !important;
+        line-height:1.35 !important;
+    }
+
+    .botones-voto{
+        display:grid !important;
+        grid-template-columns:1fr !important;
+        gap:10px !important;
+        padding:12px 18px !important;
+    }
+
+    .btn-voto{
+        min-height:50px !important;
+        font-size:15px !important;
+    }
+
+    .mensaje-voto{
+        text-align:center !important;
+        padding:0 18px 13px !important;
+    }
+
+    .resultado-box{
+        padding:15px 17px 18px !important;
+    }
+
+    .resumen-votos-bloques{
+        grid-template-columns:1fr !important;
+        gap:10px !important;
+    }
+
+    .resumen-voto-card{
+        min-height:auto !important;
+        padding:13px !important;
+    }
+
+    .resumen-voto-porcentaje{
+        font-size:27px !important;
+    }
+
+    .cabecera-comentarios{
+        padding:13px 18px !important;
+    }
+
+    .cuerpo-comentarios{
+        padding:16px 18px 18px !important;
+    }
+
+    .nombre-comentario{
+        max-width:360px !important;
+        font-size:14px !important;
+        padding:11px 13px !important;
+    }
+
+    .comentario-editor textarea{
+        min-height:70px !important;
+        font-size:14px !important;
+    }
+
+    .acciones-comentario{
+        justify-content:flex-start !important;
+    }
+
+    .boton-comentar{
+        min-width:190px !important;
+    }
+
+    .marcador-wrap,
+    .marcador-visual-wrap{
+        padding-left:24px !important;
+        padding-right:24px !important;
+    }
+
+    .marcador-global,
+    .marcador-imagen{
+        max-width:1040px !important;
+    }
+}
+
+
+
+/* RESULTADOS VAR — AJUSTES FINALES COHERENTES CON INDEX */
+.menu-user-wrap{display:none !important;}
+
+@media (min-width:769px){
+    .menu{
+        padding-right:0 !important;
+        grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+    }
+
+    .tarjeta-titulo-resultados,
+    .tarjeta-marcador-resultados,
+    .tarjeta-tablas-resultados,
+    .tarjeta-aviso-legal,
+    .bloque-resultados{
+        background:linear-gradient(180deg,rgba(18,31,50,.98),rgba(9,19,34,.98)) !important;
+        border:1px solid rgba(255,255,255,.10) !important;
+        border-radius:22px !important;
+        box-shadow:0 22px 54px rgba(0,0,0,.33),inset 0 1px 0 rgba(255,255,255,.04) !important;
+        overflow:hidden !important;
+    }
+
+    .cabecera-resultados{
+        padding:28px 32px 25px !important;
+        background:
+            linear-gradient(90deg,rgba(125,0,43,.20),transparent 35%),
+            linear-gradient(270deg,rgba(255,255,255,.055),transparent 35%),
+            linear-gradient(135deg,#102748,#173968 58%,#1f4d88) !important;
+    }
+
+    .cabecera-resultados h1{
+        font-size:36px !important;
+        line-height:1.05 !important;
+    }
+
+    .columnas-equipos{
+        gap:20px !important;
+        padding:20px 22px 24px !important;
+    }
+
+    .tarjeta-equipo{
+        border-radius:20px !important;
+    }
+
+    .marcador-visual-wrap{
+        padding:26px 22px 22px !important;
+    }
+
+    .marcador-imagen{
+        max-width:1040px !important;
+    }
+
+    .seccion-comentarios{
+        margin:22px !important;
+        border-radius:16px !important;
+    }
+
+    .nombre-comentario{
+        max-width:360px !important;
+    }
+}
+
+@media (max-width:768px){
+    .menu{
+        padding-right:0 !important;
+        grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+    }
+}
+
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="decisionvar-data.js"></script>
 </head>
 <body>
-<main class="card">
-<h1>Reparar comentarios de Resultados VAR</h1>
-<p>Selecciona tu archivo actual <code>resultados-var.html</code>. Se descargará una copia completa corregida, sin modificar el archivo original.</p>
-<div class="pasos">
-    <div>• Publicar comentario queda siempre visible.</div>
-    <div>• Se muestran inicialmente 3 comentarios.</div>
-    <div>• “Mostrar más” solo aparece cuando hay más de 3.</div>
-    <div>• “Ocultar comentarios” repliega de nuevo a 3.</div>
-    <div>• Se reemplaza todo el código duplicado del audio.</div>
+<div class="cabecera"></div>
+<nav class="menu">
+    <a href="index.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5h-5v-6h-5v6h-5A1.5 1.5 0 0 1 3 19.5z"/></svg><span>INICIO</span></a>
+    <a href="jugadas-polemicas.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg><span>JUGADAS<br>POLÉMICAS</span></a>
+    <a href="resultados-var.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v3a4 4 0 0 1-8 0zM6 5H3v2a4 4 0 0 0 4 4M18 5h3v2a4 4 0 0 1-4 4M12 11v5M8 21h8M9 16h6v5H9z"/></svg><span>RESULTADOS</span></a>
+    <a href="quien-ha-sido-mas-favorecido.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M10 20V8M15 20V4M20 20V10"/></svg><span>EQUIPO MÁS<br>FAVORECIDO</span></a>
+    <a href="arbitros-mas-influyentes.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 7-7h7l2 2v7l-7 7-9-9z"/><circle cx="16.5" cy="7.5" r="1"/></svg><span>POLÉMICAS<br>HISTÓRICAS</span></a>
+
+</nav>
+<div class="contenido">
+<div class="wrap">
+<section class="tarjeta-titulo-resultados"><div class="cabecera-resultados">
+<h1>Resultados</h1>
+<p>Resumen de los resultados de las votaciones sobre las jugadas polémicas.</p>
+</div></section><section class="tarjeta-marcador-resultados"><div class="marcador-wrap marcador-visual-wrap">
+<div class="marcador-visual-container" id="marcadorGlobalContainer">
+<div aria-label="Marcador global de las encuestas" class="marcador-imagen" id="marcadorGlobal">
+<img alt="Marcador global FC Barcelona - Real Madrid" src="marcador-global-fondo-alto-v2-sin-numeros.png"/>
+<span class="dato dato-stat barca-penaltis" id="marcador-barca-penaltis">0</span>
+<span class="dato dato-stat barca-rojas" id="marcador-barca-rojas">0</span>
+<span class="dato dato-stat barca-goles" id="marcador-barca-goles">0</span>
+<span class="dato dato-stat madrid-penaltis" id="marcador-madrid-penaltis">0</span>
+<span class="dato dato-stat madrid-rojas" id="marcador-madrid-rojas">0</span>
+<span class="dato dato-stat madrid-goles" id="marcador-madrid-goles">0</span>
+<div aria-label="Resultado global" class="score-dinamico">
+<span class="dato score-dato" id="marcador-score-barca">0</span>
+<span class="score-separador">-</span>
+<span class="dato score-dato" id="marcador-score-madrid">0</span>
 </div>
-<input id="archivo" type="file" accept=".html,text/html">
-<button id="generar" type="button" disabled>Generar resultados-var corregido</button>
-<div id="estado" class="estado"></div>
-</main>
+<span class="dato dato-total total-barca" id="marcador-barca-total">0</span>
+<span class="dato dato-total total-madrid" id="marcador-madrid-total">0</span>
+</div>
+</div>
+</div></section><section class="tarjeta-tablas-resultados"><div class="columnas-equipos">
+<div class="columna-equipo">
+<article class="tarjeta-equipo tabla-barca">
+<div class="tarjeta-top">FC Barcelona</div>
+<div class="tarjeta-body">
+<div class="bloques-categoria">
+<section class="bloque-categoria">
+<div class="categoria-titulo">Penaltis</div>
+<div class="tabla-wrap">
+<table class="resumen-table">
+<thead>
+<tr>
+<th class="col-concepto"></th>
+<th class="col-total"></th>
+<th class="pregunta-arbitro" colspan="2">¿SE ARBITRÓ BIEN?</th>
+<th class="col-balance"></th>
+</tr>
+<tr>
+<th class="col-concepto"></th>
+<th class="col-total">TOTAL</th>
+<th class="col-si">SÍ</th>
+<th class="col-no">NO</th>
+<th class="col-balance">BALANCE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="fila-hover">
+<td class="col-concepto">PENALTIS POLÉMICOS PITADOS A FAVOR</td>
+<td id="barcelona-penalti-pitado_favor-total">0</td>
+<td id="barcelona-penalti-pitado_favor-si">0</td>
+<td id="barcelona-penalti-pitado_favor-no">0</td>
+<td class="valor-neutro" id="barcelona-penalti-pitado_favor-balance">0</td>
+</tr>
+<tr class="fila-hover">
+<td class="col-concepto">PENALTIS POLÉMICOS PITADOS EN CONTRA</td>
+<td id="barcelona-penalti-pitado_contra-total">0</td>
+<td id="barcelona-penalti-pitado_contra-si">0</td>
+<td id="barcelona-penalti-pitado_contra-no">0</td>
+<td class="valor-neutro" id="barcelona-penalti-pitado_contra-balance">0</td>
+</tr>
+<tr class="fila-hover">
+<td class="col-concepto">PENALTIS POLÉMICOS NO PITADOS A FAVOR</td>
+<td id="barcelona-penalti-no_pitado_favor-total">0</td>
+<td id="barcelona-penalti-no_pitado_favor-si">0</td>
+<td id="barcelona-penalti-no_pitado_favor-no">0</td>
+<td class="valor-neutro" id="barcelona-penalti-no_pitado_favor-balance">0</td>
+</tr>
+<tr class="fila-hover">
+<td class="col-concepto">PENALTIS POLÉMICOS NO PITADOS EN CONTRA</td>
+<td id="barcelona-penalti-no_pitado_contra-total">0</td>
+<td id="barcelona-penalti-no_pitado_contra-si">0</td>
+<td id="barcelona-penalti-no_pitado_contra-no">0</td>
+<td class="valor-neutro" id="barcelona-penalti-no_pitado_contra-balance">0</td>
+</tr>
+<tr class="fila-total-bloque">
+<td class="total-label">TOTAL PENALTIS CON POLÉMICA</td>
+<td id="barcelona-penalti-total-total">0</td>
+<td id="barcelona-penalti-total-si">0</td>
+<td id="barcelona-penalti-total-no">0</td>
+<td class="valor-neutro" id="barcelona-penalti-total-balance">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="bloque-categoria total-goles">
+<div class="categoria-titulo">Goles</div>
+<div class="tabla-wrap">
+<table class="resumen-table">
+<thead>
+<tr>
+<th class="col-concepto"></th>
+<th class="col-total"></th>
+<th class="pregunta-arbitro" colspan="2">¿SE ARBITRÓ BIEN?</th>
+<th class="col-balance"></th>
+</tr>
+<tr>
+<th class="col-concepto"></th>
+<th class="col-total">TOTAL</th>
+<th class="col-si">SÍ</th>
+<th class="col-no">NO</th>
+<th class="col-balance">BALANCE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="fila-hover">
+<td class="col-concepto">GOLES POLÉMICOS CONCEDIDOS A FAVOR</td>
+<td id="barcelona-gol-concedido_favor-total">0</td>
+<td id="barcelona-gol-concedido_favor-si">0</td>
+<td id="barcelona-gol-concedido_favor-no">0</td>
+<td class="valor-neutro" id="barcelona-gol-concedido_favor-balance">0</td>
+</tr>
+<tr class="fila-hover">
+<td class="col-concepto">GOLES POLÉMICOS CONCEDIDOS EN CONTRA</td>
+<td id="barcelona-gol-concedido_contra-total">0</td>
+<td id="barcelona-gol-concedido_contra-si">0</td>
+<td id="barcelona-gol-concedido_contra-no">0</td>
+<td class="valor-neutro" id="barcelona-gol-concedido_contra-balance">0</td>
+</tr>
+<tr class="fila-hover">
+<td class="col-concepto">GOLES POLÉMICOS ANULADOS A FAVOR</td>
+<td id="barcelona-gol-anulado_favor-total">0</td>
+<td id="barcelona-gol-anulado_favor-si">0</td>
+<td id="barcelona-gol-anulado_favor-no">0</td>
+<td class="valor-neutro" id="barcelona-gol-anulado_favor-balance">0</td>
+</tr>
+<tr class="fila-hover">
+<td class="col-concepto">GOLES POLÉMICOS ANULADOS EN CONTRA</td>
+<td id="barcelona-gol-anulado_contra-total">0</td>
+<td id="barcelona-gol-anulado_contra-si">0</td>
+<td id="barcelona-gol-anulado_contra-no">0</td>
+<td class="valor-neutro" id="barcelona-gol-anulado_contra-balance">0</td>
+</tr>
+<tr class="fila-total-bloque">
+<td class="total-label">TOTAL GOLES CON POLÉMICA</td>
+<td id="barcelona-gol-total-total">0</td>
+<td id="barcelona-gol-total-si">0</td>
+<td id="barcelona-gol-total-no">0</td>
+<td class="valor-neutro" id="barcelona-gol-total-balance">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="bloque-categoria">
+<div class="categoria-titulo">Rojas</div>
+<div class="tabla-wrap">
+<table class="resumen-table">
+<thead>
+<tr>
+<th class="col-concepto"></th>
+<th class="col-total"></th>
+<th class="pregunta-arbitro" colspan="2">¿SE ARBITRÓ BIEN?</th>
+<th class="col-balance"></th>
+</tr>
+<tr>
+<th class="col-concepto"></th>
+<th class="col-total">TOTAL</th>
+<th class="col-si">SÍ</th>
+<th class="col-no">NO</th>
+<th class="col-balance">BALANCE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="fila-hover">
+<td class="col-concepto">ROJAS POLÉMICAS SACADAS AL BARCELONA</td>
+<td id="barcelona-roja-sacada_equipo-total">0</td>
+<td id="barcelona-roja-sacada_equipo-si">0</td>
+<td id="barcelona-roja-sacada_equipo-no">0</td>
+<td class="valor-neutro" id="barcelona-roja-sacada_equipo-balance">0</td>
+</tr>
+<tr class="fila-hover">
+<td class="col-concepto">ROJAS POLÉMICAS NO SACADAS AL BARCELONA</td>
+<td id="barcelona-roja-no_sacada_equipo-total">0</td>
+<td id="barcelona-roja-no_sacada_equipo-si">0</td>
+<td id="barcelona-roja-no_sacada_equipo-no">0</td>
+<td class="valor-neutro" id="barcelona-roja-no_sacada_equipo-balance">0</td>
+</tr>
+<tr class="fila-hover">
+<td class="col-concepto">ROJAS POLÉMICAS SACADAS AL RIVAL</td>
+<td id="barcelona-roja-sacada_rival-total">0</td>
+<td id="barcelona-roja-sacada_rival-si">0</td>
+<td id="barcelona-roja-sacada_rival-no">0</td>
+<td class="valor-neutro" id="barcelona-roja-sacada_rival-balance">0</td>
+</tr>
+<tr class="fila-hover">
+<td class="col-concepto">ROJAS POLÉMICAS NO SACADAS AL RIVAL</td>
+<td id="barcelona-roja-no_sacada_rival-total">0</td>
+<td id="barcelona-roja-no_sacada_rival-si">0</td>
+<td id="barcelona-roja-no_sacada_rival-no">0</td>
+<td class="valor-neutro" id="barcelona-roja-no_sacada_rival-balance">0</td>
+</tr>
+<tr class="fila-total-bloque">
+<td class="total-label">TOTAL ROJAS CON POLÉMICA</td>
+<td id="barcelona-roja-total-total">0</td>
+<td id="barcelona-roja-total-si">0</td>
+<td id="barcelona-roja-total-no">0</td>
+<td class="valor-neutro" id="barcelona-roja-total-balance">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</div>
+</article>
+</div>
+<div class="columna-equipo">
+<article class="tarjeta-equipo tabla-madrid">
+<div class="tarjeta-top">Real Madrid</div>
+<div class="tarjeta-body">
+<div class="bloques-categoria">
+<section class="bloque-categoria">
+<div class="categoria-titulo">Penaltis</div>
+<div class="tabla-wrap">
+<table class="resumen-table">
+<thead>
+<tr>
+<th class="col-concepto"></th>
+<th class="col-total"></th>
+<th class="pregunta-arbitro" colspan="2">¿SE ARBITRÓ BIEN?</th>
+<th class="col-balance"></th>
+</tr>
+<tr>
+<th class="col-concepto"></th>
+<th class="col-total">TOTAL</th>
+<th class="col-si">SÍ</th>
+<th class="col-no">NO</th>
+<th class="col-balance">BALANCE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="fila-hover">
+<td class="col-concepto">PENALTIS POLÉMICOS PITADOS A FAVOR</td>
+<td id="madrid-penalti-pitado_favor-total">0</td>
+<td id="madrid-penalti-pitado_favor-si">0</td>
+<td id="madrid-penalti-pitado_favor-no">0</td>
+<td class="valor-neutro" id="madrid-penalti-pitado_favor-balance">0</td>
+</tr>
+<tr class="fila-hover">
+<td class="col-concepto">PENALTIS POLÉMICOS PITADOS EN CONTRA</td>
+<td id="madrid-penalti-pitado_contra-total">0</td>
+<td id="madrid-penalti-pitado_contra-si">0</td>
+<td id="madrid-penalti-pitado_contra-no">0</td>
+<td class="valor-neutro" id="madrid-penalti-pitado_contra-balance">0</td>
+</tr>
+<tr class="fila-hover">
+<td class="col-concepto">PENALTIS POLÉMICOS NO PITADOS A FAVOR</td>
+<td id="madrid-penalti-no_pitado_favor-total">0</td>
+<td id="madrid-penalti-no_pitado_favor-si">0</td>
+<td id="madrid-penalti-no_pitado_favor-no">0</td>
+<td class="valor-neutro" id="madrid-penalti-no_pitado_favor-balance">0</td>
+</tr>
+<tr class="fila-hover">
+<td class="col-concepto">PENALTIS POLÉMICOS NO PITADOS EN CONTRA</td>
+<td id="madrid-penalti-no_pitado_contra-total">0</td>
+<td id="madrid-penalti-no_pitado_contra-si">0</td>
+<td id="madrid-penalti-no_pitado_contra-no">0</td>
+<td class="valor-neutro" id="madrid-penalti-no_pitado_contra-balance">0</td>
+</tr>
+<tr class="fila-total-bloque">
+<td class="total-label">TOTAL PENALTIS CON POLÉMICA</td>
+<td id="madrid-penalti-total-total">0</td>
+<td id="madrid-penalti-total-si">0</td>
+<td id="madrid-penalti-total-no">0</td>
+<td class="valor-neutro" id="madrid-penalti-total-balance">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="bloque-categoria total-goles">
+<div class="categoria-titulo">Goles</div>
+<div class="tabla-wrap">
+<table class="resumen-table">
+<thead>
+<tr>
+<th class="col-concepto"></th>
+<th class="col-total"></th>
+<th class="pregunta-arbitro" colspan="2">¿SE ARBITRÓ BIEN?</th>
+<th class="col-balance"></th>
+</tr>
+<tr>
+<th class="col-concepto"></th>
+<th class="col-total">TOTAL</th>
+<th class="col-si">SÍ</th>
+<th class="col-no">NO</th>
+<th class="col-balance">BALANCE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="fila-hover">
+<td class="col-concepto">GOLES POLÉMICOS CONCEDIDOS A FAVOR</td>
+<td id="madrid-gol-concedido_favor-total">0</td>
+<td id="madrid-gol-concedido_favor-si">0</td>
+<td id="madrid-gol-concedido_favor-no">0</td>
+<td class="valor-neutro" id="madrid-gol-concedido_favor-balance">0</td>
+</tr>
+<tr class="fila-hover">
+<td class="col-concepto">GOLES POLÉMICOS CONCEDIDOS EN CONTRA</td>
+<td id="madrid-gol-concedido_contra-total">0</td>
+<td id="madrid-gol-concedido_contra-si">0</td>
+<td id="madrid-gol-concedido_contra-no">0</td>
+<td class="valor-neutro" id="madrid-gol-concedido_contra-balance">0</td>
+</tr>
+<tr class="fila-hover">
+<td class="col-concepto">GOLES POLÉMICOS ANULADOS A FAVOR</td>
+<td id="madrid-gol-anulado_favor-total">0</td>
+<td id="madrid-gol-anulado_favor-si">0</td>
+<td id="madrid-gol-anulado_favor-no">0</td>
+<td class="valor-neutro" id="madrid-gol-anulado_favor-balance">0</td>
+</tr>
+<tr class="fila-hover">
+<td class="col-concepto">GOLES POLÉMICOS ANULADOS EN CONTRA</td>
+<td id="madrid-gol-anulado_contra-total">0</td>
+<td id="madrid-gol-anulado_contra-si">0</td>
+<td id="madrid-gol-anulado_contra-no">0</td>
+<td class="valor-neutro" id="madrid-gol-anulado_contra-balance">0</td>
+</tr>
+<tr class="fila-total-bloque">
+<td class="total-label">TOTAL GOLES CON POLÉMICA</td>
+<td id="madrid-gol-total-total">0</td>
+<td id="madrid-gol-total-si">0</td>
+<td id="madrid-gol-total-no">0</td>
+<td class="valor-neutro" id="madrid-gol-total-balance">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="bloque-categoria">
+<div class="categoria-titulo">Rojas</div>
+<div class="tabla-wrap">
+<table class="resumen-table">
+<thead>
+<tr>
+<th class="col-concepto"></th>
+<th class="col-total"></th>
+<th class="pregunta-arbitro" colspan="2">¿SE ARBITRÓ BIEN?</th>
+<th class="col-balance"></th>
+</tr>
+<tr>
+<th class="col-concepto"></th>
+<th class="col-total">TOTAL</th>
+<th class="col-si">SÍ</th>
+<th class="col-no">NO</th>
+<th class="col-balance">BALANCE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="fila-hover">
+<td class="col-concepto">ROJAS POLÉMICAS SACADAS AL MADRID</td>
+<td id="madrid-roja-sacada_equipo-total">0</td>
+<td id="madrid-roja-sacada_equipo-si">0</td>
+<td id="madrid-roja-sacada_equipo-no">0</td>
+<td class="valor-neutro" id="madrid-roja-sacada_equipo-balance">0</td>
+</tr>
+<tr class="fila-hover">
+<td class="col-concepto">ROJAS POLÉMICAS NO SACADAS AL MADRID</td>
+<td id="madrid-roja-no_sacada_equipo-total">0</td>
+<td id="madrid-roja-no_sacada_equipo-si">0</td>
+<td id="madrid-roja-no_sacada_equipo-no">0</td>
+<td class="valor-neutro" id="madrid-roja-no_sacada_equipo-balance">0</td>
+</tr>
+<tr class="fila-hover">
+<td class="col-concepto">ROJAS POLÉMICAS SACADAS AL RIVAL</td>
+<td id="madrid-roja-sacada_rival-total">0</td>
+<td id="madrid-roja-sacada_rival-si">0</td>
+<td id="madrid-roja-sacada_rival-no">0</td>
+<td class="valor-neutro" id="madrid-roja-sacada_rival-balance">0</td>
+</tr>
+<tr class="fila-hover">
+<td class="col-concepto">ROJAS POLÉMICAS NO SACADAS AL RIVAL</td>
+<td id="madrid-roja-no_sacada_rival-total">0</td>
+<td id="madrid-roja-no_sacada_rival-si">0</td>
+<td id="madrid-roja-no_sacada_rival-no">0</td>
+<td class="valor-neutro" id="madrid-roja-no_sacada_rival-balance">0</td>
+</tr>
+<tr class="fila-total-bloque">
+<td class="total-label">TOTAL ROJAS CON POLÉMICA</td>
+<td id="madrid-roja-total-total">0</td>
+<td id="madrid-roja-total-si">0</td>
+<td id="madrid-roja-total-no">0</td>
+<td class="valor-neutro" id="madrid-roja-total-balance">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</div>
+</article>
+</div>
+</div><section class="seccion-comentarios comentarios-box" id="seccionComentariosResultadosVar">
+<div class="cabecera-comentarios">
+<h3>Comentarios</h3>
+<p id="contadorComentariosResultadosVar">0 comentarios</p>
+</div>
+<div class="cuerpo-comentarios">
+<input class="nombre-comentario" id="nombreComentarioResultadosVar" type="text" maxlength="40" placeholder="Tu nombre">
+<div class="comentario-editor">
+<textarea class="textarea-comentario" id="textoComentarioResultadosVar" placeholder="Escribe tu comentario  "></textarea>
+<button class="btn-microfono" id="btnMicrofonoResultadosVar" type="button" aria-label="Mantén pulsado para grabar" title="Mantén pulsado para grabar">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a1 1 0 1 1 2 0 7 7 0 0 1-6 6.93V20h3a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2h3v-2.07A7 7 0 0 1 5 11a1 1 0 1 1 2 0 5 5 0 0 0 10 0Z"/></svg>
+</button>
+</div>
+<div class="estado-audio" id="estadoAudioResultadosVar"></div>
+<div class="acciones-comentario">
+<button class="boton-comentar" id="btnPublicarComentarioResultadosVar" type="button">Publicar comentario</button>
+<button class="btn-mostrar-inicial" id="btnMostrarComentariosResultadosVar" type="button">Mostrar comentarios</button>
+</div>
+<div class="lista-comentarios" id="listaComentariosResultadosVar"></div>
+<div class="mostrar-mas-wrap">
+<button class="btn-mostrar-mas" id="btnMostrarMasResultadosVar" type="button">Mostrar más comentarios</button>
+</div>
+<div class="ocultar-wrap">
+<button class="btn-ocultar" id="btnOcultarComentariosResultadosVar" type="button">Ocultar comentarios</button>
+</div>
+</div>
+</section></section>
+<section class="tarjeta-aviso-legal">
+<div class="aviso-legal">
+                POLÉMICA VAR es una plataforma independiente y neutral cuyo objetivo es analizar jugadas polémicas a través de la opinión de los usuarios.
+                Los contenidos audiovisuales mostrados pertenecen a sus respectivos autores y son compartidos desde plataformas públicas. Esta web no almacena ni modifica dichos contenidos.
+            </div>
+</section>
+</div>
+</div>
 <script>
-const input=document.getElementById('archivo');
-const boton=document.getElementById('generar');
-const estado=document.getElementById('estado');
-input.addEventListener('change',()=>{
-    boton.disabled=!input.files?.length;
-    estado.textContent='';
-    estado.className='estado';
-});
+const { loadDataset, getComments, addComment, escapeHtml, formatDate } = window.DecisionVarData;
+function setVal(id,v){ const el=document.getElementById(id); if(el) el.textContent=v; }
+function classBalance(v){ return v>0?'valor-pos':(v<0?'valor-neg':'valor-neutro'); }
+function totalCat(obj){ return Object.values(obj).reduce((a,b)=>({total:a.total+b.total, si:a.si+b.si, no:a.no+b.no, balance:a.balance+b.balance}), {total:0,si:0,no:0,balance:0}); }
 
-const NUEVA_SECCION=`<section class="seccion-comentarios comentarios-box" id="seccionComentariosResultadosVar">
-    <div class="cabecera-comentarios">
-        <div>
-            <h3>Comentarios</h3>
-            <p id="contadorComentariosResultadosVar">0 comentarios</p>
-        </div>
-    </div>
-    <div class="cuerpo-comentarios">
-        <input class="nombre-comentario" id="nombreComentarioResultadosVar" type="text" maxlength="40" placeholder="Tu nombre">
-        <div class="comentario-editor">
-            <textarea class="textarea-comentario" id="textoComentarioResultadosVar" placeholder="Escribe tu comentario sobre los resultados VAR..."></textarea>
-            <button class="btn-microfono" id="btnMicrofonoResultadosVar" type="button" aria-label="Mantén pulsado para grabar un audio" title="Mantén pulsado y suelta para enviar">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a1 1 0 1 1 2 0 7 7 0 0 1-6 6.93V20h3a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2h3v-2.07A7 7 0 0 1 5 11a1 1 0 1 1 2 0 5 5 0 0 0 10 0Z"/></svg>
-            </button>
-        </div>
-        <div class="acciones-comentario">
-            <button class="boton-comentar" id="btnPublicarComentarioResultadosVar" type="button">Publicar comentario</button>
-            <div class="estado-audio" id="estadoAudioResultadosVar">Mantén pulsado el micrófono y suelta para enviar.</div>
-        </div>
-        <div class="lista-comentarios" id="listaComentariosResultadosVar"></div>
-        <div class="controles-lista-comentarios">
-            <button class="btn-mostrar-mas" id="btnMostrarMasResultadosVar" type="button">Mostrar más comentarios</button>
-            <button class="btn-ocultar" id="btnOcultarComentariosResultadosVar" type="button">Ocultar comentarios</button>
-        </div>
-    </div>
-</section>`;
+function renderTeam(teamKey,prefix,resumen){ ['penalti','gol','roja'].forEach(cat=>{ const catObj=resumen[teamKey][cat]; Object.entries(catObj).forEach(([sub,b])=>{ setVal(`${prefix}-${cat}-${sub}-total`, b.total); setVal(`${prefix}-${cat}-${sub}-si`, b.si); setVal(`${prefix}-${cat}-${sub}-no`, b.no); const el=document.getElementById(`${prefix}-${cat}-${sub}-balance`); if(el){ el.textContent=b.balance>0?`+${b.balance}`:String(b.balance); el.className=classBalance(b.balance); } }); const t=totalCat(catObj); setVal(`${prefix}-${cat}-total-total`, t.total); setVal(`${prefix}-${cat}-total-si`, t.si); setVal(`${prefix}-${cat}-total-no`, t.no); const el=document.getElementById(`${prefix}-${cat}-total-balance`); if(el){ el.textContent=t.balance>0?`+${t.balance}`:String(t.balance); el.className=classBalance(t.balance);} }); }
+function formatearConSigno(v){ const n=Number(v)||0; return n>0?`+${n}`:String(n); }
+function renderMarker(bloques){
+    const map={}; bloques.forEach(b=>map[b.key]=b);
+    const bp=Number(map.penalti?.barca||0), bg=Number(map.gol?.barca||0), br=Number(map.roja?.barca||0);
+    const mp=Number(map.penalti?.madrid||0), mg=Number(map.gol?.madrid||0), mr=Number(map.roja?.madrid||0);
+    setVal('marcador-barca-penaltis',formatearConSigno(bp)); setVal('marcador-barca-goles',formatearConSigno(bg)); setVal('marcador-barca-rojas',formatearConSigno(br));
+    setVal('marcador-madrid-penaltis',formatearConSigno(mp)); setVal('marcador-madrid-goles',formatearConSigno(mg)); setVal('marcador-madrid-rojas',formatearConSigno(mr));
+    const tb=bp+bg+br, tm=mp+mg+mr;
+    setVal('marcador-barca-total',formatearConSigno(tb)); setVal('marcador-madrid-total',formatearConSigno(tm));
+    setVal('marcador-score-barca',formatearConSigno(tb)); setVal('marcador-score-madrid',formatearConSigno(tm));
+}
 
-const CSS_NUEVO=`
-/* ===== COMENTARIOS RESULTADOS VAR — CORRECCIÓN DEFINITIVA ===== */
-#seccionComentariosResultadosVar .cabecera-comentarios{
-    display:flex !important;
-    align-items:center !important;
-    justify-content:space-between !important;
-    padding:12px 14px !important;
-}
-#seccionComentariosResultadosVar .nombre-comentario{
-    width:100%;box-sizing:border-box;margin:0 0 9px;padding:10px 12px;
-    border:1px solid #d0d7e2;border-radius:9px;font-size:13px;background:#fff;color:#24344d;
-}
-#seccionComentariosResultadosVar .comentario-editor{
-    display:flex;align-items:flex-end;gap:6px;width:100%;box-sizing:border-box;
-    padding:6px;border:1px solid #d0d7e2;border-radius:10px;background:#fff;
-}
-#seccionComentariosResultadosVar .comentario-editor:focus-within{
-    border-color:#2567c7;box-shadow:0 0 0 3px rgba(37,103,199,.12);
-}
-#seccionComentariosResultadosVar .comentario-editor textarea{
-    flex:1 1 auto;width:auto;min-width:0;min-height:48px;max-height:150px;
-    margin:0;padding:7px 8px;border:0 !important;outline:none;resize:vertical;background:transparent;
-}
-#seccionComentariosResultadosVar .btn-microfono{
-    flex:0 0 40px;width:40px;height:40px;margin:0 0 1px;padding:0;border:0;border-radius:50%;
-    display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#174d9c,#2567c7);
-    color:#fff;cursor:pointer;box-shadow:0 6px 14px rgba(23,77,156,.22);touch-action:none;
-    user-select:none;-webkit-user-select:none;
-}
-#seccionComentariosResultadosVar .btn-microfono svg{width:21px;height:21px;fill:currentColor;}
-#seccionComentariosResultadosVar .btn-microfono.grabando{background:#d62839;transform:scale(1.08);animation:pulsoMicroResultados 1s infinite;}
-@keyframes pulsoMicroResultados{0%,100%{box-shadow:0 0 0 0 rgba(214,40,57,.35)}50%{box-shadow:0 0 0 10px rgba(214,40,57,0)}}
-#seccionComentariosResultadosVar .acciones-comentario{display:flex;align-items:center;gap:9px;margin-top:9px;flex-wrap:wrap;}
-#seccionComentariosResultadosVar .estado-audio{min-height:20px;font-size:12px;color:#667791;font-weight:700;display:flex;align-items:center;}
-#seccionComentariosResultadosVar .estado-audio.grabando{color:#c91f35;}
-#seccionComentariosResultadosVar .comentario-audio{margin-top:7px;display:flex;align-items:center;gap:9px;}
-#seccionComentariosResultadosVar .comentario-audio audio{width:min(100%,360px);height:38px;}
-#seccionComentariosResultadosVar .controles-lista-comentarios{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:10px;}
-#seccionComentariosResultadosVar .btn-mostrar-mas,
-#seccionComentariosResultadosVar .btn-ocultar{display:none;border:0;padding:8px 14px;border-radius:8px;color:#fff;font-weight:700;cursor:pointer;font-size:13px;}
-#seccionComentariosResultadosVar .btn-mostrar-mas{background:linear-gradient(135deg,#174d9c,#2567c7);}
-#seccionComentariosResultadosVar .btn-ocultar{background:#6d7787;}
-#seccionComentariosResultadosVar .comentario-item{display:block !important;}
-@media(max-width:768px){
-    #seccionComentariosResultadosVar .acciones-comentario{justify-content:space-between;}
-    #seccionComentariosResultadosVar .boton-comentar{flex:1;}
-    #seccionComentariosResultadosVar .controles-lista-comentarios{flex-direction:column;}
-    #seccionComentariosResultadosVar .btn-mostrar-mas,
-    #seccionComentariosResultadosVar .btn-ocultar{width:100%;}
-}
-`;
+async function initComments(){
+    const api = window.DecisionVarData || {};
+    const getComments = api.getComments || (async()=>[]);
+    const addComment = api.addComment || (async()=>{ throw new Error("Servicio no disponible"); });
+    const addAudioComment = api.addAudioComment || (async()=>{ throw new Error("El audio no está disponible"); });
+    const escapeHtml = api.escapeHtml || (t => String(t || ""));
+    const formatDate = api.formatDate || (t => String(t || ""));
 
-const FUNCION_NUEVA=String.raw`async function initComments(){
-    const api=window.DecisionVarData||{};
-    const getComments=api.getComments||(async()=>[]);
-    const addComment=api.addComment||(async()=>{throw new Error('Servicio no disponible');});
-    const addAudioComment=api.addAudioComment||(async()=>{throw new Error('El audio no está disponible');});
-    const ensureAnonymousSession=api.ensureAnonymousSession||(async()=>null);
-    const escapeHtml=api.escapeHtml||(t=>String(t||''));
-    const formatDate=api.formatDate||(t=>String(t||''));
+    const list = document.getElementById('listaComentariosResultadosVar');
+    const count = document.getElementById('contadorComentariosResultadosVar');
+    const ta = document.getElementById('textoComentarioResultadosVar');
+    const nombre = document.getElementById('nombreComentarioResultadosVar');
+    const btnPub = document.getElementById('btnPublicarComentarioResultadosVar');
+    const btnShow = document.getElementById('btnMostrarComentariosResultadosVar');
+    const btnMore = document.getElementById('btnMostrarMasResultadosVar');
+    const btnHide = document.getElementById('btnOcultarComentariosResultadosVar');
+    const btnMic = document.getElementById('btnMicrofonoResultadosVar');
+    const estadoAudio = document.getElementById('estadoAudioResultadosVar');
 
-    const list=document.getElementById('listaComentariosResultadosVar');
-    const count=document.getElementById('contadorComentariosResultadosVar');
-    const ta=document.getElementById('textoComentarioResultadosVar');
-    const nombre=document.getElementById('nombreComentarioResultadosVar');
-    const btnPub=document.getElementById('btnPublicarComentarioResultadosVar');
-    const btnMore=document.getElementById('btnMostrarMasResultadosVar');
-    const btnHide=document.getElementById('btnOcultarComentariosResultadosVar');
-    const btnMic=document.getElementById('btnMicrofonoResultadosVar');
-    const estadoAudio=document.getElementById('estadoAudioResultadosVar');
-
-    if(!list||!count||!ta||!nombre||!btnPub||!btnMore||!btnHide||!btnMic||!estadoAudio) return;
-
-    try{await ensureAnonymousSession();}catch(e){console.warn('No se pudo iniciar la sesión anónima',e);}
-
-    const CLAVE_NOMBRE='polemicavar_nombre_comentarios';
-    try{nombre.value=localStorage.getItem(CLAVE_NOMBRE)||'';}catch(e){}
+    const CLAVE_NOMBRE = 'polemicavar_nombre_comentarios';
+    try{
+        nombre.value = localStorage.getItem(CLAVE_NOMBRE) || '';
+    }catch(e){}
 
     function guardarNombre(){
-        const valor=String(nombre.value||'').trim();
-        if(valor){try{localStorage.setItem(CLAVE_NOMBRE,valor);}catch(e){}}
+        const valor = String(nombre.value || '').trim();
+        if(valor){
+            try{ localStorage.setItem(CLAVE_NOMBRE, valor); }catch(e){}
+        }
         return valor;
     }
-    nombre.addEventListener('change',guardarNombre);
-    nombre.addEventListener('blur',guardarNombre);
 
-    let visibles=3;
-    let comments=[];
+    nombre.addEventListener('change', guardarNombre);
+    nombre.addEventListener('blur', guardarNombre);
 
-    function ordenar(lista){
-        return [...lista].sort((a,b)=>{
-            const fa=new Date(a.created_at||a.creado_en||0).getTime()||0;
-            const fb=new Date(b.created_at||b.creado_en||0).getTime()||0;
-            return fb-fa;
-        });
-    }
+    let visibles = 0;
+    let comments = [];
 
     function renderAudio(c){
-        const url=c.audio_url||c.audioUrl||'';
-        if(!url) return '<div class="comentario-texto">Audio no disponible.</div>';
-        const duracion=Number(c.duracion_segundos||0);
-        const etiqueta=duracion?('Audio · '+Math.floor(duracion/60)+':'+String(duracion%60).padStart(2,'0')):'Mensaje de audio';
-        return '<div class="comentario-audio"><audio controls preload="metadata" src="'+escapeHtml(url)+'"></audio><span style="font-size:12px;color:#667791">'+etiqueta+'</span></div>';
+        const url = c.audio_url || c.audioUrl || '';
+        if(!url) return '';
+        return `<div class="comentario-audio">
+            <audio controls preload="metadata" src="${escapeHtml(url)}"></audio>
+        </div>`;
     }
 
     async function reload(){
-        try{comments=ordenar(await getComments('resultados',''));}
-        catch(e){console.error('No se pudieron cargar los comentarios',e);comments=[];}
+        try{
+            comments = await getComments('resultados','');
+        }catch(e){
+            comments = [];
+        }
 
-        count.textContent=comments.length+' '+(comments.length===1?'comentario':'comentarios');
-        list.innerHTML='';
+        count.textContent = `${comments.length} ${comments.length === 1 ? 'comentario' : 'comentarios'}`;
+        list.innerHTML = '';
 
-        comments.slice(0,visibles).forEach(c=>{
-            const div=document.createElement('div');
-            div.className='comentario-item visible';
-            const esAudio=String(c.tipo||'').toLowerCase()==='audio'||Boolean(c.audio_url||c.audioUrl);
-            div.innerHTML='<div class="comentario-cabecera-item">'+
-                '<span class="comentario-autor">'+escapeHtml(c.autor||'Usuario')+'</span>'+
-                '<span class="comentario-fecha">'+escapeHtml(formatDate(c.created_at||c.creado_en||''))+'</span>'+
-                '</div>'+(esAudio?renderAudio(c):'<div class="comentario-texto">'+escapeHtml(c.texto||'')+'</div>');
+        comments.slice(0, visibles).forEach(c=>{
+            const div = document.createElement('div');
+            div.className = 'comentario-item visible';
+
+            const esAudio = String(c.tipo || '').toLowerCase() === 'audio' || !!c.audio_url;
+            const contenido = esAudio
+                ? renderAudio(c)
+                : `<div class="comentario-texto">${escapeHtml(c.texto || '')}</div>`;
+
+            div.innerHTML = `
+                <div class="comentario-cabecera-item">
+                    <span class="comentario-autor">${escapeHtml(c.autor || 'Usuario')}</span>
+                    <span class="comentario-fecha">${escapeHtml(formatDate(c.created_at || c.creado_en))}</span>
+                </div>
+                ${contenido}
+            `;
             list.appendChild(div);
         });
 
-        btnMore.style.display=comments.length>3&&visibles<comments.length?'inline-flex':'none';
-        btnHide.style.display=visibles>3?'inline-flex':'none';
+        btnShow.style.display = comments.length > 0 && visibles === 0 ? 'inline-block' : 'none';
+        btnHide.style.display = visibles > 0 ? 'inline-block' : 'none';
+        btnMore.style.display = visibles > 0 && visibles < comments.length ? 'inline-block' : 'none';
     }
 
-    btnPub.onclick=async()=>{
-        const txt=String(ta.value||'').trim();
-        const autor=guardarNombre();
-        if(!autor){alert('Escribe tu nombre antes de comentar.');nombre.focus();return;}
-        if(!txt){alert('Escribe un comentario.');ta.focus();return;}
-        btnPub.disabled=true;
+    btnPub.onclick = async()=>{
+        const txt = String(ta.value || '').trim();
+        const autor = guardarNombre();
+
+        if(!autor){
+            alert('Escribe tu nombre');
+            nombre.focus();
+            return;
+        }
+
+        if(!txt){
+            alert('Escribe un comentario');
+            ta.focus();
+            return;
+        }
+
+        btnPub.disabled = true;
         try{
-            await addComment('resultados',txt,'',autor);
-            ta.value='';
-            visibles=Math.max(3,visibles);
+            await addComment('resultados', txt, '', autor);
+            ta.value = '';
+            visibles = Math.max(visibles, 5);
             await reload();
-        }catch(e){console.error(e);alert(e?.message||'No se pudo publicar el comentario');}
-        finally{btnPub.disabled=false;}
+        }catch(e){
+            alert(e?.message || 'No se pudo publicar el comentario');
+        }finally{
+            btnPub.disabled = false;
+        }
     };
 
-    btnMore.onclick=()=>{visibles+=3;reload();};
-    btnHide.onclick=()=>{visibles=3;reload();list.scrollIntoView({behavior:'smooth',block:'nearest'});};
+    btnShow.onclick = ()=>{ visibles = 5; reload(); };
+    btnMore.onclick = ()=>{ visibles += 5; reload(); };
+    btnHide.onclick = ()=>{ visibles = 0; reload(); };
 
-    let recorder=null;
-    let stream=null;
-    let chunks=[];
-    let inicio=0;
-    let intervalo=null;
+    let mediaRecorder=null;
+    let audioChunks=[];
+    let audioStream=null;
+    let inicioGrabacion=0;
+    let intervaloAudio=null;
     let grabando=false;
-    let iniciando=false;
-    let soltarPendiente=false;
-    let pointerActual=null;
+    let audioPendiente=null;
+    let duracionPendiente=0;
 
-    function estado(texto,activo=false){
+    function actualizarEstadoAudio(texto, activo=false){
+        if(!estadoAudio) return;
         estadoAudio.textContent=texto;
         estadoAudio.classList.toggle('grabando',activo);
     }
 
-    function cerrarStream(){
-        if(intervalo){clearInterval(intervalo);intervalo=null;}
-        if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}
+    function limpiarGrabacion(){
+        if(intervaloAudio){
+            clearInterval(intervaloAudio);
+            intervaloAudio=null;
+        }
+
+        if(audioStream){
+            audioStream.getTracks().forEach(t=>t.stop());
+            audioStream=null;
+        }
+
         grabando=false;
-        iniciando=false;
-        btnMic.classList.remove('grabando');
-        if(pointerActual!==null){try{btnMic.releasePointerCapture(pointerActual);}catch(e){}pointerActual=null;}
+        btnMic?.classList.remove('grabando');
     }
 
-    function tipoCompatible(){
-        const tipos=['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/ogg;codecs=opus'];
-        return tipos.find(t=>window.MediaRecorder?.isTypeSupported?.(t))||'';
-    }
+    async function enviarAudioPendiente(){
+        if(!audioPendiente) return false;
 
-    async function comenzar(e){
-        e.preventDefault();
-        if(iniciando||grabando||btnMic.disabled) return;
         const autor=guardarNombre();
-        if(!autor){alert('Escribe tu nombre antes de grabar.');nombre.focus();return;}
-        if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){alert('Este navegador no permite grabar audio.');return;}
 
-        iniciando=true;
-        soltarPendiente=false;
-        pointerActual=e.pointerId??null;
-        if(pointerActual!==null){try{btnMic.setPointerCapture(pointerActual);}catch(err){}}
+        if(!autor){
+            actualizarEstadoAudio(
+                'Audio guardado. Escribe tu nombre y vuelve a pulsar el micrófono para enviarlo.'
+            );
+            nombre?.focus();
+            return false;
+        }
+
+        const blob=audioPendiente;
+        const duracion=duracionPendiente;
+
+        actualizarEstadoAudio('Enviando audio…');
+        btnMic.disabled=true;
 
         try{
-            stream=await navigator.mediaDevices.getUserMedia({audio:true});
-            const mimeType=tipoCompatible();
-            recorder=new MediaRecorder(stream,mimeType?{mimeType}:undefined);
-            chunks=[];
-            recorder.ondataavailable=ev=>{if(ev.data?.size) chunks.push(ev.data);};
-            recorder.onstop=async()=>{
-                const duracion=Math.max(1,Math.round((Date.now()-inicio)/1000));
-                const tipoBase=String(recorder.mimeType||chunks[0]?.type||'audio/webm').split(';')[0];
-                const blob=new Blob(chunks,{type:tipoBase});
-                cerrarStream();
-                if(blob.size<500){estado('Audio demasiado corto. Mantén pulsado un poco más.');return;}
-                btnMic.disabled=true;
-                estado('Enviando audio…');
-                try{
-                    await addAudioComment('resultados',blob,'',guardarNombre(),duracion);
-                    visibles=Math.max(3,visibles);
-                    await reload();
-                    estado('Audio enviado.');
-                    setTimeout(()=>{if(estadoAudio.textContent==='Audio enviado.')estado('Mantén pulsado el micrófono y suelta para enviar.');},1800);
-                }catch(err){console.error(err);estado('No se pudo enviar el audio.');alert(err?.message||'No se pudo guardar el audio');}
-                finally{btnMic.disabled=false;}
+            await addAudioComment(
+                'resultados',
+                blob,
+                '',
+                autor,
+                duracion
+            );
+
+            audioPendiente=null;
+            duracionPendiente=0;
+            visibles=Math.max(visibles,5);
+
+            actualizarEstadoAudio('Audio enviado.');
+            await reload();
+
+            setTimeout(()=>{
+                if(estadoAudio?.textContent==='Audio enviado.'){
+                    actualizarEstadoAudio('');
+                }
+            },1800);
+
+            return true;
+
+        }catch(err){
+            console.error('Error al publicar audio en Resultados VAR:',err);
+
+            const mensaje=
+                err?.message ||
+                err?.error_description ||
+                'No se pudo guardar el audio';
+
+            actualizarEstadoAudio(`No se pudo enviar: ${mensaje}`);
+            alert(mensaje);
+            return false;
+
+        }finally{
+            btnMic.disabled=false;
+        }
+    }
+
+    async function comenzarGrabacion(e){
+        e.preventDefault();
+
+        /*
+         * Si ya existe un audio pendiente, el siguiente toque intenta
+         * enviarlo en lugar de borrar la grabación y comenzar otra.
+         */
+        if(audioPendiente){
+            await enviarAudioPendiente();
+            return;
+        }
+
+        if(grabando) return;
+
+        if(!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder){
+            alert('Este navegador no permite grabar audio. Prueba con Chrome, Edge o Safari actualizado.');
+            return;
+        }
+
+        try{
+            audioStream=await navigator.mediaDevices.getUserMedia({audio:true});
+
+            const tipos=[
+                'audio/webm;codecs=opus',
+                'audio/webm',
+                'audio/mp4',
+                'audio/ogg;codecs=opus'
+            ];
+
+            const mimeType=
+                tipos.find(t=>MediaRecorder.isTypeSupported?.(t)) || '';
+
+            mediaRecorder=new MediaRecorder(
+                audioStream,
+                mimeType ? {mimeType} : undefined
+            );
+
+            audioChunks=[];
+
+            mediaRecorder.ondataavailable=ev=>{
+                if(ev.data?.size) audioChunks.push(ev.data);
             };
-            recorder.start(250);
-            iniciando=false;
+
+            mediaRecorder.onstop=async()=>{
+                const duracion=Math.max(
+                    1,
+                    Math.round((Date.now()-inicioGrabacion)/1000)
+                );
+
+                const tipoBase=String(
+                    mediaRecorder.mimeType ||
+                    audioChunks[0]?.type ||
+                    'audio/webm'
+                ).split(';')[0];
+
+                const blob=new Blob(audioChunks,{type:tipoBase});
+
+                limpiarGrabacion();
+
+                if(blob.size<500){
+                    actualizarEstadoAudio('Audio demasiado corto.');
+                    return;
+                }
+
+                /*
+                 * Se conserva siempre la grabación antes de pedir el nombre.
+                 * Así nunca se pierde aunque el usuario aún no lo haya escrito.
+                 */
+                audioPendiente=blob;
+                duracionPendiente=duracion;
+
+                const autor=guardarNombre();
+
+                if(!autor){
+                    actualizarEstadoAudio(
+                        'Audio guardado. Escribe tu nombre y vuelve a pulsar el micrófono para enviarlo.'
+                    );
+                    nombre?.focus();
+                    return;
+                }
+
+                await enviarAudioPendiente();
+            };
+
+            mediaRecorder.start();
             grabando=true;
-            inicio=Date.now();
-            btnMic.classList.add('grabando');
-            estado('Grabando 0:00 · suelta para enviar',true);
-            intervalo=setInterval(()=>{
-                const s=Math.floor((Date.now()-inicio)/1000);
-                estado('Grabando '+Math.floor(s/60)+':'+String(s%60).padStart(2,'0')+' · suelta para enviar',true);
-                if(s>=120) detener();
+            inicioGrabacion=Date.now();
+
+            btnMic?.classList.add('grabando');
+            actualizarEstadoAudio(
+                'Grabando 0:00 · suelta para enviar',
+                true
+            );
+
+            intervaloAudio=setInterval(()=>{
+                const s=Math.floor(
+                    (Date.now()-inicioGrabacion)/1000
+                );
+
+                actualizarEstadoAudio(
+                    `Grabando ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')} · suelta para enviar`,
+                    true
+                );
+
+                if(s>=120) detenerGrabacion();
             },250);
-            if(soltarPendiente) detener();
-        }catch(err){console.error(err);cerrarStream();estado('Permiso de micrófono no concedido.');}
+
+        }catch(err){
+            console.error('Error de micrófono:',err);
+            limpiarGrabacion();
+            actualizarEstadoAudio('Permiso de micrófono no concedido.');
+        }
     }
 
-    function detener(e){
-        e?.preventDefault?.();
-        if(iniciando&&!grabando){soltarPendiente=true;return;}
-        if(!grabando||!recorder) return;
-        grabando=false;
-        btnMic.classList.remove('grabando');
-        if(recorder.state!=='inactive') recorder.stop();
+    function detenerGrabacion(e){
+        e?.preventDefault();
+
+        if(!grabando || !mediaRecorder) return;
+
+        if(mediaRecorder.state!=='inactive'){
+            mediaRecorder.stop();
+        }
     }
 
-    btnMic.addEventListener('pointerdown',comenzar);
-    btnMic.addEventListener('pointerup',detener);
-    btnMic.addEventListener('pointercancel',detener);
-    window.addEventListener('pointerup',detener);
-    btnMic.addEventListener('contextmenu',e=>e.preventDefault());
+    /*
+     * Al escribir el nombre después de grabar, se conserva el audio.
+     * El usuario puede enviarlo pulsando de nuevo el micrófono.
+     */
+    nombre?.addEventListener('input',()=>{
+        if(audioPendiente && String(nombre.value || '').trim()){
+            actualizarEstadoAudio(
+                'Audio preparado. Pulsa el micrófono para enviarlo.'
+            );
+        }
+    });
+
+    if(btnMic){
+        btnMic.addEventListener('pointerdown',comenzarGrabacion);
+        btnMic.addEventListener('pointerup',detenerGrabacion);
+        btnMic.addEventListener('pointercancel',detenerGrabacion);
+        btnMic.addEventListener('pointerleave',e=>{
+            if(grabando && e.buttons===0){
+                detenerGrabacion(e);
+            }
+        });
+        btnMic.addEventListener('contextmenu',e=>e.preventDefault());
+    }
 
     await reload();
-}`;
 
-function reemplazarSeccion(html){
-    const re=/<section\b[^>]*id=["']seccionComentariosResultadosVar["'][^>]*>[\s\S]*?<\/section>/i;
-    if(!re.test(html)) throw new Error('No encuentro la sección de comentarios de Resultados VAR.');
-    return html.replace(re,NUEVA_SECCION);
-}
+                    setTimeout(()=>{
+                        if(estadoAudio?.textContent==='Audio enviado.'){
+                            actualizarEstadoAudio('');
+                        }
+                    },1800);
 
-function reemplazarFuncion(html){
-    const inicio=html.search(/async\s+function\s+initComments\s*\(/);
-    if(inicio<0) throw new Error('No encuentro la función initComments().');
-    const resto=html.slice(inicio);
-    const coincidencia=resto.match(/\n\s*\(async\s*\(\)\s*=>\s*\{/);
-    if(!coincidencia) throw new Error('No encuentro el bloque principal posterior a initComments().');
-    const fin=inicio+coincidencia.index;
-    return html.slice(0,inicio)+FUNCION_NUEVA+'\n'+html.slice(fin);
-}
+                }catch(err){
+                    console.error('Error al publicar audio en Resultados VAR:',err);
 
-function asegurarLlamada(html){
-    const inicioIIFE=html.search(/\(async\s*\(\)\s*=>\s*\{/);
-    if(inicioIIFE<0) return html;
-    const despues=html.slice(inicioIIFE);
-    if(/\binitComments\s*\(\s*\)\s*;/.test(despues)) return html;
-    const cierre=html.lastIndexOf('})();');
-    if(cierre<0) return html;
-    return html.slice(0,cierre)+'    await initComments();\n'+html.slice(cierre);
-}
+                    const mensaje=
+                        err?.message ||
+                        err?.error_description ||
+                        'No se pudo guardar el audio';
 
-function inyectarCSS(html){
-    if(html.includes('COMENTARIOS RESULTADOS VAR — CORRECCIÓN DEFINITIVA')) return html;
-    const pos=html.toLowerCase().lastIndexOf('</head>');
-    if(pos<0) throw new Error('El archivo no contiene </head>.');
-    return html.slice(0,pos)+'<style>'+CSS_NUEVO+'</style>\n'+html.slice(pos);
-}
+                    actualizarEstadoAudio(`No se pudo enviar: ${mensaje}`);
+                    alert(mensaje);
+                }
+            };
 
-boton.addEventListener('click',async()=>{
-    const file=input.files?.[0];
-    if(!file)return;
-    boton.disabled=true;
-    estado.textContent='Procesando archivo…';
-    estado.className='estado';
-    try{
-        let html=await file.text();
-        html=reemplazarSeccion(html);
-        html=reemplazarFuncion(html);
-        html=asegurarLlamada(html);
-        html=inyectarCSS(html);
+            mediaRecorder.start();
+            grabando=true;
+            inicioGrabacion=Date.now();
 
-        const blob=new Blob([html],{type:'text/html;charset=utf-8'});
-        const url=URL.createObjectURL(blob);
-        const a=document.createElement('a');
-        a.href=url;
-        a.download='resultados-var.html';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        setTimeout(()=>URL.revokeObjectURL(url),1500);
-        estado.textContent='Archivo corregido descargado correctamente.';
-        estado.className='estado ok';
-    }catch(err){
-        console.error(err);
-        estado.textContent=err.message||'No se pudo reparar el archivo.';
-        estado.className='estado error';
-    }finally{
-        boton.disabled=false;
+            btnMic?.classList.add('grabando');
+            actualizarEstadoAudio(
+                'Grabando 0:00 · suelta para enviar',
+                true
+            );
+
+            intervaloAudio=setInterval(()=>{
+                const s=Math.floor(
+                    (Date.now()-inicioGrabacion)/1000
+                );
+
+                actualizarEstadoAudio(
+                    `Grabando ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')} · suelta para enviar`,
+                    true
+                );
+
+                if(s>=120) detenerGrabacion();
+            },250);
+
+        }catch(err){
+            console.error('Error de micrófono:',err);
+            limpiarGrabacion();
+            actualizarEstadoAudio('Permiso de micrófono no concedido.');
+        }
     }
-});
+
+    function detenerGrabacion(e){
+        e?.preventDefault();
+
+        if(!grabando || !mediaRecorder) return;
+
+        if(mediaRecorder.state!=='inactive'){
+            mediaRecorder.stop();
+        }
+    }
+
+    if(btnMic){
+        btnMic.addEventListener('pointerdown',comenzarGrabacion);
+        btnMic.addEventListener('pointerup',detenerGrabacion);
+        btnMic.addEventListener('pointercancel',detenerGrabacion);
+        btnMic.addEventListener('pointerleave',e=>{
+            if(grabando && e.buttons===0){
+                detenerGrabacion(e);
+            }
+        });
+        btnMic.addEventListener('contextmenu',e=>e.preventDefault());
+    }
+
+    await reload();
+                    setTimeout(()=>{ estadoAudio.textContent = ''; }, 1800);
+                }catch(e){
+                    estadoAudio.textContent = '';
+                    alert(e?.message || 'No se pudo publicar el audio');
+                }finally{
+                    btnMic.disabled = false;
+                    detenerPistas();
+                }
+            };
+
+            mediaRecorder.start();
+            inicioGrabacion = Date.now();
+            grabando = true;
+            btnMic.classList.add('grabando');
+            estadoAudio.textContent = 'Grabando... suelta para enviar';
+        }catch(e){
+            detenerPistas();
+            alert('No se pudo acceder al micrófono');
+        }
+    }
+
+    function finalizarGrabacion(ev){
+        if(ev) ev.preventDefault();
+        if(!grabando) return;
+
+        grabando = false;
+        btnMic.classList.remove('grabando');
+
+        if(mediaRecorder && mediaRecorder.state !== 'inactive'){
+            mediaRecorder.stop();
+        }else{
+            detenerPistas();
+            estadoAudio.textContent = '';
+        }
+    }
+
+    btnMic.addEventListener('pointerdown', iniciarGrabacion);
+    btnMic.addEventListener('pointerup', finalizarGrabacion);
+    btnMic.addEventListener('pointercancel', finalizarGrabacion);
+    btnMic.addEventListener('pointerleave', e=>{
+        if(grabando && e.buttons === 0) finalizarGrabacion(e);
+    });
+    btnMic.addEventListener('contextmenu', e=>e.preventDefault());
+
+    await reload();
+}
+
+(async()=>{
+    const data = await loadDataset();
+
+    renderTeam('barcelona','barcelona',data.resumen);
+    renderTeam('madrid','madrid',data.resumen);
+
+    renderMarker(data.resumenBloques || []);
+
+    initComments();
+})();
 </script>
 </body>
 </html>
