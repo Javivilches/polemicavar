@@ -4269,6 +4269,33 @@ async function initComments(article, jugada){
 
     async function comenzarGrabacion(e){
         e.preventDefault();
+
+        const nombreActual=(inputNombre?.value||'').trim();
+
+        if(!nombreActual){
+            btnMicro?.blur();
+
+            alert('Escribe primero tu nombre para poder grabar un comentario de voz.');
+
+            setTimeout(()=>{
+                if(inputNombre){
+                    inputNombre.disabled=false;
+                    inputNombre.readOnly=false;
+                    inputNombre.focus();
+                    inputNombre.click();
+
+                    const longitud=inputNombre.value.length;
+                    inputNombre.setSelectionRange?.(longitud,longitud);
+                }
+            },120);
+
+            return;
+        }
+
+        try{
+            localStorage.setItem(NOMBRE_STORAGE_KEY,nombreActual);
+        }catch(e){}
+
         if(grabando) return;
         if(!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder){
             alert('Este navegador no permite grabar audio. Prueba con Chrome, Edge o Safari actualizado.');
@@ -4318,8 +4345,8 @@ async function initComments(article, jugada){
     }
 
     function detenerGrabacion(e){
-        e?.preventDefault();
         if(!grabando || !mediaRecorder) return;
+        e?.preventDefault();
         if(mediaRecorder.state!=='inactive') mediaRecorder.stop();
     }
 
