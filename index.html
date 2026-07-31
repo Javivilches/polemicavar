@@ -3162,7 +3162,7 @@ body{
     }
 
     .menu a:last-of-type{
-        padding-right:10px !important;
+        padding-right:54px !important;
     }
 
     .menu-icono{
@@ -3195,24 +3195,47 @@ body{
     }
 }
 
-
-/* MENÚ SIN LOGIN: cinco opciones centradas y repartidas por igual */
-.menu{
-    grid-template-columns:repeat(5,minmax(0,1fr)) !important;
-}
-.menu > a{
-    width:100% !important;
-    padding-left:10px !important;
-    padding-right:10px !important;
-}
-.menu-user-wrap{
-    display:none !important;
-}
-
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="decisionvar-data.js"></script>
+
+<style>
+/* MENÚ SIN LOGIN: cinco accesos iguales, centrados y con iconos más visibles */
+.menu{
+    display:grid !important;
+    grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+    padding:0 !important;
+    gap:0 !important;
+    overflow:hidden !important;
+}
+.menu > a{
+    width:100% !important;
+    min-width:0 !important;
+    height:100% !important;
+    box-sizing:border-box !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:6px !important;
+    padding:5px 10px !important;
+    text-align:center !important;
+}
+.menu > a:last-of-type{padding-right:10px !important;}
+.menu-icono{
+    width:28px !important;
+    height:28px !important;
+    flex:0 0 28px !important;
+    stroke-width:1.9 !important;
+}
+@media (max-width:768px){
+    .menu{grid-template-columns:repeat(5,minmax(0,1fr)) !important;padding:0 !important;}
+    .menu > a{gap:4px !important;padding:4px 3px !important;font-size:9.5px !important;line-height:1.04 !important;}
+    .menu-icono{width:23px !important;height:23px !important;flex-basis:23px !important;}
+}
+</style>
+
 </head>
 
 <body>
@@ -3300,15 +3323,10 @@ body{
 </div>
 
 <script>
-const { escapeHtml, loadDataset, getComments, addComment, addVote, getUserVote, setUserVote, formatDate } = window.DecisionVarData;
-const DecisionVarAPI = window.DecisionVarData || {};
-const getUsuarioActual = DecisionVarAPI.getUsuarioActual || (async () => null);
-const getPerfilActual = DecisionVarAPI.getPerfilActual || (async () => null);
-const crearPerfil = DecisionVarAPI.crearPerfil || (async () => { throw new Error("No disponible"); });
-const logout = DecisionVarAPI.logout || (async () => {});
-const loginConGoogle = DecisionVarAPI.loginConGoogle || (async () => alert("Inicio de sesión no disponible"));
-const menuUserBtn = document.getElementById("menuUserBtn");
-const menuUserDropdown = document.getElementById("menuUserDropdown");
+const {
+    escapeHtml, loadDataset, getComments, addComment, addVote,
+    getUserVote, setUserVote, getCurrentUserVote, ensureAnonymousSession, formatDate
+} = window.DecisionVarData;
 const ultimasJugadasContainer = document.getElementById("ultimasJugadasContainer");
 
 function normalizarTexto(txt){ return (txt||"").toString().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); }
@@ -3569,14 +3587,17 @@ async function initComments(article, jugada){
             const txt=ta.value.trim();
             if(!txt) return;
 
+            const autor=(window.prompt('Escribe el nombre que quieres mostrar con el comentario:')||'').trim();
+            if(!autor) return;
+
             try{
-                await addComment('jugada', txt, jugada.id);
+                await addComment('jugada', txt, jugada.id, autor);
                 ta.value='';
                 online=await getComments('jugada', jugada.id);
                 visibles=Math.max(visibles,3);
                 renderComments(article, [...online, ...initial], visibles);
             }catch(e){
-                alert('No se pudo guardar el comentario');
+                alert(e?.message || 'No se pudo guardar el comentario');
             }
         };
     }
@@ -3589,7 +3610,7 @@ async function initComments(article, jugada){
     }
 }
 
-function updateVoteUI(article, jugada){
+function updateVoteUI(article, jugada, votoPrevio=''){
     const votosSi=Number(jugada.votosSi||0);
     const votosNo=Number(jugada.votosNo||0);
     const total=votosSi+votosNo;
@@ -3608,29 +3629,40 @@ function updateVoteUI(article, jugada){
     article.querySelector('.detalle-correcto').textContent=`${votosSi} de ${total} votos`;
     article.querySelector('.resultado-cabecera').textContent=total?`${total} votos totales`:'Sin votos todavía';
 
-    const prev=getUserVote(jugada.id);
-    article.querySelector('.mensaje-voto').textContent=prev?`Has votado que se arbitró ${prev==='si'?'bien':'mal'}.`:'Tu voto ya se guarda online.';
+    const prev=votoPrevio||getUserVote(jugada.id);
+    article.querySelector('.mensaje-voto').textContent=prev
+        ? `Has votado que se arbitró ${prev==='si'?'bien':'mal'}.`
+        : 'Puedes votar una sola vez desde este navegador.';
 }
 
 async function initVote(article, jugada){
-    updateVoteUI(article,jugada);
+    let votoPrevio='';
+    try{ votoPrevio=await getCurrentUserVote(jugada.id); }catch(e){}
+    updateVoteUI(article,jugada,votoPrevio);
 
     async function send(v){
-        if(getUserVote(jugada.id)) {
-            alert('De momento solo se permite un voto por navegador en esta primera versión.');
+        const yaVotado=await getCurrentUserVote(jugada.id);
+        if(yaVotado){
+            alert('Ya has votado en esta encuesta desde este navegador.');
+            updateVoteUI(article,jugada,yaVotado);
             return;
         }
+
         try{
             await addVote(jugada.id, v);
             setUserVote(jugada.id,v);
             const data=await loadDataset();
             const actual=data.jugadas.find(x=>x.id===jugada.id);
-            if(actual){
-                Object.assign(jugada, actual);
-                updateVoteUI(article,jugada);
-            }
+            if(actual) Object.assign(jugada, actual);
+            updateVoteUI(article,jugada,v);
         }catch(e){
-            alert('No se pudo registrar el voto');
+            if(e?.code==='ALREADY_VOTED'){
+                alert('Ya has votado en esta encuesta desde este navegador.');
+                const guardado=await getCurrentUserVote(jugada.id);
+                updateVoteUI(article,jugada,guardado);
+            }else{
+                alert(e?.message || 'No se pudo registrar el voto');
+            }
         }
     }
 
@@ -3760,60 +3792,10 @@ function renderMarker(bloques){
 }
 
 
-function abrirMenuUsuario(){ menuUserDropdown.classList.add('activo'); }
-function cerrarMenuUsuario(){ menuUserDropdown.classList.remove('activo'); }
-
-async function renderMenuUsuario(){
-    try{
-        const user=await getUsuarioActual();
-        if(!user){
-            menuUserDropdown.innerHTML=`
-                <div class="menu-user-title">Usuario</div>
-                <div class="menu-user-line">Puedes ver todo el contenido sin iniciar sesión. Para votar o comentar, entra con Google.</div>
-                <div class="menu-user-actions"><button id="btnMenuLoginGoogle" class="btn-user-primary" type="button">Iniciar sesión con Google</button></div>`;
-            document.getElementById('btnMenuLoginGoogle').onclick=()=>loginConGoogle();
-            return;
-        }
-        const perfil=await getPerfilActual();
-        if(perfil&&perfil.username){
-            menuUserDropdown.innerHTML=`
-                <div class="menu-user-title">Sesión iniciada</div>
-                <div class="menu-user-line">Has iniciado sesión como <strong>${escapeHtml(perfil.username)}</strong>.</div>
-                <div class="menu-user-actions"><button id="btnMenuLogout" class="btn-user-secondary" type="button">Cerrar sesión</button></div>`;
-            document.getElementById('btnMenuLogout').onclick=async()=>{await logout();window.location.reload();};
-            return;
-        }
-        menuUserDropdown.innerHTML=`
-            <div class="menu-user-title">Completa tu usuario</div>
-            <div class="menu-user-line">Elige tu nombre de usuario para votar y comentar.</div>
-            <div class="menu-user-actions">
-                <input id="inputUsernameMenu" type="text" placeholder="Elige tu nombre de usuario">
-                <button id="btnGuardarUsernameMenu" class="btn-user-primary" type="button">Guardar nombre</button>
-                <button id="btnMenuLogout" class="btn-user-secondary" type="button">Cerrar sesión</button>
-            </div>`;
-        document.getElementById('btnGuardarUsernameMenu').onclick=async()=>{
-            const username=document.getElementById('inputUsernameMenu').value.trim();
-            if(!username){alert('Escribe un nombre de usuario');return;}
-            try{await crearPerfil(username);window.location.reload();}
-            catch(e){alert(e&&e.code==='23505'?'Ese nombre de usuario ya está en uso':'No se pudo guardar el nombre de usuario');}
-        };
-        document.getElementById('btnMenuLogout').onclick=async()=>{await logout();window.location.reload();};
-    }catch(e){
-        menuUserDropdown.innerHTML='<div class="menu-user-title">Usuario</div><div class="menu-user-line">No se pudo comprobar el estado de la sesión.</div>';
-    }
-}
-
-menuUserBtn.addEventListener('click',async(e)=>{
-    e.stopPropagation();
-    if(menuUserDropdown.classList.contains('activo')) cerrarMenuUsuario();
-    else{await renderMenuUsuario();abrirMenuUsuario();}
-});
-document.addEventListener('click',(e)=>{
-    if(!menuUserDropdown.contains(e.target)&&!menuUserBtn.contains(e.target)) cerrarMenuUsuario();
-});
 
 (async()=>{
     try{
+        await ensureAnonymousSession();
         const data = await loadDataset();
         const jugadas = [...data.jugadas].sort((a,b)=>
             (parseInt(b.jornada)||0)-(parseInt(a.jornada)||0) ||
@@ -3870,62 +3852,3 @@ document.addEventListener('click',(e)=>{
 
 </body>
 </html>
-
-<style>
-/* =========================================================
-   AJUSTE DEFINITIVO DEL MENÚ SIN LOGIN
-   Cinco accesos iguales, centrados y con iconos más visibles.
-   ========================================================= */
-.menu{
-    display:grid !important;
-    grid-template-columns:repeat(5,minmax(0,1fr)) !important;
-    padding:0 !important;
-    gap:0 !important;
-    overflow:hidden !important;
-}
-
-.menu > a{
-    width:100% !important;
-    min-width:0 !important;
-    height:100% !important;
-    box-sizing:border-box !important;
-    display:flex !important;
-    flex-direction:column !important;
-    align-items:center !important;
-    justify-content:center !important;
-    gap:6px !important;
-    padding:5px 10px !important;
-    text-align:center !important;
-}
-
-.menu > a:last-of-type{
-    padding-right:10px !important;
-}
-
-.menu-icono{
-    width:28px !important;
-    height:28px !important;
-    flex:0 0 28px !important;
-    stroke-width:1.9 !important;
-}
-
-@media (max-width:768px){
-    .menu{
-        grid-template-columns:repeat(5,minmax(0,1fr)) !important;
-        padding:0 !important;
-    }
-
-    .menu > a{
-        gap:4px !important;
-        padding:4px 3px !important;
-        font-size:9.5px !important;
-        line-height:1.04 !important;
-    }
-
-    .menu-icono{
-        width:23px !important;
-        height:23px !important;
-        flex-basis:23px !important;
-    }
-}
-</style>
