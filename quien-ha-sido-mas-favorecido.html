@@ -2137,6 +2137,27 @@ h1,h2,h3,h4,
     }
 }
 
+
+
+/* MENÚ FINAL IDÉNTICO AL INDEX */
+.menu-user-wrap{
+    display:none !important;
+}
+
+@media (min-width:769px){
+    .menu{
+        padding-right:0 !important;
+        grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+    }
+}
+
+@media (max-width:768px){
+    .menu{
+        padding-right:0 !important;
+        grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+    }
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2154,10 +2175,6 @@ h1,h2,h3,h4,
     <a href="quien-ha-sido-mas-favorecido.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M10 20V8M15 20V4M20 20V10"/></svg><span>EQUIPO MÁS<br>FAVORECIDO</span></a>
     <a href="arbitros-mas-influyentes.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 7-7h7l2 2v7l-7 7-9-9z"/><circle cx="16.5" cy="7.5" r="1"/></svg><span>POLÉMICAS<br>HISTÓRICAS</span></a>
 
-    <div class="menu-user-wrap">
-        <button id="menuUserBtn" class="menu-user-btn" type="button" title="Usuario">👤</button>
-        <div id="menuUserDropdown" class="menu-user-dropdown"></div>
-    </div>
 </nav>
 
 <div class="contenido">
@@ -2994,6 +3011,14 @@ async function initComments(){
 
     async function comenzarGrabacion(e){
         e.preventDefault();
+
+        const autorActual=guardarNombre();
+
+        if(!autorActual){
+            alert("Escribe primero tu nombre para poder grabar un comentario de voz.");
+            nombre?.focus();
+            return;
+        }
 
         if(audioPendiente){
             await enviarAudioPendiente();
