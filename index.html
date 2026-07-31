@@ -3234,6 +3234,75 @@ body{
     .menu > a{gap:4px !important;padding:4px 3px !important;font-size:9.5px !important;line-height:1.04 !important;}
     .menu-icono{width:23px !important;height:23px !important;flex-basis:23px !important;}
 }
+
+
+/* COMENTARIOS DE AUDIO */
+.comentario-editor{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:10px;
+    align-items:end;
+}
+.comentario-editor textarea{margin:0;}
+.acciones-comentario{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin-top:9px;
+    flex-wrap:wrap;
+}
+.btn-microfono{
+    width:46px;
+    height:46px;
+    margin:0;
+    padding:0;
+    border:0;
+    border-radius:50%;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#174d9c,#2567c7);
+    color:#fff;
+    cursor:pointer;
+    box-shadow:0 8px 18px rgba(23,77,156,.24);
+    touch-action:none;
+    user-select:none;
+    -webkit-user-select:none;
+}
+.btn-microfono svg{width:23px;height:23px;fill:currentColor;}
+.btn-microfono.grabando{
+    background:#d62839;
+    transform:scale(1.08);
+    animation:pulsoMicro 1s infinite;
+}
+@keyframes pulsoMicro{
+    0%,100%{box-shadow:0 0 0 0 rgba(214,40,57,.35);}
+    50%{box-shadow:0 0 0 10px rgba(214,40,57,0);}
+}
+.estado-audio{
+    min-height:20px;
+    font-size:12px;
+    color:#667791;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+}
+.estado-audio.grabando{color:#c91f35;}
+.comentario-audio{
+    margin-top:7px;
+    display:flex;
+    align-items:center;
+    gap:9px;
+}
+.comentario-audio audio{
+    width:min(100%,360px);
+    height:38px;
+}
+@media(max-width:768px){
+    .comentario-editor{grid-template-columns:1fr;}
+    .acciones-comentario{justify-content:space-between;}
+    .boton-comentar{flex:1;}
+}
 </style>
 
 </head>
@@ -3324,7 +3393,7 @@ body{
 
 <script>
 const {
-    escapeHtml, loadDataset, getComments, addComment, addVote,
+    escapeHtml, loadDataset, getComments, addComment, addAudioComment, addVote,
     getUserVote, setUserVote, getCurrentUserVote, ensureAnonymousSession, formatDate
 } = window.DecisionVarData;
 const ultimasJugadasContainer = document.getElementById("ultimasJugadasContainer");
@@ -3558,7 +3627,14 @@ function renderComments(article, comments, visibles){
     ordenados.slice(0, visibles).forEach(c=>{
         const div=document.createElement('div');
         div.className='comentario visible';
-        div.innerHTML=`<div style="font-size:12px;color:#667791;font-weight:700;margin-bottom:4px;">${escapeHtml(c.autor||'Usuario')} ${c.created_at ? '· '+escapeHtml(formatDate(c.created_at)) : ''}</div>${escapeHtml(c.texto||'')}`;
+        const cabecera=`<div style="font-size:12px;color:#667791;font-weight:700;margin-bottom:4px;">${escapeHtml(c.autor||'Usuario')} ${c.created_at ? '· '+escapeHtml(formatDate(c.created_at)) : ''}</div>`;
+        if((c.tipo||'').toLowerCase()==='audio' || c.audio_url){
+            const duracion=Number(c.duracion_segundos||0);
+            const etiqueta=duracion ? `Audio · ${Math.floor(duracion/60)}:${String(duracion%60).padStart(2,'0')}` : 'Mensaje de audio';
+            div.innerHTML=cabecera+`<div class="comentario-audio"><audio controls preload="metadata" src="${escapeHtml(c.audio_url||'')}"></audio><span style="font-size:12px;color:#667791;">${etiqueta}</span></div>`;
+        }else{
+            div.innerHTML=cabecera+escapeHtml(c.texto||'');
+        }
         list.appendChild(div);
     });
 
@@ -3580,6 +3656,92 @@ async function initComments(article, jugada){
 
     const btnPublicar = article.querySelector('.boton-comentar');
     const btnMas = article.querySelector('.btn-mostrar-mas');
+    const btnMicro = article.querySelector('.btn-microfono');
+    const estadoAudio = article.querySelector('.estado-audio');
+
+    let mediaRecorder=null;
+    let audioChunks=[];
+    let audioStream=null;
+    let inicioGrabacion=0;
+    let intervaloAudio=null;
+    let grabando=false;
+
+    function actualizarEstadoAudio(texto, activo=false){
+        if(!estadoAudio) return;
+        estadoAudio.textContent=texto;
+        estadoAudio.classList.toggle('grabando',activo);
+    }
+
+    function limpiarGrabacion(){
+        if(intervaloAudio){ clearInterval(intervaloAudio); intervaloAudio=null; }
+        if(audioStream){ audioStream.getTracks().forEach(t=>t.stop()); audioStream=null; }
+        grabando=false;
+        btnMicro?.classList.remove('grabando');
+    }
+
+    async function comenzarGrabacion(e){
+        e.preventDefault();
+        if(grabando) return;
+        if(!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder){
+            alert('Este navegador no permite grabar audio. Prueba con Chrome, Edge o Safari actualizado.');
+            return;
+        }
+        try{
+            audioStream=await navigator.mediaDevices.getUserMedia({audio:true});
+            const tipos=['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/ogg;codecs=opus'];
+            const mimeType=tipos.find(t=>MediaRecorder.isTypeSupported?.(t)) || '';
+            mediaRecorder=new MediaRecorder(audioStream,mimeType?{mimeType}:undefined);
+            audioChunks=[];
+            mediaRecorder.ondataavailable=ev=>{ if(ev.data?.size) audioChunks.push(ev.data); };
+            mediaRecorder.onstop=async()=>{
+                const duracion=Math.max(1,Math.round((Date.now()-inicioGrabacion)/1000));
+                const blob=new Blob(audioChunks,{type:mediaRecorder.mimeType||'audio/webm'});
+                limpiarGrabacion();
+                if(blob.size<500){ actualizarEstadoAudio('Audio demasiado corto.'); return; }
+                const autor=(window.prompt('Escribe el nombre que quieres mostrar con el audio:')||'').trim();
+                if(!autor){ actualizarEstadoAudio('Audio cancelado.'); return; }
+                actualizarEstadoAudio('Enviando audio…');
+                try{
+                    await addAudioComment('jugada',blob,jugada.id,autor,duracion);
+                    online=await getComments('jugada',jugada.id);
+                    visibles=Math.max(visibles,3);
+                    renderComments(article,[...online,...initial],visibles);
+                    actualizarEstadoAudio('Audio enviado.');
+                }catch(err){
+                    console.error(err);
+                    actualizarEstadoAudio('No se pudo enviar el audio.');
+                    alert(err?.message||'No se pudo guardar el audio');
+                }
+            };
+            mediaRecorder.start();
+            grabando=true;
+            inicioGrabacion=Date.now();
+            btnMicro?.classList.add('grabando');
+            actualizarEstadoAudio('Grabando 0:00 · suelta para enviar',true);
+            intervaloAudio=setInterval(()=>{
+                const s=Math.floor((Date.now()-inicioGrabacion)/1000);
+                actualizarEstadoAudio(`Grabando ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')} · suelta para enviar`,true);
+                if(s>=120) detenerGrabacion();
+            },250);
+        }catch(err){
+            limpiarGrabacion();
+            actualizarEstadoAudio('Permiso de micrófono no concedido.');
+        }
+    }
+
+    function detenerGrabacion(e){
+        e?.preventDefault();
+        if(!grabando || !mediaRecorder) return;
+        if(mediaRecorder.state!=='inactive') mediaRecorder.stop();
+    }
+
+    if(btnMicro){
+        btnMicro.addEventListener('pointerdown',comenzarGrabacion);
+        btnMicro.addEventListener('pointerup',detenerGrabacion);
+        btnMicro.addEventListener('pointercancel',detenerGrabacion);
+        btnMicro.addEventListener('pointerleave',e=>{ if(grabando && e.buttons===0) detenerGrabacion(e); });
+        btnMicro.addEventListener('contextmenu',e=>e.preventDefault());
+    }
 
     if(btnPublicar){
         btnPublicar.onclick=async()=>{
@@ -3738,8 +3900,16 @@ function createArticle(jugada){
                     <button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button>
                 </div>
                 <div class="cuerpo-comentarios">
-                    <textarea placeholder="Escribe tu comentario..."></textarea>
-                    <button class="boton-comentar" type="button">Publicar comentario</button>
+                    <div class="comentario-editor">
+                        <textarea placeholder="Escribe tu comentario..."></textarea>
+                        <button class="btn-microfono" type="button" aria-label="Mantén pulsado para grabar un audio" title="Mantén pulsado y suelta para enviar">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a1 1 0 1 1 2 0 7 7 0 0 1-6 6.93V20h3a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2h3v-2.07A7 7 0 0 1 5 11a1 1 0 1 1 2 0 5 5 0 0 0 10 0Z"/></svg>
+                        </button>
+                    </div>
+                    <div class="acciones-comentario">
+                        <button class="boton-comentar" type="button">Publicar comentario</button>
+                        <div class="estado-audio">Mantén pulsado el micrófono y suelta para enviar.</div>
+                    </div>
                     <div class="lista-comentarios"></div>
                 </div>
             </section>
