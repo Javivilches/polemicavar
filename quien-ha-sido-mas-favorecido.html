@@ -1974,6 +1974,169 @@ h1,h2,h3,h4,
  .marcador-imagen .dato-stat{font-size:clamp(12px,3.8vw,19px) !important;}.score-dato{font-size:clamp(34px,9vw,56px) !important;}.marcador-imagen .dato-total{font-size:clamp(25px,6.4vw,38px) !important;}
 }
 
+
+
+/* =========================================================
+   COMENTARIOS UNIFICADOS CON INDEX
+   ========================================================= */
+.nombre-comentario{
+    width:100%;
+    box-sizing:border-box;
+    margin:0 0 9px;
+    padding:10px 12px;
+    border:1px solid #d0d7e2;
+    border-radius:9px;
+    font-size:13px;
+    font-family:Inter,Arial,sans-serif;
+    background:#fff;
+    color:#24344d;
+}
+
+.comentario-editor{
+    display:flex;
+    align-items:flex-end;
+    gap:6px;
+    width:100%;
+    box-sizing:border-box;
+    padding:6px;
+    border:1px solid #d0d7e2;
+    border-radius:10px;
+    background:#fff;
+    transition:border-color .2s ease,box-shadow .2s ease;
+}
+
+.comentario-editor:focus-within{
+    border-color:#2567c7;
+    box-shadow:0 0 0 3px rgba(37,103,199,.12);
+}
+
+.comentario-editor textarea{
+    flex:1 1 auto;
+    width:auto;
+    min-width:0;
+    min-height:48px;
+    max-height:150px;
+    margin:0;
+    padding:7px 8px;
+    border:0 !important;
+    border-radius:7px;
+    outline:none;
+    resize:vertical;
+    box-shadow:none !important;
+    background:transparent;
+}
+
+.acciones-comentario{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin-top:9px;
+    flex-wrap:wrap;
+}
+
+.btn-microfono{
+    position:static;
+    flex:0 0 40px;
+    width:40px;
+    height:40px;
+    margin:0 0 1px;
+    padding:0;
+    border:0;
+    border-radius:50%;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#174d9c,#2567c7);
+    color:#fff;
+    cursor:pointer;
+    box-shadow:0 6px 14px rgba(23,77,156,.22);
+    touch-action:none;
+    user-select:none;
+    -webkit-user-select:none;
+    transition:transform .15s ease,box-shadow .15s ease,background .15s ease;
+}
+
+.btn-microfono:hover{
+    transform:translateY(-1px);
+    box-shadow:0 9px 18px rgba(23,77,156,.28);
+}
+
+.btn-microfono.grabando{
+    background:linear-gradient(135deg,#b91c1c,#ef4444);
+    transform:scale(1.08);
+    box-shadow:0 0 0 7px rgba(239,68,68,.14),0 8px 20px rgba(185,28,28,.32);
+    animation:pulsoMicrofono 1s infinite;
+}
+
+.btn-microfono:disabled{
+    opacity:.58;
+    cursor:wait;
+}
+
+.btn-microfono svg{
+    width:20px;
+    height:20px;
+    fill:currentColor;
+    display:block;
+    pointer-events:none;
+}
+
+.estado-audio{
+    min-height:18px;
+    color:#66758e;
+    font-size:12px;
+    line-height:1.35;
+}
+
+.estado-audio.grabando{
+    color:#c62828;
+    font-weight:700;
+}
+
+.comentario-audio{
+    margin-top:7px;
+}
+
+.comentario-audio audio{
+    width:min(100%,430px);
+    height:38px;
+    display:block;
+}
+
+.seccion-comentarios.comentarios-box{
+    background:#fff;
+}
+
+@keyframes pulsoMicrofono{
+    0%,100%{
+        box-shadow:0 0 0 5px rgba(239,68,68,.12),0 8px 20px rgba(185,28,28,.30);
+    }
+    50%{
+        box-shadow:0 0 0 10px rgba(239,68,68,.05),0 8px 20px rgba(185,28,28,.36);
+    }
+}
+
+@media(max-width:768px){
+    .comentario-editor{
+        padding:5px;
+    }
+
+    .btn-microfono{
+        flex-basis:38px;
+        width:38px;
+        height:38px;
+    }
+
+    .acciones-comentario{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .estado-audio{
+        width:100%;
+    }
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2097,24 +2260,73 @@ h1,h2,h3,h4,
                 En resultados totales se muestran los tres balances globales en horizontal y también en barras verticales. En jornada a jornada se concentra toda la evolución por jornadas en un único gráfico.
             </div>
 
-            <section class="seccion-comentarios" id="seccionComentariosResultadosVar">
+            <section class="seccion-comentarios comentarios-box" id="seccionComentariosResultadosVar">
                 <div class="cabecera-comentarios">
                     <h3>Comentarios</h3>
                     <p id="contadorComentariosResultadosVar">0 comentarios</p>
                 </div>
+
                 <div class="cuerpo-comentarios">
-                    <textarea id="textoComentarioResultadosVar" class="textarea-comentario" placeholder="Escribe tu comentario sobre estos resultados..."></textarea>
-                    <br>
-                    <button id="btnPublicarComentarioResultadosVar" class="boton-comentar" type="button">Publicar comentario</button>
-                    <button id="btnMostrarComentariosResultadosVar" class="btn-mostrar-inicial" type="button">Mostrar comentarios</button>
+                    <input
+                        id="nombreComentarioResultadosVar"
+                        class="nombre-comentario"
+                        type="text"
+                        maxlength="40"
+                        placeholder="Tu nombre"
+                    >
+
+                    <div class="comentario-editor">
+                        <textarea
+                            id="textoComentarioResultadosVar"
+                            class="textarea-comentario"
+                            placeholder="Escribe tu comentario sobre estos resultados..."
+                        ></textarea>
+
+                        <button
+                            id="btnMicrofonoResultadosVar"
+                            class="btn-microfono"
+                            type="button"
+                            aria-label="Mantén pulsado para grabar un audio"
+                            title="Mantén pulsado y suelta para enviar"
+                        >
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a1 1 0 1 1 2 0 7 7 0 0 1-6 6.93V20h3a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2h3v-2.07A7 7 0 0 1 5 11a1 1 0 1 1 2 0 5 5 0 0 0 10 0Z"/></svg>
+                        </button>
+                    </div>
+
+                    <div class="acciones-comentario">
+                        <button
+                            id="btnPublicarComentarioResultadosVar"
+                            class="boton-comentar"
+                            type="button"
+                        >Publicar comentario</button>
+
+                        <div id="estadoAudioResultadosVar" class="estado-audio">
+                            Mantén pulsado el micrófono y suelta para enviar.
+                        </div>
+                    </div>
+
+                    <button
+                        id="btnMostrarComentariosResultadosVar"
+                        class="btn-mostrar-inicial"
+                        type="button"
+                    >Mostrar comentarios</button>
 
                     <div id="listaComentariosResultadosVar" class="lista-comentarios"></div>
 
                     <div class="mostrar-mas-wrap">
-                        <button id="btnMostrarMasResultadosVar" class="btn-mostrar-mas" type="button">Mostrar más comentarios</button>
+                        <button
+                            id="btnMostrarMasResultadosVar"
+                            class="btn-mostrar-mas"
+                            type="button"
+                        >Mostrar más comentarios</button>
                     </div>
+
                     <div class="ocultar-wrap">
-                        <button id="btnOcultarComentariosResultadosVar" class="btn-ocultar" type="button">Ocultar comentarios</button>
+                        <button
+                            id="btnOcultarComentariosResultadosVar"
+                            class="btn-ocultar"
+                            type="button"
+                        >Ocultar comentarios</button>
                     </div>
                 </div>
             </section>
@@ -2136,6 +2348,7 @@ const DecisionVarAPI = window.DecisionVarData || {};
 const loadDataset = DecisionVarAPI.loadDataset || (async () => ({ resumenBloques: [], jornadasData: [] }));
 const getComments = DecisionVarAPI.getComments || (async () => []);
 const addComment = DecisionVarAPI.addComment || (async () => { throw new Error("No disponible"); });
+const addAudioComment = DecisionVarAPI.addAudioComment || (async () => { throw new Error("El audio no está disponible"); });
 const escapeHtml = DecisionVarAPI.escapeHtml || ((t) => String(t || ""));
 const formatDate = DecisionVarAPI.formatDate || ((v) => v || "");
 const getUsuarioActual = DecisionVarAPI.getUsuarioActual || (async () => null);
@@ -2514,70 +2727,475 @@ function crearGraficoJornadas(data){
 }
 
 async function initComments(){
-    const list = document.getElementById("listaComentariosResultadosVar");
-    const count = document.getElementById("contadorComentariosResultadosVar");
-    const ta = document.getElementById("textoComentarioResultadosVar");
-    const btnPub = document.getElementById("btnPublicarComentarioResultadosVar");
-    const btnShow = document.getElementById("btnMostrarComentariosResultadosVar");
-    const btnMore = document.getElementById("btnMostrarMasResultadosVar");
-    const btnHide = document.getElementById("btnOcultarComentariosResultadosVar");
+    const list=document.getElementById("listaComentariosResultadosVar");
+    const count=document.getElementById("contadorComentariosResultadosVar");
+    const ta=document.getElementById("textoComentarioResultadosVar");
+    const nombre=document.getElementById("nombreComentarioResultadosVar");
+    const btnPub=document.getElementById("btnPublicarComentarioResultadosVar");
+    const btnShow=document.getElementById("btnMostrarComentariosResultadosVar");
+    const btnMore=document.getElementById("btnMostrarMasResultadosVar");
+    const btnHide=document.getElementById("btnOcultarComentariosResultadosVar");
+    const btnMic=document.getElementById("btnMicrofonoResultadosVar");
+    const estadoAudio=document.getElementById("estadoAudioResultadosVar");
 
-    let visibles = 0;
-    let comments = [];
+    const CLAVE_NOMBRE="polemicavar_nombre_comentarios";
+
+    try{
+        nombre.value=localStorage.getItem(CLAVE_NOMBRE)||"";
+    }catch(e){}
+
+    function guardarNombre(){
+        const valor=String(nombre?.value||"").trim();
+
+        if(valor){
+            try{
+                localStorage.setItem(CLAVE_NOMBRE,valor);
+            }catch(e){}
+        }
+
+        return valor;
+    }
+
+    nombre?.addEventListener("change",guardarNombre);
+    nombre?.addEventListener("blur",guardarNombre);
+
+    let visibles=0;
+    let comments=[];
+
+    function renderAudio(c){
+        const url=c.audio_url||c.audioUrl||"";
+
+        if(!url){
+            return "";
+        }
+
+        return `
+            <div class="comentario-audio">
+                <audio controls preload="metadata" src="${escapeHtml(url)}"></audio>
+            </div>
+        `;
+    }
 
     async function reload(){
         try{
-            comments = await getComments("favorecido", "");
+            comments=await getComments("favorecido","");
         }catch(e){
-            comments = [];
+            comments=[];
         }
 
-        count.textContent = `${comments.length} comentarios`;
-        list.innerHTML = "";
+        count.textContent=
+            `${comments.length} ${comments.length===1 ? "comentario" : "comentarios"}`;
 
-        comments.slice(0, visibles).forEach(c => {
-            const div = document.createElement("div");
-            div.className = "comentario-item visible";
-            div.innerHTML = `
+        list.innerHTML="";
+
+        comments.slice(0,visibles).forEach(c=>{
+            const div=document.createElement("div");
+            div.className="comentario-item visible";
+
+            const esAudio=
+                String(c.tipo||"").toLowerCase()==="audio" ||
+                Boolean(c.audio_url);
+
+            const contenido=esAudio
+                ? renderAudio(c)
+                : `<div class="comentario-texto">${escapeHtml(c.texto||"")}</div>`;
+
+            div.innerHTML=`
                 <div class="comentario-cabecera-item">
-                    <span class="comentario-autor">${escapeHtml(c.autor || "Usuario")}</span>
+                    <span class="comentario-autor">${escapeHtml(c.autor||"Usuario")}</span>
                     <span class="comentario-fecha">${escapeHtml(formatDate(c.created_at))}</span>
                 </div>
-                <div class="comentario-texto">${escapeHtml(c.texto || "")}</div>
+                ${contenido}
             `;
+
             list.appendChild(div);
         });
 
-        btnShow.style.display = comments.length > 0 && visibles === 0 ? "inline-block" : "none";
-        btnHide.style.display = visibles > 0 ? "inline-block" : "none";
-        btnMore.style.display = visibles > 0 && visibles < comments.length ? "inline-block" : "none";
+        btnShow.style.display=
+            comments.length>0 && visibles===0
+                ? "inline-block"
+                : "none";
+
+        btnHide.style.display=
+            visibles>0
+                ? "inline-block"
+                : "none";
+
+        btnMore.style.display=
+            visibles>0 && visibles<comments.length
+                ? "inline-block"
+                : "none";
     }
 
-    btnPub.onclick = async () => {
-        const txt = ta.value.trim();
-        if(!txt) return;
-        await addComment("favorecido", txt, "");
-        ta.value = "";
-        visibles = Math.max(visibles, 5);
-        await reload();
+    btnPub.onclick=async()=>{
+        const txt=String(ta.value||"").trim();
+        const autor=guardarNombre();
+
+        if(!autor){
+            alert("Escribe tu nombre.");
+            nombre.focus();
+            return;
+        }
+
+        if(!txt){
+            alert("Escribe un comentario.");
+            ta.focus();
+            return;
+        }
+
+        btnPub.disabled=true;
+
+        try{
+            await addComment(
+                "favorecido",
+                txt,
+                "",
+                autor
+            );
+
+            ta.value="";
+            visibles=Math.max(visibles,5);
+            await reload();
+
+        }catch(e){
+            alert(
+                e?.message||
+                "No se pudo publicar el comentario"
+            );
+        }finally{
+            btnPub.disabled=false;
+        }
     };
 
-    btnShow.onclick = () => {
-        visibles = 5;
+    btnShow.onclick=()=>{
+        visibles=5;
         reload();
     };
 
-    btnMore.onclick = () => {
-        visibles += 5;
+    btnMore.onclick=()=>{
+        visibles+=5;
         reload();
     };
 
-    btnHide.onclick = () => {
-        visibles = 0;
+    btnHide.onclick=()=>{
+        visibles=0;
         reload();
     };
 
-    reload();
+    let mediaRecorder=null;
+    let audioChunks=[];
+    let audioStream=null;
+    let inicioGrabacion=0;
+    let intervaloAudio=null;
+    let grabando=false;
+    let audioPendiente=null;
+    let duracionPendiente=0;
+
+    function actualizarEstadoAudio(texto,activo=false){
+        if(!estadoAudio){
+            return;
+        }
+
+        estadoAudio.textContent=texto;
+        estadoAudio.classList.toggle("grabando",activo);
+    }
+
+    function limpiarGrabacion(){
+        if(intervaloAudio){
+            clearInterval(intervaloAudio);
+            intervaloAudio=null;
+        }
+
+        if(audioStream){
+            audioStream
+                .getTracks()
+                .forEach(track=>track.stop());
+
+            audioStream=null;
+        }
+
+        grabando=false;
+        btnMic?.classList.remove("grabando");
+    }
+
+    async function enviarAudioPendiente(){
+        if(!audioPendiente){
+            return false;
+        }
+
+        const autor=guardarNombre();
+
+        if(!autor){
+            actualizarEstadoAudio(
+                "Audio guardado. Escribe tu nombre y pulsa de nuevo el micrófono para enviarlo."
+            );
+
+            nombre?.focus();
+            return false;
+        }
+
+        const blob=audioPendiente;
+        const duracion=duracionPendiente;
+
+        btnMic.disabled=true;
+        actualizarEstadoAudio("Enviando audio…");
+
+        try{
+            await addAudioComment(
+                "favorecido",
+                blob,
+                "",
+                autor,
+                duracion
+            );
+
+            audioPendiente=null;
+            duracionPendiente=0;
+            visibles=Math.max(visibles,5);
+
+            actualizarEstadoAudio("Audio enviado.");
+            await reload();
+
+            setTimeout(()=>{
+                if(
+                    estadoAudio?.textContent===
+                    "Audio enviado."
+                ){
+                    actualizarEstadoAudio(
+                        "Mantén pulsado el micrófono y suelta para enviar."
+                    );
+                }
+            },1800);
+
+            return true;
+
+        }catch(e){
+            console.error(
+                "Error al publicar audio:",
+                e
+            );
+
+            const mensaje=
+                e?.message||
+                e?.error_description||
+                "No se pudo guardar el audio";
+
+            actualizarEstadoAudio(
+                `No se pudo enviar: ${mensaje}`
+            );
+
+            alert(mensaje);
+            return false;
+
+        }finally{
+            btnMic.disabled=false;
+        }
+    }
+
+    async function comenzarGrabacion(e){
+        e.preventDefault();
+
+        if(audioPendiente){
+            await enviarAudioPendiente();
+            return;
+        }
+
+        if(grabando){
+            return;
+        }
+
+        if(
+            !navigator.mediaDevices?.getUserMedia ||
+            !window.MediaRecorder
+        ){
+            alert(
+                "Este navegador no permite grabar audio."
+            );
+            return;
+        }
+
+        try{
+            audioStream=
+                await navigator.mediaDevices
+                    .getUserMedia({
+                        audio:true
+                    });
+
+            const tipos=[
+                "audio/webm;codecs=opus",
+                "audio/webm",
+                "audio/mp4",
+                "audio/ogg;codecs=opus"
+            ];
+
+            const mimeType=
+                tipos.find(tipo=>
+                    MediaRecorder.isTypeSupported?.(tipo)
+                )||"";
+
+            mediaRecorder=new MediaRecorder(
+                audioStream,
+                mimeType
+                    ? {mimeType}
+                    : undefined
+            );
+
+            audioChunks=[];
+
+            mediaRecorder.ondataavailable=evento=>{
+                if(evento.data?.size){
+                    audioChunks.push(evento.data);
+                }
+            };
+
+            mediaRecorder.onstop=async()=>{
+                const duracion=Math.max(
+                    1,
+                    Math.round(
+                        (Date.now()-inicioGrabacion)/1000
+                    )
+                );
+
+                const tipoBase=String(
+                    mediaRecorder.mimeType||
+                    audioChunks[0]?.type||
+                    "audio/webm"
+                ).split(";")[0];
+
+                const blob=new Blob(
+                    audioChunks,
+                    {
+                        type:tipoBase
+                    }
+                );
+
+                limpiarGrabacion();
+
+                if(blob.size<500){
+                    actualizarEstadoAudio(
+                        "Audio demasiado corto."
+                    );
+                    return;
+                }
+
+                audioPendiente=blob;
+                duracionPendiente=duracion;
+
+                const autor=guardarNombre();
+
+                if(!autor){
+                    actualizarEstadoAudio(
+                        "Audio guardado. Escribe tu nombre y pulsa de nuevo el micrófono para enviarlo."
+                    );
+
+                    nombre?.focus();
+                    return;
+                }
+
+                await enviarAudioPendiente();
+            };
+
+            mediaRecorder.start();
+            grabando=true;
+            inicioGrabacion=Date.now();
+
+            btnMic.classList.add("grabando");
+
+            actualizarEstadoAudio(
+                "Grabando 0:00 · suelta para enviar",
+                true
+            );
+
+            intervaloAudio=setInterval(()=>{
+                const segundos=Math.floor(
+                    (Date.now()-inicioGrabacion)/1000
+                );
+
+                actualizarEstadoAudio(
+                    `Grabando ${Math.floor(segundos/60)}:${String(segundos%60).padStart(2,"0")} · suelta para enviar`,
+                    true
+                );
+
+                if(segundos>=120){
+                    detenerGrabacion();
+                }
+            },250);
+
+        }catch(e){
+            console.error(
+                "Error de micrófono:",
+                e
+            );
+
+            limpiarGrabacion();
+
+            actualizarEstadoAudio(
+                "Permiso de micrófono no concedido."
+            );
+        }
+    }
+
+    function detenerGrabacion(e){
+        e?.preventDefault();
+
+        if(
+            !grabando ||
+            !mediaRecorder
+        ){
+            return;
+        }
+
+        if(
+            mediaRecorder.state!=="inactive"
+        ){
+            mediaRecorder.stop();
+        }
+    }
+
+    nombre?.addEventListener("input",()=>{
+        if(
+            audioPendiente &&
+            String(nombre.value||"").trim()
+        ){
+            actualizarEstadoAudio(
+                "Audio preparado. Pulsa el micrófono para enviarlo."
+            );
+        }
+    });
+
+    btnMic?.addEventListener(
+        "pointerdown",
+        comenzarGrabacion
+    );
+
+    btnMic?.addEventListener(
+        "pointerup",
+        detenerGrabacion
+    );
+
+    btnMic?.addEventListener(
+        "pointercancel",
+        detenerGrabacion
+    );
+
+    btnMic?.addEventListener(
+        "pointerleave",
+        e=>{
+            if(
+                grabando &&
+                e.buttons===0
+            ){
+                detenerGrabacion(e);
+            }
+        }
+    );
+
+    btnMic?.addEventListener(
+        "contextmenu",
+        e=>e.preventDefault()
+    );
+
+    await reload();
 }
 
 (async () => {
