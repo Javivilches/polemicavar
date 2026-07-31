@@ -5,7 +5,11 @@ window.DecisionVarData = (() => {
   let supabase = null;
 
   try {
-    if (window.supabase && window.DECISIONVAR_SUPABASE_URL && window.DECISIONVAR_SUPABASE_KEY) {
+    if (
+      window.supabase &&
+      window.DECISIONVAR_SUPABASE_URL &&
+      window.DECISIONVAR_SUPABASE_KEY
+    ) {
       supabase = window.supabase.createClient(
         window.DECISIONVAR_SUPABASE_URL,
         window.DECISIONVAR_SUPABASE_KEY
@@ -40,13 +44,16 @@ window.DecisionVarData = (() => {
   }
 
   function getDelimiter(text) {
-    const first = text.split(/\r?\n/).find((l) => l.trim() !== "") || "";
+    const first =
+      text.split(/\r?\n/).find((l) => l.trim() !== "") || "";
+
     const tabs = (first.match(/\t/g) || []).length;
     const commas = (first.match(/,/g) || []).length;
     const semis = (first.match(/;/g) || []).length;
 
     if (tabs >= commas && tabs >= semis && tabs > 0) return "\t";
     if (semis > commas) return ";";
+
     return ",";
   }
 
@@ -79,12 +86,17 @@ window.DecisionVarData = (() => {
     }
 
     result.push(current);
+
     return result.map((c) => c.trim());
   }
 
   function parseCSV(text) {
     const delimiter = getDelimiter(text);
-    const lines = text.split(/\r?\n/).filter((l) => l.trim() !== "");
+
+    const lines = text
+      .split(/\r?\n/)
+      .filter((l) => l.trim() !== "");
+
     if (lines.length < 2) return [];
 
     const headers = parseCSVLine(lines[0], delimiter).map(normalize);
@@ -94,36 +106,64 @@ window.DecisionVarData = (() => {
       .map((line) => {
         const values = parseCSVLine(line, delimiter);
         const row = {};
+
         headers.forEach((h, idx) => {
           row[h] = values[idx] ?? "";
         });
+
         return row;
       })
-      .filter((row) => Object.values(row).some((v) => String(v).trim() !== ""));
+      .filter((row) =>
+        Object.values(row).some((v) => String(v).trim() !== "")
+      );
   }
 
   function valueFromRow(row, keys) {
     for (const key of keys) {
       const n = normalize(key);
-      if (row[n] !== undefined && row[n] !== "") return row[n];
+
+      if (row[n] !== undefined && row[n] !== "") {
+        return row[n];
+      }
     }
+
     return "";
   }
 
   function extraerNumeroJornada(v) {
     const m = String(v || "").match(/\d+/);
+
     return m ? m[0] : "";
   }
 
   function equipoResumenDesdeTexto(equipo) {
     const e = normalize(equipo);
-    if (e.includes("barcelona") || e === "barca" || e === "barça") return "barcelona";
-    if (e.includes("real madrid") || e === "madrid") return "madrid";
+
+    if (
+      e.includes("barcelona") ||
+      e === "barca" ||
+      e === "barça"
+    ) {
+      return "barcelona";
+    }
+
+    if (
+      e.includes("real madrid") ||
+      e === "madrid"
+    ) {
+      return "madrid";
+    }
+
     return "";
   }
 
   function createEmptyBlock() {
-    return { total: 0, si: 0, no: 0, balance: 0 };
+    return {
+      total: 0,
+      si: 0,
+      no: 0,
+      balance: 0
+    };
   }
 
   function createEmptySummary() {
@@ -148,6 +188,7 @@ window.DecisionVarData = (() => {
           no_sacada_rival: createEmptyBlock()
         }
       },
+
       madrid: {
         penalti: {
           pitado_favor: createEmptyBlock(),
@@ -173,6 +214,7 @@ window.DecisionVarData = (() => {
 
   function obtenerImpacto(categoria, subtipo, encuesta) {
     const e = normalize(encuesta);
+
     if (e !== "no") return 0;
 
     const c = normalize(categoria);
@@ -185,12 +227,14 @@ window.DecisionVarData = (() => {
         no_pitado_favor: -1,
         no_pitado_contra: 1
       },
+
       gol: {
         concedido_favor: 1,
         concedido_contra: -1,
         anulado_favor: -1,
         anulado_contra: 1
       },
+
       roja: {
         sacada_equipo: 0,
         no_sacada_equipo: 1,
@@ -205,80 +249,259 @@ window.DecisionVarData = (() => {
   function encuestaGanadora(votosSi, votosNo) {
     if (votosNo > votosSi) return "no";
     if (votosSi > votosNo) return "si";
+
     return "";
   }
 
   async function loadCSVJugadas() {
-    const resp = await fetch("jugadas.csv", { cache: "no-store" });
-    if (!resp.ok) throw new Error("No se pudo cargar jugadas.csv");
+    const resp = await fetch("jugadas.csv", {
+      cache: "no-store"
+    });
+
+    if (!resp.ok) {
+      throw new Error("No se pudo cargar jugadas.csv");
+    }
 
     const text = await resp.text();
     const rows = parseCSV(text);
 
     return rows
       .map((row, index) => {
-        const jornadaRaw = valueFromRow(row, ["Jornada", "jornada"]);
+        const jornadaRaw = valueFromRow(row, [
+          "Jornada",
+          "jornada"
+        ]);
 
         return {
-          id: valueFromRow(row, ["id"]) || String(index + 1),
-          competicion: valueFromRow(row, ["Competición", "Competicion", "competicion"]) || "LaLiga",
+          id:
+            valueFromRow(row, ["id"]) ||
+            String(index + 1),
+
+          competicion:
+            valueFromRow(row, [
+              "Competición",
+              "Competicion",
+              "competicion"
+            ]) || "LaLiga",
+
           jornada: extraerNumeroJornada(jornadaRaw),
-          partido: valueFromRow(row, ["Partido", "partido"]),
-          arbitro: valueFromRow(row, ["Árbitro", "Arbitro", "arbitro"]),
-          var: valueFromRow(row, ["VAR", "var", "Arbitro VAR", "Árbitro VAR", "arbitro_var"]),
-          minuto: valueFromRow(row, ["Minuto", "minuto"]),
-          equipoAfectado: valueFromRow(row, ["Equipo afectado", "equipo afectado", "equipo_afectado"]),
-          categoria: valueFromRow(row, ["Categoría", "Categoria", "categoria"]),
-          subtipo: valueFromRow(row, ["Subtipo", "subtipo"]),
-          pregunta: valueFromRow(row, ["Pregunta", "pregunta"]),
+
+          partido: valueFromRow(row, [
+            "Partido",
+            "partido"
+          ]),
+
+          arbitro: valueFromRow(row, [
+            "Árbitro",
+            "Arbitro",
+            "arbitro"
+          ]),
+
+          var: valueFromRow(row, [
+            "VAR",
+            "var",
+            "Arbitro VAR",
+            "Árbitro VAR",
+            "arbitro_var"
+          ]),
+
+          minuto: valueFromRow(row, [
+            "Minuto",
+            "minuto"
+          ]),
+
+          equipoAfectado: valueFromRow(row, [
+            "Equipo afectado",
+            "equipo afectado",
+            "equipo_afectado"
+          ]),
+
+          categoria: valueFromRow(row, [
+            "Categoría",
+            "Categoria",
+            "categoria"
+          ]),
+
+          subtipo: valueFromRow(row, [
+            "Subtipo",
+            "subtipo"
+          ]),
+
+          pregunta: valueFromRow(row, [
+            "Pregunta",
+            "pregunta"
+          ]),
+
           decision: valueFromRow(row, [
             "Decisión arbitral",
             "Decision arbitral",
             "decision arbitral",
             "decision_arbitral"
           ]),
-          descripcion: valueFromRow(row, ["Descripción", "Descripcion", "descripcion"]),
-          slugImagen: valueFromRow(row, ["slug_imagen", "slug imagen"]),
-          slugImagen2: valueFromRow(row, ["slug_imagen2", "slug imagen2"]),
-          slugImagen3: valueFromRow(row, ["slug_imagen3", "slug imagen3"]),
-          slugImagen4: valueFromRow(row, ["slug_imagen4", "slug imagen4"]),
-          slugImagen5: valueFromRow(row, ["slug_imagen5", "slug imagen5"]),
-          slugVideo: valueFromRow(row, ["slug_video", "slug video"]),
-          slugVideo2: valueFromRow(row, ["slug_video2", "slug video2"]),
-          respuestaSi: valueFromRow(row, ["Respuesta si", "respuesta si", "respuesta_si"]) || "Sí",
-          respuestaNo: valueFromRow(row, ["Respuesta no", "respuesta no", "respuesta_no"]) || "No",
+
+          descripcion: valueFromRow(row, [
+            "Descripción",
+            "Descripcion",
+            "descripcion"
+          ]),
+
+          slugImagen: valueFromRow(row, [
+            "slug_imagen",
+            "slug imagen"
+          ]),
+
+          slugImagen2: valueFromRow(row, [
+            "slug_imagen2",
+            "slug imagen2"
+          ]),
+
+          slugImagen3: valueFromRow(row, [
+            "slug_imagen3",
+            "slug imagen3"
+          ]),
+
+          slugImagen4: valueFromRow(row, [
+            "slug_imagen4",
+            "slug imagen4"
+          ]),
+
+          slugImagen5: valueFromRow(row, [
+            "slug_imagen5",
+            "slug imagen5"
+          ]),
+
+          slugVideo: valueFromRow(row, [
+            "slug_video",
+            "slug video"
+          ]),
+
+          slugVideo2: valueFromRow(row, [
+            "slug_video2",
+            "slug video2"
+          ]),
+
+          respuestaSi:
+            valueFromRow(row, [
+              "Respuesta si",
+              "respuesta si",
+              "respuesta_si"
+            ]) || "Sí",
+
+          respuestaNo:
+            valueFromRow(row, [
+              "Respuesta no",
+              "respuesta no",
+              "respuesta_no"
+            ]) || "No",
+
           votosInicialesSi: numeroSeguro(
-            valueFromRow(row, ["votos iniciales si", "Votos iniciales si", "votos_iniciales_si"])
+            valueFromRow(row, [
+              "votos iniciales si",
+              "Votos iniciales si",
+              "votos_iniciales_si"
+            ])
           ),
+
           votosInicialesNo: numeroSeguro(
-            valueFromRow(row, ["votos iniciales no", "Votos iniciales no", "votos_iniciales_no"])
+            valueFromRow(row, [
+              "votos iniciales no",
+              "Votos iniciales no",
+              "votos_iniciales_no"
+            ])
           ),
 
-          comentario1: valueFromRow(row, ["comentario1"]),
-          usuariocomentario1: valueFromRow(row, ["usuariocomentario1", "usuario comentario1", "usuario_comentario1"]),
-          fechacomentario1: valueFromRow(row, ["fechacomentario1", "fecha comentario1", "fecha_comentario1"]),
+          comentario1: valueFromRow(row, [
+            "comentario1"
+          ]),
 
-          comentario2: valueFromRow(row, ["comentario2"]),
-          usuariocomentario2: valueFromRow(row, ["usuariocomentario2", "usuario comentario2", "usuario_comentario2"]),
-          fechacomentario2: valueFromRow(row, ["fechacomentario2", "fecha comentario2", "fecha_comentario2"]),
+          usuariocomentario1: valueFromRow(row, [
+            "usuariocomentario1",
+            "usuario comentario1",
+            "usuario_comentario1"
+          ]),
 
-          comentario3: valueFromRow(row, ["comentario3"]),
-          usuariocomentario3: valueFromRow(row, ["usuariocomentario3", "usuario comentario3", "usuario_comentario3"]),
-          fechacomentario3: valueFromRow(row, ["fechacomentario3", "fecha comentario3", "fecha_comentario3"]),
+          fechacomentario1: valueFromRow(row, [
+            "fechacomentario1",
+            "fecha comentario1",
+            "fecha_comentario1"
+          ]),
 
-          comentario4: valueFromRow(row, ["comentario4"]),
-          usuariocomentario4: valueFromRow(row, ["usuariocomentario4", "usuario comentario4", "usuario_comentario4"]),
-          fechacomentario4: valueFromRow(row, ["fechacomentario4", "fecha comentario4", "fecha_comentario4"]),
+          comentario2: valueFromRow(row, [
+            "comentario2"
+          ]),
 
-          comentario5: valueFromRow(row, ["comentario5"]),
-          usuariocomentario5: valueFromRow(row, ["usuariocomentario5", "usuario comentario5", "usuario_comentario5"]),
-          fechacomentario5: valueFromRow(row, ["fechacomentario5", "fecha comentario5", "fecha_comentario5"])
+          usuariocomentario2: valueFromRow(row, [
+            "usuariocomentario2",
+            "usuario comentario2",
+            "usuario_comentario2"
+          ]),
+
+          fechacomentario2: valueFromRow(row, [
+            "fechacomentario2",
+            "fecha comentario2",
+            "fecha_comentario2"
+          ]),
+
+          comentario3: valueFromRow(row, [
+            "comentario3"
+          ]),
+
+          usuariocomentario3: valueFromRow(row, [
+            "usuariocomentario3",
+            "usuario comentario3",
+            "usuario_comentario3"
+          ]),
+
+          fechacomentario3: valueFromRow(row, [
+            "fechacomentario3",
+            "fecha comentario3",
+            "fecha_comentario3"
+          ]),
+
+          comentario4: valueFromRow(row, [
+            "comentario4"
+          ]),
+
+          usuariocomentario4: valueFromRow(row, [
+            "usuariocomentario4",
+            "usuario comentario4",
+            "usuario_comentario4"
+          ]),
+
+          fechacomentario4: valueFromRow(row, [
+            "fechacomentario4",
+            "fecha comentario4",
+            "fecha_comentario4"
+          ]),
+
+          comentario5: valueFromRow(row, [
+            "comentario5"
+          ]),
+
+          usuariocomentario5: valueFromRow(row, [
+            "usuariocomentario5",
+            "usuario comentario5",
+            "usuario_comentario5"
+          ]),
+
+          fechacomentario5: valueFromRow(row, [
+            "fechacomentario5",
+            "fecha comentario5",
+            "fecha_comentario5"
+          ])
         };
       })
-      .filter((j) => j.jornada && j.partido && j.categoria)
+      .filter(
+        (j) =>
+          j.jornada &&
+          j.partido &&
+          j.categoria
+      )
       .map((j) => ({
         ...j,
-        equipoResumen: equipoResumenDesdeTexto(j.equipoAfectado)
+        equipoResumen: equipoResumenDesdeTexto(
+          j.equipoAfectado
+        )
       }));
   }
 
@@ -286,15 +509,23 @@ window.DecisionVarData = (() => {
     const jugadasBase = await loadCSVJugadas();
 
     return jugadasBase.map((j) => {
-      const votosSi = numeroSeguro(j.votosInicialesSi);
-      const votosNo = numeroSeguro(j.votosInicialesNo);
+      const votosSi = numeroSeguro(
+        j.votosInicialesSi
+      );
+
+      const votosNo = numeroSeguro(
+        j.votosInicialesNo
+      );
 
       return {
         ...j,
         votosSi,
         votosNo,
         totalVotos: votosSi + votosNo,
-        encuesta: encuestaGanadora(votosSi, votosNo)
+        encuesta: encuestaGanadora(
+          votosSi,
+          votosNo
+        )
       };
     });
   }
@@ -302,7 +533,12 @@ window.DecisionVarData = (() => {
   async function getVotesMap(jugadaIds) {
     if (!supabase) return {};
 
-    const ids = [...new Set((jugadaIds || []).filter(Boolean))];
+    const ids = [
+      ...new Set(
+        (jugadaIds || []).filter(Boolean)
+      )
+    ];
+
     if (!ids.length) return {};
 
     try {
@@ -314,15 +550,28 @@ window.DecisionVarData = (() => {
       if (error) throw error;
 
       const map = {};
+
       ids.forEach((id) => {
-        map[id] = { si: 0, no: 0, total: 0 };
+        map[id] = {
+          si: 0,
+          no: 0,
+          total: 0
+        };
       });
 
       (data || []).forEach((row) => {
         const id = row.jugada_id;
-        if (!map[id]) map[id] = { si: 0, no: 0, total: 0 };
+
+        if (!map[id]) {
+          map[id] = {
+            si: 0,
+            no: 0,
+            total: 0
+          };
+        }
 
         const v = normalize(row.voto);
+
         if (v === "si") {
           map[id].si += 1;
           map[id].total += 1;
@@ -334,23 +583,40 @@ window.DecisionVarData = (() => {
 
       return map;
     } catch (e) {
-      console.error("No se pudieron cargar los votos online", e);
+      console.error(
+        "No se pudieron cargar los votos online",
+        e
+      );
+
       return {};
     }
   }
 
   function mergeVotes(jugadas, votesMap) {
     return jugadas.map((j) => {
-      const online = votesMap[j.id] || { si: 0, no: 0 };
-      const votosSi = numeroSeguro(j.votosInicialesSi) + numeroSeguro(online.si);
-      const votosNo = numeroSeguro(j.votosInicialesNo) + numeroSeguro(online.no);
+      const online =
+        votesMap[j.id] || {
+          si: 0,
+          no: 0
+        };
+
+      const votosSi =
+        numeroSeguro(j.votosInicialesSi) +
+        numeroSeguro(online.si);
+
+      const votosNo =
+        numeroSeguro(j.votosInicialesNo) +
+        numeroSeguro(online.no);
 
       return {
         ...j,
         votosSi,
         votosNo,
         totalVotos: votosSi + votosNo,
-        encuesta: encuestaGanadora(votosSi, votosNo)
+        encuesta: encuestaGanadora(
+          votosSi,
+          votosNo
+        )
       };
     });
   }
@@ -360,11 +626,25 @@ window.DecisionVarData = (() => {
     const jugadasVAR = [];
 
     for (const j of jugadas) {
-      const equipo = normalize(j.equipoResumen);
-      const categoria = normalize(j.categoria);
-      const subtipo = normalize(j.subtipo);
+      const equipo = normalize(
+        j.equipoResumen
+      );
 
-      if (!equipo || !categoria || !subtipo) continue;
+      const categoria = normalize(
+        j.categoria
+      );
+
+      const subtipo = normalize(
+        j.subtipo
+      );
+
+      if (
+        !equipo ||
+        !categoria ||
+        !subtipo
+      ) {
+        continue;
+      }
 
       jugadasVAR.push({
         id: j.id,
@@ -384,30 +664,62 @@ window.DecisionVarData = (() => {
         pregunta: j.pregunta || "",
         votosSi: numeroSeguro(j.votosSi),
         votosNo: numeroSeguro(j.votosNo),
-        totalVotos: numeroSeguro(j.totalVotos)
+        totalVotos: numeroSeguro(
+          j.totalVotos
+        )
       });
 
-      const block = resumen[equipo]?.[categoria]?.[subtipo];
+      const block =
+        resumen[equipo]?.[categoria]?.[subtipo];
+
       if (!block) continue;
 
       block.total += 1;
 
-      if (j.encuesta === "si") block.si += 1;
-      else if (j.encuesta === "no") block.no += 1;
+      if (j.encuesta === "si") {
+        block.si += 1;
+      } else if (j.encuesta === "no") {
+        block.no += 1;
+      }
 
-      block.balance += obtenerImpacto(categoria, subtipo, j.encuesta);
+      block.balance += obtenerImpacto(
+        categoria,
+        subtipo,
+        j.encuesta
+      );
     }
 
-    return { resumen, jugadasVAR };
+    return {
+      resumen,
+      jugadasVAR
+    };
   }
 
   function buildSummaryBlocks(resumen) {
-    const categories = ["penalti", "gol", "roja"];
+    const categories = [
+      "penalti",
+      "gol",
+      "roja"
+    ];
 
     return categories.map((cat) => ({
       key: cat,
-      barca: Object.values(resumen.barcelona[cat]).reduce((a, b) => a + numeroSeguro(b.balance), 0),
-      madrid: Object.values(resumen.madrid[cat]).reduce((a, b) => a + numeroSeguro(b.balance), 0)
+
+      barca: Object.values(
+        resumen.barcelona[cat]
+      ).reduce(
+        (a, b) =>
+          a + numeroSeguro(b.balance),
+        0
+      ),
+
+      madrid: Object.values(
+        resumen.madrid[cat]
+      ).reduce(
+        (a, b) =>
+          a + numeroSeguro(b.balance),
+        0
+      )
     }));
   }
 
@@ -415,60 +727,129 @@ window.DecisionVarData = (() => {
     const map = new Map();
 
     jugadasVAR.forEach((j) => {
-      const key = Number(j.jornada || 0);
+      const key = Number(
+        j.jornada || 0
+      );
+
       if (!key) return;
 
-      if (!map.has(key)) map.set(key, { jornada: key, barca: 0, madrid: 0 });
+      if (!map.has(key)) {
+        map.set(key, {
+          jornada: key,
+          barca: 0,
+          madrid: 0
+        });
+      }
 
       const reg = map.get(key);
-      const impact = obtenerImpacto(j.categoria, j.subtipo, j.encuesta);
 
-      if (j.equipo === "barcelona") reg.barca += impact;
-      if (j.equipo === "madrid") reg.madrid += impact;
+      const impact = obtenerImpacto(
+        j.categoria,
+        j.subtipo,
+        j.encuesta
+      );
+
+      if (j.equipo === "barcelona") {
+        reg.barca += impact;
+      }
+
+      if (j.equipo === "madrid") {
+        reg.madrid += impact;
+      }
     });
 
-    return Array.from(map.values()).sort((a, b) => a.jornada - b.jornada);
+    return Array.from(
+      map.values()
+    ).sort(
+      (a, b) =>
+        a.jornada - b.jornada
+    );
   }
 
   async function loadDataset() {
-    const jugadasBase = await loadCSVJugadas();
-    const votesMap = await getVotesMap(jugadasBase.map((j) => j.id));
-    const jugadas = mergeVotes(jugadasBase, votesMap);
-    const { resumen, jugadasVAR } = buildSummary(jugadas);
+    const jugadasBase =
+      await loadCSVJugadas();
+
+    const votesMap =
+      await getVotesMap(
+        jugadasBase.map((j) => j.id)
+      );
+
+    const jugadas =
+      mergeVotes(
+        jugadasBase,
+        votesMap
+      );
+
+    const {
+      resumen,
+      jugadasVAR
+    } = buildSummary(jugadas);
 
     return {
       jugadas,
       resumen,
       jugadasVAR,
-      resumenBloques: buildSummaryBlocks(resumen),
-      jornadasData: buildJornadasData(jugadasVAR)
+      resumenBloques:
+        buildSummaryBlocks(resumen),
+      jornadasData:
+        buildJornadasData(jugadasVAR)
     };
   }
 
   async function ensureAnonymousSession() {
     if (!supabase) return null;
 
-    const { data: sessionData } = await supabase.auth.getSession();
-    if (sessionData?.session?.user) return sessionData.session.user;
+    const {
+      data: sessionData
+    } = await supabase.auth.getSession();
 
-    const { data, error } = await supabase.auth.signInAnonymously();
+    if (
+      sessionData?.session?.user
+    ) {
+      return sessionData.session.user;
+    }
+
+    const {
+      data,
+      error
+    } = await supabase.auth
+      .signInAnonymously();
+
     if (error) throw error;
-    return data?.user || data?.session?.user || null;
+
+    return (
+      data?.user ||
+      data?.session?.user ||
+      null
+    );
   }
 
   async function getUsuarioActual() {
     if (!supabase) return null;
+
     try {
       return await ensureAnonymousSession();
     } catch (e) {
-      console.error("No se pudo iniciar la sesión anónima", e);
+      console.error(
+        "No se pudo iniciar la sesión anónima",
+        e
+      );
+
       return null;
     }
   }
 
   async function getPerfilActual() {
-    const user = await getUsuarioActual();
-    return user ? { id: user.id, username: "Usuario" } : null;
+    const user =
+      await getUsuarioActual();
+
+    return user
+      ? {
+          id: user.id,
+          username: "Usuario"
+        }
+      : null;
   }
 
   async function crearPerfil() {
@@ -476,26 +857,54 @@ window.DecisionVarData = (() => {
   }
 
   function voteStorageKey(jugadaId) {
-    return `polemicavar_voto_${String(jugadaId || "")}`;
+    return `polemicavar_voto_${String(
+      jugadaId || ""
+    )}`;
   }
 
   function getUserVote(jugadaId) {
-    try { return localStorage.getItem(voteStorageKey(jugadaId)) || ""; }
-    catch { return ""; }
+    try {
+      return (
+        localStorage.getItem(
+          voteStorageKey(jugadaId)
+        ) || ""
+      );
+    } catch {
+      return "";
+    }
   }
 
-  function setUserVote(jugadaId, voto) {
-    try { localStorage.setItem(voteStorageKey(jugadaId), String(voto || "")); }
-    catch {}
+  function setUserVote(
+    jugadaId,
+    voto
+  ) {
+    try {
+      localStorage.setItem(
+        voteStorageKey(jugadaId),
+        String(voto || "")
+      );
+    } catch {}
   }
 
-  async function getCurrentUserVote(jugadaId) {
-    if (!supabase) return getUserVote(jugadaId);
-    const user = await getUsuarioActual();
-    if (!user) return getUserVote(jugadaId);
+  async function getCurrentUserVote(
+    jugadaId
+  ) {
+    if (!supabase) {
+      return getUserVote(jugadaId);
+    }
+
+    const user =
+      await getUsuarioActual();
+
+    if (!user) {
+      return getUserVote(jugadaId);
+    }
 
     try {
-      const { data, error } = await supabase
+      const {
+        data,
+        error
+      } = await supabase
         .from("votos")
         .select("voto")
         .eq("jugada_id", jugadaId)
@@ -503,59 +912,152 @@ window.DecisionVarData = (() => {
         .maybeSingle();
 
       if (error) throw error;
-      if (data?.voto) setUserVote(jugadaId, data.voto);
-      return data?.voto || getUserVote(jugadaId);
+
+      if (data?.voto) {
+        setUserVote(
+          jugadaId,
+          data.voto
+        );
+      }
+
+      return (
+        data?.voto ||
+        getUserVote(jugadaId)
+      );
     } catch (e) {
-      console.error("No se pudo obtener el voto del navegador", e);
+      console.error(
+        "No se pudo obtener el voto del navegador",
+        e
+      );
+
       return getUserVote(jugadaId);
     }
   }
 
-  async function getComments(scope, jugadaId = "") {
+  async function getComments(
+    scope,
+    jugadaId = ""
+  ) {
     if (!supabase) return [];
 
-    // Primero intenta el esquema moderno usado por la web.
     try {
       let query = supabase
         .from("comentarios")
         .select("*")
-        .order("creado_en", { ascending: false });
+        .order("creado_en", {
+          ascending: false
+        });
 
-      if (scope) query = query.eq("alcance", scope);
-      if (jugadaId) query = query.eq("jugada_id", jugadaId);
-      else query = query.is("jugada_id", null);
+      if (scope) {
+        query = query.eq(
+          "alcance",
+          scope
+        );
+      }
 
-      const { data, error } = await query;
+      if (jugadaId) {
+        query = query.eq(
+          "jugada_id",
+          jugadaId
+        );
+      } else {
+        query = query.is(
+          "jugada_id",
+          null
+        );
+      }
+
+      const {
+        data,
+        error
+      } = await query;
+
       if (error) throw error;
-      return (data || []).map(c => ({ ...c, created_at: c.created_at || c.creado_en }));
+
+      return (data || []).map(
+        (c) => ({
+          ...c,
+          created_at:
+            c.created_at ||
+            c.creado_en
+        })
+      );
     } catch (firstError) {
       try {
         let query = supabase
           .from("comentarios")
           .select("*")
-          .order("created_at", { ascending: false });
+          .order("created_at", {
+            ascending: false
+          });
 
-        if (scope) query = query.eq("scope", scope);
-        if (jugadaId) query = query.eq("jugada_id", jugadaId);
-        else query = query.is("jugada_id", null);
+        if (scope) {
+          query = query.eq(
+            "scope",
+            scope
+          );
+        }
 
-        const { data, error } = await query;
+        if (jugadaId) {
+          query = query.eq(
+            "jugada_id",
+            jugadaId
+          );
+        } else {
+          query = query.is(
+            "jugada_id",
+            null
+          );
+        }
+
+        const {
+          data,
+          error
+        } = await query;
+
         if (error) throw error;
+
         return data || [];
       } catch (e) {
-        console.error("No se pudieron cargar comentarios online", e);
+        console.error(
+          "No se pudieron cargar comentarios online",
+          e
+        );
+
         return [];
       }
     }
   }
 
-  async function addComment(scope, text, jugadaId = "", autor = "") {
-    if (!supabase) throw new Error("Servicio no disponible");
+  async function addComment(
+    scope,
+    text,
+    jugadaId = "",
+    autor = ""
+  ) {
+    if (!supabase) {
+      throw new Error(
+        "Servicio no disponible"
+      );
+    }
 
-    const limpioTexto = String(text || "").trim();
-    const limpioAutor = String(autor || "").trim();
-    if (!limpioTexto) throw new Error("Escribe un comentario");
-    if (!limpioAutor) throw new Error("Escribe un nombre");
+    const limpioTexto =
+      String(text || "").trim();
+
+    const limpioAutor =
+      String(autor || "").trim();
+
+    if (!limpioTexto) {
+      throw new Error(
+        "Escribe un comentario"
+      );
+    }
+
+    if (!limpioAutor) {
+      throw new Error(
+        "Escribe un nombre"
+      );
+    }
 
     let payload = {
       texto: limpioTexto,
@@ -564,7 +1066,12 @@ window.DecisionVarData = (() => {
       jugada_id: jugadaId || null
     };
 
-    let { error } = await supabase.from("comentarios").insert(payload);
+    let {
+      error
+    } = await supabase
+      .from("comentarios")
+      .insert(payload);
+
     if (!error) return;
 
     payload = {
@@ -574,53 +1081,247 @@ window.DecisionVarData = (() => {
       jugada_id: jugadaId || null,
       tipo: "texto"
     };
-    const retry = await supabase.from("comentarios").insert(payload);
-    if (retry.error) throw retry.error;
+
+    const retry = await supabase
+      .from("comentarios")
+      .insert(payload);
+
+    if (retry.error) {
+      throw retry.error;
+    }
   }
 
-  async function addAudioComment() {
-    throw new Error("Los comentarios de audio no están disponibles sin cuenta");
+  async function addAudioComment(
+    scope,
+    audioBlob,
+    jugadaId = "",
+    autor = "",
+    duracionSegundos = 0
+  ) {
+    if (!supabase) {
+      throw new Error(
+        "Servicio no disponible"
+      );
+    }
+
+    if (
+      !(audioBlob instanceof Blob) ||
+      !audioBlob.size
+    ) {
+      throw new Error(
+        "El audio está vacío"
+      );
+    }
+
+    const limpioAutor =
+      String(autor || "").trim();
+
+    if (!limpioAutor) {
+      throw new Error(
+        "Escribe un nombre"
+      );
+    }
+
+    const user =
+      await ensureAnonymousSession();
+
+    if (!user) {
+      throw new Error(
+        "No se pudo identificar este navegador"
+      );
+    }
+
+    const mime = String(
+      audioBlob.type ||
+      "audio/webm"
+    ).toLowerCase();
+
+    let extension = "webm";
+
+    if (
+      mime.includes("mp4") ||
+      mime.includes("m4a")
+    ) {
+      extension = "m4a";
+    } else if (
+      mime.includes("ogg")
+    ) {
+      extension = "ogg";
+    } else if (
+      mime.includes("mpeg") ||
+      mime.includes("mp3")
+    ) {
+      extension = "mp3";
+    }
+
+    const safeJugada = String(
+      jugadaId || "general"
+    ).replace(
+      /[^a-zA-Z0-9_-]/g,
+      "_"
+    );
+
+    const nombreArchivo =
+      `${Date.now()}-${Math.random()
+        .toString(36)
+        .slice(2, 9)}.${extension}`;
+
+    const ruta =
+      `${user.id}/${safeJugada}/${nombreArchivo}`;
+
+    const {
+      error: uploadError
+    } = await supabase.storage
+      .from("comentarios-audio")
+      .upload(
+        ruta,
+        audioBlob,
+        {
+          contentType:
+            audioBlob.type ||
+            "audio/webm",
+
+          upsert: false
+        }
+      );
+
+    if (uploadError) {
+      throw uploadError;
+    }
+
+    const {
+      data: publicData
+    } = supabase.storage
+      .from("comentarios-audio")
+      .getPublicUrl(ruta);
+
+    const audioUrl =
+      publicData?.publicUrl;
+
+    if (!audioUrl) {
+      await supabase.storage
+        .from("comentarios-audio")
+        .remove([ruta]);
+
+      throw new Error(
+        "No se pudo generar la dirección del audio"
+      );
+    }
+
+    const payload = {
+      texto: null,
+      autor: limpioAutor,
+      alcance: scope || null,
+      jugada_id: jugadaId || null,
+      tipo: "audio",
+      audio_url: audioUrl,
+
+      duracion_segundos: Math.max(
+        0,
+        Math.round(
+          Number(
+            duracionSegundos
+          ) || 0
+        )
+      )
+    };
+
+    const {
+      error: insertError
+    } = await supabase
+      .from("comentarios")
+      .insert(payload);
+
+    if (insertError) {
+      await supabase.storage
+        .from("comentarios-audio")
+        .remove([ruta]);
+
+      throw insertError;
+    }
   }
 
-  async function addVote(jugadaId, voto) {
-    if (!supabase) throw new Error("Servicio no disponible");
+  async function addVote(
+    jugadaId,
+    voto
+  ) {
+    if (!supabase) {
+      throw new Error(
+        "Servicio no disponible"
+      );
+    }
 
-    const user = await ensureAnonymousSession();
-    if (!user) throw new Error("No se pudo identificar este navegador");
+    const user =
+      await ensureAnonymousSession();
 
-    const { error } = await supabase.from("votos").insert({
-      jugada_id: String(jugadaId),
-      user_id: user.id,
-      voto: String(voto || "").toLowerCase()
-    });
+    if (!user) {
+      throw new Error(
+        "No se pudo identificar este navegador"
+      );
+    }
+
+    const {
+      error
+    } = await supabase
+      .from("votos")
+      .insert({
+        jugada_id:
+          String(jugadaId),
+
+        user_id:
+          user.id,
+
+        voto:
+          String(voto || "")
+            .toLowerCase()
+      });
 
     if (error) {
       if (error.code === "23505") {
-        const err = new Error("Ya has votado en esta encuesta desde este navegador");
-        err.code = "ALREADY_VOTED";
+        const err = new Error(
+          "Ya has votado en esta encuesta desde este navegador"
+        );
+
+        err.code =
+          "ALREADY_VOTED";
+
         throw err;
       }
+
       throw error;
     }
 
-    setUserVote(jugadaId, voto);
+    setUserVote(
+      jugadaId,
+      voto
+    );
   }
 
   function formatDate(dateValue) {
     try {
       if (!dateValue) return "";
 
-      const raw = String(dateValue).trim();
-      const isoDate = new Date(raw);
+      const raw =
+        String(dateValue).trim();
 
-      if (!isNaN(isoDate.getTime())) {
-        return isoDate.toLocaleString("es-ES", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit"
-        });
+      const isoDate =
+        new Date(raw);
+
+      if (
+        !isNaN(
+          isoDate.getTime()
+        )
+      ) {
+        return isoDate.toLocaleString(
+          "es-ES",
+          {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+          }
+        );
       }
 
       const m = raw.match(
@@ -637,14 +1338,21 @@ window.DecisionVarData = (() => {
           Number(m[6] || 0)
         );
 
-        if (!isNaN(fecha.getTime())) {
-          return fecha.toLocaleString("es-ES", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit"
-          });
+        if (
+          !isNaN(
+            fecha.getTime()
+          )
+        ) {
+          return fecha.toLocaleString(
+            "es-ES",
+            {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit"
+            }
+          );
         }
       }
 
@@ -656,27 +1364,46 @@ window.DecisionVarData = (() => {
 
   async function loginConGoogle() {
     if (!supabase) {
-      alert("Inicio de sesión no disponible ahora mismo");
+      alert(
+        "Inicio de sesión no disponible ahora mismo"
+      );
+
       return;
     }
 
-    const redirectTo = window.location.href.split("#")[0];
+    const redirectTo =
+      window.location.href.split("#")[0];
 
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo }
-    });
+    const {
+      error
+    } = await supabase.auth
+      .signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo
+        }
+      });
 
     if (error) {
-      alert("Error al iniciar sesión con Google");
+      alert(
+        "Error al iniciar sesión con Google"
+      );
+
       console.error(error);
     }
   }
 
   async function logout() {
     if (!supabase) return;
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+
+    const {
+      error
+    } = await supabase.auth
+      .signOut();
+
+    if (error) {
+      throw error;
+    }
   }
 
   return {
