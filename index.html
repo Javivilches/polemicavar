@@ -2345,7 +2345,7 @@ body{
     display:flex !important;
     align-items:center !important;
     justify-content:space-between !important;
-    gap:14px !important;
+    gap:12px !important;
     padding:12px 14px !important;
 }
 
@@ -2353,11 +2353,15 @@ body{
     margin:0 0 2px !important;
 }
 
-.cabecera-comentarios .btn-mostrar-mas{
+.mostrar-mas-comentarios-wrap{
+    display:flex;
+    justify-content:center;
+    margin-top:10px;
+}
+
+.mostrar-mas-comentarios-wrap .btn-mostrar-mas{
     margin:0 !important;
-    min-height:36px !important;
-    padding:7px 12px !important;
-    white-space:nowrap;
+    min-height:38px;
     align-items:center;
     justify-content:center;
 }
@@ -2396,9 +2400,11 @@ body{
     .cabecera-comentarios{
         align-items:flex-start !important;
     }
-    .cabecera-comentarios .btn-mostrar-mas{
-        font-size:11px !important;
-        padding:7px 9px !important;
+    .mostrar-mas-comentarios-wrap .btn-mostrar-mas{
+        width:100%;
+        justify-content:center;
+        font-size:12px !important;
+        padding:9px 12px !important;
     }
 }
 
@@ -4204,7 +4210,11 @@ function renderComments(article, comments, visibles){
         list.appendChild(div);
     });
 
-    btnMas.style.display = visibles < ordenados.length ? 'inline-flex' : 'none';
+    const restantes = Math.max(0, ordenados.length - visibles);
+    btnMas.style.display = restantes > 0 ? 'inline-flex' : 'none';
+    btnMas.textContent = restantes > 5
+        ? `Mostrar 5 comentarios más (${restantes} pendientes)`
+        : `Mostrar ${restantes} comentario${restantes === 1 ? '' : 's'} más`;
 }
 
 async function initComments(article, jugada){
@@ -4217,7 +4227,7 @@ async function initComments(article, jugada){
         online=[];
     }
 
-    let visibles=3;
+    let visibles=5;
     renderComments(article, [...online, ...initial], visibles);
 
     const btnPublicar = article.querySelector('.boton-comentar');
@@ -4319,7 +4329,7 @@ async function initComments(article, jugada){
                 try{
                     await addAudioComment('jugada',blob,jugada.id,autor,duracion);
                     online=await getComments('jugada',jugada.id);
-                    visibles=Math.max(visibles,3);
+                    visibles=Math.max(visibles,5);
                     renderComments(article,[...online,...initial],visibles);
                     actualizarEstadoAudio('Audio enviado.');
                 }catch(err){
@@ -4371,7 +4381,7 @@ async function initComments(article, jugada){
                 await addComment('jugada', txt, jugada.id, autor);
                 ta.value='';
                 online=await getComments('jugada', jugada.id);
-                visibles=Math.max(visibles,3);
+                visibles=Math.max(visibles,5);
                 renderComments(article, [...online, ...initial], visibles);
             }catch(e){
                 alert(e?.message || 'No se pudo guardar el comentario');
@@ -4381,7 +4391,7 @@ async function initComments(article, jugada){
 
     if(btnMas){
         btnMas.onclick=()=>{
-            visibles+=3;
+            visibles+=5;
             renderComments(article, [...online, ...initial], visibles);
         };
     }
@@ -4512,7 +4522,6 @@ function createArticle(jugada){
             <section class="seccion-comentarios comentarios-box">
                 <div class="cabecera-comentarios">
                     <div><h3>Comentarios</h3><p>${commentsInitial.length} comentarios</p></div>
-                    <button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button>
                 </div>
                 <div class="cuerpo-comentarios">
                     <input class="nombre-comentario" type="text" maxlength="40" placeholder="Tu nombre">
@@ -4527,6 +4536,9 @@ function createArticle(jugada){
                         <div class="estado-audio">Mantén pulsado el micrófono y suelta para enviar.</div>
                     </div>
                     <div class="lista-comentarios"></div>
+                    <div class="mostrar-mas-comentarios-wrap">
+                        <button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button>
+                    </div>
                 </div>
             </section>
         </div>
