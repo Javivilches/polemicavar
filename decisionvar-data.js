@@ -1091,151 +1091,187 @@ window.DecisionVarData = (() => {
     }
   }
 
-async function addAudioComment(
-  scope,
-  audioBlob,
-  jugadaId = "",
-  autor = "",
-  duracionSegundos = 0
-) {
-  if (!supabase) {
-    throw new Error("Servicio no disponible");
-  }
+  async function addAudioComment(
+    scope,
+    audioBlob,
+    jugadaId = "",
+    autor = "",
+    duracionSegundos = 0
+  ) {
+    if (!supabase) {
+      throw new Error(
+        "Servicio no disponible"
+      );
+    }
 
-  if (!(audioBlob instanceof Blob) || !audioBlob.size) {
-    throw new Error("El audio está vacío");
-  }
+    if (
+      !(audioBlob instanceof Blob) ||
+      !audioBlob.size
+    ) {
+      throw new Error(
+        "El audio está vacío"
+      );
+    }
 
-  const limpioAutor = String(autor || "").trim();
+    const limpioAutor =
+      String(autor || "").trim();
 
-  if (!limpioAutor) {
-    throw new Error("Escribe un nombre");
-  }
+    if (!limpioAutor) {
+      throw new Error(
+        "Escribe un nombre"
+      );
+    }
 
-  const user = await ensureAnonymousSession();
+    const user =
+      await ensureAnonymousSession();
 
-  if (!user) {
-    throw new Error("No se pudo identificar este navegador");
-  }
+    if (!user) {
+      throw new Error(
+        "No se pudo identificar este navegador"
+      );
+    }
 
-  const mime = String(
-    audioBlob.type || "audio/webm"
-  ).toLowerCase();
+    const mime = String(
+      audioBlob.type ||
+      "audio/webm"
+    ).toLowerCase();
 
-  let extension = "webm";
+    let extension = "webm";
 
-  if (mime.includes("mp4") || mime.includes("m4a")) {
-    extension = "m4a";
-  } else if (mime.includes("ogg")) {
-    extension = "ogg";
-  } else if (mime.includes("mpeg") || mime.includes("mp3")) {
-    extension = "mp3";
-  }
+    if (
+      mime.includes("mp4") ||
+      mime.includes("m4a")
+    ) {
+      extension = "m4a";
+    } else if (
+      mime.includes("ogg")
+    ) {
+      extension = "ogg";
+    } else if (
+      mime.includes("mpeg") ||
+      mime.includes("mp3")
+    ) {
+      extension = "mp3";
+    }
 
-  const safeJugada = String(
-    jugadaId || "general"
-  ).replace(/[^a-zA-Z0-9_-]/g, "_");
-
-  const nombreArchivo =
-    `${Date.now()}-${Math.random()
-      .toString(36)
-      .slice(2, 9)}.${extension}`;
-
-  const ruta =
-    `${user.id}/${safeJugada}/${nombreArchivo}`;
-
-  const { error: uploadError } = await supabase.storage
-    .from("comentarios-audio")
-    .upload(ruta, audioBlob, {
-      contentType: audioBlob.type || "audio/webm",
-      upsert: false
-    });
-
-  if (uploadError) {
-    throw uploadError;
-  }
-
-  const { data: publicData } = supabase.storage
-    .from("comentarios-audio")
-    .getPublicUrl(ruta);
-
-  const audioUrl = publicData?.publicUrl;
-
-  if (!audioUrl) {
-    await supabase.storage
-      .from("comentarios-audio")
-      .remove([ruta]);
-
-    throw new Error(
-      "No se pudo generar la dirección del audio"
-    );
-  }
-
-  const basePayload = {
-    texto: null,
-    autor: limpioAutor,
-    jugada_id: jugadaId || null,
-    tipo: "audio",
-    audio_url: audioUrl,
-    duracion_segundos: Math.max(
-      0,
-      Math.round(Number(duracionSegundos) || 0)
-    )
-  };
-
-  /*
-   * Tu tabla utiliza la columna "scope".
-   * Se prueba primero con esa columna.
-   */
-  let { error: insertError } = await supabase
-    .from("comentarios")
-    .insert({
-      ...basePayload,
-      scope: scope || null
-    });
-
-  if (!insertError) {
-    return;
-  }
-
-  /*
-   * Solo se prueba "alcance" como alternativa si la columna
-   * "scope" no existiera en otra versión de la base de datos.
-   */
-  const mensaje = String(
-    insertError.message || ""
-  ).toLowerCase();
-
-  const faltaScope =
-    mensaje.includes("scope") &&
-    (
-      mensaje.includes("column") ||
-      mensaje.includes("schema cache")
+    const safeJugada = String(
+      jugadaId || "general"
+    ).replace(
+      /[^a-zA-Z0-9_-]/g,
+      "_"
     );
 
-  if (!faltaScope) {
-    await supabase.storage
+    const nombreArchivo =
+      `${Date.now()}-${Math.random()
+        .toString(36)
+        .slice(2, 9)}.${extension}`;
+
+    const ruta =
+      `${user.id}/${safeJugada}/${nombreArchivo}`;
+
+    const {
+      error: uploadError
+    } = await supabase.storage
       .from("comentarios-audio")
-      .remove([ruta]);
+      .upload(
+        ruta,
+        audioBlob,
+        {
+          contentType:
+            audioBlob.type ||
+            "audio/webm",
 
-    throw insertError;
-  }
+          upsert: false
+        }
+      );
 
-  const retry = await supabase
-    .from("comentarios")
-    .insert({
-      ...basePayload,
-      alcance: scope || null
-    });
+    if (uploadError) {
+      throw uploadError;
+    }
 
-  if (retry.error) {
-    await supabase.storage
+    const {
+      data: publicData
+    } = supabase.storage
       .from("comentarios-audio")
-      .remove([ruta]);
+      .getPublicUrl(ruta);
 
-    throw retry.error;
+    const audioUrl =
+      publicData?.publicUrl;
+
+    if (!audioUrl) {
+      await supabase.storage
+        .from("comentarios-audio")
+        .remove([ruta]);
+
+      throw new Error(
+        "No se pudo generar la dirección del audio"
+      );
+    }
+
+    const basePayload = {
+      texto: null,
+      autor: limpioAutor,
+      jugada_id: jugadaId || null,
+      tipo: "audio",
+      audio_url: audioUrl,
+
+      duracion_segundos: Math.max(
+        0,
+        Math.round(
+          Number(
+            duracionSegundos
+          ) || 0
+        )
+      )
+    };
+
+    let {
+      error: insertError
+    } = await supabase
+      .from("comentarios")
+      .insert({
+        ...basePayload,
+        scope: scope || null
+      });
+
+    if (!insertError) {
+      return;
+    }
+
+    const mensaje = String(
+      insertError.message || ""
+    ).toLowerCase();
+
+    const faltaScope =
+      mensaje.includes("scope") &&
+      (
+        mensaje.includes("column") ||
+        mensaje.includes("schema cache")
+      );
+
+    if (!faltaScope) {
+      await supabase.storage
+        .from("comentarios-audio")
+        .remove([ruta]);
+
+      throw insertError;
+    }
+
+    const retry = await supabase
+      .from("comentarios")
+      .insert({
+        ...basePayload,
+        alcance: scope || null
+      });
+
+    if (retry.error) {
+      await supabase.storage
+        .from("comentarios-audio")
+        .remove([ruta]);
+
+      throw retry.error;
+    }
   }
-}
 
   async function addVote(
     jugadaId,
