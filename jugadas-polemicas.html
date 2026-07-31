@@ -2085,6 +2085,503 @@ h1,h2,h3,h4,
     }
 }
 
+
+/* COMENTARIOS DE AUDIO */
+.nombre-comentario{
+    width:100%;
+    box-sizing:border-box;
+    margin:0 0 9px;
+    padding:10px 12px;
+    border:1px solid #d0d7e2;
+    border-radius:9px;
+    font-size:13px;
+    font-family:Inter,Arial,sans-serif;
+    background:#fff;
+    color:#24344d;
+}
+.comentario-editor{
+    display:flex;
+    align-items:flex-end;
+    gap:6px;
+    width:100%;
+    box-sizing:border-box;
+    padding:6px;
+    border:1px solid #d0d7e2;
+    border-radius:10px;
+    background:#fff;
+    transition:border-color .2s ease, box-shadow .2s ease;
+}
+.comentario-editor:focus-within{
+    border-color:#2567c7;
+    box-shadow:0 0 0 3px rgba(37,103,199,.12);
+}
+.comentario-editor textarea{
+    flex:1 1 auto;
+    width:auto;
+    min-width:0;
+    min-height:48px;
+    max-height:150px;
+    margin:0;
+    padding:7px 8px;
+    border:0 !important;
+    border-radius:7px;
+    outline:none;
+    resize:vertical;
+    box-shadow:none !important;
+    background:transparent;
+}
+.acciones-comentario{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin-top:9px;
+    flex-wrap:wrap;
+}
+.btn-microfono{
+    position:static;
+    flex:0 0 40px;
+    width:40px;
+    height:40px;
+    margin:0 0 1px;
+    padding:0;
+    border:0;
+    border-radius:50%;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#174d9c,#2567c7);
+    color:#fff;
+    cursor:pointer;
+    box-shadow:0 6px 14px rgba(23,77,156,.22);
+    touch-action:none;
+    user-select:none;
+    -webkit-user-select:none;
+}
+.btn-microfono svg{width:21px;height:21px;fill:currentColor;}
+.btn-microfono.grabando{
+    background:#d62839;
+    transform:scale(1.08);
+    animation:pulsoMicro 1s infinite;
+}
+@keyframes pulsoMicro{
+    0%,100%{box-shadow:0 0 0 0 rgba(214,40,57,.35);}
+    50%{box-shadow:0 0 0 10px rgba(214,40,57,0);}
+}
+.estado-audio{
+    min-height:20px;
+    font-size:12px;
+    color:#667791;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+}
+.estado-audio.grabando{color:#c91f35;}
+.comentario-audio{
+    margin-top:7px;
+    display:flex;
+    align-items:center;
+    gap:9px;
+}
+.comentario-audio audio{
+    width:min(100%,360px);
+    height:38px;
+}
+@media(max-width:768px){
+    .acciones-comentario{justify-content:space-between;}
+    .boton-comentar{flex:1;}
+}
+
+
+
+/* =========================================================
+   ESCRITORIO DEFINITIVO — SOLO PC, MÓVIL INTACTO
+   ========================================================= */
+@media (min-width:769px){
+
+    html, body{
+        zoom:1 !important;
+    }
+
+    body{
+        background:#07101d !important;
+    }
+
+    /* Cabecera diseñada específicamente para monitor.
+       La imagen se muestra completa, sin estirarse ni recortarse. */
+    .cabecera{
+        height:132px !important;
+        background-color:#07101d !important;
+        background-image:
+            url("cabecera-premium.png"),
+            radial-gradient(circle at 16% 50%,rgba(126,0,44,.38),transparent 34%),
+            radial-gradient(circle at 84% 50%,rgba(225,231,239,.18),transparent 35%),
+            linear-gradient(90deg,#071630 0%,#0d2d63 24%,#37152c 43%,#151c29 57%,#626d7d 78%,#d9dee5 100%) !important;
+        background-size:
+            auto 100%,
+            100% 100%,
+            100% 100%,
+            100% 100% !important;
+        background-position:
+            center center,
+            center,
+            center,
+            center !important;
+        background-repeat:no-repeat !important;
+        border-bottom:1px solid rgba(255,255,255,.12) !important;
+        box-shadow:0 10px 30px rgba(0,0,0,.35) !important;
+    }
+
+    .menu{
+        top:132px !important;
+        height:66px !important;
+        min-height:66px !important;
+        background:
+            linear-gradient(90deg,rgba(128,0,42,.10),transparent 30%),
+            linear-gradient(270deg,rgba(230,235,242,.08),transparent 30%),
+            rgba(7,13,23,.98) !important;
+        border-bottom:1px solid rgba(255,255,255,.09) !important;
+        box-shadow:0 8px 24px rgba(0,0,0,.28) !important;
+    }
+
+    .menu > a{
+        height:66px !important;
+        padding:6px 14px !important;
+        gap:4px !important;
+        font-size:11px !important;
+        letter-spacing:.25px !important;
+    }
+
+    .menu-icono{
+        width:24px !important;
+        height:24px !important;
+        flex-basis:24px !important;
+    }
+
+    .contenido{
+        margin-top:198px !important;
+        min-height:calc(100vh - 198px) !important;
+        padding:38px 0 80px !important;
+        background:
+            radial-gradient(ellipse 46% 34% at 0% 9%,rgba(125,0,43,.20),transparent 72%),
+            radial-gradient(ellipse 46% 34% at 100% 9%,rgba(217,224,233,.11),transparent 72%),
+            radial-gradient(circle at 50% 0%,rgba(38,77,132,.13),transparent 32%),
+            linear-gradient(180deg,#08111f 0%,#0a1423 46%,#07101c 100%) !important;
+    }
+
+    .contenido::before{
+        inset:198px 0 0 !important;
+        position:fixed !important;
+        background:
+            linear-gradient(90deg,rgba(12,39,83,.08),transparent 30%),
+            linear-gradient(270deg,rgba(220,226,235,.035),transparent 30%) !important;
+    }
+
+    .contenido::after{
+        background:none !important;
+    }
+
+    .wrap{
+        width:min(1180px,92%) !important;
+        max-width:1180px !important;
+        margin:0 auto !important;
+    }
+
+    .bloque-portada,
+    .bloque-resultados{
+        border-radius:22px !important;
+        margin-bottom:28px !important;
+        background:linear-gradient(180deg,rgba(18,31,50,.98),rgba(9,19,34,.98)) !important;
+        border:1px solid rgba(255,255,255,.10) !important;
+        box-shadow:0 22px 54px rgba(0,0,0,.33),inset 0 1px 0 rgba(255,255,255,.04) !important;
+    }
+
+    .cabecera-portada,
+    .cabecera-resultados{
+        padding:28px 32px 25px !important;
+        background:
+            linear-gradient(90deg,rgba(125,0,43,.20),transparent 35%),
+            linear-gradient(270deg,rgba(255,255,255,.055),transparent 35%),
+            linear-gradient(135deg,#102748,#173968 58%,#1f4d88) !important;
+    }
+
+    .cabecera-portada h1,
+    .cabecera-resultados h1{
+        font-size:36px !important;
+        line-height:1.05 !important;
+    }
+
+    .cabecera-portada p,
+    .cabecera-resultados p{
+        max-width:820px !important;
+        font-size:15px !important;
+        line-height:1.55 !important;
+    }
+
+    .bloque-jugada{
+        margin:26px 24px 24px !important;
+    }
+
+    .jugada-principal{
+        border-radius:20px !important;
+        background:linear-gradient(180deg,#112541,#0a1729) !important;
+        border:1px solid rgba(255,255,255,.11) !important;
+        box-shadow:0 18px 44px rgba(0,0,0,.30) !important;
+    }
+
+    .cabecera-jugada{
+        padding:22px 26px 20px !important;
+        background:
+            radial-gradient(circle at 100% 0%,rgba(255,255,255,.11),transparent 38%),
+            linear-gradient(135deg,#164283 0%,#245da9 58%,#2e70c1 100%) !important;
+    }
+
+    .cabecera-jugada h2{
+        font-size:30px !important;
+        line-height:1.08 !important;
+    }
+
+    .descripcion-cabecera-jugada{
+        max-width:930px !important;
+        font-size:14px !important;
+        line-height:1.55 !important;
+    }
+
+    /* Distribución específica para escritorio:
+       contenido visual y votación en columnas; comentarios debajo. */
+    .contenido-jugada{
+        display:grid !important;
+        grid-template-columns:minmax(0,1.55fr) minmax(330px,.75fr) !important;
+        align-items:start !important;
+        gap:18px !important;
+        padding:18px !important;
+    }
+
+    .bloque-media-jugada{
+        grid-column:1 !important;
+        grid-row:1 !important;
+        min-width:0 !important;
+    }
+
+    .panel-votacion{
+        grid-column:2 !important;
+        grid-row:1 !important;
+        min-width:0 !important;
+        width:100% !important;
+        border-radius:16px !important;
+        overflow:hidden !important;
+        box-shadow:0 14px 32px rgba(0,0,0,.24) !important;
+    }
+
+    .seccion-comentarios{
+        grid-column:1 / -1 !important;
+        grid-row:2 !important;
+        width:100% !important;
+        margin-top:0 !important;
+        border-radius:16px !important;
+    }
+
+    .imagen-jugada{
+        min-height:430px !important;
+        padding:12px !important;
+        border-radius:16px !important;
+    }
+
+    .visor-media{
+        min-height:405px !important;
+        max-height:620px !important;
+    }
+
+    .visor-media img{
+        max-height:620px !important;
+    }
+
+    .galeria-miniaturas{
+        grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+    }
+
+    .panel-votacion-top{
+        padding:19px 20px 12px !important;
+        text-align:center !important;
+    }
+
+    .panel-votacion-top h3{
+        font-size:22px !important;
+    }
+
+    .panel-votacion-top p{
+        font-size:17px !important;
+        line-height:1.35 !important;
+    }
+
+    .botones-voto{
+        display:grid !important;
+        grid-template-columns:1fr !important;
+        gap:10px !important;
+        padding:12px 18px !important;
+    }
+
+    .btn-voto{
+        min-height:50px !important;
+        font-size:15px !important;
+    }
+
+    .mensaje-voto{
+        text-align:center !important;
+        padding:0 18px 13px !important;
+    }
+
+    .resultado-box{
+        padding:15px 17px 18px !important;
+    }
+
+    .resumen-votos-bloques{
+        grid-template-columns:1fr !important;
+        gap:10px !important;
+    }
+
+    .resumen-voto-card{
+        min-height:auto !important;
+        padding:13px !important;
+    }
+
+    .resumen-voto-porcentaje{
+        font-size:27px !important;
+    }
+
+    .cabecera-comentarios{
+        padding:13px 18px !important;
+    }
+
+    .cuerpo-comentarios{
+        padding:16px 18px 18px !important;
+    }
+
+    .nombre-comentario{
+        max-width:360px !important;
+        font-size:14px !important;
+        padding:11px 13px !important;
+    }
+
+    .comentario-editor textarea{
+        min-height:70px !important;
+        font-size:14px !important;
+    }
+
+    .acciones-comentario{
+        justify-content:flex-start !important;
+    }
+
+    .boton-comentar{
+        min-width:190px !important;
+    }
+
+    .marcador-wrap,
+    .marcador-visual-wrap{
+        padding-left:24px !important;
+        padding-right:24px !important;
+    }
+
+    .marcador-global,
+    .marcador-imagen{
+        max-width:1040px !important;
+    }
+}
+
+
+
+/* AJUSTES DE JUGADAS POLÉMICAS DENTRO DEL MISMO SISTEMA VISUAL */
+.menu-user-wrap{
+    display:none !important;
+}
+
+@media (min-width:769px){
+    .titulo-seccion,
+    .filtros-jugadas,
+    .aviso-legal,
+    .bloque-marcador-global{
+        background:linear-gradient(180deg,rgba(18,31,50,.98),rgba(9,19,34,.98)) !important;
+        border:1px solid rgba(255,255,255,.10) !important;
+        box-shadow:0 22px 54px rgba(0,0,0,.33),inset 0 1px 0 rgba(255,255,255,.04) !important;
+    }
+
+    .titulo-seccion{
+        max-width:none !important;
+        padding:28px 32px 25px !important;
+        border-radius:22px !important;
+        text-align:left !important;
+    }
+
+    .titulo-seccion h1{
+        font-size:36px !important;
+        line-height:1.05 !important;
+    }
+
+    .filtros-jugadas{
+        border-radius:18px !important;
+        padding:18px !important;
+        grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+    }
+
+    .bloque-jugada{
+        margin-bottom:28px !important;
+    }
+
+    .zona-superior{
+        display:grid !important;
+        grid-template-columns:minmax(0,1.55fr) minmax(330px,.75fr) !important;
+        align-items:start !important;
+        gap:18px !important;
+        padding:18px !important;
+    }
+
+    .zona-superior > div:first-child{
+        min-width:0 !important;
+    }
+
+    .seccion-comentarios{
+        margin:0 18px 18px !important;
+    }
+
+    .imagen-jugada{
+        min-height:430px !important;
+    }
+
+    .visor-media{
+        min-height:405px !important;
+        max-height:620px !important;
+    }
+
+    .visor-media img{
+        max-height:620px !important;
+    }
+
+    .panel-votacion-top{
+        padding:19px 20px 12px !important;
+        text-align:center !important;
+    }
+
+    .panel-votacion-top p{
+        font-size:17px !important;
+        line-height:1.35 !important;
+    }
+
+    .botones-voto{
+        display:grid !important;
+        grid-template-columns:1fr !important;
+        gap:10px !important;
+        padding:12px 18px !important;
+    }
+
+    .btn-voto{
+        min-height:50px !important;
+        font-size:15px !important;
+    }
+
+    .marcador-imagen{
+        max-width:1040px !important;
+    }
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2603,57 +3100,27 @@ function createInitialComments(j){
 function renderComments(article, comments, visibles){
     const list=article.querySelector('.lista-comentarios');
     const counter=article.querySelector('.cabecera-comentarios p');
-    list.innerHTML='';
-    counter.textContent=`${comments.length} comentarios`;
+    const btnMas=article.querySelector('.btn-mostrar-mas');
+    const ordenados=ordenarComentarios(comments);
 
-    comments.slice(0, visibles).forEach(c=>{
+    list.innerHTML='';
+    counter.textContent=`${ordenados.length} comentarios`;
+
+    ordenados.slice(0, visibles).forEach(c=>{
         const div=document.createElement('div');
         div.className='comentario visible';
-
-        const cabecera = `<div style="font-size:12px;color:#667791;font-weight:700;margin-bottom:6px;">${escapeHtml(c.autor||'Usuario')} ${c.created_at ? '· '+escapeHtml(formatDate(c.created_at)) : ''}</div>`;
-
-        let cuerpo = '';
-        if ((c.tipo || '') === 'audio' && c.audio_url) {
-            cuerpo = `
-                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-                    <span style="font-weight:700;color:#1f4fb0;">🎤 Audio</span>
-                    <audio controls preload="none" src="${escapeHtml(c.audio_url)}" style="width:min(100%,320px);"></audio>
-                </div>
-            `;
-        } else {
-            cuerpo = `${escapeHtml(c.texto||'')}`;
+        const cabecera=`<div style="font-size:12px;color:#667791;font-weight:700;margin-bottom:4px;">${escapeHtml(c.autor||'Usuario')} ${c.created_at ? '· '+escapeHtml(formatDate(c.created_at)) : ''}</div>`;
+        if((c.tipo||'').toLowerCase()==='audio' || c.audio_url){
+            const duracion=Number(c.duracion_segundos||0);
+            const etiqueta=duracion ? `Audio · ${Math.floor(duracion/60)}:${String(duracion%60).padStart(2,'0')}` : 'Mensaje de audio';
+            div.innerHTML=cabecera+`<div class="comentario-audio"><audio controls preload="metadata" src="${escapeHtml(c.audio_url||'')}"></audio><span style="font-size:12px;color:#667791;">${etiqueta}</span></div>`;
+        }else{
+            div.innerHTML=cabecera+escapeHtml(c.texto||'');
         }
-
-        div.innerHTML = cabecera + cuerpo;
         list.appendChild(div);
     });
 
-    const btnInicial=article.querySelector('.btn-mostrar-inicial');
-    const btnOcultar=article.querySelector('.btn-ocultar');
-    const btnMas=article.querySelector('.btn-mostrar-mas');
-    if(btnInicial) btnInicial.style.display='none';
-    if(btnOcultar) btnOcultar.style.display='none';
-    if(btnMas) btnMas.style.display = visibles<comments.length ? 'inline-flex' : 'none';
-}
-
-function updateCommentUI(article, logueado, conPerfil){
-    const textarea = article.querySelector('textarea');
-    const boton = article.querySelector('.boton-comentar');
-
-    if(!logueado){
-        textarea.placeholder = 'Inicia sesión con Google para comentar...';
-        boton.textContent = 'Inicia sesión para comentar';
-        return;
-    }
-
-    if(!conPerfil){
-        textarea.placeholder = 'Primero crea tu nombre de usuario para comentar...';
-        boton.textContent = 'Guardar usuario antes de comentar';
-        return;
-    }
-
-    textarea.placeholder = 'Escribe tu comentario...';
-    boton.textContent = 'Publicar comentario';
+    btnMas.style.display = visibles < ordenados.length ? 'inline-flex' : 'none';
 }
 
 async function initComments(article, jugada){
@@ -2662,233 +3129,176 @@ async function initComments(article, jugada){
 
     try{
         online=await getComments('jugada', jugada.id);
-    }catch(e){}
+    }catch(e){
+        online=[];
+    }
 
     let visibles=3;
     renderComments(article, [...online, ...initial], visibles);
 
-    let logueado = false;
-    let conPerfil = false;
+    const btnPublicar = article.querySelector('.boton-comentar');
+    const btnMas = article.querySelector('.btn-mostrar-mas');
+    const btnMicro = article.querySelector('.btn-microfono');
+    const estadoAudio = article.querySelector('.estado-audio');
+    const inputNombre = article.querySelector('.nombre-comentario');
+    const NOMBRE_STORAGE_KEY = 'polemicavar_nombre_comentarios';
 
     try{
-        const user = await getUsuarioActual();
-        logueado = !!user;
-        if(user){
-            const perfil = await getPerfilActual();
-            conPerfil = !!(perfil && perfil.username);
-        }
+        inputNombre.value = localStorage.getItem(NOMBRE_STORAGE_KEY) || '';
     }catch(e){}
 
-    updateCommentUI(article, logueado, conPerfil);
-
-    let mediaRecorder = null;
-    let audioChunks = [];
-    let audioBlobFinal = null;
-    let audioDuracionSeg = 0;
-    let audioInicio = 0;
-
-    const btnGrabar = article.querySelector('.btn-audio-grabar');
-    const btnParar = article.querySelector('.btn-audio-parar');
-    const btnEnviarAudio = article.querySelector('.btn-audio-enviar');
-    const audioPreview = article.querySelector('.audio-comment-preview');
-    const audioStatus = article.querySelector('.audio-comment-status');
-
-    btnGrabar.onclick = async () => {
-        try {
-            const user = await getUsuarioActual();
-            if(!user){
-                alert('Debes iniciar sesión con Google para comentar.');
-                return;
-            }
-
-            const perfil = await getPerfilActual();
-            if(!perfil || !perfil.username){
-                alert('Antes de comentar debes elegir un nombre de usuario.');
-                await renderMenuUsuario();
-                abrirMenuUsuario();
-                return;
-            }
-
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
-            const mimeType =
-                MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus' :
-                MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' :
-                '';
-
-            mediaRecorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
-            audioChunks = [];
-            audioBlobFinal = null;
-            audioDuracionSeg = 0;
-            audioInicio = Date.now();
-
-            mediaRecorder.ondataavailable = (ev) => {
-                if (ev.data && ev.data.size > 0) audioChunks.push(ev.data);
-            };
-
-            mediaRecorder.onstop = () => {
-                audioDuracionSeg = Math.max(1, Math.round((Date.now() - audioInicio) / 1000));
-                audioBlobFinal = new Blob(audioChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
-                audioPreview.src = URL.createObjectURL(audioBlobFinal);
-                audioPreview.style.display = 'block';
-                audioStatus.textContent = `Audio grabado (${audioDuracionSeg}s). Ya puedes enviarlo.`;
-                btnEnviarAudio.disabled = false;
-                btnParar.disabled = true;
-                btnGrabar.disabled = false;
-
-                stream.getTracks().forEach(t => t.stop());
-            };
-
-            mediaRecorder.start();
-            btnGrabar.disabled = true;
-            btnParar.disabled = false;
-            btnEnviarAudio.disabled = true;
-            audioPreview.style.display = 'none';
-            audioPreview.removeAttribute('src');
-            audioStatus.textContent = 'Grabando audio...';
-        } catch (e) {
-            console.error(e);
-            alert('No se pudo acceder al micrófono');
+    function obtenerNombreComentario(){
+        const nombre=(inputNombre?.value||'').trim();
+        if(!nombre){
+            alert('Escribe tu nombre antes de comentar.');
+            inputNombre?.focus();
+            return '';
         }
-    };
+        try{ localStorage.setItem(NOMBRE_STORAGE_KEY,nombre); }catch(e){}
+        return nombre;
+    }
 
-    btnParar.onclick = () => {
-        try {
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                mediaRecorder.stop();
-            }
-        } catch (e) {
-            console.error(e);
+    inputNombre?.addEventListener('change',()=>{
+        const nombre=(inputNombre.value||'').trim();
+        if(nombre){ try{ localStorage.setItem(NOMBRE_STORAGE_KEY,nombre); }catch(e){} }
+    });
+
+    let mediaRecorder=null;
+    let audioChunks=[];
+    let audioStream=null;
+    let inicioGrabacion=0;
+    let intervaloAudio=null;
+    let grabando=false;
+
+    function actualizarEstadoAudio(texto, activo=false){
+        if(!estadoAudio) return;
+        estadoAudio.textContent=texto;
+        estadoAudio.classList.toggle('grabando',activo);
+    }
+
+    function limpiarGrabacion(){
+        if(intervaloAudio){ clearInterval(intervaloAudio); intervaloAudio=null; }
+        if(audioStream){ audioStream.getTracks().forEach(t=>t.stop()); audioStream=null; }
+        grabando=false;
+        btnMicro?.classList.remove('grabando');
+    }
+
+    async function comenzarGrabacion(e){
+        e.preventDefault();
+        if(grabando) return;
+        if(!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder){
+            alert('Este navegador no permite grabar audio. Prueba con Chrome, Edge o Safari actualizado.');
+            return;
         }
-    };
-
-    btnEnviarAudio.onclick = async () => {
-        try {
-            const user = await getUsuarioActual();
-            if(!user){
-                alert('Debes iniciar sesión con Google para comentar.');
-                return;
-            }
-
-            const perfil = await getPerfilActual();
-            if(!perfil || !perfil.username){
-                alert('Antes de comentar debes elegir un nombre de usuario.');
-                await renderMenuUsuario();
-                abrirMenuUsuario();
-                return;
-            }
-
-            if (!audioBlobFinal) {
-                alert('Primero debes grabar un audio.');
-                return;
-            }
-
-            await addAudioComment('jugada', audioBlobFinal, jugada.id, audioDuracionSeg);
-
-            audioBlobFinal = null;
-            audioDuracionSeg = 0;
-            audioPreview.pause();
-            audioPreview.removeAttribute('src');
-            audioPreview.style.display = 'none';
-            audioStatus.textContent = 'Audio enviado correctamente.';
-            btnEnviarAudio.disabled = true;
-            btnGrabar.disabled = false;
-            btnParar.disabled = true;
-
-            online = await getComments('jugada', jugada.id);
-            visibles = Math.max(visibles, 5);
-            renderComments(article, [...online, ...initial], visibles);
-        } catch (e) {
-            console.error(e);
-            alert('No se pudo enviar el audio');
-        }
-    };
-
-    article.querySelector('.boton-comentar').onclick=async()=>{
-        const ta=article.querySelector('textarea');
-        const txt=ta.value.trim();
-
         try{
-            const user = await getUsuarioActual();
-            if(!user){
-                alert('Debes iniciar sesión con Google para comentar.');
-                return;
-            }
+            audioStream=await navigator.mediaDevices.getUserMedia({audio:true});
+            const tipos=['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/ogg;codecs=opus'];
+            const mimeType=tipos.find(t=>MediaRecorder.isTypeSupported?.(t)) || '';
+            mediaRecorder=new MediaRecorder(audioStream,mimeType?{mimeType}:undefined);
+            audioChunks=[];
+            mediaRecorder.ondataavailable=ev=>{ if(ev.data?.size) audioChunks.push(ev.data); };
+            mediaRecorder.onstop=async()=>{
+                const duracion=Math.max(1,Math.round((Date.now()-inicioGrabacion)/1000));
+                const blob=new Blob(audioChunks,{type:mediaRecorder.mimeType||'audio/webm'});
+                limpiarGrabacion();
+                if(blob.size<500){ actualizarEstadoAudio('Audio demasiado corto.'); return; }
+                const autor=obtenerNombreComentario();
+                if(!autor){ actualizarEstadoAudio('Escribe tu nombre para enviar el audio.'); return; }
+                actualizarEstadoAudio('Enviando audio…');
+                try{
+                    await addAudioComment('jugada',blob,jugada.id,autor,duracion);
+                    online=await getComments('jugada',jugada.id);
+                    visibles=Math.max(visibles,3);
+                    renderComments(article,[...online,...initial],visibles);
+                    actualizarEstadoAudio('Audio enviado.');
+                }catch(err){
+                    console.error(err);
+                    actualizarEstadoAudio('No se pudo enviar el audio.');
+                    alert(err?.message||'No se pudo guardar el audio');
+                }
+            };
+            mediaRecorder.start();
+            grabando=true;
+            inicioGrabacion=Date.now();
+            btnMicro?.classList.add('grabando');
+            actualizarEstadoAudio('Grabando 0:00 · suelta para enviar',true);
+            intervaloAudio=setInterval(()=>{
+                const s=Math.floor((Date.now()-inicioGrabacion)/1000);
+                actualizarEstadoAudio(`Grabando ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')} · suelta para enviar`,true);
+                if(s>=120) detenerGrabacion();
+            },250);
+        }catch(err){
+            limpiarGrabacion();
+            actualizarEstadoAudio('Permiso de micrófono no concedido.');
+        }
+    }
 
-            const perfil = await getPerfilActual();
-            if(!perfil || !perfil.username){
-                alert('Antes de comentar debes elegir un nombre de usuario.');
-                await renderMenuUsuario();
-                abrirMenuUsuario();
-                return;
-            }
+    function detenerGrabacion(e){
+        e?.preventDefault();
+        if(!grabando || !mediaRecorder) return;
+        if(mediaRecorder.state!=='inactive') mediaRecorder.stop();
+    }
 
+    if(btnMicro){
+        btnMicro.addEventListener('pointerdown',comenzarGrabacion);
+        btnMicro.addEventListener('pointerup',detenerGrabacion);
+        btnMicro.addEventListener('pointercancel',detenerGrabacion);
+        btnMicro.addEventListener('pointerleave',e=>{ if(grabando && e.buttons===0) detenerGrabacion(e); });
+        btnMicro.addEventListener('contextmenu',e=>e.preventDefault());
+    }
+
+    if(btnPublicar){
+        btnPublicar.onclick=async()=>{
+            const ta=article.querySelector('textarea');
+            const txt=ta.value.trim();
             if(!txt) return;
 
-            await addComment('jugada', txt, jugada.id);
-            ta.value='';
-            online=await getComments('jugada', jugada.id);
-            visibles=Math.max(visibles,5);
+            const autor=obtenerNombreComentario();
+            if(!autor) return;
+
+            try{
+                await addComment('jugada', txt, jugada.id, autor);
+                ta.value='';
+                online=await getComments('jugada', jugada.id);
+                visibles=Math.max(visibles,3);
+                renderComments(article, [...online, ...initial], visibles);
+            }catch(e){
+                alert(e?.message || 'No se pudo guardar el comentario');
+            }
+        };
+    }
+
+    if(btnMas){
+        btnMas.onclick=()=>{
+            visibles+=3;
             renderComments(article, [...online, ...initial], visibles);
-        }catch(e){
-            console.error(e);
-            alert('No se pudo guardar el comentario');
-        }
-    };
-
-    article.querySelector('.btn-mostrar-inicial').onclick=()=>{
-        visibles=5;
-        renderComments(article, [...online, ...initial], visibles);
-    };
-
-    article.querySelector('.btn-mostrar-mas').onclick=()=>{
-        visibles+=5;
-        renderComments(article, [...online, ...initial], visibles);
-    };
-
-    article.querySelector('.btn-ocultar').onclick=()=>{
-        visibles=0;
-        renderComments(article, [...online, ...initial], visibles);
-    };
+        };
+    }
 }
 
-function disableVoteButtons(article){
-    const btnSi = article.querySelector('.btn-voto-si');
-    const btnNo = article.querySelector('.btn-voto-no');
-
-    [btnSi, btnNo].forEach(btn => {
-        btn.disabled = true;
-        btn.style.opacity = '0.65';
-        btn.style.cursor = 'default';
-    });
-}
-
-function enableVoteButtons(article){
-    const btnSi = article.querySelector('.btn-voto-si');
-    const btnNo = article.querySelector('.btn-voto-no');
-
-    [btnSi, btnNo].forEach(btn => {
-        btn.disabled = false;
-        btn.style.opacity = '1';
-        btn.style.cursor = 'pointer';
-    });
-}
-
-function updateVoteUI(article, jugada){
+function updateVoteUI(article, jugada, votoPrevio=''){
     const votosSi=Number(jugada.votosSi||0);
     const votosNo=Number(jugada.votosNo||0);
     const total=votosSi+votosNo;
     const porcentajeSi=total?Math.round(votosSi*100/total):0;
     const porcentajeNo=total?100-porcentajeSi:0;
 
-    article.querySelector('.barra-incorrecto').style.width=`${porcentajeNo}%`;
-    article.querySelector('.barra-correcto').style.width=`${porcentajeSi}%`;
+    const barraIncorrecto = article.querySelector('.barra-incorrecto');
+    const barraCorrecto = article.querySelector('.barra-correcto');
+
+    if(barraIncorrecto) barraIncorrecto.style.width=`${porcentajeNo}%`;
+    if(barraCorrecto) barraCorrecto.style.width=`${porcentajeSi}%`;
+
     article.querySelector('.porcentaje-incorrecto').textContent=`${porcentajeNo}%`;
     article.querySelector('.porcentaje-correcto').textContent=`${porcentajeSi}%`;
     article.querySelector('.detalle-incorrecto').textContent=`${votosNo} de ${total} votos`;
     article.querySelector('.detalle-correcto').textContent=`${votosSi} de ${total} votos`;
     article.querySelector('.resultado-cabecera').textContent=total?`${total} votos totales`:'Sin votos todavía';
-    article.querySelector('.mensaje-voto').textContent='Debes iniciar sesión para votar.';
+
+    const prev=votoPrevio||getUserVote(jugada.id);
+    article.querySelector('.mensaje-voto').textContent=prev
+        ? `Has votado que se arbitró ${prev==='si'?'bien':'mal'}.`
+        : 'Puedes votar una sola vez desde este navegador.';
 }
 
 async function initVote(article, jugada){
@@ -3041,22 +3451,18 @@ function createArticle(jugada){
                     <button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button>
                 </div>
                 <div class="cuerpo-comentarios">
-                    <textarea placeholder="Escribe tu comentario..."></textarea>
-                    <div class="audio-comment-box" style="margin-top:10px;padding:10px;border:1px solid #d8e0ec;border-radius:10px;background:#f8faff;">
-                        <div style="font-size:12px;font-weight:bold;color:#42536f;margin-bottom:8px;">Comentario de audio</div>
-                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                            <button class="btn-audio-grabar" type="button" style="background:#c62828;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-weight:bold;cursor:pointer;">Grabar</button>
-                            <button class="btn-audio-parar" type="button" style="background:#555;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-weight:bold;cursor:pointer;" disabled>Parar</button>
-                            <button class="btn-audio-enviar" type="button" style="background:#1f4fb0;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-weight:bold;cursor:pointer;" disabled>Enviar audio</button>
-                        </div>
-                        <div class="audio-comment-status" style="margin-top:8px;font-size:12px;color:#667791;">Pulsa “Grabar” para comenzar.</div>
-                        <audio class="audio-comment-preview" controls style="display:none;width:100%;margin-top:8px;"></audio>
+                    <input class="nombre-comentario" type="text" maxlength="40" placeholder="Tu nombre">
+                    <div class="comentario-editor">
+                        <textarea placeholder="Escribe tu comentario..."></textarea>
+                        <button class="btn-microfono" type="button" aria-label="Mantén pulsado para grabar un audio" title="Mantén pulsado y suelta para enviar">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a1 1 0 1 1 2 0 7 7 0 0 1-6 6.93V20h3a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2h3v-2.07A7 7 0 0 1 5 11a1 1 0 1 1 2 0 5 5 0 0 0 10 0Z"/></svg>
+                        </button>
                     </div>
-                    <button class="boton-comentar" type="button">Publicar comentario</button>
-                    <button class="btn-mostrar-inicial" type="button" style="display:none;">Mostrar comentarios</button>
+                    <div class="acciones-comentario">
+                        <button class="boton-comentar" type="button">Publicar comentario</button>
+                        <div class="estado-audio">Mantén pulsado el micrófono y suelta para enviar.</div>
+                    </div>
                     <div class="lista-comentarios"></div>
-                    <div class="mostrar-mas-wrap" style="display:none;"></div>
-                    <div class="ocultar-wrap" style="display:none;"><button class="btn-ocultar" type="button">Ocultar comentarios</button></div>
                 </div>
             </section>
         </div>
