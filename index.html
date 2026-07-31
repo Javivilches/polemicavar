@@ -3117,6 +3117,84 @@ body{
     }
 }
 
+
+
+/* =========================================================
+   CORRECCIÓN DEFINITIVA DE ESCRITORIO — MÓVIL INTACTO
+   Cabecera PC: cabecera-pc.png (3200 x 240)
+   ========================================================= */
+@media (min-width:769px){
+    :root{
+        --cabecera-pc-alto:clamp(110px,7.5vw,180px);
+        --menu-pc-alto:64px;
+    }
+
+    html,
+    body{
+        zoom:.85 !important;
+    }
+
+    .cabecera{
+        height:var(--cabecera-pc-alto) !important;
+        background-image:url("cabecera-pc.png") !important;
+        background-size:100% 100% !important;
+        background-position:center center !important;
+        background-repeat:no-repeat !important;
+        background-color:#02050a !important;
+    }
+
+    .menu{
+        top:var(--cabecera-pc-alto) !important;
+        height:var(--menu-pc-alto) !important;
+        min-height:var(--menu-pc-alto) !important;
+        padding:0 !important;
+        grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+        overflow:visible !important;
+    }
+
+    .menu a{
+        width:100% !important;
+        height:var(--menu-pc-alto) !important;
+        box-sizing:border-box !important;
+        padding:6px 10px !important;
+        font-size:12px !important;
+        gap:4px !important;
+    }
+
+    .menu a:last-of-type{
+        padding-right:54px !important;
+    }
+
+    .menu-icono{
+        width:22px !important;
+        height:22px !important;
+    }
+
+    .menu-user-wrap{
+        right:10px !important;
+        top:50% !important;
+    }
+
+    .menu-user-btn{
+        width:36px !important;
+        height:36px !important;
+    }
+
+    .contenido{
+        margin-top:calc(var(--cabecera-pc-alto) + var(--menu-pc-alto)) !important;
+        min-height:calc(100vh - var(--cabecera-pc-alto) - var(--menu-pc-alto)) !important;
+        padding-top:28px !important;
+    }
+
+    .contenido::before{
+        inset:calc(var(--cabecera-pc-alto) + var(--menu-pc-alto)) 0 0 !important;
+    }
+
+    .wrap{
+        width:min(1160px,90%) !important;
+    }
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
