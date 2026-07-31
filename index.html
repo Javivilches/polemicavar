@@ -3212,10 +3212,6 @@ body{
     <a href="quien-ha-sido-mas-favorecido.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M10 20V8M15 20V4M20 20V10"/></svg><span>EQUIPO MÁS<br>FAVORECIDO</span></a>
     <a href="arbitros-mas-influyentes.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 7-7h7l2 2v7l-7 7-9-9z"/><circle cx="16.5" cy="7.5" r="1"/></svg><span>POLÉMICAS<br>HISTÓRICAS</span></a>
 
-    <div class="menu-user-wrap">
-        <button id="menuUserBtn" class="menu-user-btn" type="button" title="Usuario">👤</button>
-        <div id="menuUserDropdown" class="menu-user-dropdown"></div>
-    </div>
 </nav>
 
 <div class="contenido">
@@ -3290,15 +3286,10 @@ body{
 </div>
 
 <script>
-const { escapeHtml, loadDataset, getComments, addComment, addVote, getUserVote, setUserVote, formatDate } = window.DecisionVarData;
-const DecisionVarAPI = window.DecisionVarData || {};
-const getUsuarioActual = DecisionVarAPI.getUsuarioActual || (async () => null);
-const getPerfilActual = DecisionVarAPI.getPerfilActual || (async () => null);
-const crearPerfil = DecisionVarAPI.crearPerfil || (async () => { throw new Error("No disponible"); });
-const logout = DecisionVarAPI.logout || (async () => {});
-const loginConGoogle = DecisionVarAPI.loginConGoogle || (async () => alert("Inicio de sesión no disponible"));
-const menuUserBtn = document.getElementById("menuUserBtn");
-const menuUserDropdown = document.getElementById("menuUserDropdown");
+const {
+    escapeHtml, loadDataset, getComments, addComment, addVote,
+    getUserVote, setUserVote, getCurrentUserVote, ensureAnonymousSession, formatDate
+} = window.DecisionVarData;
 const ultimasJugadasContainer = document.getElementById("ultimasJugadasContainer");
 
 function normalizarTexto(txt){ return (txt||"").toString().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); }
@@ -3559,14 +3550,17 @@ async function initComments(article, jugada){
             const txt=ta.value.trim();
             if(!txt) return;
 
+            const autor=(window.prompt('Escribe el nombre que quieres mostrar con el comentario:')||'').trim();
+            if(!autor) return;
+
             try{
-                await addComment('jugada', txt, jugada.id);
+                await addComment('jugada', txt, jugada.id, autor);
                 ta.value='';
                 online=await getComments('jugada', jugada.id);
                 visibles=Math.max(visibles,3);
                 renderComments(article, [...online, ...initial], visibles);
             }catch(e){
-                alert('No se pudo guardar el comentario');
+                alert(e?.message || 'No se pudo guardar el comentario');
             }
         };
     }
@@ -3579,7 +3573,7 @@ async function initComments(article, jugada){
     }
 }
 
-function updateVoteUI(article, jugada){
+function updateVoteUI(article, jugada, votoPrevio=''){
     const votosSi=Number(jugada.votosSi||0);
     const votosNo=Number(jugada.votosNo||0);
     const total=votosSi+votosNo;
@@ -3598,29 +3592,40 @@ function updateVoteUI(article, jugada){
     article.querySelector('.detalle-correcto').textContent=`${votosSi} de ${total} votos`;
     article.querySelector('.resultado-cabecera').textContent=total?`${total} votos totales`:'Sin votos todavía';
 
-    const prev=getUserVote(jugada.id);
-    article.querySelector('.mensaje-voto').textContent=prev?`Has votado que se arbitró ${prev==='si'?'bien':'mal'}.`:'Tu voto ya se guarda online.';
+    const prev=votoPrevio||getUserVote(jugada.id);
+    article.querySelector('.mensaje-voto').textContent=prev
+        ? `Has votado que se arbitró ${prev==='si'?'bien':'mal'}.`
+        : 'Puedes votar una sola vez desde este navegador.';
 }
 
 async function initVote(article, jugada){
-    updateVoteUI(article,jugada);
+    let votoPrevio='';
+    try{ votoPrevio=await getCurrentUserVote(jugada.id); }catch(e){}
+    updateVoteUI(article,jugada,votoPrevio);
 
     async function send(v){
-        if(getUserVote(jugada.id)) {
-            alert('De momento solo se permite un voto por navegador en esta primera versión.');
+        const yaVotado=await getCurrentUserVote(jugada.id);
+        if(yaVotado){
+            alert('Ya has votado en esta encuesta desde este navegador.');
+            updateVoteUI(article,jugada,yaVotado);
             return;
         }
+
         try{
             await addVote(jugada.id, v);
             setUserVote(jugada.id,v);
             const data=await loadDataset();
             const actual=data.jugadas.find(x=>x.id===jugada.id);
-            if(actual){
-                Object.assign(jugada, actual);
-                updateVoteUI(article,jugada);
-            }
+            if(actual) Object.assign(jugada, actual);
+            updateVoteUI(article,jugada,v);
         }catch(e){
-            alert('No se pudo registrar el voto');
+            if(e?.code==='ALREADY_VOTED'){
+                alert('Ya has votado en esta encuesta desde este navegador.');
+                const guardado=await getCurrentUserVote(jugada.id);
+                updateVoteUI(article,jugada,guardado);
+            }else{
+                alert(e?.message || 'No se pudo registrar el voto');
+            }
         }
     }
 
@@ -3750,60 +3755,10 @@ function renderMarker(bloques){
 }
 
 
-function abrirMenuUsuario(){ menuUserDropdown.classList.add('activo'); }
-function cerrarMenuUsuario(){ menuUserDropdown.classList.remove('activo'); }
-
-async function renderMenuUsuario(){
-    try{
-        const user=await getUsuarioActual();
-        if(!user){
-            menuUserDropdown.innerHTML=`
-                <div class="menu-user-title">Usuario</div>
-                <div class="menu-user-line">Puedes ver todo el contenido sin iniciar sesión. Para votar o comentar, entra con Google.</div>
-                <div class="menu-user-actions"><button id="btnMenuLoginGoogle" class="btn-user-primary" type="button">Iniciar sesión con Google</button></div>`;
-            document.getElementById('btnMenuLoginGoogle').onclick=()=>loginConGoogle();
-            return;
-        }
-        const perfil=await getPerfilActual();
-        if(perfil&&perfil.username){
-            menuUserDropdown.innerHTML=`
-                <div class="menu-user-title">Sesión iniciada</div>
-                <div class="menu-user-line">Has iniciado sesión como <strong>${escapeHtml(perfil.username)}</strong>.</div>
-                <div class="menu-user-actions"><button id="btnMenuLogout" class="btn-user-secondary" type="button">Cerrar sesión</button></div>`;
-            document.getElementById('btnMenuLogout').onclick=async()=>{await logout();window.location.reload();};
-            return;
-        }
-        menuUserDropdown.innerHTML=`
-            <div class="menu-user-title">Completa tu usuario</div>
-            <div class="menu-user-line">Elige tu nombre de usuario para votar y comentar.</div>
-            <div class="menu-user-actions">
-                <input id="inputUsernameMenu" type="text" placeholder="Elige tu nombre de usuario">
-                <button id="btnGuardarUsernameMenu" class="btn-user-primary" type="button">Guardar nombre</button>
-                <button id="btnMenuLogout" class="btn-user-secondary" type="button">Cerrar sesión</button>
-            </div>`;
-        document.getElementById('btnGuardarUsernameMenu').onclick=async()=>{
-            const username=document.getElementById('inputUsernameMenu').value.trim();
-            if(!username){alert('Escribe un nombre de usuario');return;}
-            try{await crearPerfil(username);window.location.reload();}
-            catch(e){alert(e&&e.code==='23505'?'Ese nombre de usuario ya está en uso':'No se pudo guardar el nombre de usuario');}
-        };
-        document.getElementById('btnMenuLogout').onclick=async()=>{await logout();window.location.reload();};
-    }catch(e){
-        menuUserDropdown.innerHTML='<div class="menu-user-title">Usuario</div><div class="menu-user-line">No se pudo comprobar el estado de la sesión.</div>';
-    }
-}
-
-menuUserBtn.addEventListener('click',async(e)=>{
-    e.stopPropagation();
-    if(menuUserDropdown.classList.contains('activo')) cerrarMenuUsuario();
-    else{await renderMenuUsuario();abrirMenuUsuario();}
-});
-document.addEventListener('click',(e)=>{
-    if(!menuUserDropdown.contains(e.target)&&!menuUserBtn.contains(e.target)) cerrarMenuUsuario();
-});
 
 (async()=>{
     try{
+        await ensureAnonymousSession();
         const data = await loadDataset();
         const jugadas = [...data.jugadas].sort((a,b)=>
             (parseInt(b.jornada)||0)-(parseInt(a.jornada)||0) ||
