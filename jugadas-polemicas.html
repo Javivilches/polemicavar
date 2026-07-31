@@ -2582,6 +2582,26 @@ h1,h2,h3,h4,
     }
 }
 
+
+/* CORRECCIONES FINALES — MISMO MENÚ Y FUNCIONAMIENTO QUE INDEX */
+.menu-user-wrap{
+    display:none !important;
+}
+
+@media (min-width:769px){
+    .menu{
+        padding-right:0 !important;
+        grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+    }
+}
+
+@media (max-width:768px){
+    .menu{
+        padding-right:0 !important;
+        grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+    }
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2742,6 +2762,8 @@ const getPerfilActual = DecisionVarAPI.getPerfilActual || (async () => null);
 const crearPerfil = DecisionVarAPI.crearPerfil || (async () => { throw new Error("No disponible"); });
 const logout = DecisionVarAPI.logout || (async () => {});
 const getCurrentUserVote = DecisionVarAPI.getCurrentUserVote || (async () => "");
+const getUserVote = DecisionVarAPI.getUserVote || (() => "");
+const setUserVote = DecisionVarAPI.setUserVote || (() => {});
 const loginConGoogle = DecisionVarAPI.loginConGoogle || (async () => alert("Inicio de sesión no disponible"));
 
 const filtroJornada = document.getElementById("filtroJornada");
@@ -3133,7 +3155,7 @@ async function initComments(article, jugada){
         online=[];
     }
 
-    let visibles=3;
+    let visibles=5;
     renderComments(article, [...online, ...initial], visibles);
 
     const btnPublicar = article.querySelector('.boton-comentar');
@@ -3208,7 +3230,7 @@ async function initComments(article, jugada){
                 try{
                     await addAudioComment('jugada',blob,jugada.id,autor,duracion);
                     online=await getComments('jugada',jugada.id);
-                    visibles=Math.max(visibles,3);
+                    visibles=Math.max(visibles,5);
                     renderComments(article,[...online,...initial],visibles);
                     actualizarEstadoAudio('Audio enviado.');
                 }catch(err){
@@ -3260,7 +3282,7 @@ async function initComments(article, jugada){
                 await addComment('jugada', txt, jugada.id, autor);
                 ta.value='';
                 online=await getComments('jugada', jugada.id);
-                visibles=Math.max(visibles,3);
+                visibles=Math.max(visibles,5);
                 renderComments(article, [...online, ...initial], visibles);
             }catch(e){
                 alert(e?.message || 'No se pudo guardar el comentario');
@@ -3270,7 +3292,7 @@ async function initComments(article, jugada){
 
     if(btnMas){
         btnMas.onclick=()=>{
-            visibles+=3;
+            visibles+=5;
             renderComments(article, [...online, ...initial], visibles);
         };
     }
@@ -3302,85 +3324,38 @@ function updateVoteUI(article, jugada, votoPrevio=''){
 }
 
 async function initVote(article, jugada){
-    updateVoteUI(article,jugada);
-
-    try{
-        const user = await getUsuarioActual();
-        if(!user){
-            article.querySelector('.mensaje-voto').textContent='Debes iniciar sesión con Google para votar.';
-            enableVoteButtons(article);
-            return;
-        }
-
-        const perfil = await getPerfilActual();
-        if(!perfil || !perfil.username){
-            article.querySelector('.mensaje-voto').textContent='Antes de votar debes elegir un nombre de usuario.';
-            enableVoteButtons(article);
-            return;
-        }
-
-        const votoPrevio = await getCurrentUserVote(jugada.id);
-
-        if(votoPrevio){
-            article.querySelector('.mensaje-voto').textContent=`Ya has votado que se arbitró ${votoPrevio==='si'?'bien':'mal'}.`;
-            disableVoteButtons(article);
-        }else{
-            article.querySelector('.mensaje-voto').textContent='Tu voto se guardará en tu cuenta.';
-            enableVoteButtons(article);
-        }
-    }catch(e){
-        console.error(e);
-    }
+    let votoPrevio='';
+    try{ votoPrevio=await getCurrentUserVote(jugada.id); }catch(e){}
+    updateVoteUI(article,jugada,votoPrevio);
 
     async function send(v){
+        const yaVotado=await getCurrentUserVote(jugada.id);
+        if(yaVotado){
+            alert('Ya has votado en esta encuesta desde este navegador.');
+            updateVoteUI(article,jugada,yaVotado);
+            return;
+        }
+
         try{
-            const user = await getUsuarioActual();
-
-            if(!user){
-                alert('Debes iniciar sesión con Google para votar.');
-                return;
-            }
-
-            const perfil = await getPerfilActual();
-
-            if(!perfil || !perfil.username){
-                alert('Antes de votar debes elegir un nombre de usuario.');
-                await renderMenuUsuario();
-                abrirMenuUsuario();
-                return;
-            }
-
             await addVote(jugada.id, v);
-
-            const data = await loadDataset();
-            const actual = data.jugadas.find(x => x.id === jugada.id);
-
-            if(actual){
-                Object.assign(jugada, actual);
-                updateVoteUI(article, jugada);
-            }
-
-            article.querySelector('.mensaje-voto').textContent =
-                `Ya has votado que se arbitró ${v === 'si' ? 'bien' : 'mal'}.`;
-
-            disableVoteButtons(article);
-
+            setUserVote(jugada.id,v);
+            const data=await loadDataset();
+            const actual=data.jugadas.find(x=>x.id===jugada.id);
+            if(actual) Object.assign(jugada, actual);
+            updateVoteUI(article,jugada,v);
         }catch(e){
-            console.error(e);
-
-            if(e.code === '23505'){
-                alert('Ya has votado en esta jugada.');
-                article.querySelector('.mensaje-voto').textContent = 'Ya has votado en esta jugada.';
-                disableVoteButtons(article);
-                return;
+            if(e?.code==='ALREADY_VOTED'){
+                alert('Ya has votado en esta encuesta desde este navegador.');
+                const guardado=await getCurrentUserVote(jugada.id);
+                updateVoteUI(article,jugada,guardado);
+            }else{
+                alert(e?.message || 'No se pudo registrar el voto');
             }
-
-            alert('No se pudo registrar el voto');
         }
     }
 
-    article.querySelector('.btn-voto-si').onclick = () => send('si');
-    article.querySelector('.btn-voto-no').onclick = () => send('no');
+    article.querySelector('.btn-voto-si').onclick=()=>send('si');
+    article.querySelector('.btn-voto-no').onclick=()=>send('no');
 }
 
 function createArticle(jugada){
@@ -3425,7 +3400,7 @@ function createArticle(jugada){
                     <button class="btn-voto btn-voto-si" type="button">${escapeHtml(jugada.respuestaSi||'Sí')}</button>
                     <button class="btn-voto btn-voto-no" type="button">${escapeHtml(jugada.respuestaNo||'No')}</button>
                 </div>
-                <div class="mensaje-voto">Debes iniciar sesión para votar.</div>
+                <div class="mensaje-voto">Puedes votar una sola vez desde este navegador.</div>
                 <div class="resultado-box">
                     <div class="resultado-cabecera">Sin votos todavía</div>
                     <div class="resumen-votos-bloques">
