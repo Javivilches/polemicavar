@@ -3071,6 +3071,48 @@ body{
         text-align:justify !important;
     }
 }
+    /* =========================================================
+   AJUSTE PC FINAL — CABECERA MÁS BAJA + ESCALA 80%
+   NO TOCA LA VERSIÓN MÓVIL
+   ========================================================= */
+@media (min-width:769px){
+    body{
+        zoom:0.80 !important;
+    }
+
+    .cabecera{
+        height:136px !important;
+        background-image:
+            linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.18)),
+            url("cabecera-pc.png") !important;
+        background-size:100% 100% !important;
+        background-position:center center !important;
+        background-repeat:no-repeat !important;
+    }
+
+    .menu{
+        top:136px !important;
+        height:58px !important;
+    }
+
+    .contenido{
+        margin-top:194px !important;   /* 136 + 58 */
+        min-height:calc(100vh - 194px) !important;
+        padding-top:26px !important;
+    }
+
+    .contenido::before{
+        inset:194px 0 0 !important;
+    }
+
+    .wrap{
+        width:min(1160px,90%) !important;
+    }
+
+    .marcador-imagen{
+        width:min(920px,100%) !important;
+    }
+}
 
 </style>
 
