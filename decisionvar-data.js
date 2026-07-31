@@ -1213,16 +1213,7 @@ window.DecisionVarData = (() => {
       autor: limpioAutor,
       jugada_id: jugadaId || null,
       tipo: "audio",
-      audio_url: audioUrl,
-
-      duracion_segundos: Math.max(
-        0,
-        Math.round(
-          Number(
-            duracionSegundos
-          ) || 0
-        )
-      )
+      audio_url: audioUrl
     };
 
     let {
