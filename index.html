@@ -2892,6 +2892,186 @@ body{
     }
 }
 
+
+/* =========================================================
+   ADAPTACIÓN FINAL PARA PC — MÓVIL INTACTO
+   La versión móvil conserva exactamente todas sus reglas actuales.
+   Sube la nueva cabecera panorámica con el nombre: cabecera-pc.png
+   ========================================================= */
+@media (min-width:769px){
+
+    html, body{
+        zoom:1 !important;
+    }
+
+    body{
+        background:#081427 !important;
+    }
+
+    .cabecera{
+        height:clamp(190px,18.5vw,300px) !important;
+        background-image:url("cabecera-pc.png") !important;
+        background-size:100% 100% !important;
+        background-position:center center !important;
+        background-repeat:no-repeat !important;
+        background-color:#02050a !important;
+        box-shadow:0 12px 34px rgba(0,0,0,.42) !important;
+    }
+
+    .menu{
+        top:clamp(190px,18.5vw,300px) !important;
+        height:64px !important;
+        min-height:64px !important;
+        grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+        padding:0 58px 0 0 !important;
+        background:rgba(7,11,18,.985) !important;
+        border-bottom:1px solid rgba(255,255,255,.08) !important;
+        box-shadow:0 10px 26px rgba(0,0,0,.28) !important;
+    }
+
+    .menu a{
+        height:64px !important;
+        font-size:12px !important;
+        gap:4px !important;
+        padding:5px 8px !important;
+    }
+
+    .menu-icono{
+        width:22px !important;
+        height:22px !important;
+    }
+
+    .menu-user-wrap{
+        right:12px !important;
+    }
+
+    .menu-user-btn{
+        width:36px !important;
+        height:36px !important;
+        background:linear-gradient(135deg,#174d9c,#2567c7) !important;
+        border:1px solid rgba(255,255,255,.22) !important;
+        color:#fff !important;
+        box-shadow:0 6px 16px rgba(0,0,0,.28),0 0 0 3px rgba(37,103,199,.12) !important;
+    }
+
+    .menu-user-btn:hover{
+        background:linear-gradient(135deg,#1b58b3,#2d78df) !important;
+    }
+
+    .contenido{
+        margin-top:calc(clamp(190px,18.5vw,300px) + 64px) !important;
+        min-height:calc(100vh - clamp(190px,18.5vw,300px) - 64px) !important;
+        padding:30px 0 70px !important;
+        background:
+          radial-gradient(ellipse 34% 150% at -5% 50%,rgba(138,10,58,.90) 0%,rgba(138,10,58,.72) 24%,rgba(138,10,58,.36) 48%,transparent 76%),
+          radial-gradient(ellipse 44% 120% at 23% 50%,rgba(18,63,136,.72) 0%,rgba(18,63,136,.38) 38%,transparent 74%),
+          radial-gradient(ellipse 52% 130% at 101% 50%,rgba(255,255,255,.62) 0%,rgba(230,235,242,.32) 42%,transparent 74%),
+          linear-gradient(90deg,#5e0d2f 0%,#641135 10%,#343660 26%,#24457f 39%,#53667f 53%,#a1aab8 72%,#dfe4ea 88%,#f8fafc 100%) !important;
+    }
+
+    .contenido::before{
+        inset:0 !important;
+        position:absolute !important;
+    }
+
+    .wrap{
+        width:min(1160px,88%) !important;
+        max-width:1160px !important;
+        margin:0 auto !important;
+    }
+
+    .bloque-portada,
+    .bloque-resultados{
+        margin-bottom:24px !important;
+    }
+
+    .bloque-portada > .cabecera-portada,
+    .bloque-resultados,
+    .tarjeta-aviso-legal{
+        border-radius:20px !important;
+    }
+
+    .cabecera-portada,
+    .cabecera-resultados{
+        padding:22px 26px 20px !important;
+    }
+
+    .cabecera-portada h1,
+    .cabecera-resultados h1{
+        font-size:31px !important;
+        line-height:1.08 !important;
+    }
+
+    .cabecera-portada p,
+    .cabecera-resultados p{
+        font-size:14px !important;
+        line-height:1.45 !important;
+    }
+
+    #ultimasJugadasContainer{
+        gap:20px !important;
+    }
+
+    .cabecera-jugada{
+        padding:19px 22px 18px !important;
+    }
+
+    .cabecera-jugada h2{
+        font-size:26px !important;
+    }
+
+    .descripcion-cabecera-jugada{
+        max-width:900px !important;
+        font-size:14px !important;
+        line-height:1.45 !important;
+    }
+
+    .contenido-jugada{
+        display:grid !important;
+        grid-template-columns:minmax(0,1.62fr) minmax(300px,.76fr) !important;
+        gap:16px !important;
+        padding:16px !important;
+        align-items:start !important;
+    }
+
+    .bloque-media-jugada{
+        grid-column:1 !important;
+        grid-row:1 !important;
+        min-width:0 !important;
+    }
+
+    .panel-votacion{
+        grid-column:2 !important;
+        grid-row:1 !important;
+        width:100% !important;
+    }
+
+    .seccion-comentarios{
+        grid-column:1 / -1 !important;
+        grid-row:2 !important;
+    }
+
+    .visor-media{
+        max-height:430px !important;
+    }
+
+    .panel-votacion-top p{
+        font-size:21px !important;
+    }
+
+    .marcador-visual-wrap{
+        padding:22px 18px 18px !important;
+    }
+
+    .marcador-imagen{
+        width:min(920px,100%) !important;
+    }
+
+    .tarjeta-aviso-legal .aviso-legal{
+        text-align:justify !important;
+    }
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
