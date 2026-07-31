@@ -3320,7 +3320,7 @@ function updateVoteUI(article, jugada, votoPrevio=''){
     const prev=votoPrevio||getUserVote(jugada.id);
     article.querySelector('.mensaje-voto').textContent=prev
         ? `Has votado que se arbitró ${prev==='si'?'bien':'mal'}.`
-        : 'Puedes votar una sola vez desde este navegador.';
+        : 'Puedes votar una sola vez  ';
 }
 
 async function initVote(article, jugada){
@@ -3331,7 +3331,7 @@ async function initVote(article, jugada){
     async function send(v){
         const yaVotado=await getCurrentUserVote(jugada.id);
         if(yaVotado){
-            alert('Ya has votado en esta encuesta desde este navegador.');
+            alert('Ya has votado en esta encuesta  ');
             updateVoteUI(article,jugada,yaVotado);
             return;
         }
@@ -3345,7 +3345,7 @@ async function initVote(article, jugada){
             updateVoteUI(article,jugada,v);
         }catch(e){
             if(e?.code==='ALREADY_VOTED'){
-                alert('Ya has votado en esta encuesta desde este navegador.');
+                alert('Ya has votado en esta encuesta  ');
                 const guardado=await getCurrentUserVote(jugada.id);
                 updateVoteUI(article,jugada,guardado);
             }else{
@@ -3400,7 +3400,7 @@ function createArticle(jugada){
                     <button class="btn-voto btn-voto-si" type="button">${escapeHtml(jugada.respuestaSi||'Sí')}</button>
                     <button class="btn-voto btn-voto-no" type="button">${escapeHtml(jugada.respuestaNo||'No')}</button>
                 </div>
-                <div class="mensaje-voto">Puedes votar una sola vez desde este navegador.</div>
+                <div class="mensaje-voto">Puedes votar una sola vez  </div>
                 <div class="resultado-box">
                     <div class="resultado-cabecera">Sin votos todavía</div>
                     <div class="resumen-votos-bloques">
