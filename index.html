@@ -3071,9 +3071,9 @@ body{
         text-align:justify !important;
     }
 }
-    /* =========================================================
-   AJUSTE PC FINAL — CABECERA MÁS BAJA + ESCALA 80%
-   NO TOCA LA VERSIÓN MÓVIL
+/* =========================================================
+   AJUSTE DEFINITIVO PARA PC — VERSIÓN MÓVIL INTACTA
+   Conserva la proporción de la imagen y evita deformaciones.
    ========================================================= */
 @media (min-width:769px){
     body{
@@ -3081,28 +3081,31 @@ body{
     }
 
     .cabecera{
-        height:136px !important;
+        height:150px !important;
         background-image:
-            linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.18)),
-            url("cabecera-pc.png") !important;
-        background-size:100% 100% !important;
-        background-position:center center !important;
-        background-repeat:no-repeat !important;
+            linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.15)),
+            url("cabecera-pc.png"),
+            linear-gradient(90deg,#071b3f 0%,#173e78 27%,#56112f 45%,#67717f 58%,#d7dce3 78%,#f7f8fa 100%) !important;
+        background-size:100% 100%, auto 100%, 100% 100% !important;
+        background-position:center center, center center, center center !important;
+        background-repeat:no-repeat, no-repeat, no-repeat !important;
+        background-color:#07101e !important;
     }
 
     .menu{
-        top:136px !important;
+        top:150px !important;
         height:58px !important;
+        min-height:58px !important;
     }
 
     .contenido{
-        margin-top:194px !important;   /* 136 + 58 */
-        min-height:calc(100vh - 194px) !important;
+        margin-top:208px !important; /* 150 + 58 */
+        min-height:calc(100vh - 208px) !important;
         padding-top:26px !important;
     }
 
     .contenido::before{
-        inset:194px 0 0 !important;
+        inset:208px 0 0 !important;
     }
 
     .wrap{
