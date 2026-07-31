@@ -3237,13 +3237,27 @@ body{
 
 
 /* COMENTARIOS DE AUDIO */
-.comentario-editor{
-    display:grid;
-    grid-template-columns:minmax(0,1fr) auto;
-    gap:10px;
-    align-items:end;
+.nombre-comentario{
+    width:100%;
+    box-sizing:border-box;
+    margin:0 0 9px;
+    padding:10px 12px;
+    border:1px solid #d0d7e2;
+    border-radius:9px;
+    font-size:13px;
+    font-family:Inter,Arial,sans-serif;
+    background:#fff;
+    color:#24344d;
 }
-.comentario-editor textarea{margin:0;}
+.comentario-editor{
+    position:relative;
+    display:block;
+}
+.comentario-editor textarea{
+    margin:0;
+    padding-right:62px;
+    min-height:54px;
+}
 .acciones-comentario{
     display:flex;
     align-items:center;
@@ -3252,8 +3266,11 @@ body{
     flex-wrap:wrap;
 }
 .btn-microfono{
-    width:46px;
-    height:46px;
+    position:absolute;
+    right:7px;
+    bottom:7px;
+    width:40px;
+    height:40px;
     margin:0;
     padding:0;
     border:0;
@@ -3269,7 +3286,7 @@ body{
     user-select:none;
     -webkit-user-select:none;
 }
-.btn-microfono svg{width:23px;height:23px;fill:currentColor;}
+.btn-microfono svg{width:21px;height:21px;fill:currentColor;}
 .btn-microfono.grabando{
     background:#d62839;
     transform:scale(1.08);
@@ -3299,7 +3316,6 @@ body{
     height:38px;
 }
 @media(max-width:768px){
-    .comentario-editor{grid-template-columns:1fr;}
     .acciones-comentario{justify-content:space-between;}
     .boton-comentar{flex:1;}
 }
@@ -3658,6 +3674,28 @@ async function initComments(article, jugada){
     const btnMas = article.querySelector('.btn-mostrar-mas');
     const btnMicro = article.querySelector('.btn-microfono');
     const estadoAudio = article.querySelector('.estado-audio');
+    const inputNombre = article.querySelector('.nombre-comentario');
+    const NOMBRE_STORAGE_KEY = 'polemicavar_nombre_comentarios';
+
+    try{
+        inputNombre.value = localStorage.getItem(NOMBRE_STORAGE_KEY) || '';
+    }catch(e){}
+
+    function obtenerNombreComentario(){
+        const nombre=(inputNombre?.value||'').trim();
+        if(!nombre){
+            alert('Escribe tu nombre antes de comentar.');
+            inputNombre?.focus();
+            return '';
+        }
+        try{ localStorage.setItem(NOMBRE_STORAGE_KEY,nombre); }catch(e){}
+        return nombre;
+    }
+
+    inputNombre?.addEventListener('change',()=>{
+        const nombre=(inputNombre.value||'').trim();
+        if(nombre){ try{ localStorage.setItem(NOMBRE_STORAGE_KEY,nombre); }catch(e){} }
+    });
 
     let mediaRecorder=null;
     let audioChunks=[];
@@ -3698,8 +3736,8 @@ async function initComments(article, jugada){
                 const blob=new Blob(audioChunks,{type:mediaRecorder.mimeType||'audio/webm'});
                 limpiarGrabacion();
                 if(blob.size<500){ actualizarEstadoAudio('Audio demasiado corto.'); return; }
-                const autor=(window.prompt('Escribe el nombre que quieres mostrar con el audio:')||'').trim();
-                if(!autor){ actualizarEstadoAudio('Audio cancelado.'); return; }
+                const autor=obtenerNombreComentario();
+                if(!autor){ actualizarEstadoAudio('Escribe tu nombre para enviar el audio.'); return; }
                 actualizarEstadoAudio('Enviando audio…');
                 try{
                     await addAudioComment('jugada',blob,jugada.id,autor,duracion);
@@ -3749,7 +3787,7 @@ async function initComments(article, jugada){
             const txt=ta.value.trim();
             if(!txt) return;
 
-            const autor=(window.prompt('Escribe el nombre que quieres mostrar con el comentario:')||'').trim();
+            const autor=obtenerNombreComentario();
             if(!autor) return;
 
             try{
@@ -3900,6 +3938,7 @@ function createArticle(jugada){
                     <button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button>
                 </div>
                 <div class="cuerpo-comentarios">
+                    <input class="nombre-comentario" type="text" maxlength="40" placeholder="Tu nombre">
                     <div class="comentario-editor">
                         <textarea placeholder="Escribe tu comentario..."></textarea>
                         <button class="btn-microfono" type="button" aria-label="Mantén pulsado para grabar un audio" title="Mantén pulsado y suelta para enviar">
