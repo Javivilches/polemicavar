@@ -1243,7 +1243,7 @@ window.DecisionVarData=(()=>{
         mime_type:
           null,
 
-        duracion_segundos:
+        duracion_seg:
           null
       });
 
@@ -1392,7 +1392,7 @@ window.DecisionVarData=(()=>{
         limpioAutor,
 
       texto:
-        null,
+        "",
 
       scope:
         scope||"general",
@@ -1410,7 +1410,7 @@ window.DecisionVarData=(()=>{
         audioBlob.type||
         "audio/webm",
 
-      duracion_segundos:
+      duracion_seg:
         Math.max(
           0,
           Math.round(
