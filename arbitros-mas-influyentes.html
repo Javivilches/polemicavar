@@ -2888,6 +2888,105 @@ h1,h2,h3,h4,
 @media(max-width:650px){
     .filtros-jugadas{grid-template-columns:1fr !important;}
 }
+
+/* =========================================================
+   COMPARTIR Y ABRIR JUGADAS CON ENLACE DIRECTO
+   ========================================================= */
+.cabecera-jugada-acciones{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    margin-bottom:12px;
+}
+.cabecera-jugada-acciones .etiqueta-jornada{margin:0 !important;}
+.btn-compartir-jugada{
+    flex:0 0 auto;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    min-height:38px;
+    padding:8px 13px;
+    border:1px solid rgba(255,255,255,.25);
+    border-radius:10px;
+    background:rgba(255,255,255,.12);
+    color:#fff;
+    font-family:"Roboto Condensed",Arial,sans-serif;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+    transition:background .2s ease,transform .2s ease,border-color .2s ease;
+}
+.btn-compartir-jugada:hover{
+    background:rgba(255,255,255,.20);
+    border-color:rgba(255,255,255,.38);
+    transform:translateY(-1px);
+}
+.btn-compartir-jugada svg{
+    width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;
+    stroke-linecap:round;stroke-linejoin:round;
+}
+.bloque-jugada.jugada-compartida{
+    position:relative;
+    z-index:5;
+    outline:3px solid #f1c75b;
+    outline-offset:5px;
+    border-radius:20px;
+    animation:resaltarJugadaCompartida 1.05s ease 2;
+}
+@keyframes resaltarJugadaCompartida{
+    0%,100%{filter:none;}
+    50%{filter:drop-shadow(0 0 22px rgba(241,199,91,.72));}
+}
+.aviso-enlace-copiado{
+    position:fixed;
+    left:50%;
+    bottom:24px;
+    transform:translateX(-50%);
+    z-index:9000;
+    background:#102748;
+    color:#fff;
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:12px;
+    padding:11px 16px;
+    box-shadow:0 12px 30px rgba(0,0,0,.32);
+    font-size:14px;
+    font-weight:700;
+}
+@media(max-width:768px){
+    .cabecera-jugada-acciones{align-items:flex-start;gap:10px;}
+    .btn-compartir-jugada{min-height:35px;padding:7px 10px;font-size:12px;}
+    .btn-compartir-jugada span{display:none;}
+    .btn-compartir-jugada svg{width:19px;height:19px;}
+}
+
+
+/* Oculta la franja superior derecha del reproductor de YouTube.
+   El botón de compartir válido está en la cabecera de nuestra tarjeta. */
+.video-principal-wrap.youtube-limpio{
+    position:relative;
+}
+
+.video-principal-wrap.youtube-limpio::after{
+    content:"";
+    position:absolute;
+    top:0;
+    right:0;
+    width:150px;
+    height:62px;
+    z-index:4;
+    background:linear-gradient(135deg,transparent 0%,rgba(0,0,0,.94) 42%,#000 100%);
+    pointer-events:auto;
+}
+
+@media(max-width:768px){
+    .video-principal-wrap.youtube-limpio::after{
+        width:118px;
+        height:54px;
+    }
+}
+
 </style>
 
 </head>
@@ -2914,7 +3013,7 @@ h1,h2,h3,h4,
 
     <section class="titulo-seccion">
         <h1>Polémicas históricas</h1>
-        <p>Las decisiones arbitrales más debatidas de la historia reciente del FC Barcelona y el Real Madrid.</p>
+        <p>Las decisiones arbitrales más debatidas de la historia del FC Barcelona y el Real Madrid.</p>
     </section>
 
     <div class="boton-filtros-wrap">
@@ -3278,7 +3377,7 @@ function construirNodoVideo(url){
     if(lower.includes('youtube.com')||lower.includes('youtu.be')){
         const id=extraerYouTubeId(limpia);
         if(id){
-            return `<div class="video-principal-wrap"><iframe src="https://www.youtube.com/embed/${id}" title="Vídeo de la jugada" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`;
+            return `<div class="video-principal-wrap youtube-limpio"><iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&playsinline=1" title="Vídeo de la jugada" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
         }
     }
 
@@ -3958,12 +4057,96 @@ async function initVote(article, jugada){
     article.querySelector('.btn-voto-no').onclick=()=>send('no');
 }
 
+
+function construirUrlCompartida(jugadaId){
+    const url=new URL("arbitros-mas-influyentes.html",window.location.href);
+    url.search="";
+    url.searchParams.set("jugada",String(jugadaId));
+    url.hash=`jugada-${jugadaId}`;
+    return url.toString();
+}
+function mostrarAvisoCompartido(texto){
+    document.querySelector(".aviso-enlace-copiado")?.remove();
+    const aviso=document.createElement("div");
+    aviso.className="aviso-enlace-copiado";
+    aviso.textContent=texto;
+    document.body.appendChild(aviso);
+    setTimeout(()=>aviso.remove(),2200);
+}
+async function compartirJugada(jugada,boton){
+    const url=construirUrlCompartida(jugada.id);
+    const datos={
+        title:"Polémica VAR",
+        text:(jugada.pregunta||"Jugada polémica").trim(),
+        url
+    };
+    try{
+        if(navigator.share){
+            await navigator.share(datos);
+            return;
+        }
+        if(navigator.clipboard?.writeText){
+            await navigator.clipboard.writeText(url);
+        }else{
+            const temporal=document.createElement("textarea");
+            temporal.value=url;
+            temporal.style.position="fixed";
+            temporal.style.opacity="0";
+            document.body.appendChild(temporal);
+            temporal.select();
+            document.execCommand("copy");
+            temporal.remove();
+        }
+        mostrarAvisoCompartido("Enlace de la jugada copiado");
+        const span=boton?.querySelector("span");
+        if(span){
+            const anterior=span.textContent;
+            span.textContent="Enlace copiado";
+            setTimeout(()=>span.textContent=anterior,1800);
+        }
+    }catch(error){
+        if(error?.name!=="AbortError"){
+            mostrarAvisoCompartido("No se pudo compartir la jugada");
+        }
+    }
+}
+function abrirJugadaCompartida(){
+    const jugadaId=new URLSearchParams(window.location.search).get("jugada");
+    if(!jugadaId) return false;
+
+    const tarjetas=[...document.querySelectorAll(".bloque-jugada")];
+    const tarjeta=tarjetas.find(b=>String(b.dataset.id||"")===String(jugadaId));
+    if(!tarjeta) return false;
+
+    if(typeof filtroEquipo!=="undefined" && filtroEquipo) filtroEquipo.value="";
+    if(typeof filtroAnio!=="undefined" && filtroAnio) filtroAnio.value="";
+
+    limiteJugadasVisibles=Math.max(
+        typeof limiteJugadasVisibles==="number" ? limiteJugadasVisibles : 5,
+        tarjetas.indexOf(tarjeta)+1
+    );
+
+    if(typeof actualizarListadoJugadas==="function"){
+        actualizarListadoJugadas();
+    }else{
+        tarjetas.forEach(b=>b.style.display="");
+    }
+
+    tarjeta.style.display="";
+    tarjeta.classList.add("jugada-compartida");
+
+    setTimeout(()=>tarjeta.scrollIntoView({behavior:"smooth",block:"start"}),250);
+    setTimeout(()=>tarjeta.classList.remove("jugada-compartida"),3600);
+    return true;
+}
+
 function createArticle(jugada){
     const commentsInitial=createInitialComments(jugada);
     const article=document.createElement('section');
 
     article.className='bloque-jugada';
     article.dataset.id=jugada.id;
+    article.id=`jugada-${jugada.id}`;
     article.dataset.jornada=jugada.jornada;
     article.dataset.anio=jugada.jornada;
     article.dataset.equipo=jugada.equipoAfectado;
@@ -3972,7 +4155,18 @@ function createArticle(jugada){
 
     article.innerHTML=`<section class="jugada-principal">
         <div class="cabecera-jugada">
-            <div class="etiqueta-jornada">${escapeHtml(jugada.fecha || jugada.temporada || jugada.jornada || "Histórica")}</div>
+            <div class="cabecera-jugada-acciones">
+                <div class="etiqueta-jornada">${escapeHtml(jugada.fecha || jugada.temporada || jugada.jornada || "Histórica")}</div>
+                <button class="btn-compartir-jugada" type="button" aria-label="Compartir esta jugada">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="18" cy="5" r="3"></circle>
+                        <circle cx="6" cy="12" r="3"></circle>
+                        <circle cx="18" cy="19" r="3"></circle>
+                        <path d="m8.6 10.7 6.8-4.1M8.6 13.3l6.8 4.1"></path>
+                    </svg>
+                    <span>Compartir jugada</span>
+                </button>
+            </div>
             <h2>${escapeHtml(jugada.pregunta)}</h2>
             <p class="datos-jugada">${escapeHtml(jugada.partido)} · Min ${escapeHtml(jugada.minuto)} · ${escapeHtml(jugada.competicion)}</p>
             <p class="descripcion-cabecera-jugada">${escapeHtml(jugada.descripcion||'')}</p>
@@ -4045,6 +4239,11 @@ function createArticle(jugada){
             </section>
         </div>
     </section>`;
+
+    const btnCompartir=article.querySelector(".btn-compartir-jugada");
+    if(btnCompartir){
+        btnCompartir.addEventListener("click",()=>compartirJugada(jugada,btnCompartir));
+    }
 
     initMedia(article);
     initVote(article,jugada);
@@ -4367,6 +4566,7 @@ if(btnLimpiarFiltros){
         filtroAnio.value="";
         // Años definidos directamente en el HTML.
         aplicarFiltros();
+        abrirJugadaCompartida();
     };
 }
 </script>
