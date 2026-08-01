@@ -8,6 +8,13 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/genfavicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/genfavicon-16.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/manifest.webmanifest">
+
+<meta name="theme-color" content="#0b2d6b">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Polémica VAR">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto+Condensed:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
@@ -4023,6 +4030,43 @@ body{
 <div class="contenido">
     <div class="wrap">
 
+        <div id="instalarAppBox"
+             style="
+                display:none;
+                margin-bottom:20px;
+                background:linear-gradient(135deg,#1b5ec9,#0b2d6b);
+                color:#fff;
+                border-radius:18px;
+                padding:22px;
+                text-align:center;
+                box-shadow:0 10px 25px rgba(0,0,0,.25);
+             ">
+
+            <div style="font-size:24px;font-weight:700;margin-bottom:8px;">
+                📲 Instala Polémica VAR
+            </div>
+
+            <div style="font-size:15px;opacity:.95;margin-bottom:18px;">
+                Accede más rápido desde tu móvil instalando la aplicación gratuitamente.
+            </div>
+
+            <button id="btnInstalarApp"
+                    onclick="instalarApp()"
+                    style="
+                        background:#fff;
+                        color:#0b2d6b;
+                        border:none;
+                        padding:14px 26px;
+                        border-radius:12px;
+                        font-size:16px;
+                        font-weight:700;
+                        cursor:pointer;
+                    ">
+                Instalar aplicación
+            </button>
+
+        </div>
+
         <section class="bloque-portada">
             <div class="cabecera-portada">
                 <h1>Última jornada polémica</h1>
@@ -4968,6 +5012,74 @@ function renderMarker(bloques){
         }
     }
 })();
+
+    /* ===== REGISTRO DEL SERVICE WORKER ===== */
+
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/service-worker.js")
+        .then(() => console.log("PWA lista"))
+        .catch(err => console.error(err));
+    });
+}
+
+/* ===== INSTALACIÓN PWA ===== */
+
+let deferredPrompt = null;
+
+window.addEventListener("beforeinstallprompt", (e) => {
+
+    e.preventDefault();
+
+    deferredPrompt = e;
+
+  const caja = document.getElementById("instalarAppBox");
+
+if(caja){
+    caja.style.display="block";
+}
+});
+
+window.addEventListener("appinstalled", () => {
+
+    const boton=document.getElementById("btnInstalarApp");
+
+    if(boton){
+        boton.style.display="none";
+    }
+
+});
+
+async function instalarApp(){
+
+    const isiPhone=/iphone|ipad|ipod/i.test(navigator.userAgent);
+
+    if(isiPhone){
+
+        alert(
+`Para instalar Polémica VAR:
+
+1. Pulsa el botón Compartir de Safari.
+
+2. Pulsa "Añadir a pantalla de inicio".
+
+3. Pulsa "Añadir".`);
+
+        return;
+
+    }
+
+    if(!deferredPrompt) return;
+
+    deferredPrompt.prompt();
+
+    await deferredPrompt.userChoice;
+
+    deferredPrompt=null;
+
+    document.getElementById("instalarAppBox").style.display="none";
+
+}
 </script>
 
 </body>
