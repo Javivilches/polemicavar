@@ -4122,21 +4122,62 @@ body{
 }
 
 
-/* Oculta visualmente el botón que YouTube muestra en la esquina inferior izquierda */
-.video-youtube-limpio{
-    position:relative;
+
+/* REFUERZO FINAL DEL BOTÓN COMPARTIR */
+.cabecera-jugada{
+    position:relative !important;
 }
 
-.video-youtube-limpio::after{
-    content:"";
-    position:absolute;
-    left:0;
-    bottom:0;
-    width:64px;
-    height:58px;
-    background:#000;
-    z-index:3;
-    pointer-events:none;
+.cabecera-jugada-acciones{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    gap:14px !important;
+    width:100% !important;
+    margin-bottom:12px !important;
+    box-sizing:border-box !important;
+}
+
+.btn-compartir-jugada{
+    position:relative !important;
+    z-index:30 !important;
+    flex:0 0 auto !important;
+    display:inline-flex !important;
+    visibility:visible !important;
+    opacity:1 !important;
+    align-items:center !important;
+    justify-content:center !important;
+    min-width:42px !important;
+    min-height:40px !important;
+    padding:8px 12px !important;
+    border:1px solid rgba(255,255,255,.38) !important;
+    border-radius:10px !important;
+    background:rgba(5,18,42,.56) !important;
+    color:#fff !important;
+    cursor:pointer !important;
+}
+
+.btn-compartir-jugada svg{
+    display:block !important;
+    width:21px !important;
+    height:21px !important;
+    fill:none !important;
+    stroke:#fff !important;
+    stroke-width:2.1 !important;
+    stroke-linecap:round !important;
+    stroke-linejoin:round !important;
+}
+
+@media(max-width:768px){
+    .btn-compartir-jugada{
+        width:42px !important;
+        height:40px !important;
+        padding:8px !important;
+    }
+
+    .btn-compartir-jugada span{
+        display:none !important;
+    }
 }
 
 </style>
@@ -5089,8 +5130,8 @@ function createArticle(jugada){
 
                 <button class="btn-compartir-jugada" type="button" aria-label="Compartir esta jugada">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M14 5l7 7-7 7"></path>
-                        <path d="M21 12H9a6 6 0 0 0-6 6"></path>
+                        <path d="M13 5l7 7-7 7"></path>
+                        <path d="M20 12H9c-3.3 0-6 2.7-6 6v1"></path>
                     </svg>
                     <span>Compartir jugada</span>
                 </button>
