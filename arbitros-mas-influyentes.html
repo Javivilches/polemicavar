@@ -2967,6 +2967,16 @@ h1,h2,h3,h4,
 
 
 
+
+.bloque-jugada{
+    scroll-margin-top:220px;
+}
+@media(max-width:768px){
+    .bloque-jugada{
+        scroll-margin-top:205px;
+    }
+}
+
 </style>
 
 </head>
@@ -3357,7 +3367,7 @@ function construirNodoVideo(url){
     if(lower.includes('youtube.com')||lower.includes('youtu.be')){
         const id=extraerYouTubeId(limpia);
         if(id){
-            return `<div class="video-principal-wrap"><iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&playsinline=1" title="Vídeo de la jugada" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+            return `<div class="video-principal-wrap"><iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&playsinline=1&controls=0&iv_load_policy=3&disablekb=1" title="Vídeo de la jugada" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
         }
     }
 
@@ -4112,10 +4122,10 @@ async function abrirJugadaCompartida(){
 
     let tarjeta=null;
 
-    for(let intento=0;intento<30;intento++){
+    for(let intento=0;intento<20;intento++){
         tarjeta=buscarTarjeta();
         if(tarjeta) break;
-        await new Promise(resolve=>setTimeout(resolve,150));
+        await new Promise(resolve=>setTimeout(resolve,60));
     }
 
     if(!tarjeta) return false;
@@ -4151,12 +4161,10 @@ async function abrirJugadaCompartida(){
         });
     };
 
-    requestAnimationFrame(()=>{
-        requestAnimationFrame(desplazar);
-    });
+    requestAnimationFrame(desplazar);
 
+    setTimeout(desplazar,180);
     setTimeout(desplazar,500);
-    setTimeout(desplazar,1200);
     setTimeout(()=>tarjeta.classList.remove("jugada-compartida"),4500);
 
     return true;
