@@ -2635,6 +2635,42 @@ h1,h2,h3,h4,
   .formulario-respuesta .boton-comentar{width:100%;}
 }
 
+
+
+/* RESPUESTAS ANIDADAS Y BOTÓN CENTRADO */
+.btn-publicar-respuesta{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    text-align:center !important;
+    line-height:1.2 !important;
+    min-height:38px !important;
+    padding:8px 14px !important;
+    box-sizing:border-box !important;
+}
+.respuestas-comentario{
+    margin:9px 0 0 22px;
+    padding-left:10px;
+    border-left:2px solid #d7deea;
+}
+.respuesta-item{
+    margin:0 0 9px;
+}
+.respuesta-item > .acciones-item-comentario{
+    margin-left:4px;
+}
+.respuesta-item > .formulario-respuesta{
+    margin-left:8px;
+}
+@media(max-width:768px){
+    .respuestas-comentario{
+        margin-left:10px;
+        padding-left:7px;
+    }
+    .btn-publicar-respuesta{
+        width:100% !important;
+    }
+}
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -3191,81 +3227,100 @@ function crearHtmlComentario(c){
     return cabecera+escapeHtml(textoComentarioLimpio(c));
 }
 
+function crearFormularioRespuesta(parentId){
+    const form=document.createElement('div');
+    form.className='formulario-respuesta';
+    form.dataset.parentId=String(parentId||'');
+    form.innerHTML=`
+        <input class="nombre-comentario nombre-respuesta" type="text" maxlength="40" placeholder="Tu nombre">
+        <div class="comentario-editor">
+            <textarea class="texto-respuesta" placeholder="Escribe tu respuesta..."></textarea>
+            <button class="btn-microfono btn-microfono-respuesta" type="button" aria-label="Mantén pulsado para grabar una respuesta de audio" title="Mantén pulsado y suelta para enviar">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a1 1 0 1 1 2 0 7 7 0 0 1-6 6.93V20h3a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2h3v-2.07A7 7 0 0 1 5 11a1 1 0 1 1 2 0 5 5 0 0 0 10 0Z"/></svg>
+            </button>
+        </div>
+        <div class="acciones-comentario">
+            <button class="boton-comentar btn-publicar-respuesta" type="button">Publicar respuesta</button>
+            <div class="estado-audio estado-audio-respuesta">Mantén pulsado el micrófono y suelta para enviar.</div>
+        </div>`;
+    return form;
+}
+
 function renderComments(article, comments, visibles){
     const list=article.querySelector('.lista-comentarios');
     const counter=article.querySelector('.cabecera-comentarios p');
     const btnMas=article.querySelector('.btn-mostrar-mas');
     const ordenados=ordenarComentarios(comments);
-    const principales=ordenados.filter(c=>!extraerRelacionRespuesta(c));
-    const respuestas=ordenados.filter(c=>extraerRelacionRespuesta(c));
+    const porPadre=new Map();
 
+    ordenados.forEach(c=>{
+        const parentId=extraerRelacionRespuesta(c);
+        const clave=parentId || '__RAIZ__';
+        if(!porPadre.has(clave)) porPadre.set(clave,[]);
+        porPadre.get(clave).push(c);
+    });
+
+    const principales=porPadre.get('__RAIZ__') || [];
     list.innerHTML='';
     counter.textContent=`${ordenados.length} comentarios`;
 
-    principales.slice(0, visibles).forEach(c=>{
-        const idComentario=String(c.id||'');
-        const wrap=document.createElement('div');
-        wrap.className='comentario-contenedor';
+    function crearNodoComentario(c,nivel=0){
+        const idComentario=String(c?.id||'');
+        const contenedor=document.createElement('div');
+        contenedor.className=nivel===0?'comentario-contenedor':'respuesta-item';
+        contenedor.dataset.nivel=String(nivel);
 
         const div=document.createElement('div');
         div.className='comentario visible';
         div.innerHTML=crearHtmlComentario(c);
-        wrap.appendChild(div);
+        contenedor.appendChild(div);
 
         if(idComentario){
             const acciones=document.createElement('div');
             acciones.className='acciones-item-comentario';
-            acciones.innerHTML=`<button class="btn-responder-comentario" type="button">Responder</button>`;
-            wrap.appendChild(acciones);
+            acciones.innerHTML='<button class="btn-responder-comentario" type="button">Responder</button>';
+            contenedor.appendChild(acciones);
 
-            const respuestasWrap=document.createElement('div');
-            respuestasWrap.className='respuestas-comentario';
-            respuestas.filter(r=>extraerRelacionRespuesta(r)===idComentario).reverse().forEach(r=>{
-                const item=document.createElement('div');
-                item.className='respuesta-item';
-                item.innerHTML=`<div class="comentario visible">${crearHtmlComentario(r)}</div>`;
-                respuestasWrap.appendChild(item);
-            });
-            if(respuestasWrap.children.length) wrap.appendChild(respuestasWrap);
-
-            const form=document.createElement('div');
-            form.className='formulario-respuesta';
-            form.dataset.parentId=idComentario;
-            form.innerHTML=`
-                <input class="nombre-comentario nombre-respuesta" type="text" maxlength="40" placeholder="Tu nombre">
-                <div class="comentario-editor">
-                    <textarea class="texto-respuesta" placeholder="Escribe tu respuesta..."></textarea>
-                    <button class="btn-microfono btn-microfono-respuesta" type="button" aria-label="Mantén pulsado para grabar una respuesta de audio" title="Mantén pulsado y suelta para enviar">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a1 1 0 1 1 2 0 7 7 0 0 1-6 6.93V20h3a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2h3v-2.07A7 7 0 0 1 5 11a1 1 0 1 1 2 0 5 5 0 0 0 10 0Z"/></svg>
-                    </button>
-                </div>
-                <div class="acciones-comentario">
-                    <button class="boton-comentar btn-publicar-respuesta" type="button">Publicar respuesta</button>
-                    <div class="estado-audio estado-audio-respuesta">Mantén pulsado el micrófono y suelta para enviar.</div>
-                </div>`;
-            wrap.appendChild(form);
+            const form=crearFormularioRespuesta(idComentario);
+            contenedor.appendChild(form);
 
             acciones.querySelector('.btn-responder-comentario').onclick=()=>{
-                article.querySelectorAll('.formulario-respuesta.activo').forEach(x=>{if(x!==form)x.classList.remove('activo');});
+                article.querySelectorAll('.formulario-respuesta.activo').forEach(x=>{
+                    if(x!==form) x.classList.remove('activo');
+                });
                 form.classList.toggle('activo');
                 if(form.classList.contains('activo')){
-                    const principalNombre=article.querySelector('.cuerpo-comentarios > .nombre-comentario')?.value||'';
+                    const nombreGuardado=article.querySelector('.cuerpo-comentarios > .nombre-comentario')?.value||'';
                     const input=form.querySelector('.nombre-respuesta');
-                    if(!input.value) input.value=principalNombre;
+                    if(!input.value) input.value=nombreGuardado;
                     form.querySelector('.texto-respuesta')?.focus();
                 }
             };
         }
-        list.appendChild(wrap);
+
+        const hijas=porPadre.get(idComentario) || [];
+        if(idComentario && hijas.length){
+            const respuestasWrap=document.createElement('div');
+            respuestasWrap.className='respuestas-comentario';
+            [...hijas].reverse().forEach(respuesta=>{
+                respuestasWrap.appendChild(crearNodoComentario(respuesta,nivel+1));
+            });
+            contenedor.appendChild(respuestasWrap);
+        }
+
+        return contenedor;
+    }
+
+    principales.slice(0,visibles).forEach(c=>{
+        list.appendChild(crearNodoComentario(c,0));
     });
 
-    const restantes = Math.max(0, principales.length - visibles);
-    btnMas.style.display = restantes > 0 ? 'inline-flex' : 'none';
-    btnMas.textContent = restantes > 5
+    const restantes=Math.max(0,principales.length-visibles);
+    btnMas.style.display=restantes>0?'inline-flex':'none';
+    btnMas.textContent=restantes>5
         ? `Mostrar 5 comentarios más (${restantes} pendientes)`
-        : `Mostrar ${restantes} comentario${restantes === 1 ? '' : 's'} más`;
+        : `Mostrar ${restantes} comentario${restantes===1?'':'s'} más`;
 }
-
 async function initComments(article, jugada){
     const initial=createInitialComments(jugada);
     let online=[];
