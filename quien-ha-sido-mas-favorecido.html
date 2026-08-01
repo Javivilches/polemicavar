@@ -2285,6 +2285,33 @@ h1,h2,h3,h4,
     }
 }
 
+
+/* CONTROL FINAL DE VISIBILIDAD DE COMENTARIOS */
+#btnMostrarComentariosResultadosVar{
+    display:none !important;
+}
+#seccionComentariosResultadosVar .mostrar-mas-wrap,
+#seccionComentariosResultadosVar .ocultar-wrap{
+    display:none;
+    justify-content:center;
+    margin-top:10px;
+}
+#btnMostrarMasResultadosVar,
+#btnOcultarComentariosResultadosVar{
+    align-items:center;
+    justify-content:center;
+}
+@media(max-width:768px){
+    #seccionComentariosResultadosVar .mostrar-mas-wrap,
+    #seccionComentariosResultadosVar .ocultar-wrap{
+        width:100%;
+    }
+    #btnMostrarMasResultadosVar,
+    #btnOcultarComentariosResultadosVar{
+        width:100%;
+    }
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2448,14 +2475,7 @@ h1,h2,h3,h4,
                             Mantén pulsado el micrófono y suelta para enviar.
                         </div>
                     </div>
-
-                    <button
-                        id="btnMostrarComentariosResultadosVar"
-                        class="btn-mostrar-inicial"
-                        type="button"
-                    >Mostrar comentarios</button>
-
-                    <div id="listaComentariosResultadosVar" class="lista-comentarios"></div>
+<div id="listaComentariosResultadosVar" class="lista-comentarios"></div>
 
                     <div class="mostrar-mas-wrap">
                         <button
@@ -3145,7 +3165,7 @@ async function initComments(){
                 try{
                     await addAudioComment('favorecido',blob,'',autor,duracion);
                     online=await getComments('jugada',jugada.id);
-                    visibles=Math.max(visibles,5);
+                    visibles=Math.max(visibles,COMENTARIOS_INICIALES);
                     renderComments(null,[...online,...initial],visibles);
                     actualizarEstadoAudio('Audio enviado.');
                 }catch(err){
@@ -3197,7 +3217,7 @@ async function initComments(){
                 await addComment('favorecido', txt, '', autor);
                 ta.value='';
                 online=await getComments('favorecido', '');
-                visibles=Math.max(visibles,5);
+                visibles=Math.max(visibles,COMENTARIOS_INICIALES);
                 renderComments(null, [...online, ...initial], visibles);
             }catch(e){
                 alert(e?.message || 'No se pudo guardar el comentario');
