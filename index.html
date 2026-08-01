@@ -4121,6 +4121,24 @@ body{
     }
 }
 
+
+/* Oculta visualmente el botón que YouTube muestra en la esquina inferior izquierda */
+.video-youtube-limpio{
+    position:relative;
+}
+
+.video-youtube-limpio::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:64px;
+    height:58px;
+    background:#000;
+    z-index:3;
+    pointer-events:none;
+}
+
 </style>
 
 </head>
@@ -4311,7 +4329,7 @@ function construirNodoVideo(url){
     if(lower.includes('youtube.com')||lower.includes('youtu.be')){
         const id=extraerYouTubeId(limpia);
         if(id){
-            return `<div class="video-principal-wrap"><iframe src="https://www.youtube.com/embed/${id}" title="Vídeo de la jugada" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`;
+            return `<div class="video-principal-wrap video-youtube-limpio"><iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&playsinline=1&controls=0&iv_load_policy=3&disablekb=1" title="Vídeo de la jugada" loading="lazy" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
         }
     }
 
