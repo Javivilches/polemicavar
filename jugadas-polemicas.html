@@ -2742,6 +2742,125 @@ h1,h2,h3,h4,
     }
 }
 
+
+/* =========================================================
+   COMPARTIR CADA JUGADA CON ENLACE DIRECTO
+   ========================================================= */
+.cabecera-jugada-acciones{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    width:100%;
+    margin-bottom:12px;
+    box-sizing:border-box;
+}
+
+.cabecera-jugada-acciones .etiqueta-jornada{
+    margin:0 !important;
+}
+
+.btn-compartir-jugada{
+    position:relative;
+    z-index:20;
+    flex:0 0 auto;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    min-width:42px;
+    min-height:38px;
+    padding:8px 12px;
+    border:1px solid rgba(255,255,255,.28);
+    border-radius:10px;
+    background:rgba(255,255,255,.12);
+    color:#fff;
+    font-family:"Roboto Condensed",Arial,sans-serif;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+    transition:background .2s ease,transform .2s ease,border-color .2s ease;
+}
+
+.btn-compartir-jugada:hover{
+    background:rgba(255,255,255,.20);
+    border-color:rgba(255,255,255,.42);
+    transform:translateY(-1px);
+}
+
+.btn-compartir-jugada svg{
+    display:block;
+    width:20px;
+    height:20px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+
+.bloque-jugada{
+    scroll-margin-top:220px;
+}
+
+.bloque-jugada.jugada-compartida{
+    position:relative;
+    z-index:5;
+    outline:3px solid #f1c75b;
+    outline-offset:5px;
+    border-radius:22px;
+    animation:resaltarJugadaCompartida 1.05s ease 2;
+}
+
+@keyframes resaltarJugadaCompartida{
+    0%,100%{filter:none;}
+    50%{filter:drop-shadow(0 0 22px rgba(241,199,91,.72));}
+}
+
+.aviso-enlace-copiado{
+    position:fixed;
+    left:50%;
+    bottom:24px;
+    transform:translateX(-50%);
+    z-index:9000;
+    background:#102748;
+    color:#fff;
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:12px;
+    padding:11px 16px;
+    box-shadow:0 12px 30px rgba(0,0,0,.32);
+    font-size:14px;
+    font-weight:700;
+    white-space:nowrap;
+}
+
+@media(max-width:768px){
+    .cabecera-jugada-acciones{
+        align-items:flex-start;
+        gap:10px;
+    }
+
+    .btn-compartir-jugada{
+        width:42px;
+        height:38px;
+        min-height:38px;
+        padding:8px;
+    }
+
+    .btn-compartir-jugada span{
+        display:none;
+    }
+
+    .btn-compartir-jugada svg{
+        width:20px;
+        height:20px;
+    }
+
+    .bloque-jugada{
+        scroll-margin-top:205px;
+    }
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -3753,12 +3872,144 @@ async function initVote(article, jugada){
     article.querySelector('.btn-voto-no').onclick=()=>send('no');
 }
 
+
+function claveCompartirJugada(jugada){
+    return String(
+        jugada?.id ??
+        jugada?.numero ??
+        jugada?.slug ??
+        jugada?.pregunta ??
+        ""
+    ).trim();
+}
+
+function construirUrlCompartida(jugada){
+    const clave=claveCompartirJugada(jugada);
+    const url=new URL("jugadas-polemicas.html",window.location.href);
+    url.search="";
+    url.searchParams.set("jugada",clave);
+    url.hash=`jugada-${encodeURIComponent(clave)}`;
+    return url.toString();
+}
+
+function mostrarAvisoCompartido(texto){
+    document.querySelector(".aviso-enlace-copiado")?.remove();
+
+    const aviso=document.createElement("div");
+    aviso.className="aviso-enlace-copiado";
+    aviso.textContent=texto;
+    document.body.appendChild(aviso);
+
+    setTimeout(()=>aviso.remove(),2200);
+}
+
+async function compartirJugada(jugada,boton){
+    const url=construirUrlCompartida(jugada);
+    const datos={
+        title:"Polémica VAR",
+        text:(jugada.pregunta||"Jugada polémica").trim(),
+        url
+    };
+
+    try{
+        if(navigator.share){
+            await navigator.share(datos);
+            return;
+        }
+
+        if(navigator.clipboard?.writeText){
+            await navigator.clipboard.writeText(url);
+        }else{
+            const temporal=document.createElement("textarea");
+            temporal.value=url;
+            temporal.style.position="fixed";
+            temporal.style.opacity="0";
+            document.body.appendChild(temporal);
+            temporal.select();
+            document.execCommand("copy");
+            temporal.remove();
+        }
+
+        mostrarAvisoCompartido("Enlace de la jugada copiado");
+
+        const span=boton?.querySelector("span");
+        if(span){
+            const anterior=span.textContent;
+            span.textContent="Enlace copiado";
+            setTimeout(()=>span.textContent=anterior,1800);
+        }
+    }catch(error){
+        if(error?.name!=="AbortError"){
+            mostrarAvisoCompartido("No se pudo compartir la jugada");
+        }
+    }
+}
+
+async function abrirJugadaCompartida(){
+    const clave=new URLSearchParams(window.location.search).get("jugada");
+    if(!clave) return false;
+
+    let tarjeta=null;
+
+    for(let intento=0;intento<30;intento++){
+        tarjeta=[...document.querySelectorAll(".bloque-jugada")]
+            .find(b=>String(b.dataset.id||"")===String(clave));
+
+        if(tarjeta) break;
+        await new Promise(resolve=>setTimeout(resolve,60));
+    }
+
+    if(!tarjeta) return false;
+
+    filtroJornada.value="";
+    filtroEquipo.value="";
+    filtroCompeticion.value="";
+    filtroTipo.value="";
+
+    const todas=[...document.querySelectorAll(".bloque-jugada")];
+    const posicion=todas.indexOf(tarjeta);
+
+    if(posicion>=0){
+        limiteJugadasVisibles=Math.max(JUGADAS_POR_BLOQUE,posicion+1);
+    }
+
+    actualizarListadoJugadas();
+    tarjeta.classList.add("jugada-compartida");
+
+    const desplazar=()=>{
+        const cabecera=document.querySelector(".cabecera");
+        const menu=document.querySelector(".menu");
+        const offset=
+            (cabecera?.getBoundingClientRect().height||0)+
+            (menu?.getBoundingClientRect().height||0)+
+            18;
+
+        const top=tarjeta.getBoundingClientRect().top+window.scrollY-offset;
+
+        window.scrollTo({
+            top:Math.max(0,top),
+            behavior:"smooth"
+        });
+    };
+
+    requestAnimationFrame(desplazar);
+    setTimeout(desplazar,160);
+    setTimeout(desplazar,420);
+    setTimeout(()=>tarjeta.classList.remove("jugada-compartida"),4500);
+
+    return true;
+}
+
 function createArticle(jugada){
     const commentsInitial=createInitialComments(jugada);
     const article=document.createElement('section');
 
     article.className='bloque-jugada';
-    article.dataset.id=jugada.id;
+
+    const claveJugada=claveCompartirJugada(jugada);
+
+    article.dataset.id=claveJugada;
+    article.id=`jugada-${encodeURIComponent(claveJugada)}`;
     article.dataset.jornada=jugada.jornada;
     article.dataset.equipo=jugada.equipoAfectado;
     article.dataset.competicion=jugada.competicion;
@@ -3766,7 +4017,18 @@ function createArticle(jugada){
 
     article.innerHTML=`<section class="jugada-principal">
         <div class="cabecera-jugada">
-            <div class="etiqueta-jornada">Jornada ${escapeHtml(jugada.jornada)}</div>
+            <div class="cabecera-jugada-acciones">
+                <div class="etiqueta-jornada">Jornada ${escapeHtml(jugada.jornada)}</div>
+
+                <button class="btn-compartir-jugada" type="button" aria-label="Compartir esta jugada" title="Compartir jugada">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M13 5l7 7-7 7"></path>
+                        <path d="M20 12H9c-3.3 0-6 2.7-6 6v1"></path>
+                    </svg>
+                    <span>Compartir jugada</span>
+                </button>
+            </div>
+
             <h2>${escapeHtml(jugada.pregunta)}</h2>
             <p class="datos-jugada">${escapeHtml(jugada.partido)} · Min ${escapeHtml(jugada.minuto)} · ${escapeHtml(jugada.competicion)}</p>
             <p class="descripcion-cabecera-jugada">${escapeHtml(jugada.descripcion||'')}</p>
@@ -3839,6 +4101,14 @@ function createArticle(jugada){
             </section>
         </div>
     </section>`;
+
+    const btnCompartir=article.querySelector(".btn-compartir-jugada");
+
+    if(btnCompartir){
+        btnCompartir.addEventListener("click",()=>{
+            compartirJugada(jugada,btnCompartir);
+        });
+    }
 
     initMedia(article);
     initVote(article,jugada);
@@ -4123,12 +4393,19 @@ function renderMarker(bloques){
         filtroTipo.value = '';
         aplicarFiltros();
 
+        // Si la URL contiene ?jugada=ID, muestra esa tarjeta y baja hasta ella.
+        await abrirJugadaCompartida();
+
     }catch(e){
         console.error(e);
         sinResultados.textContent='No se pudieron cargar las jugadas.';
         sinResultados.style.display='block';
     }
 })();
+
+window.addEventListener("hashchange",()=>{
+    abrirJugadaCompartida();
+});
 
 if (supabaseClient && supabaseClient.auth && typeof supabaseClient.auth.onAuthStateChange === 'function') {
     supabaseClient.auth.onAuthStateChange(async () => {
