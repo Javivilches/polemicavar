@@ -2820,8 +2820,50 @@ function extraerNumeroJornada(v){ const m=String(v||'').match(/\d+/); return m?m
 function limpiarSlug(v){ return (v||'').toString().trim().replace(/^['"]|['"]$/g, ''); }
 function quitarDuplicados(lista){ return [...new Set(lista.filter(Boolean))]; }
 function combinacionesCarpetaJornada(jornada){ const j=extraerNumeroJornada(jornada); return [`Jornada-${j}`,`Jornada ${j}`,`jornada-${j}`,`jornada ${j}`]; }
-function rutasImagenSlug(jornada, slug){ const s=limpiarSlug(slug); if(!s) return []; const bases=['Imagenes/Historicas','imagenes/Historicas','Imagenes/historicas','imagenes/historicas']; const exts=['png','jpg','jpeg','webp','PNG','JPG','JPEG','WEBP']; const rutas=[]; for(const b of bases){ for(const e of exts){ rutas.push(`${b}/${encodeURIComponent(s)}.${e}`); } } return quitarDuplicados(rutas); }
-function rutasVideoTxt(jornada, slug){ const s=limpiarSlug(slug); if(!s) return []; const bases=['Videos/Historicas','videos/Historicas','Videos/historicas','videos/historicas']; const rutas=[]; for(const b of bases){ rutas.push(`${b}/${encodeURIComponent(s)}.txt`); rutas.push(`${b}/${encodeURIComponent(s)}.TXT`); } return quitarDuplicados(rutas); }
+function rutasImagenSlug(jornada, slug){
+    const s=limpiarSlug(slug);
+    if(!s) return [];
+
+    const bases=[
+        'Imagenes/Historicas',
+        'imagenes/Historicas',
+        'Imagenes/historicas',
+        'imagenes/historicas'
+    ];
+    const carpetas=combinacionesCarpetaJornada(jornada);
+    const exts=['png','jpg','jpeg','webp','PNG','JPG','JPEG','WEBP'];
+    const rutas=[];
+
+    for(const b of bases){
+        for(const c of carpetas){
+            for(const e of exts){
+                rutas.push(`${b}/${c}/${encodeURIComponent(s)}.${e}`);
+            }
+        }
+    }
+    return quitarDuplicados(rutas);
+}
+function rutasVideoTxt(jornada, slug){
+    const s=limpiarSlug(slug);
+    if(!s) return [];
+
+    const bases=[
+        'Videos/Historicas',
+        'videos/Historicas',
+        'Videos/historicas',
+        'videos/historicas'
+    ];
+    const carpetas=combinacionesCarpetaJornada(jornada);
+    const rutas=[];
+
+    for(const b of bases){
+        for(const c of carpetas){
+            rutas.push(`${b}/${c}/${encodeURIComponent(s)}.txt`);
+            rutas.push(`${b}/${c}/${encodeURIComponent(s)}.TXT`);
+        }
+    }
+    return quitarDuplicados(rutas);
+}
 
 function numeroSeguro(v){
     const n = Number(v);
@@ -2911,12 +2953,18 @@ async function loadPolemicasHistoricasDesdeCSV(){
 
     const filas=parseCSV(await respuesta.text());
 
+    let ultimaJornada="";
+
     return filas.map((row,indice)=>{
         const id=valueFromRow(row,["id"]) || `historica-${String(indice+1).padStart(3,"0")}`;
-        const equipo=valueFromRow(row,["equipoAfectado","equipo","club"]);
+        const equipo=valueFromRow(row,["equipoAfectado","equipo afectado","equipo_afectado","equipo","club"]);
         const fecha=valueFromRow(row,["fecha","año","ano"]);
         const temporada=valueFromRow(row,["temporada"]);
-        const jornada=valueFromRow(row,["jornada"]) || fecha || temporada || String(indice+1);
+        const jornadaCSV=valueFromRow(row,["jornada"]);
+
+        if(jornadaCSV) ultimaJornada=jornadaCSV;
+
+        const jornada=jornadaCSV || ultimaJornada || fecha || temporada || String(indice+1);
 
         return {
             id,
@@ -2930,15 +2978,15 @@ async function loadPolemicasHistoricasDesdeCSV(){
             pregunta:valueFromRow(row,["pregunta","titulo","título"]),
             descripcion:valueFromRow(row,["descripcion","descripción"]),
             categoria:valueFromRow(row,["categoria","categoría","tipo"]),
-            respuestaSi:valueFromRow(row,["respuestaSi","respuesta si"]) || "Sí",
-            respuestaNo:valueFromRow(row,["respuestaNo","respuesta no"]) || "No",
-            slugImagen:valueFromRow(row,["slugImagen","imagen","imagen1"]),
-            slugImagen2:valueFromRow(row,["slugImagen2","imagen2"]),
-            slugImagen3:valueFromRow(row,["slugImagen3","imagen3"]),
-            slugImagen4:valueFromRow(row,["slugImagen4","imagen4"]),
-            slugImagen5:valueFromRow(row,["slugImagen5","imagen5"]),
-            slugVideo:valueFromRow(row,["slugVideo","video","video1"]),
-            slugVideo2:valueFromRow(row,["slugVideo2","video2"]),
+            respuestaSi:valueFromRow(row,["respuestaSi","respuesta si","respuesta_si"]) || "Sí",
+            respuestaNo:valueFromRow(row,["respuestaNo","respuesta no","respuesta_no"]) || "No",
+            slugImagen:valueFromRow(row,["slugImagen","slug_imagen","imagen","imagen1"]),
+            slugImagen2:valueFromRow(row,["slugImagen2","slug_imagen2","imagen2"]),
+            slugImagen3:valueFromRow(row,["slugImagen3","slug_imagen3","imagen3"]),
+            slugImagen4:valueFromRow(row,["slugImagen4","slug_imagen4","imagen4"]),
+            slugImagen5:valueFromRow(row,["slugImagen5","slug_imagen5","imagen5"]),
+            slugVideo:valueFromRow(row,["slugVideo","slug_video","video","video1"]),
+            slugVideo2:valueFromRow(row,["slugVideo2","slug_video2","video2"]),
             comentario1:valueFromRow(row,["comentario1"]),
             usuariocomentario1:valueFromRow(row,["usuariocomentario1"]),
             fechacomentario1:valueFromRow(row,["fechacomentario1"]),
@@ -2954,8 +3002,8 @@ async function loadPolemicasHistoricasDesdeCSV(){
             comentario5:valueFromRow(row,["comentario5"]),
             usuariocomentario5:valueFromRow(row,["usuariocomentario5"]),
             fechacomentario5:valueFromRow(row,["fechacomentario5"]),
-            votosSi:numeroSeguro(valueFromRow(row,["votosSi","votos si"])),
-            votosNo:numeroSeguro(valueFromRow(row,["votosNo","votos no"]))
+            votosSi:numeroSeguro(valueFromRow(row,["votosSi","votos si","votos iniciales si","votos_iniciales_si"])),
+            votosNo:numeroSeguro(valueFromRow(row,["votosNo","votos no","votos iniciales no","votos_iniciales_no"]))
         };
     }).filter(j=>j.pregunta || j.partido || j.descripcion);
 }
@@ -3498,7 +3546,7 @@ async function initComments(article, jugada){
                 actualizarEstadoAudio('Enviando audio…');
                 try{
                     await addAudioComment('historica',blob,jugada.id,autor,duracion);
-                    online=await getComments('jugada',jugada.id);
+                    online=await getComments('historica',jugada.id);
                     visibles=Math.max(visibles,5);
                     renderComments(article,[...online,...initial],visibles);
                     actualizarEstadoAudio('Audio enviado.');
@@ -3571,7 +3619,7 @@ async function initComments(article, jugada){
         try{
             localStorage.setItem(NOMBRE_STORAGE_KEY,autor);
             await guardarRespuestaTexto(parentId,texto,autor);
-            online=await getComments('jugada',jugada.id);
+            online=await getComments('historica',jugada.id);
             renderComments(article,[...online,...initial],visibles);
         }catch(err){alert(err?.message||'No se pudo guardar la respuesta');}
     });
@@ -3602,7 +3650,7 @@ async function initComments(article, jugada){
                 if(estado) estado.textContent='Enviando audio…';
                 try{
                     await guardarRespuestaAudio(form.dataset.parentId,blob,autor,duracion);
-                    online=await getComments('jugada',jugada.id);
+                    online=await getComments('historica',jugada.id);
                     renderComments(article,[...online,...initial],visibles);
                 }catch(err){if(estado)estado.textContent='No se pudo enviar el audio.';alert(err?.message||'No se pudo guardar la respuesta de audio');}
             };
@@ -3956,8 +4004,8 @@ function renderMarker(bloques){
         jugadas = [...jugadas].sort((a,b)=>{
             const fechaB=Date.parse(b.fecha||"");
             const fechaA=Date.parse(a.fecha||"");
-            const anioB=parseInt(String(b.temporada||b.jornada||"").match(/\\d{4}/)?.[0]||0);
-            const anioA=parseInt(String(a.temporada||a.jornada||"").match(/\\d{4}/)?.[0]||0);
+            const anioB=parseInt(String(b.temporada||b.jornada||"").match(/\d{4}/)?.[0]||0);
+            const anioA=parseInt(String(a.temporada||a.jornada||"").match(/\d{4}/)?.[0]||0);
             return (Number.isFinite(fechaB)?fechaB:anioB)-(Number.isFinite(fechaA)?fechaA:anioA);
         });
 
