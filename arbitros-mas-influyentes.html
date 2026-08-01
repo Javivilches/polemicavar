@@ -2687,6 +2687,67 @@ h1,h2,h3,h4,
 }
 }
     
+/* CARGA PROGRESIVA DE POLÉMICAS */
+.control-carga-jugadas{
+    margin:8px 0 28px;
+    padding:16px 18px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    text-align:center;
+    background:linear-gradient(180deg,rgba(18,31,50,.98),rgba(9,19,34,.98));
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:16px;
+    box-shadow:0 16px 38px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.035);
+}
+
+.contador-jugadas{
+    color:#e7edf7;
+    font-family:"Oswald",Arial,sans-serif;
+    font-size:15px;
+    font-weight:600;
+    letter-spacing:.2px;
+}
+
+.btn-mostrar-mas-jugadas{
+    min-height:42px;
+    padding:10px 22px;
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:10px;
+    background:linear-gradient(135deg,#174d9c,#2567c7);
+    color:#fff;
+    font-family:"Oswald",Arial,sans-serif;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow:0 8px 20px rgba(0,0,0,.22);
+    transition:filter .2s ease,transform .2s ease;
+}
+
+.btn-mostrar-mas-jugadas:hover{
+    filter:brightness(1.08);
+    transform:translateY(-1px);
+}
+
+.btn-mostrar-mas-jugadas:disabled{
+    cursor:default;
+    opacity:.55;
+    transform:none;
+}
+
+@media(max-width:768px){
+    .control-carga-jugadas{
+        padding:14px;
+        margin-bottom:22px;
+    }
+
+    .btn-mostrar-mas-jugadas{
+        width:100%;
+    }
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2712,7 +2773,7 @@ h1,h2,h3,h4,
     <a href="jugadas-polemicas.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg><span>JUGADAS<br>POLÉMICAS</span></a>
     <a href="resultados-var.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v3a4 4 0 0 1-8 0zM6 5H3v2a4 4 0 0 0 4 4M18 5h3v2a4 4 0 0 1-4 4M12 11v5M8 21h8M9 16h6v5H9z"/></svg><span>RESULTADOS</span></a>
     <a href="quien-ha-sido-mas-favorecido.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M10 20V8M15 20V4M20 20V10"/></svg><span>EQUIPO MÁS<br>FAVORECIDO</span></a>
-   <a href="arbitros-mas-influyentes.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 7-7h7l2 2v7l-7 7-9-9z"/><circle cx="16.5" cy="7.5" r="1"/></svg><span>POLÉMICAS<br>HISTÓRICAS</span></a>
+    <a href="polemicas-historicas.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 7-7h7l2 2v7l-7 7-9-9z"/><circle cx="16.5" cy="7.5" r="1"/></svg><span>POLÉMICAS<br>HISTÓRICAS</span></a>
 
     <div class="menu-user-wrap">
         <button id="menuUserBtn" class="menu-user-btn" type="button" title="Usuario">👤</button>
@@ -2752,6 +2813,14 @@ h1,h2,h3,h4,
     </div>
 
     <div id="contenedorJugadas"></div>
+
+    <div id="controlCargaJugadas" class="control-carga-jugadas" style="display:none;">
+        <div id="contadorJugadas" class="contador-jugadas">Mostrando 0 de 0 jugadas</div>
+        <button id="btnMostrarMasJugadas" class="btn-mostrar-mas-jugadas" type="button">
+            Mostrar 5 más
+        </button>
+    </div>
+
 <section class="tarjeta-aviso-legal">
         <div class="aviso-legal">
             POLÉMICA VAR es una plataforma independiente y neutral cuyo objetivo es analizar jugadas polémicas a través de la opinión de los usuarios.
@@ -2805,6 +2874,12 @@ const menuUserBtn = document.getElementById("menuUserBtn");
 const menuUserDropdown = document.getElementById("menuUserDropdown");
 const btnToggleFiltros = document.getElementById("btnToggleFiltros");
 const panelFiltros = document.getElementById("panelFiltros");
+const controlCargaJugadas = document.getElementById("controlCargaJugadas");
+const contadorJugadas = document.getElementById("contadorJugadas");
+const btnMostrarMasJugadas = document.getElementById("btnMostrarMasJugadas");
+
+const JUGADAS_POR_BLOQUE = 5;
+let limiteJugadasVisibles = JUGADAS_POR_BLOQUE;
 
 if(btnToggleFiltros && panelFiltros){
     btnToggleFiltros.addEventListener('click',()=>{
@@ -3926,19 +4001,51 @@ async function renderMenuUsuario() {
     }
 }
 
-function aplicarFiltros(){
+function obtenerJugadasFiltradas(){
     const equipo=normalizarTexto((filtroEquipo?.value||"").trim());
-    let visibles=0;
 
-    document.querySelectorAll(".bloque-jugada").forEach(b=>{
+    return [...document.querySelectorAll(".bloque-jugada")].filter(b=>{
         const equipoItem=normalizarTexto(b.dataset.equipo||"");
-        const visible=!equipo || equipoItem.includes(equipo);
-        b.style.display=visible ? "block" : "none";
-        if(visible) visibles++;
+        return !equipo || equipoItem.includes(equipo);
     });
-
-    sinResultados.style.display=visibles===0 ? "block" : "none";
 }
+
+function actualizarListadoJugadas(){
+    const todas=[...document.querySelectorAll(".bloque-jugada")];
+    const filtradas=obtenerJugadasFiltradas();
+    const total=filtradas.length;
+    const visibles=Math.min(limiteJugadasVisibles,total);
+
+    todas.forEach(b=>b.style.display="none");
+    filtradas.slice(0,visibles).forEach(b=>b.style.display="block");
+
+    sinResultados.style.display=total===0 ? "block" : "none";
+
+    if(total===0){
+        controlCargaJugadas.style.display="none";
+        contadorJugadas.textContent="Mostrando 0 de 0 jugadas";
+        return;
+    }
+
+    controlCargaJugadas.style.display="flex";
+    contadorJugadas.textContent=`Mostrando ${visibles} de ${total} jugadas`;
+
+    const quedan=total-visibles;
+
+    if(quedan<=0){
+        btnMostrarMasJugadas.style.display="none";
+    }else{
+        btnMostrarMasJugadas.style.display="inline-flex";
+        const siguiente=Math.min(JUGADAS_POR_BLOQUE,quedan);
+        btnMostrarMasJugadas.textContent=`Mostrar ${siguiente} más`;
+    }
+}
+
+function aplicarFiltros(){
+    limiteJugadasVisibles=JUGADAS_POR_BLOQUE;
+    actualizarListadoJugadas();
+}
+
 window.toggleMenuUsuario = async function(e){
     if(e) e.stopPropagation();
     try{
@@ -4062,6 +4169,13 @@ if (supabaseClient && supabaseClient.auth && typeof supabaseClient.auth.onAuthSt
         } catch (e) {
             console.error(e);
         }
+    });
+}
+
+if(btnMostrarMasJugadas){
+    btnMostrarMasJugadas.addEventListener("click",()=>{
+        limiteJugadasVisibles+=JUGADAS_POR_BLOQUE;
+        actualizarListadoJugadas();
     });
 }
 
