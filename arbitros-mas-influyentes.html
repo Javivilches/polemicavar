@@ -2748,6 +2748,134 @@ h1,h2,h3,h4,
     }
 }
 
+
+/* =========================================================
+   RESPUESTAS ANIDADAS A COMENTARIOS
+   ========================================================= */
+.comentario-contenedor{
+    margin-bottom:10px;
+}
+
+.comentario-contenedor > .comentario,
+.respuesta-item > .comentario{
+    margin-bottom:0 !important;
+}
+
+.acciones-item-comentario{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:6px 0 0 12px;
+}
+
+.btn-responder-comentario{
+    border:0;
+    background:transparent;
+    color:#1f4fb0;
+    font-weight:700;
+    font-size:12px;
+    cursor:pointer;
+    padding:2px 0;
+}
+
+.btn-responder-comentario:hover{
+    text-decoration:underline;
+}
+
+.respuestas-comentario{
+    margin:9px 0 0 22px;
+    padding-left:10px;
+    border-left:2px solid #d7deea;
+}
+
+.respuesta-item{
+    margin:0 0 9px;
+}
+
+.respuesta-item > .comentario{
+    display:block !important;
+    background:#f8fafc !important;
+    border-left-color:#7d93b8 !important;
+}
+
+.respuesta-item > .acciones-item-comentario{
+    margin-left:4px;
+}
+
+.formulario-respuesta{
+    display:none;
+    margin:9px 0 2px 22px;
+    padding:11px;
+    background:#f2f5fa;
+    border:1px solid #d7deea;
+    border-radius:10px;
+    box-sizing:border-box;
+}
+
+.formulario-respuesta.activo{
+    display:block;
+}
+
+.formulario-respuesta .nombre-comentario{
+    margin-bottom:8px;
+}
+
+.formulario-respuesta .acciones-comentario{
+    margin-top:8px;
+    align-items:center;
+}
+
+.formulario-respuesta .estado-audio{
+    font-size:11px;
+}
+
+/* Botón con ancho suficiente y texto perfectamente centrado */
+.btn-publicar-respuesta{
+    flex:0 0 auto !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    width:auto !important;
+    min-width:178px !important;
+    min-height:42px !important;
+    padding:10px 18px !important;
+    margin:0 !important;
+    box-sizing:border-box !important;
+    overflow:visible !important;
+    white-space:nowrap !important;
+    text-align:center !important;
+    line-height:1 !important;
+}
+
+.btn-publicar-respuesta span{
+    display:block !important;
+    width:auto !important;
+    white-space:nowrap !important;
+    line-height:1 !important;
+    text-align:center !important;
+}
+
+@media(max-width:768px){
+    .respuestas-comentario{
+        margin-left:10px;
+        padding-left:7px;
+    }
+
+    .formulario-respuesta{
+        margin-left:8px;
+    }
+
+    .formulario-respuesta .acciones-comentario{
+        align-items:stretch;
+        flex-direction:column;
+    }
+
+    .btn-publicar-respuesta{
+        width:100% !important;
+        min-width:0 !important;
+    }
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -3621,7 +3749,7 @@ async function initComments(article, jugada){
                 actualizarEstadoAudio('Enviando audio…');
                 try{
                     await addAudioComment('historica',blob,jugada.id,autor,duracion);
-                    online=await getComments('historica',jugada.id);
+                    online=await getComments('jugada',jugada.id);
                     visibles=Math.max(visibles,5);
                     renderComments(article,[...online,...initial],visibles);
                     actualizarEstadoAudio('Audio enviado.');
@@ -3694,7 +3822,7 @@ async function initComments(article, jugada){
         try{
             localStorage.setItem(NOMBRE_STORAGE_KEY,autor);
             await guardarRespuestaTexto(parentId,texto,autor);
-            online=await getComments('historica',jugada.id);
+            online=await getComments('jugada',jugada.id);
             renderComments(article,[...online,...initial],visibles);
         }catch(err){alert(err?.message||'No se pudo guardar la respuesta');}
     });
@@ -3725,7 +3853,7 @@ async function initComments(article, jugada){
                 if(estado) estado.textContent='Enviando audio…';
                 try{
                     await guardarRespuestaAudio(form.dataset.parentId,blob,autor,duracion);
-                    online=await getComments('historica',jugada.id);
+                    online=await getComments('jugada',jugada.id);
                     renderComments(article,[...online,...initial],visibles);
                 }catch(err){if(estado)estado.textContent='No se pudo enviar el audio.';alert(err?.message||'No se pudo guardar la respuesta de audio');}
             };
