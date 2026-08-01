@@ -2914,7 +2914,7 @@ h1,h2,h3,h4,
 
     <section class="titulo-seccion">
         <h1>Polémicas históricas</h1>
-        <p>Las decisiones arbitrales más debatidas de la historia reciente del FC Barcelona y el Real Madrid.</p>
+        <p>Las decisiones arbitrales más debatidas de la historia del FC Barcelona y el Real Madrid.</p>
     </section>
 
     <div class="boton-filtros-wrap">
@@ -2930,6 +2930,13 @@ h1,h2,h3,h4,
                 <option value="Real Madrid">Real Madrid</option>
             </select>
         </div>
+
+                <div class="filtro-grupo">
+                    <label for="filtroAnio">Año</label>
+                    <select id="filtroAnio">
+                        <option value="">Todos</option>
+                    </select>
+                </div>
 
         <div class="filtro-grupo filtro-boton">
             <button id="btnLimpiarFiltros" type="button">Ver todas</button>
@@ -2995,6 +3002,7 @@ const setUserVote = DecisionVarAPI.setUserVote || (() => {});
 const loginConGoogle = DecisionVarAPI.loginConGoogle || (async () => alert("Inicio de sesión no disponible"));
 
 const filtroEquipo = document.getElementById("filtroEquipo");
+const filtroAnio = document.getElementById("filtroAnio");
 const btnLimpiarFiltros = document.getElementById("btnLimpiarFiltros");
 const sinResultados = document.getElementById("sinResultados");
 const contenedorJugadas = document.getElementById("contenedorJugadas");
@@ -3947,6 +3955,7 @@ function createArticle(jugada){
     article.className='bloque-jugada';
     article.dataset.id=jugada.id;
     article.dataset.jornada=jugada.jornada;
+    article.dataset.anio=jugada.jornada;
     article.dataset.equipo=jugada.equipoAfectado;
     article.dataset.competicion=jugada.competicion;
     article.dataset.tipo=normalizarTexto(jugada.categoria);
@@ -4132,10 +4141,16 @@ async function renderMenuUsuario() {
 
 function obtenerJugadasFiltradas(){
     const equipo=normalizarTexto((filtroEquipo?.value||"").trim());
+    const anio=normalizarTexto((filtroAnio?.value||"").trim());
 
     return [...document.querySelectorAll(".bloque-jugada")].filter(b=>{
         const equipoItem=normalizarTexto(b.dataset.equipo||"");
-        return !equipo || equipoItem.includes(equipo);
+        const anioItem=normalizarTexto(b.dataset.anio||"");
+
+        const coincideEquipo=!equipo || equipoItem.includes(equipo);
+        const coincideAnio=!anio || anioItem===anio;
+
+        return coincideEquipo && coincideAnio;
     });
 }
 
@@ -4168,6 +4183,31 @@ function actualizarListadoJugadas(){
         const siguiente=Math.min(JUGADAS_POR_BLOQUE,quedan);
         btnMostrarMasJugadas.textContent=`Mostrar ${siguiente} más`;
     }
+}
+
+function poblarFiltroAnios(){
+    if(!filtroAnio) return;
+
+    const anios=[...new Set(
+        [...document.querySelectorAll(".bloque-jugada")]
+            .map(b=>(b.dataset.anio||"").trim())
+            .filter(Boolean)
+    )];
+
+    anios.sort((a,b)=>{
+        const numeroA=parseInt((a.match(/\d+/)||["0"])[0],10);
+        const numeroB=parseInt((b.match(/\d+/)||["0"])[0],10);
+        return numeroB-numeroA;
+    });
+
+    filtroAnio.innerHTML='<option value="">Todos</option>';
+
+    anios.forEach(anio=>{
+        const opcion=document.createElement("option");
+        opcion.value=anio;
+        opcion.textContent=anio;
+        filtroAnio.appendChild(opcion);
+    });
 }
 
 function aplicarFiltros(){
@@ -4282,6 +4322,7 @@ function renderMarker(bloques){
         }
 
         filtroEquipo.value = '';
+        filtroAnio.value="";
         aplicarFiltros();
 
     }catch(e){
@@ -4308,11 +4349,13 @@ if(btnMostrarMasJugadas){
     });
 }
 
-[filtroEquipo].forEach(f=>f&&f.addEventListener('change',aplicarFiltros));
+[filtroEquipo,filtroAnio].forEach(f=>f&&f.addEventListener("change",aplicarFiltros));
 
 if(btnLimpiarFiltros){
     btnLimpiarFiltros.onclick=()=>{
         filtroEquipo.value='';
+        filtroAnio.value="";
+        poblarFiltroAnios();
         aplicarFiltros();
     };
 }
