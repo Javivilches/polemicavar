@@ -2994,7 +2994,7 @@ h1,h2,h3,h4,
 
 
 /* =========================================================
-   REPRODUCTOR SIN EL BOTÓN NATIVO DE COPIAR ENLACE
+   REPRODUCTOR DE YOUTUBE SIN CONTROLES SUPERPUESTOS PROPIOS
    ========================================================= */
 .video-principal-wrap.youtube-personalizado{
     position:relative;
@@ -3003,58 +3003,7 @@ h1,h2,h3,h4,
 }
 
 .video-principal-wrap.youtube-personalizado iframe{
-    pointer-events:none !important;
-}
-
-.btn-control-video{
-    position:absolute;
-    left:50%;
-    bottom:14px;
-    transform:translateX(-50%);
-    z-index:8;
-    width:48px;
-    height:48px;
-    border:1px solid rgba(255,255,255,.30);
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:rgba(5,12,24,.82);
-    color:#fff;
-    cursor:pointer;
-    box-shadow:0 8px 22px rgba(0,0,0,.34);
-    backdrop-filter:blur(5px);
-    -webkit-backdrop-filter:blur(5px);
-}
-
-.btn-control-video:hover{
-    background:rgba(20,56,108,.94);
-}
-
-.btn-control-video svg{
-    width:23px;
-    height:23px;
-    fill:currentColor;
-}
-
-.btn-control-video .icono-pausa{
-    display:none;
-}
-
-.btn-control-video.reproduciendo .icono-play{
-    display:none;
-}
-
-.btn-control-video.reproduciendo .icono-pausa{
-    display:block;
-}
-
-@media(max-width:768px){
-    .btn-control-video{
-        width:44px;
-        height:44px;
-        bottom:10px;
-    }
+    pointer-events:auto !important;
 }
 
 </style>
@@ -3449,21 +3398,12 @@ function construirNodoVideo(url){
         if(id){
             return `<div class="video-principal-wrap youtube-personalizado">
                 <iframe
-                    src="https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&playsinline=1&controls=0&iv_load_policy=3&disablekb=1&enablejsapi=1"
+                    src="https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&playsinline=1&controls=1&iv_load_policy=3"
                     title="Vídeo de la jugada"
                     loading="lazy"
-                    tabindex="-1"
-                    allow="autoplay; encrypted-media; picture-in-picture"
+                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen>
                 </iframe>
-                <button class="btn-control-video" type="button" aria-label="Reproducir vídeo">
-                    <svg class="icono-play" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M8 5v14l11-7z"></path>
-                    </svg>
-                    <svg class="icono-pausa" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M7 5h4v14H7zM13 5h4v14h-4z"></path>
-                    </svg>
-                </button>
             </div>`;
         }
     }
@@ -3556,32 +3496,6 @@ function initMedia(article){
             tipoActual='video';
             visor.innerHTML=construirNodoVideo(item.url);
 
-            const wrapYouTube=visor.querySelector(".youtube-personalizado");
-            const iframeYouTube=wrapYouTube?.querySelector("iframe");
-            const btnControl=wrapYouTube?.querySelector(".btn-control-video");
-
-            if(btnControl && iframeYouTube){
-                let reproduciendo=false;
-
-                btnControl.addEventListener("click",()=>{
-                    reproduciendo=!reproduciendo;
-
-                    iframeYouTube.contentWindow?.postMessage(
-                        JSON.stringify({
-                            event:"command",
-                            func:reproduciendo ? "playVideo" : "pauseVideo",
-                            args:""
-                        }),
-                        "*"
-                    );
-
-                    btnControl.classList.toggle("reproduciendo",reproduciendo);
-                    btnControl.setAttribute(
-                        "aria-label",
-                        reproduciendo ? "Pausar vídeo" : "Reproducir vídeo"
-                    );
-                });
-            }
 
             updateButtons();
             return;
@@ -4315,8 +4229,8 @@ function createArticle(jugada){
                 <div class="etiqueta-jornada">${escapeHtml(jugada.fecha || jugada.temporada || jugada.jornada || "Histórica")}</div>
                 <button class="btn-compartir-jugada" type="button" aria-label="Compartir esta jugada">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M21 3 9.5 14.5"></path>
-                        <path d="m21 3-7 18-4.5-6.5L3 10z"></path>
+                        <path d="M13 5l6 6-6 6"></path>
+                        <path d="M19 11H9a5 5 0 0 0-5 5v2"></path>
                     </svg>
                     <span>Compartir jugada</span>
                 </button>
@@ -8088,7 +8002,7 @@ function construirNodoVideo(url){
     if(lower.includes('youtube.com')||lower.includes('youtu.be')){
         const id=extraerYouTubeId(limpia);
         if(id){
-            return `<div class="video-principal-wrap"><iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&playsinline=1&controls=0&iv_load_policy=3&disablekb=1" title="Vídeo de la jugada" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+            return `<div class="video-principal-wrap youtube-personalizado"><iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&playsinline=1&controls=1&iv_load_policy=3" title="Vídeo de la jugada" loading="lazy" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
         }
     }
 
@@ -8911,10 +8825,8 @@ function createArticle(jugada){
                 <div class="etiqueta-jornada">${escapeHtml(jugada.fecha || jugada.temporada || jugada.jornada || "Histórica")}</div>
                 <button class="btn-compartir-jugada" type="button" aria-label="Compartir esta jugada">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <circle cx="18" cy="5" r="3"></circle>
-                        <circle cx="6" cy="12" r="3"></circle>
-                        <circle cx="18" cy="19" r="3"></circle>
-                        <path d="m8.6 10.7 6.8-4.1M8.6 13.3l6.8 4.1"></path>
+                        <path d="M13 5l6 6-6 6"></path>
+                        <path d="M19 11H9a5 5 0 0 0-5 5v2"></path>
                     </svg>
                     <span>Compartir jugada</span>
                 </button>
