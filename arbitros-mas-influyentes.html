@@ -3451,7 +3451,8 @@ function createInitialComments(j){
 
     return items
         .filter(x => (x.texto || "").trim() !== "")
-        .map(x => ({
+        .map((x, indice) => ({
+            id: `csv-historica-${String(j.id || j.numero || 'general')}-${indice + 1}`,
             texto: x.texto,
             created_at: x.fecha || null,
             autor: (x.autor || "").trim() || "Usuario"
@@ -3535,7 +3536,7 @@ function renderComments(article, comments, visibles){
     counter.textContent=`${ordenados.length} comentarios`;
 
     function crearNodoComentario(c,nivel=0){
-        const idComentario=String(c?.id||'');
+        const idComentario=String(c?.id ?? '');
         const contenedor=document.createElement('div');
         contenedor.className=nivel===0?'comentario-contenedor':'respuesta-item';
         contenedor.dataset.nivel=String(nivel);
