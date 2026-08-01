@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Polémicas Históricas - POLÉMICA VAR</title>
+<title>Jugadas Polémicas - POLÉMICA VAR</title>
 <link rel="icon" href="Imagenes/favicon.png" type="image/png">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto+Condensed:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
@@ -1363,8 +1363,8 @@ h1,h2,h3,h4,
 
 .menu a + a{border-left:1px solid rgba(255,255,255,.055);}
 .menu a:hover{background:rgba(255,255,255,.045);color:#fff !important;}
-.menu a:nth-child(5){color:#fff !important;}
-.menu a:nth-child(5)::after{
+.menu a:nth-child(2){color:#fff !important;}
+.menu a:nth-child(2)::after{
     content:"";
     position:absolute;
     left:22%;
@@ -1542,7 +1542,7 @@ h1,h2,h3,h4,
         border-radius:0 !important;
         white-space:normal !important;
     }
-    .menu a:nth-child(5)::after{left:18%;right:18%;height:3px;}
+    .menu a:nth-child(2)::after{left:18%;right:18%;height:3px;}
     .menu-user-wrap{right:7px !important;}
     .contenido{
         margin-top:156px !important;
@@ -1973,7 +1973,7 @@ h1,h2,h3,h4,
     color:#fff !important;
 }
 
-.menu a:nth-child(5)::after{
+.menu a:nth-child(2)::after{
     content:"" !important;
     position:absolute !important;
     left:22% !important;
@@ -2064,11 +2064,11 @@ h1,h2,h3,h4,
         color:#cfd8e5 !important;
     }
 
-    .menu a:nth-child(5){
+    .menu a:nth-child(2){
         color:#fff !important;
     }
 
-    .menu a:nth-child(5)::after{
+    .menu a:nth-child(2)::after{
         left:18% !important;
         right:18% !important;
         height:3px !important;
@@ -2687,7 +2687,7 @@ h1,h2,h3,h4,
 }
 }
     
-/* CARGA PROGRESIVA DE POLÉMICAS */
+/* CARGA PROGRESIVA DE JUGADAS */
 .control-carga-jugadas{
     margin:8px 0 28px;
     padding:16px 18px;
@@ -2731,12 +2731,6 @@ h1,h2,h3,h4,
     transform:translateY(-1px);
 }
 
-.btn-mostrar-mas-jugadas:disabled{
-    cursor:default;
-    opacity:.55;
-    transform:none;
-}
-
 @media(max-width:768px){
     .control-carga-jugadas{
         padding:14px;
@@ -2752,16 +2746,6 @@ h1,h2,h3,h4,
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="decisionvar-data.js"></script>
-
-<style>
-.filtros-jugadas{
-    grid-template-columns:minmax(220px,1fr) minmax(150px,220px) !important;
-}
-@media(max-width:650px){
-    .filtros-jugadas{grid-template-columns:1fr !important;}
-}
-</style>
-
 </head>
 
 <body>
@@ -2773,7 +2757,7 @@ h1,h2,h3,h4,
     <a href="jugadas-polemicas.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg><span>JUGADAS<br>POLÉMICAS</span></a>
     <a href="resultados-var.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v3a4 4 0 0 1-8 0zM6 5H3v2a4 4 0 0 0 4 4M18 5h3v2a4 4 0 0 1-4 4M12 11v5M8 21h8M9 16h6v5H9z"/></svg><span>RESULTADOS</span></a>
     <a href="quien-ha-sido-mas-favorecido.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M10 20V8M15 20V4M20 20V10"/></svg><span>EQUIPO MÁS<br>FAVORECIDO</span></a>
-    <a href="polemicas-historicas.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 7-7h7l2 2v7l-7 7-9-9z"/><circle cx="16.5" cy="7.5" r="1"/></svg><span>POLÉMICAS<br>HISTÓRICAS</span></a>
+    <a href="arbitros-mas-influyentes.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 7-7h7l2 2v7l-7 7-9-9z"/><circle cx="16.5" cy="7.5" r="1"/></svg><span>POLÉMICAS<br>HISTÓRICAS</span></a>
 
     <div class="menu-user-wrap">
         <button id="menuUserBtn" class="menu-user-btn" type="button" title="Usuario">👤</button>
@@ -2785,8 +2769,8 @@ h1,h2,h3,h4,
 <div class="wrap">
 
     <section class="titulo-seccion">
-        <h1>Polémicas históricas</h1>
-        <p>Las decisiones arbitrales más debatidas de la historia del FC Barcelona y el Real Madrid.</p>
+        <h1>Todas las jugadas polémicas</h1>
+        <p>Ordenadas de la más reciente a la más antigua.</p>
     </section>
 
     <div class="boton-filtros-wrap">
@@ -2795,16 +2779,52 @@ h1,h2,h3,h4,
 
     <section class="filtros-jugadas" id="panelFiltros">
         <div class="filtro-grupo">
+            <label for="filtroJornada">Jornada</label>
+            <select id="filtroJornada">
+                <option value="">Todas</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+                <option value="23">23</option>
+                <option value="24">24</option>
+                <option value="25">25</option>
+                <option value="26">26</option>
+                <option value="27">27</option>
+                <option value="28">28</option>
+            </select>
+        </div>
+
+        <div class="filtro-grupo">
             <label for="filtroEquipo">Equipo</label>
             <select id="filtroEquipo">
                 <option value="">Todos</option>
                 <option value="Barcelona">FC Barcelona</option>
                 <option value="Real Madrid">Real Madrid</option>
+                <option value="Celta">Celta</option>
+            </select>
+        </div>
+
+        <div class="filtro-grupo">
+            <label for="filtroCompeticion">Competición</label>
+            <select id="filtroCompeticion">
+                <option value="">Todas</option>
+                <option value="LaLiga">LaLiga</option>
+            </select>
+        </div>
+
+        <div class="filtro-grupo">
+            <label for="filtroTipo">Tipo de jugada</label>
+            <select id="filtroTipo">
+                <option value="">Todas</option>
+                <option value="penalti">Penalti</option>
+                <option value="roja">Roja</option>
+                <option value="gol">Gol</option>
             </select>
         </div>
 
         <div class="filtro-grupo filtro-boton">
-            <button id="btnLimpiarFiltros" type="button">Ver todas</button>
+            <button id="btnLimpiarFiltros">Ver todas</button>
         </div>
     </section>
 
@@ -2821,7 +2841,34 @@ h1,h2,h3,h4,
         </button>
     </div>
 
-<section class="tarjeta-aviso-legal">
+    <section class="bloque-marcador-global">
+        <div class="cabecera-marcador-global">
+            <h2>Marcador global</h2>
+            <p>Resumen acumulado según los resultados de las encuestas.</p>
+        </div>
+        <div class="marcador-visual-wrap">
+            <div id="marcadorGlobalContainer" class="marcador-visual-container">
+                <div class="marcador-imagen" id="marcadorGlobal" aria-label="Marcador global de las encuestas">
+                    <img src="marcador-global-fondo-alto-v2-sin-numeros.png" alt="Marcador global FC Barcelona - Real Madrid">
+                    <span class="dato dato-stat barca-penaltis" id="marcador-barca-penaltis">0</span>
+                    <span class="dato dato-stat barca-rojas" id="marcador-barca-rojas">0</span>
+                    <span class="dato dato-stat barca-goles" id="marcador-barca-goles">0</span>
+                    <span class="dato dato-stat madrid-penaltis" id="marcador-madrid-penaltis">0</span>
+                    <span class="dato dato-stat madrid-rojas" id="marcador-madrid-rojas">0</span>
+                    <span class="dato dato-stat madrid-goles" id="marcador-madrid-goles">0</span>
+                    <div class="score-dinamico" aria-label="Resultado global">
+                        <span class="dato score-dato" id="marcador-score-barca">0</span>
+                        <span class="score-separador">-</span>
+                        <span class="dato score-dato" id="marcador-score-madrid">0</span>
+                    </div>
+                    <span class="dato dato-total total-barca" id="marcador-barca-total">0</span>
+                    <span class="dato dato-total total-madrid" id="marcador-madrid-total">0</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="tarjeta-aviso-legal">
         <div class="aviso-legal">
             POLÉMICA VAR es una plataforma independiente y neutral cuyo objetivo es analizar jugadas polémicas a través de la opinión de los usuarios.
             Los contenidos audiovisuales mostrados pertenecen a sus respectivos autores y son compartidos desde plataformas públicas. Esta web no almacena ni modifica dichos contenidos.
@@ -2866,7 +2913,10 @@ const getUserVote = DecisionVarAPI.getUserVote || (() => "");
 const setUserVote = DecisionVarAPI.setUserVote || (() => {});
 const loginConGoogle = DecisionVarAPI.loginConGoogle || (async () => alert("Inicio de sesión no disponible"));
 
+const filtroJornada = document.getElementById("filtroJornada");
 const filtroEquipo = document.getElementById("filtroEquipo");
+const filtroCompeticion = document.getElementById("filtroCompeticion");
+const filtroTipo = document.getElementById("filtroTipo");
 const btnLimpiarFiltros = document.getElementById("btnLimpiarFiltros");
 const sinResultados = document.getElementById("sinResultados");
 const contenedorJugadas = document.getElementById("contenedorJugadas");
@@ -2895,50 +2945,8 @@ function extraerNumeroJornada(v){ const m=String(v||'').match(/\d+/); return m?m
 function limpiarSlug(v){ return (v||'').toString().trim().replace(/^['"]|['"]$/g, ''); }
 function quitarDuplicados(lista){ return [...new Set(lista.filter(Boolean))]; }
 function combinacionesCarpetaJornada(jornada){ const j=extraerNumeroJornada(jornada); return [`Jornada-${j}`,`Jornada ${j}`,`jornada-${j}`,`jornada ${j}`]; }
-function rutasImagenSlug(jornada, slug){
-    const s=limpiarSlug(slug);
-    if(!s) return [];
-
-    const bases=[
-        'Imagenes/Historicas',
-        'imagenes/Historicas',
-        'Imagenes/historicas',
-        'imagenes/historicas'
-    ];
-    const carpetas=combinacionesCarpetaJornada(jornada);
-    const exts=['png','jpg','jpeg','webp','PNG','JPG','JPEG','WEBP'];
-    const rutas=[];
-
-    for(const b of bases){
-        for(const c of carpetas){
-            for(const e of exts){
-                rutas.push(`${b}/${c}/${encodeURIComponent(s)}.${e}`);
-            }
-        }
-    }
-    return quitarDuplicados(rutas);
-}
-function rutasVideoTxt(jornada, slug){
-    const s=limpiarSlug(slug);
-    if(!s) return [];
-
-    const bases=[
-        'Videos/Historicas',
-        'videos/Historicas',
-        'Videos/historicas',
-        'videos/historicas'
-    ];
-    const carpetas=combinacionesCarpetaJornada(jornada);
-    const rutas=[];
-
-    for(const b of bases){
-        for(const c of carpetas){
-            rutas.push(`${b}/${c}/${encodeURIComponent(s)}.txt`);
-            rutas.push(`${b}/${c}/${encodeURIComponent(s)}.TXT`);
-        }
-    }
-    return quitarDuplicados(rutas);
-}
+function rutasImagenSlug(jornada, slug){ const s=limpiarSlug(slug); if(!s) return []; const bases=['Imagenes','imagenes']; const carpetas=combinacionesCarpetaJornada(jornada); const exts=['png','jpg','jpeg','webp','PNG','JPG','JPEG','WEBP']; const rutas=[]; for(const b of bases){ for(const c of carpetas){ for(const e of exts){ rutas.push(`${b}/${c}/${encodeURIComponent(s)}.${e}`); } } } return quitarDuplicados(rutas); }
+function rutasVideoTxt(jornada, slug){ const s=limpiarSlug(slug); if(!s) return []; const bases=['Videos','videos']; const carpetas=combinacionesCarpetaJornada(jornada); const rutas=[]; for(const b of bases){ for(const c of carpetas){ rutas.push(`${b}/${c}/${encodeURIComponent(s)}.txt`); rutas.push(`${b}/${c}/${encodeURIComponent(s)}.TXT`);} } return quitarDuplicados(rutas); }
 
 function numeroSeguro(v){
     const n = Number(v);
@@ -3013,74 +3021,8 @@ function valueFromRow(row, keys){
     return "";
 }
 
-async function loadPolemicasHistoricasDesdeCSV(){
-    if(typeof DecisionVarAPI.loadPolemicasHistoricas === "function"){
-        try{
-            const datos=await DecisionVarAPI.loadPolemicasHistoricas();
-            if(Array.isArray(datos) && datos.length) return datos;
-        }catch(e){
-            console.warn("No se pudieron cargar las polémicas históricas desde decisionvar-data.js.",e);
-        }
-    }
-
-    const respuesta=await fetch("polemicas-historicas.csv",{cache:"no-store"});
-    if(!respuesta.ok) throw new Error("No se encontró polemicas-historicas.csv");
-
-    const filas=parseCSV(await respuesta.text());
-
-    let ultimaJornada="";
-
-    return filas.map((row,indice)=>{
-        const id=valueFromRow(row,["id"]) || `historica-${String(indice+1).padStart(3,"0")}`;
-        const equipo=valueFromRow(row,["equipoAfectado","equipo afectado","equipo_afectado","equipo","club"]);
-        const fecha=valueFromRow(row,["fecha","año","ano"]);
-        const temporada=valueFromRow(row,["temporada"]);
-        const jornadaCSV=valueFromRow(row,["jornada"]);
-
-        if(jornadaCSV) ultimaJornada=jornadaCSV;
-
-        const jornada=jornadaCSV || ultimaJornada || fecha || temporada || String(indice+1);
-
-        return {
-            id,
-            jornada,
-            fecha,
-            temporada,
-            partido:valueFromRow(row,["partido"]),
-            equipoAfectado:equipo,
-            competicion:valueFromRow(row,["competicion","competición"]),
-            minuto:valueFromRow(row,["minuto"]),
-            pregunta:valueFromRow(row,["pregunta","titulo","título"]),
-            descripcion:valueFromRow(row,["descripcion","descripción"]),
-            categoria:valueFromRow(row,["categoria","categoría","tipo"]),
-            respuestaSi:valueFromRow(row,["respuestaSi","respuesta si","respuesta_si"]) || "Sí",
-            respuestaNo:valueFromRow(row,["respuestaNo","respuesta no","respuesta_no"]) || "No",
-            slugImagen:valueFromRow(row,["slugImagen","slug_imagen","imagen","imagen1"]),
-            slugImagen2:valueFromRow(row,["slugImagen2","slug_imagen2","imagen2"]),
-            slugImagen3:valueFromRow(row,["slugImagen3","slug_imagen3","imagen3"]),
-            slugImagen4:valueFromRow(row,["slugImagen4","slug_imagen4","imagen4"]),
-            slugImagen5:valueFromRow(row,["slugImagen5","slug_imagen5","imagen5"]),
-            slugVideo:valueFromRow(row,["slugVideo","slug_video","video","video1"]),
-            slugVideo2:valueFromRow(row,["slugVideo2","slug_video2","video2"]),
-            comentario1:valueFromRow(row,["comentario1"]),
-            usuariocomentario1:valueFromRow(row,["usuariocomentario1"]),
-            fechacomentario1:valueFromRow(row,["fechacomentario1"]),
-            comentario2:valueFromRow(row,["comentario2"]),
-            usuariocomentario2:valueFromRow(row,["usuariocomentario2"]),
-            fechacomentario2:valueFromRow(row,["fechacomentario2"]),
-            comentario3:valueFromRow(row,["comentario3"]),
-            usuariocomentario3:valueFromRow(row,["usuariocomentario3"]),
-            fechacomentario3:valueFromRow(row,["fechacomentario3"]),
-            comentario4:valueFromRow(row,["comentario4"]),
-            usuariocomentario4:valueFromRow(row,["usuariocomentario4"]),
-            fechacomentario4:valueFromRow(row,["fechacomentario4"]),
-            comentario5:valueFromRow(row,["comentario5"]),
-            usuariocomentario5:valueFromRow(row,["usuariocomentario5"]),
-            fechacomentario5:valueFromRow(row,["fechacomentario5"]),
-            votosSi:numeroSeguro(valueFromRow(row,["votosSi","votos si","votos iniciales si","votos_iniciales_si"])),
-            votosNo:numeroSeguro(valueFromRow(row,["votosNo","votos no","votos iniciales no","votos_iniciales_no"]))
-        };
-    }).filter(j=>j.pregunta || j.partido || j.descripcion);
+async function loadJugadasPublicasDesdeCSV(){
+    return await loadJugadasPublicas();
 }
 
 async function primerTextoDisponible(rutas){
@@ -3382,7 +3324,7 @@ function crearFormularioRespuesta(parentId){
             </button>
         </div>
         <div class="acciones-comentario">
-            <button class="boton-comentar btn-publicar-respuesta" type="button"><span>Publicar respuesta</span></button>
+            <button class="boton-comentar btn-publicar-respuesta" type="button">Publicar</button>
             <div class="estado-audio estado-audio-respuesta">Mantén pulsado el micrófono y suelta para enviar.</div>
         </div>`;
     return form;
@@ -3468,7 +3410,7 @@ async function initComments(article, jugada){
     let online=[];
 
     try{
-        online=await getComments('historica', jugada.id);
+        online=await getComments('jugada', jugada.id);
     }catch(e){
         online=[];
     }
@@ -3488,10 +3430,10 @@ async function initComments(article, jugada){
         if(!supabaseClient) throw new Error('Servicio no disponible');
         const base={texto:String(texto||'').trim(),autor:String(autor||'').trim(),jugada_id:jugada.id||null,tipo:'texto'};
         const intentos=[
-            {...base,scope:'historica',parent_comment_id:parentId},
-            {...base,alcance:'historica',parent_comment_id:parentId},
-            {...base,scope:'historica',texto:MARCADOR_RESPUESTA(parentId)+base.texto},
-            {...base,alcance:'historica',texto:MARCADOR_RESPUESTA(parentId)+base.texto}
+            {...base,scope:'jugada',parent_comment_id:parentId},
+            {...base,alcance:'jugada',parent_comment_id:parentId},
+            {...base,scope:'jugada',texto:MARCADOR_RESPUESTA(parentId)+base.texto},
+            {...base,alcance:'jugada',texto:MARCADOR_RESPUESTA(parentId)+base.texto}
         ];
         let ultimoError=null;
         for(const payload of intentos){
@@ -3515,10 +3457,10 @@ async function initComments(article, jugada){
         const pub=supabaseClient.storage.from('comentarios-audio').getPublicUrl(path)?.data?.publicUrl||'';
         const base={texto:'',autor:String(autor||'').trim(),jugada_id:jugada.id||null,tipo:'audio',audio_url:pub,audio_path:path,mime_type:blob.type||'audio/webm',duracion_seg:Number(duracion||0)};
         const intentos=[
-            {...base,scope:'historica',parent_comment_id:parentId},
-            {...base,alcance:'historica',parent_comment_id:parentId},
-            {...base,scope:'historica',texto:MARCADOR_RESPUESTA(parentId)},
-            {...base,alcance:'historica',texto:MARCADOR_RESPUESTA(parentId)}
+            {...base,scope:'jugada',parent_comment_id:parentId},
+            {...base,alcance:'jugada',parent_comment_id:parentId},
+            {...base,scope:'jugada',texto:MARCADOR_RESPUESTA(parentId)},
+            {...base,alcance:'jugada',texto:MARCADOR_RESPUESTA(parentId)}
         ];
         let ultimoError=null;
         for(const payload of intentos){
@@ -3620,8 +3562,8 @@ async function initComments(article, jugada){
                 if(!autor){ actualizarEstadoAudio('Escribe tu nombre para enviar el audio.'); return; }
                 actualizarEstadoAudio('Enviando audio…');
                 try{
-                    await addAudioComment('historica',blob,jugada.id,autor,duracion);
-                    online=await getComments('historica',jugada.id);
+                    await addAudioComment('jugada',blob,jugada.id,autor,duracion);
+                    online=await getComments('jugada',jugada.id);
                     visibles=Math.max(visibles,5);
                     renderComments(article,[...online,...initial],visibles);
                     actualizarEstadoAudio('Audio enviado.');
@@ -3671,9 +3613,9 @@ async function initComments(article, jugada){
             if(!autor) return;
 
             try{
-                await addComment('historica', txt, jugada.id, autor);
+                await addComment('jugada', txt, jugada.id, autor);
                 ta.value='';
-                online=await getComments('historica', jugada.id);
+                online=await getComments('jugada', jugada.id);
                 visibles=Math.max(visibles,5);
                 renderComments(article, [...online, ...initial], visibles);
             }catch(e){
@@ -3694,7 +3636,7 @@ async function initComments(article, jugada){
         try{
             localStorage.setItem(NOMBRE_STORAGE_KEY,autor);
             await guardarRespuestaTexto(parentId,texto,autor);
-            online=await getComments('historica',jugada.id);
+            online=await getComments('jugada',jugada.id);
             renderComments(article,[...online,...initial],visibles);
         }catch(err){alert(err?.message||'No se pudo guardar la respuesta');}
     });
@@ -3725,7 +3667,7 @@ async function initComments(article, jugada){
                 if(estado) estado.textContent='Enviando audio…';
                 try{
                     await guardarRespuestaAudio(form.dataset.parentId,blob,autor,duracion);
-                    online=await getComments('historica',jugada.id);
+                    online=await getComments('jugada',jugada.id);
                     renderComments(article,[...online,...initial],visibles);
                 }catch(err){if(estado)estado.textContent='No se pudo enviar el audio.';alert(err?.message||'No se pudo guardar la respuesta de audio');}
             };
@@ -3824,7 +3766,7 @@ function createArticle(jugada){
 
     article.innerHTML=`<section class="jugada-principal">
         <div class="cabecera-jugada">
-            <div class="etiqueta-jornada">${escapeHtml(jugada.fecha || jugada.temporada || jugada.jornada || "Histórica")}</div>
+            <div class="etiqueta-jornada">Jornada ${escapeHtml(jugada.jornada)}</div>
             <h2>${escapeHtml(jugada.pregunta)}</h2>
             <p class="datos-jugada">${escapeHtml(jugada.partido)} · Min ${escapeHtml(jugada.minuto)} · ${escapeHtml(jugada.competicion)}</p>
             <p class="descripcion-cabecera-jugada">${escapeHtml(jugada.descripcion||'')}</p>
@@ -4002,40 +3944,52 @@ async function renderMenuUsuario() {
 }
 
 function obtenerJugadasFiltradas(){
-    const equipo=normalizarTexto((filtroEquipo?.value||"").trim());
+    const jornada = (filtroJornada.value || '').trim();
+    const equipo = normalizarTexto((filtroEquipo.value || '').trim());
+    const competicion = normalizarTexto((filtroCompeticion.value || '').trim());
+    const tipo = normalizarTexto((filtroTipo.value || '').trim());
 
-    return [...document.querySelectorAll(".bloque-jugada")].filter(b=>{
-        const equipoItem=normalizarTexto(b.dataset.equipo||"");
-        return !equipo || equipoItem.includes(equipo);
+    return [...document.querySelectorAll('.bloque-jugada')].filter(b=>{
+        const jornadaItem = (b.dataset.jornada || '').trim();
+        const equipoItem = normalizarTexto(b.dataset.equipo || '');
+        const competicionItem = normalizarTexto(b.dataset.competicion || '');
+        const tipoItem = normalizarTexto(b.dataset.tipo || '');
+
+        const okJornada = !jornada || jornadaItem === jornada;
+        const okEquipo = !equipo || equipoItem.includes(equipo);
+        const okCompeticion = !competicion || competicionItem === competicion;
+        const okTipo = !tipo || tipoItem === tipo;
+
+        return okJornada && okEquipo && okCompeticion && okTipo;
     });
 }
 
 function actualizarListadoJugadas(){
-    const todas=[...document.querySelectorAll(".bloque-jugada")];
+    const todas=[...document.querySelectorAll('.bloque-jugada')];
     const filtradas=obtenerJugadasFiltradas();
     const total=filtradas.length;
     const visibles=Math.min(limiteJugadasVisibles,total);
 
-    todas.forEach(b=>b.style.display="none");
-    filtradas.slice(0,visibles).forEach(b=>b.style.display="block");
+    todas.forEach(b=>b.style.display='none');
+    filtradas.slice(0,visibles).forEach(b=>b.style.display='block');
 
-    sinResultados.style.display=total===0 ? "block" : "none";
+    sinResultados.style.display=total===0 ? 'block' : 'none';
 
     if(total===0){
-        controlCargaJugadas.style.display="none";
-        contadorJugadas.textContent="Mostrando 0 de 0 jugadas";
+        controlCargaJugadas.style.display='none';
+        contadorJugadas.textContent='Mostrando 0 de 0 jugadas';
         return;
     }
 
-    controlCargaJugadas.style.display="flex";
+    controlCargaJugadas.style.display='flex';
     contadorJugadas.textContent=`Mostrando ${visibles} de ${total} jugadas`;
 
     const quedan=total-visibles;
 
     if(quedan<=0){
-        btnMostrarMasJugadas.style.display="none";
+        btnMostrarMasJugadas.style.display='none';
     }else{
-        btnMostrarMasJugadas.style.display="inline-flex";
+        btnMostrarMasJugadas.style.display='inline-flex';
         const siguiente=Math.min(JUGADAS_POR_BLOQUE,quedan);
         btnMostrarMasJugadas.textContent=`Mostrar ${siguiente} más`;
     }
@@ -4104,17 +4058,28 @@ function renderMarker(bloques){
         }
 
         // 1) CARGAR SIEMPRE LAS JUGADAS PÚBLICAS DESDE CSV
-        let jugadas = await loadPolemicasHistoricasDesdeCSV();
+        let jugadas = await loadJugadasPublicasDesdeCSV();
 
-        // Dataset histórico independiente del de la temporada.
+        // 2) SI ADEMÁS SE PUEDE, MEJORAR LOS VOTOS CON LOS DATOS ONLINE
+        try{
+            const dataOnline = await loadDataset();
+            renderMarker(dataOnline?.resumenBloques || []);
+            if (Array.isArray(dataOnline?.jugadas) && dataOnline.jugadas.length) {
+                const mapOnline = new Map(dataOnline.jugadas.map(j => [String(j.id), j]));
+                jugadas = jugadas.map(j => {
+                    const online = mapOnline.get(String(j.id));
+                    return online ? { ...j, ...online } : j;
+                });
+            }
+        }catch(e){
+            console.warn('No se pudieron mezclar los votos online. Se muestran igualmente las jugadas públicas.', e);
+            renderMarker([]);
+        }
 
-        jugadas = [...jugadas].sort((a,b)=>{
-            const fechaB=Date.parse(b.fecha||"");
-            const fechaA=Date.parse(a.fecha||"");
-            const anioB=parseInt(String(b.temporada||b.jornada||"").match(/\d{4}/)?.[0]||0);
-            const anioA=parseInt(String(a.temporada||a.jornada||"").match(/\d{4}/)?.[0]||0);
-            return (Number.isFinite(fechaB)?fechaB:anioB)-(Number.isFinite(fechaA)?fechaA:anioA);
-        });
+        jugadas = [...jugadas].sort((a,b)=>
+            (parseInt(b.jornada)||0)-(parseInt(a.jornada)||0) ||
+            (parseInt((b.minuto||'').match(/\d+/)?.[0]||0))-(parseInt((a.minuto||'').match(/\d+/)?.[0]||0))
+        );
 
         contenedorJugadas.innerHTML='';
 
@@ -4152,7 +4117,10 @@ function renderMarker(bloques){
             }
         }
 
+        filtroJornada.value = '';
         filtroEquipo.value = '';
+        filtroCompeticion.value = '';
+        filtroTipo.value = '';
         aplicarFiltros();
 
     }catch(e){
@@ -4173,17 +4141,20 @@ if (supabaseClient && supabaseClient.auth && typeof supabaseClient.auth.onAuthSt
 }
 
 if(btnMostrarMasJugadas){
-    btnMostrarMasJugadas.addEventListener("click",()=>{
+    btnMostrarMasJugadas.addEventListener('click',()=>{
         limiteJugadasVisibles+=JUGADAS_POR_BLOQUE;
         actualizarListadoJugadas();
     });
 }
 
-[filtroEquipo].forEach(f=>f&&f.addEventListener('change',aplicarFiltros));
+[filtroJornada,filtroEquipo,filtroCompeticion,filtroTipo].forEach(f=>f&&f.addEventListener('change',aplicarFiltros));
 
 if(btnLimpiarFiltros){
     btnLimpiarFiltros.onclick=()=>{
+        filtroJornada.value='';
         filtroEquipo.value='';
+        filtroCompeticion.value='';
+        filtroTipo.value='';
         aplicarFiltros();
     };
 }
