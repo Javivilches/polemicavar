@@ -2876,13 +2876,6 @@ h1,h2,h3,h4,
     }
 }
 
-
-/* MODO INMERSIVO VIDEO */
-.video-overlay{position:fixed;inset:0;background:#000;display:none;align-items:center;justify-content:center;z-index:99999}
-.video-overlay.activo{display:flex}
-.video-overlay iframe,.video-overlay video{width:100vw;height:100vh;border:0;background:#000}
-.cerrar-video-overlay{position:absolute;top:18px;right:18px;width:48px;height:48px;border:none;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;font-size:28px;cursor:pointer;z-index:10}
-
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -3443,7 +3436,6 @@ function initMedia(article){
     const btnMenos=article.querySelector('.zoom-menos');
     const btnReset=article.querySelector('.zoom-reset');
     const btnExpandir=article.querySelector('.zoom-expandir');
-    const btnVideoFullscreen=article.querySelector('.video-fullscreen');
     let escala=1, tipoActual='', media=[];
 
     function apply(){
@@ -3483,15 +3475,6 @@ function initMedia(article){
     btnMenos.onclick=()=>{ if(tipoActual!=='imagen') return; escala=Math.max(escala-0.2,1); apply(); };
     btnReset.onclick=()=>{ escala=1; apply(); };
     btnExpandir.onclick=()=>{ const img=visor.querySelector('img'); if(img&&img.src) openModal(img.src); };
-    btnVideoFullscreen.onclick=()=>{
-        if(tipoActual!=='video') return;
-        const iframe=visor.querySelector('iframe');
-        const video=visor.querySelector('video');
-        videoOverlayContenido.innerHTML='';
-        if(iframe){videoOverlayContenido.innerHTML=iframe.outerHTML;}
-        else if(video){videoOverlayContenido.appendChild(video.cloneNode(true));}
-        videoOverlay.classList.add('activo');
-    };
 
     article.cargarMedia=function(items){
         media=items||[];
@@ -3516,12 +3499,6 @@ function initMedia(article){
         render(0);
     };
 }
-
-
-const videoOverlay=document.getElementById("videoOverlay");
-const videoOverlayContenido=document.getElementById("videoOverlayContenido");
-document.getElementById("cerrarVideoOverlay").onclick=()=>{videoOverlay.classList.remove("activo");videoOverlayContenido.innerHTML="";};
-videoOverlay.onclick=(e)=>{if(e.target===videoOverlay){videoOverlay.classList.remove("activo");videoOverlayContenido.innerHTML="";}};
 
 function createInitialComments(j){
     function norm(s){
@@ -4233,7 +4210,6 @@ function createArticle(jugada){
                         <button class="zoom-btn zoom-menos" type="button">−</button>
                         <button class="zoom-btn zoom-reset" type="button">100%</button>
                         <button class="zoom-btn zoom-expandir" type="button">Ampliar</button>
-                        <button class="zoom-btn video-fullscreen" type="button">⛶</button>
                     </div>
                 </div>
                 <div class="galeria-miniaturas" style="display:none;"></div>
@@ -4632,11 +4608,5 @@ window.addEventListener("hashchange",()=>{
 });
 
 </script>
-
-<div id="videoOverlay" class="video-overlay">
-<button id="cerrarVideoOverlay" class="cerrar-video-overlay">✕</button>
-<div id="videoOverlayContenido"></div>
-</div>
-
 </body>
 </html>
