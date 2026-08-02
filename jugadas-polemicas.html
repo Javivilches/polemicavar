@@ -2861,6 +2861,71 @@ h1,h2,h3,h4,
     }
 }
 
+
+/* BOTÓN DE PANTALLA COMPLETA PARA LOS VÍDEOS */
+.video-principal-wrap{position:relative;}
+
+.btn-pantalla-completa-video{
+    position:absolute;
+    right:10px;
+    bottom:10px;
+    z-index:20;
+    width:42px;
+    height:42px;
+    padding:0;
+    border:1px solid rgba(255,255,255,.30);
+    border-radius:10px;
+    background:rgba(5,12,24,.82);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    box-shadow:0 6px 18px rgba(0,0,0,.34);
+    backdrop-filter:blur(5px);
+    -webkit-backdrop-filter:blur(5px);
+}
+
+.btn-pantalla-completa-video svg{
+    width:22px;
+    height:22px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    pointer-events:none;
+}
+
+.video-principal-wrap:fullscreen,
+.video-principal-wrap:-webkit-full-screen{
+    width:100vw !important;
+    height:100vh !important;
+    max-width:none !important;
+    max-height:none !important;
+    aspect-ratio:auto !important;
+    border-radius:0 !important;
+    background:#000 !important;
+}
+
+.video-principal-wrap:fullscreen iframe,
+.video-principal-wrap:fullscreen video,
+.video-principal-wrap:-webkit-full-screen iframe,
+.video-principal-wrap:-webkit-full-screen video{
+    width:100% !important;
+    height:100% !important;
+    object-fit:contain !important;
+}
+
+@media(max-width:768px){
+    .btn-pantalla-completa-video{
+        right:8px;
+        bottom:8px;
+        width:40px;
+        height:40px;
+    }
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -3193,12 +3258,12 @@ function construirNodoVideo(url){
     if(lower.includes('youtube.com')||lower.includes('youtu.be')){
         const id=extraerYouTubeId(limpia);
         if(id){
-            return `<div class="video-principal-wrap"><iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&playsinline=1&controls=0&iv_load_policy=3&disablekb=1" title="Vídeo de la jugada" loading="lazy" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+            return `<div class="video-principal-wrap"><iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&playsinline=1&controls=0&iv_load_policy=3&disablekb=1" title="Vídeo de la jugada" loading="lazy" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe><button class="btn-pantalla-completa-video" type="button" aria-label="Ver vídeo en pantalla completa" title="Pantalla completa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"></path></svg></button></div>`;
         }
     }
 
     if(/\.(mp4|webm|ogg)(\?.*)?$/i.test(limpia)){
-        return `<div class="video-principal-wrap"><video controls preload="metadata" playsinline><source src="${escapeHtml(limpia)}"></video></div>`;
+        return `<div class="video-principal-wrap"><video controls preload="metadata" playsinline><source src="${escapeHtml(limpia)}"></video><button class="btn-pantalla-completa-video" type="button" aria-label="Ver vídeo en pantalla completa" title="Pantalla completa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"></path></svg></button></div>`;
     }
 
     if(lower.includes('tiktok.com')){
@@ -3207,6 +3272,46 @@ function construirNodoVideo(url){
 
     return `<div class="video-principal-wrap" style="display:flex;align-items:center;justify-content:center;color:white;padding:20px;text-align:center;"><div><a href="${escapeHtml(limpia)}" target="_blank" rel="noopener noreferrer" style="color:#8eb8ff;font-weight:bold;">Abrir vídeo</a></div></div>`;
 }
+
+
+async function alternarPantallaCompletaVideo(contenedor){
+    if(!contenedor) return;
+
+    const activo=document.fullscreenElement || document.webkitFullscreenElement;
+
+    try{
+        if(activo){
+            if(document.exitFullscreen){
+                await document.exitFullscreen();
+            }else if(document.webkitExitFullscreen){
+                document.webkitExitFullscreen();
+            }
+            return;
+        }
+
+        if(contenedor.requestFullscreen){
+            await contenedor.requestFullscreen();
+        }else if(contenedor.webkitRequestFullscreen){
+            contenedor.webkitRequestFullscreen();
+        }else{
+            alert("Este navegador no permite activar la pantalla completa desde este botón.");
+        }
+    }catch(error){
+        console.error("No se pudo activar la pantalla completa:",error);
+    }
+}
+
+document.addEventListener("click",(evento)=>{
+    const boton=evento.target.closest(".btn-pantalla-completa-video");
+    if(!boton) return;
+
+    evento.preventDefault();
+    evento.stopPropagation();
+
+    alternarPantallaCompletaVideo(
+        boton.closest(".video-principal-wrap")
+    );
+});
 
 const modalImagen=document.getElementById('modalImagen');
 const modalImagenImg=document.getElementById('modalImagenImg');
