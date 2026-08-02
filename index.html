@@ -4127,6 +4127,188 @@ body{
     position:relative;
 }
 
+
+
+/* =========================================================
+   CONTROLES PROPIOS DEL VÍDEO
+   ========================================================= */
+.video-principal-wrap{
+    position:relative;
+}
+
+.controles-video-propios{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:18;
+    min-height:58px;
+    padding:18px 9px 8px;
+    box-sizing:border-box;
+    display:grid;
+    grid-template-columns:auto minmax(80px,1fr) auto auto auto;
+    align-items:center;
+    gap:8px;
+    color:#fff;
+    background:linear-gradient(
+        180deg,
+        transparent 0%,
+        rgba(0,0,0,.34) 22%,
+        rgba(0,0,0,.88) 100%
+    );
+    font-family:"Roboto Condensed",Arial,sans-serif;
+}
+
+.tiempo-video{
+    min-width:36px;
+    font-size:12px;
+    line-height:1;
+    color:#fff;
+    text-align:center;
+    text-shadow:0 1px 4px rgba(0,0,0,.85);
+    font-variant-numeric:tabular-nums;
+}
+
+.barra-progreso-video{
+    width:100%;
+    height:22px;
+    margin:0;
+    padding:0;
+    cursor:pointer;
+    accent-color:#d9ab43;
+    touch-action:none;
+}
+
+.velocidad-video-wrap{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    font-size:12px;
+    white-space:nowrap;
+}
+
+.velocidad-video{
+    height:32px;
+    padding:0 6px;
+    border:1px solid rgba(255,255,255,.28);
+    border-radius:8px;
+    background:rgba(5,12,24,.90);
+    color:#fff;
+    font-family:"Roboto Condensed",Arial,sans-serif;
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.velocidad-video option{
+    background:#0b1628;
+    color:#fff;
+}
+
+.btn-pantalla-completa-video{
+    width:36px;
+    height:34px;
+    padding:0;
+    border:1px solid rgba(255,255,255,.30);
+    border-radius:8px;
+    background:rgba(5,12,24,.82);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+}
+
+.btn-pantalla-completa-video:hover{
+    background:rgba(16,36,68,.94);
+}
+
+.btn-pantalla-completa-video svg{
+    width:19px;
+    height:19px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    pointer-events:none;
+}
+
+.video-principal-wrap:fullscreen,
+.video-principal-wrap:-webkit-full-screen{
+    width:100vw !important;
+    height:100vh !important;
+    max-width:none !important;
+    max-height:none !important;
+    aspect-ratio:auto !important;
+    border-radius:0 !important;
+    background:#000 !important;
+}
+
+.video-principal-wrap:fullscreen iframe,
+.video-principal-wrap:fullscreen video,
+.video-principal-wrap:-webkit-full-screen iframe,
+.video-principal-wrap:-webkit-full-screen video{
+    width:100% !important;
+    height:100% !important;
+    object-fit:contain !important;
+}
+
+.video-principal-wrap:fullscreen .controles-video-propios,
+.video-principal-wrap:-webkit-full-screen .controles-video-propios{
+    min-height:72px;
+    padding:26px 18px 12px;
+    grid-template-columns:auto minmax(120px,1fr) auto auto auto;
+    gap:12px;
+}
+
+.video-principal-wrap:fullscreen .tiempo-video,
+.video-principal-wrap:fullscreen .velocidad-video-wrap,
+.video-principal-wrap:-webkit-full-screen .tiempo-video,
+.video-principal-wrap:-webkit-full-screen .velocidad-video-wrap{
+    font-size:14px;
+}
+
+.video-principal-wrap:fullscreen .velocidad-video,
+.video-principal-wrap:-webkit-full-screen .velocidad-video{
+    height:38px;
+    font-size:14px;
+}
+
+@media(max-width:768px){
+    .controles-video-propios{
+        min-height:54px;
+        padding:17px 7px 7px;
+        grid-template-columns:auto minmax(55px,1fr) auto auto;
+        gap:5px;
+    }
+
+    .tiempo-video{
+        min-width:31px;
+        font-size:10px;
+    }
+
+    .duracion-total-video{
+        display:none;
+    }
+
+    .velocidad-video-wrap > span{
+        display:none;
+    }
+
+    .velocidad-video{
+        width:62px;
+        height:30px;
+        padding:0 3px;
+        font-size:11px;
+    }
+
+    .btn-pantalla-completa-video{
+        width:34px;
+        height:32px;
+    }
+}
+
 </style>
 
 </head>
@@ -4317,12 +4499,64 @@ function construirNodoVideo(url){
     if(lower.includes('youtube.com')||lower.includes('youtu.be')){
         const id=extraerYouTubeId(limpia);
         if(id){
-            return `<div class="video-principal-wrap video-youtube-limpio"><iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&playsinline=1&controls=0&iv_load_policy=3&disablekb=1" title="Vídeo de la jugada" loading="lazy" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+            const origen=window.location.origin && window.location.origin!=="null"
+                ? `&origin=${encodeURIComponent(window.location.origin)}`
+                : "";
+
+            return `<div class="video-principal-wrap video-youtube-limpio">
+                <iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&playsinline=1&controls=0&iv_load_policy=3&disablekb=1&enablejsapi=1${origen}" title="Vídeo de la jugada" loading="lazy" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>
+
+                <div class="controles-video-propios">
+                    <span class="tiempo-video tiempo-actual-video">0:00</span>
+
+                    <input class="barra-progreso-video"
+                           type="range"
+                           min="0"
+                           max="100"
+                           step="0.1"
+                           value="0"
+                           aria-label="Progreso del vídeo">
+
+                    <span class="tiempo-video duracion-total-video">0:00</span>
+
+                    <label class="velocidad-video-wrap">
+                        <span>Velocidad</span>
+                        <select class="velocidad-video" aria-label="Velocidad de reproducción">
+                            <option value="0.25">×0,25</option>
+                            <option value="0.5">×0,5</option>
+                            <option value="1" selected>×1</option>
+                        </select>
+                    </label>
+
+                    <button class="btn-pantalla-completa-video"
+                            type="button"
+                            aria-label="Ver vídeo en pantalla completa"
+                            title="Pantalla completa">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>`;
         }
     }
 
     if(/\.(mp4|webm|ogg)(\?.*)?$/i.test(limpia)){
-        return `<div class="video-principal-wrap"><video controls preload="metadata" playsinline><source src="${escapeHtml(limpia)}"></video></div>`;
+        return `<div class="video-principal-wrap">
+            <video controls preload="metadata" playsinline>
+                <source src="${escapeHtml(limpia)}">
+            </video>
+
+            <button class="btn-pantalla-completa-video"
+                    type="button"
+                    aria-label="Ver vídeo en pantalla completa"
+                    title="Pantalla completa"
+                    style="position:absolute;right:10px;bottom:10px;z-index:20;">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"></path>
+                </svg>
+            </button>
+        </div>`;
     }
 
     if(lower.includes('tiktok.com')){
@@ -4331,6 +4565,315 @@ function construirNodoVideo(url){
 
     return `<div class="video-principal-wrap" style="display:flex;align-items:center;justify-content:center;color:white;padding:20px;text-align:center;"><div><a href="${escapeHtml(limpia)}" target="_blank" rel="noopener noreferrer" style="color:#8eb8ff;font-weight:bold;">Abrir vídeo</a></div></div>`;
 }
+
+
+let promesaYouTubeIframeAPI=null;
+
+function cargarYouTubeIframeAPI(){
+    if(window.YT && typeof window.YT.Player==="function"){
+        return Promise.resolve(window.YT);
+    }
+
+    if(promesaYouTubeIframeAPI){
+        return promesaYouTubeIframeAPI;
+    }
+
+    promesaYouTubeIframeAPI=new Promise((resolve,reject)=>{
+        const callbackAnterior=window.onYouTubeIframeAPIReady;
+
+        window.onYouTubeIframeAPIReady=()=>{
+            try{
+                if(typeof callbackAnterior==="function"){
+                    callbackAnterior();
+                }
+            }catch(e){}
+
+            resolve(window.YT);
+        };
+
+        let script=document.querySelector('script[data-youtube-iframe-api="true"]');
+
+        if(!script){
+            script=document.createElement("script");
+            script.src="https://www.youtube.com/iframe_api";
+            script.async=true;
+            script.dataset.youtubeIframeApi="true";
+            script.onerror=()=>reject(new Error("No se pudo cargar la API de YouTube"));
+            document.head.appendChild(script);
+        }
+
+        const comprobar=setInterval(()=>{
+            if(window.YT && typeof window.YT.Player==="function"){
+                clearInterval(comprobar);
+                resolve(window.YT);
+            }
+        },100);
+
+        setTimeout(()=>{
+            clearInterval(comprobar);
+
+            if(!(window.YT && typeof window.YT.Player==="function")){
+                reject(new Error("La API de YouTube tardó demasiado en responder"));
+            }
+        },12000);
+    });
+
+    return promesaYouTubeIframeAPI;
+}
+
+function formatearTiempoVideo(segundos){
+    const total=Math.max(0,Math.floor(Number(segundos)||0));
+    const horas=Math.floor(total/3600);
+    const minutos=Math.floor((total%3600)/60);
+    const segundosRestantes=total%60;
+
+    if(horas>0){
+        return `${horas}:${String(minutos).padStart(2,"0")}:${String(segundosRestantes).padStart(2,"0")}`;
+    }
+
+    return `${minutos}:${String(segundosRestantes).padStart(2,"0")}`;
+}
+
+function limpiarControlesVideo(visor){
+    if(typeof visor?._limpiarControlesVideo==="function"){
+        visor._limpiarControlesVideo();
+    }
+
+    if(visor){
+        visor._limpiarControlesVideo=null;
+    }
+}
+
+async function inicializarControlesVideo(contenedor){
+    if(!contenedor) return;
+
+    const visor=contenedor.closest(".visor-media");
+    const iframe=contenedor.querySelector("iframe");
+    const barra=contenedor.querySelector(".barra-progreso-video");
+    const tiempoActual=contenedor.querySelector(".tiempo-actual-video");
+    const duracionTotal=contenedor.querySelector(".duracion-total-video");
+    const selectorVelocidad=contenedor.querySelector(".velocidad-video");
+
+    if(!iframe || !barra || !tiempoActual || !duracionTotal || !selectorVelocidad){
+        return;
+    }
+
+    let player=null;
+    let intervalo=null;
+    let arrastrando=false;
+    let destruido=false;
+    let estabaReproduciendoAntesDeArrastrar=false;
+
+    function obtenerDuracion(){
+        try{
+            return Number(player?.getDuration?.()||0);
+        }catch(e){
+            return 0;
+        }
+    }
+
+    function obtenerSegundoSeleccionado(){
+        const duracion=obtenerDuracion();
+        return duracion*(Number(barra.value)||0)/100;
+    }
+
+    function actualizarTiempo(){
+        if(!player || destruido || arrastrando) return;
+
+        try{
+            const duracion=obtenerDuracion();
+            const actual=Number(player.getCurrentTime?.()||0);
+
+            if(duracion>0){
+                barra.value=String(Math.min(100,Math.max(0,(actual/duracion)*100)));
+            }
+
+            tiempoActual.textContent=formatearTiempoVideo(actual);
+            duracionTotal.textContent=formatearTiempoVideo(duracion);
+        }catch(e){}
+    }
+
+    function actualizarVelocidades(){
+        if(!player || destruido) return;
+
+        try{
+            const disponibles=(player.getAvailablePlaybackRates?.()||[1]).map(Number);
+            const velocidadActual=Number(player.getPlaybackRate?.()||1);
+
+            [...selectorVelocidad.options].forEach(opcion=>{
+                const valor=Number(opcion.value);
+                opcion.disabled=!disponibles.includes(valor);
+            });
+
+            if([...selectorVelocidad.options].some(opcion=>Number(opcion.value)===velocidadActual)){
+                selectorVelocidad.value=String(velocidadActual);
+            }else{
+                selectorVelocidad.value="1";
+            }
+        }catch(e){}
+    }
+
+    const comenzarDeslizamiento=()=>{
+        arrastrando=true;
+
+        try{
+            const estado=player?.getPlayerState?.();
+            estabaReproduciendoAntesDeArrastrar=
+                estado===window.YT?.PlayerState?.PLAYING ||
+                estado===window.YT?.PlayerState?.BUFFERING;
+        }catch(e){
+            estabaReproduciendoAntesDeArrastrar=false;
+        }
+    };
+
+    const moverDeslizador=()=>{
+        arrastrando=true;
+        const segundo=obtenerSegundoSeleccionado();
+        tiempoActual.textContent=formatearTiempoVideo(segundo);
+    };
+
+    const terminarDeslizamiento=()=>{
+        if(!player) return;
+
+        const segundo=obtenerSegundoSeleccionado();
+
+        try{
+            player.seekTo(segundo,true);
+
+            if(estabaReproduciendoAntesDeArrastrar){
+                setTimeout(()=>{
+                    try{
+                        player.playVideo();
+                    }catch(e){}
+                },80);
+            }
+        }catch(e){}
+
+        arrastrando=false;
+        estabaReproduciendoAntesDeArrastrar=false;
+
+        setTimeout(actualizarTiempo,120);
+    };
+
+    const cambiarVelocidad=()=>{
+        const velocidad=Number(selectorVelocidad.value)||1;
+
+        try{
+            player?.setPlaybackRate?.(velocidad);
+        }catch(e){}
+
+        setTimeout(actualizarVelocidades,180);
+    };
+
+    barra.addEventListener("pointerdown",comenzarDeslizamiento);
+    barra.addEventListener("touchstart",comenzarDeslizamiento,{passive:true});
+    barra.addEventListener("input",moverDeslizador);
+    barra.addEventListener("change",terminarDeslizamiento);
+    barra.addEventListener("pointerup",terminarDeslizamiento);
+    barra.addEventListener("pointercancel",terminarDeslizamiento);
+    barra.addEventListener("touchend",terminarDeslizamiento,{passive:true});
+    barra.addEventListener("keyup",evento=>{
+        if(["ArrowLeft","ArrowRight","Home","End","PageUp","PageDown"].includes(evento.key)){
+            terminarDeslizamiento();
+        }
+    });
+
+    selectorVelocidad.addEventListener("change",cambiarVelocidad);
+
+    try{
+        const YT=await cargarYouTubeIframeAPI();
+
+        if(destruido || !document.documentElement.contains(contenedor)){
+            return;
+        }
+
+        player=new YT.Player(iframe,{
+            events:{
+                onReady:()=>{
+                    actualizarTiempo();
+                    actualizarVelocidades();
+                    intervalo=setInterval(actualizarTiempo,250);
+                },
+                onStateChange:()=>{
+                    actualizarTiempo();
+                    actualizarVelocidades();
+                },
+                onPlaybackRateChange:(evento)=>{
+                    const velocidad=Number(evento?.data||1);
+
+                    if([...selectorVelocidad.options].some(opcion=>Number(opcion.value)===velocidad)){
+                        selectorVelocidad.value=String(velocidad);
+                    }
+                }
+            }
+        });
+    }catch(error){
+        console.error("No se pudieron iniciar los controles del vídeo:",error);
+        barra.disabled=true;
+        selectorVelocidad.disabled=true;
+    }
+
+    if(visor){
+        visor._limpiarControlesVideo=()=>{
+            destruido=true;
+
+            if(intervalo){
+                clearInterval(intervalo);
+                intervalo=null;
+            }
+
+            barra.removeEventListener("pointerdown",comenzarDeslizamiento);
+            barra.removeEventListener("input",moverDeslizador);
+            barra.removeEventListener("change",terminarDeslizamiento);
+            barra.removeEventListener("pointerup",terminarDeslizamiento);
+            barra.removeEventListener("pointercancel",terminarDeslizamiento);
+            selectorVelocidad.removeEventListener("change",cambiarVelocidad);
+
+            try{
+                player?.destroy?.();
+            }catch(e){}
+        };
+    }
+}
+
+async function alternarPantallaCompletaVideo(contenedor){
+    if(!contenedor) return;
+
+    const activo=document.fullscreenElement || document.webkitFullscreenElement;
+
+    try{
+        if(activo){
+            if(document.exitFullscreen){
+                await document.exitFullscreen();
+            }else if(document.webkitExitFullscreen){
+                document.webkitExitFullscreen();
+            }
+            return;
+        }
+
+        if(contenedor.requestFullscreen){
+            await contenedor.requestFullscreen();
+        }else if(contenedor.webkitRequestFullscreen){
+            contenedor.webkitRequestFullscreen();
+        }else{
+            alert("Este navegador no permite activar la pantalla completa desde este botón.");
+        }
+    }catch(error){
+        console.error("No se pudo activar la pantalla completa:",error);
+    }
+}
+
+document.addEventListener("click",(evento)=>{
+    const boton=evento.target.closest(".btn-pantalla-completa-video");
+    if(!boton) return;
+
+    evento.preventDefault();
+    evento.stopPropagation();
+
+    alternarPantallaCompletaVideo(
+        boton.closest(".video-principal-wrap")
+    );
+});
 
 const modalImagen=document.getElementById('modalImagen');
 const modalImagenImg=document.getElementById('modalImagenImg');
@@ -4404,10 +4947,14 @@ function initMedia(article){
         [...galeria.children].forEach(m=>m.classList.remove('activa'));
         if(galeria.children[i]) galeria.children[i].classList.add('activa');
         escala=1;
+        limpiarControlesVideo(visor);
 
         if(item.tipo==='video'){
             tipoActual='video';
             visor.innerHTML=construirNodoVideo(item.url);
+            inicializarControlesVideo(
+                visor.querySelector(".video-principal-wrap")
+            );
             updateButtons();
             return;
         }
