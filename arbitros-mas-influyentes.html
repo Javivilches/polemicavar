@@ -3083,11 +3083,12 @@ h1,h2,h3,h4,
 
 .barra-progreso-video{
     width:100%;
-    height:18px;
+    height:22px;
     margin:0;
     padding:0;
     cursor:pointer;
     accent-color:#d9ab43;
+    touch-action:none;
 }
 
 .velocidad-video-wrap{
@@ -3099,14 +3100,15 @@ h1,h2,h3,h4,
 }
 
 .velocidad-video{
-    height:32px;
-    padding:0 6px;
+    width:58px;
+    height:27px;
+    padding:0 3px;
     border:1px solid rgba(255,255,255,.28);
-    border-radius:8px;
+    border-radius:6px;
     background:rgba(5,12,24,.90);
     color:#fff;
     font-family:"Roboto Condensed",Arial,sans-serif;
-    font-size:12px;
+    font-size:10px;
     font-weight:700;
     cursor:pointer;
 }
@@ -3174,10 +3176,10 @@ h1,h2,h3,h4,
     }
 
     .velocidad-video{
-        width:62px;
-        height:30px;
-        padding:0 3px;
-        font-size:11px;
+        width:54px;
+        height:27px;
+        padding:0 2px;
+        font-size:10px;
     }
 
     .controles-video-propios .btn-pantalla-completa-video{
@@ -3725,6 +3727,7 @@ async function inicializarControlesVideo(contenedor){
     let intervalo=null;
     let arrastrando=false;
     let destruido=false;
+    let estabaReproduciendoAntesDeArrastrar=false;
 
     function obtenerDuracion(){
         try{
@@ -3734,18 +3737,25 @@ async function inicializarControlesVideo(contenedor){
         }
     }
 
+    function obtenerSegundoSeleccionado(){
+        const duracion=obtenerDuracion();
+        return duracion*(Number(barra.value)||0)/100;
+    }
+
     function actualizarTiempo(){
-        if(!player || destruido) return;
+        if(!player || destruido || arrastrando) return;
 
         try{
             const duracion=obtenerDuracion();
             const actual=Number(player.getCurrentTime?.()||0);
 
-            if(!arrastrando && duracion>0){
-                barra.value=String(Math.min(100,Math.max(0,(actual/duracion)*100)));
-                tiempoActual.textContent=formatearTiempoVideo(actual);
+            if(duracion>0){
+                barra.value=String(
+                    Math.min(100,Math.max(0,(actual/duracion)*100))
+                );
             }
 
+            tiempoActual.textContent=formatearTiempoVideo(actual);
             duracionTotal.textContent=formatearTiempoVideo(duracion);
         }catch(e){}
     }
@@ -3762,7 +3772,9 @@ async function inicializarControlesVideo(contenedor){
                 opcion.disabled=!disponibles.includes(valor);
             });
 
-            if([...selectorVelocidad.options].some(opcion=>Number(opcion.value)===velocidadActual)){
+            if([...selectorVelocidad.options].some(
+                opcion=>Number(opcion.value)===velocidadActual
+            )){
                 selectorVelocidad.value=String(velocidadActual);
             }else{
                 selectorVelocidad.value="1";
@@ -3770,37 +3782,51 @@ async function inicializarControlesVideo(contenedor){
         }catch(e){}
     }
 
-    function calcularSegundoSeleccionado(){
-        const duracion=obtenerDuracion();
-        return duracion*(Number(barra.value)||0)/100;
-    }
-
-    const alEmpezarArrastre=()=>{
+    const comenzarDeslizamiento=()=>{
         arrastrando=true;
-    };
-
-    const alMoverBarra=()=>{
-        arrastrando=true;
-        const segundo=calcularSegundoSeleccionado();
-        tiempoActual.textContent=formatearTiempoVideo(segundo);
 
         try{
-            player?.seekTo?.(segundo,false);
-        }catch(e){}
+            const estado=player?.getPlayerState?.();
+
+            estabaReproduciendoAntesDeArrastrar=
+                estado===window.YT?.PlayerState?.PLAYING ||
+                estado===window.YT?.PlayerState?.BUFFERING;
+        }catch(e){
+            estabaReproduciendoAntesDeArrastrar=false;
+        }
     };
 
-    const alTerminarArrastre=()=>{
-        const segundo=calcularSegundoSeleccionado();
+    const moverDeslizador=()=>{
+        arrastrando=true;
+        tiempoActual.textContent=formatearTiempoVideo(
+            obtenerSegundoSeleccionado()
+        );
+    };
+
+    const terminarDeslizamiento=()=>{
+        if(!player || !arrastrando) return;
+
+        const segundo=obtenerSegundoSeleccionado();
 
         try{
-            player?.seekTo?.(segundo,true);
+            player.seekTo(segundo,true);
+
+            if(estabaReproduciendoAntesDeArrastrar){
+                setTimeout(()=>{
+                    try{
+                        player.playVideo();
+                    }catch(e){}
+                },80);
+            }
         }catch(e){}
 
         arrastrando=false;
-        actualizarTiempo();
+        estabaReproduciendoAntesDeArrastrar=false;
+
+        setTimeout(actualizarTiempo,120);
     };
 
-    const alCambiarVelocidad=()=>{
+    const cambiarVelocidad=()=>{
         const velocidad=Number(selectorVelocidad.value)||1;
 
         try{
@@ -3810,11 +3836,29 @@ async function inicializarControlesVideo(contenedor){
         setTimeout(actualizarVelocidades,180);
     };
 
-    barra.addEventListener("pointerdown",alEmpezarArrastre);
-    barra.addEventListener("input",alMoverBarra);
-    barra.addEventListener("change",alTerminarArrastre);
-    barra.addEventListener("pointerup",alTerminarArrastre);
-    selectorVelocidad.addEventListener("change",alCambiarVelocidad);
+    barra.addEventListener("pointerdown",comenzarDeslizamiento);
+    barra.addEventListener("input",moverDeslizador);
+    barra.addEventListener("change",terminarDeslizamiento);
+    barra.addEventListener("pointerup",terminarDeslizamiento);
+    barra.addEventListener("pointercancel",terminarDeslizamiento);
+
+    barra.addEventListener("keyup",evento=>{
+        if([
+            "ArrowLeft",
+            "ArrowRight",
+            "Home",
+            "End",
+            "PageUp",
+            "PageDown"
+        ].includes(evento.key)){
+            if(!arrastrando){
+                comenzarDeslizamiento();
+            }
+            terminarDeslizamiento();
+        }
+    });
+
+    selectorVelocidad.addEventListener("change",cambiarVelocidad);
 
     try{
         const YT=await cargarYouTubeIframeAPI();
@@ -3828,7 +3872,6 @@ async function inicializarControlesVideo(contenedor){
                 onReady:()=>{
                     actualizarTiempo();
                     actualizarVelocidades();
-
                     intervalo=setInterval(actualizarTiempo,250);
                 },
                 onStateChange:()=>{
@@ -3838,7 +3881,9 @@ async function inicializarControlesVideo(contenedor){
                 onPlaybackRateChange:(evento)=>{
                     const velocidad=Number(evento?.data||1);
 
-                    if([...selectorVelocidad.options].some(opcion=>Number(opcion.value)===velocidad)){
+                    if([...selectorVelocidad.options].some(
+                        opcion=>Number(opcion.value)===velocidad
+                    )){
                         selectorVelocidad.value=String(velocidad);
                     }
                 }
@@ -3859,11 +3904,12 @@ async function inicializarControlesVideo(contenedor){
                 intervalo=null;
             }
 
-            barra.removeEventListener("pointerdown",alEmpezarArrastre);
-            barra.removeEventListener("input",alMoverBarra);
-            barra.removeEventListener("change",alTerminarArrastre);
-            barra.removeEventListener("pointerup",alTerminarArrastre);
-            selectorVelocidad.removeEventListener("change",alCambiarVelocidad);
+            barra.removeEventListener("pointerdown",comenzarDeslizamiento);
+            barra.removeEventListener("input",moverDeslizador);
+            barra.removeEventListener("change",terminarDeslizamiento);
+            barra.removeEventListener("pointerup",terminarDeslizamiento);
+            barra.removeEventListener("pointercancel",terminarDeslizamiento);
+            selectorVelocidad.removeEventListener("change",cambiarVelocidad);
 
             try{
                 player?.destroy?.();
