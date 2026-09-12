@@ -1797,6 +1797,80 @@ h1,h2,h3,h4,
     }
 }
 
+/* COMENTARIOS DE VOZ INTEGRADOS EN EL MÓDULO DEL INDEX */
+.audio-comment-box{
+    margin:12px 0 0 !important;
+}
+
+.audio-comment-title{
+    margin-bottom:8px;
+    color:#42536f;
+    font-size:13px;
+    font-weight:700;
+}
+
+.audio-comment-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.btn-audio-grabar,
+.btn-audio-parar,
+.btn-audio-enviar{
+    border:none;
+    padding:8px 12px;
+    color:#fff;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.btn-audio-grabar{
+    background:#c62828;
+}
+
+.btn-audio-parar{
+    background:#555;
+}
+
+.btn-audio-enviar{
+    background:linear-gradient(135deg,#174d9c,#2567c7);
+}
+
+.btn-audio-grabar:disabled,
+.btn-audio-parar:disabled,
+.btn-audio-enviar:disabled{
+    opacity:.5;
+    cursor:default;
+}
+
+.audio-comment-status{
+    margin-top:8px;
+    color:#667791;
+    font-size:12px;
+}
+
+.audio-comment-preview{
+    width:100%;
+    margin-top:8px;
+}
+
+.comentario-audio{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.comentario-audio span{
+    color:#1f4fb0;
+    font-weight:700;
+}
+
+.comentario-audio audio{
+    width:min(100%,320px);
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1905,6 +1979,7 @@ const loadDataset = DecisionVarAPI.loadDataset || (async () => ({ jugadas: [] })
 const loadJugadasPublicas = DecisionVarAPI.loadJugadasPublicas || (async () => []);
 const getComments = DecisionVarAPI.getComments || (async () => []);
 const addComment = DecisionVarAPI.addComment || (async () => { throw new Error("No disponible"); });
+const addAudioComment = DecisionVarAPI.addAudioComment || (async () => { throw new Error("No disponible"); });
 const addVote = DecisionVarAPI.addVote || (async () => { throw new Error("No disponible"); });
 const getUserVote = DecisionVarAPI.getUserVote || (() => "");
 const setUserVote = DecisionVarAPI.setUserVote || (() => {});
@@ -2297,7 +2372,20 @@ function renderComments(article, comments, visibles){
     ordenados.slice(0, visibles).forEach(c=>{
         const div=document.createElement('div');
         div.className='comentario visible';
-        div.innerHTML=`<div style="font-size:12px;color:#667791;font-weight:700;margin-bottom:4px;">${escapeHtml(c.autor||'Usuario')} ${c.created_at ? '· '+escapeHtml(formatDate(c.created_at)) : ''}</div>${escapeHtml(c.texto||'')}`;
+
+        const meta = `<div style="font-size:12px;color:#667791;font-weight:700;margin-bottom:4px;">${escapeHtml(c.autor||'Usuario')} ${c.created_at ? '· '+escapeHtml(formatDate(c.created_at)) : ''}</div>`;
+
+        if((c.tipo || '') === 'audio' && c.audio_url){
+            div.innerHTML = meta + `
+                <div class="comentario-audio">
+                    <span>🎤 Comentario de voz</span>
+                    <audio controls preload="none" src="${escapeHtml(c.audio_url)}"></audio>
+                </div>
+            `;
+        }else{
+            div.innerHTML = meta + escapeHtml(c.texto||'');
+        }
+
         list.appendChild(div);
     });
 
@@ -2319,6 +2407,18 @@ async function initComments(article, jugada){
 
     const btnPublicar = article.querySelector('.boton-comentar');
     const btnMas = article.querySelector('.btn-mostrar-mas');
+    const btnGrabar = article.querySelector('.btn-audio-grabar');
+    const btnParar = article.querySelector('.btn-audio-parar');
+    const btnEnviarAudio = article.querySelector('.btn-audio-enviar');
+    const audioPreview = article.querySelector('.audio-comment-preview');
+    const audioStatus = article.querySelector('.audio-comment-status');
+
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let audioBlobFinal = null;
+    let audioDuracionSeg = 0;
+    let audioInicio = 0;
+    let audioUrlTemporal = '';
 
     if(btnPublicar){
         btnPublicar.onclick=async()=>{
@@ -2338,6 +2438,100 @@ async function initComments(article, jugada){
         };
     }
 
+    btnGrabar.onclick=async()=>{
+        if(!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined'){
+            alert('Este navegador no permite grabar comentarios de voz.');
+            return;
+        }
+
+        try{
+            const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+            const mimeType=
+                MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus' :
+                MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' :
+                '';
+
+            mediaRecorder=mimeType ? new MediaRecorder(stream,{mimeType}) : new MediaRecorder(stream);
+            audioChunks=[];
+            audioBlobFinal=null;
+            audioDuracionSeg=0;
+            audioInicio=Date.now();
+
+            if(audioUrlTemporal){
+                URL.revokeObjectURL(audioUrlTemporal);
+                audioUrlTemporal='';
+            }
+
+            mediaRecorder.ondataavailable=ev=>{
+                if(ev.data && ev.data.size>0) audioChunks.push(ev.data);
+            };
+
+            mediaRecorder.onstop=()=>{
+                audioDuracionSeg=Math.max(1,Math.round((Date.now()-audioInicio)/1000));
+                audioBlobFinal=new Blob(audioChunks,{type:mediaRecorder.mimeType || 'audio/webm'});
+                audioUrlTemporal=URL.createObjectURL(audioBlobFinal);
+                audioPreview.src=audioUrlTemporal;
+                audioPreview.style.display='block';
+                audioStatus.textContent=`Audio grabado (${audioDuracionSeg}s). Ya puedes enviarlo.`;
+                btnEnviarAudio.disabled=false;
+                btnParar.disabled=true;
+                btnGrabar.disabled=false;
+                stream.getTracks().forEach(track=>track.stop());
+            };
+
+            mediaRecorder.start();
+            btnGrabar.disabled=true;
+            btnParar.disabled=false;
+            btnEnviarAudio.disabled=true;
+            audioPreview.style.display='none';
+            audioPreview.removeAttribute('src');
+            audioStatus.textContent='Grabando audio...';
+        }catch(e){
+            console.error(e);
+            alert('No se pudo acceder al micrófono.');
+        }
+    };
+
+    btnParar.onclick=()=>{
+        if(mediaRecorder && mediaRecorder.state!=='inactive'){
+            mediaRecorder.stop();
+        }
+    };
+
+    btnEnviarAudio.onclick=async()=>{
+        if(!audioBlobFinal){
+            alert('Primero debes grabar un comentario de voz.');
+            return;
+        }
+
+        try{
+            await addAudioComment('jugada',audioBlobFinal,jugada.id,audioDuracionSeg);
+
+            audioBlobFinal=null;
+            audioDuracionSeg=0;
+            audioPreview.pause();
+            audioPreview.removeAttribute('src');
+            audioPreview.style.display='none';
+
+            if(audioUrlTemporal){
+                URL.revokeObjectURL(audioUrlTemporal);
+                audioUrlTemporal='';
+            }
+
+            audioStatus.textContent='Comentario de voz enviado correctamente.';
+            btnEnviarAudio.disabled=true;
+            btnGrabar.disabled=false;
+            btnParar.disabled=true;
+
+            online=await getComments('jugada',jugada.id);
+            visibles=Math.max(visibles,3);
+            renderComments(article,[...online,...initial],visibles);
+        }catch(e){
+            console.error(e);
+            alert('No se pudo enviar el comentario de voz.');
+        }
+    };
+
     if(btnMas){
         btnMas.onclick=()=>{
             visibles+=3;
@@ -2345,7 +2539,6 @@ async function initComments(article, jugada){
         };
     }
 }
-
 function updateVoteUI(article, jugada){
     const votosSi=Number(jugada.votosSi||0);
     const votosNo=Number(jugada.votosNo||0);
@@ -2484,6 +2677,16 @@ function createArticle(jugada){
             <div class="cuerpo-comentarios">
                 <textarea placeholder="Escribe tu comentario..."></textarea>
                 <button class="boton-comentar" type="button">Publicar comentario</button>
+                <div class="audio-comment-box">
+                    <div class="audio-comment-title">Comentar por voz</div>
+                    <div class="audio-comment-actions">
+                        <button class="btn-audio-grabar" type="button">🎤 Grabar</button>
+                        <button class="btn-audio-parar" type="button" disabled>Parar</button>
+                        <button class="btn-audio-enviar" type="button" disabled>Enviar audio</button>
+                    </div>
+                    <div class="audio-comment-status">Pulsa «Grabar» para comenzar.</div>
+                    <audio class="audio-comment-preview" controls style="display:none;"></audio>
+                </div>
                 <div class="lista-comentarios"></div>
             </div>
         </section>
