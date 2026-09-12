@@ -2546,6 +2546,22 @@ body{
     .total-madrid{left:82.3%;}
     .tarjeta-aviso-legal{margin-top:20px;}
 }
+.nota-rojas-marcador{
+    margin:-4px auto 20px;
+    padding:0 16px;
+    color:#d7dfef;
+    font-size:13px;
+    font-weight:600;
+    line-height:1.35;
+    text-align:center;
+}
+
+@media(max-width:768px){
+    .nota-rojas-marcador{
+        margin:-2px auto 16px;
+        font-size:11px;
+    }
+}
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2608,6 +2624,8 @@ body{
                     </div>
                 </div>
             </div>
+
+            <p class="nota-rojas-marcador">En rojas, “+” indica las veces que se benefició al equipo y “−” las veces que se le perjudicó.</p>
 
         </section>
 
