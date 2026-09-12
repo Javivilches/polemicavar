@@ -1968,6 +1968,88 @@ h1,h2,h3,h4,
         font-size:24px !important;
     }
 }
+
+/* BOTON PARA COMPARTIR CADA JUGADA */
+.cabecera-jugada{
+    position:relative;
+    padding-right:100px;
+}
+
+.btn-compartir-jugada{
+    position:absolute;
+    top:20px;
+    right:20px;
+    width:58px;
+    height:58px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:0;
+    color:#fff;
+    background:rgba(255,255,255,.10);
+    border:2px solid rgba(255,255,255,.25);
+    border-radius:16px;
+    box-shadow:0 8px 20px rgba(0,0,0,.18);
+    cursor:pointer;
+    transition:background .2s ease,transform .2s ease,border-color .2s ease;
+}
+
+.btn-compartir-jugada:hover{
+    background:rgba(255,255,255,.18);
+    border-color:rgba(255,255,255,.42);
+    transform:translateY(-1px);
+}
+
+.btn-compartir-jugada svg{
+    width:34px;
+    height:34px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.9;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+
+.btn-compartir-jugada.copiado svg{
+    display:none;
+}
+
+.btn-compartir-jugada.copiado::after{
+    content:"✓";
+    font-size:30px;
+    font-weight:700;
+}
+
+.bloque-jugada.jugada-compartida .jugada-principal{
+    box-shadow:0 0 0 2px rgba(247,193,61,.95),0 22px 48px rgba(0,0,0,.34);
+}
+
+.bloque-jugada{
+    scroll-margin-top:220px;
+}
+
+@media(max-width:768px){
+    .cabecera-jugada{
+        padding:20px 78px 18px 18px;
+    }
+
+    .btn-compartir-jugada{
+        top:15px;
+        right:14px;
+        width:50px;
+        height:50px;
+        border-radius:14px;
+    }
+
+    .btn-compartir-jugada svg{
+        width:30px;
+        height:30px;
+    }
+
+    .bloque-jugada{
+        scroll-margin-top:170px;
+    }
+}
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2118,6 +2200,84 @@ function obtenerEquiposInvolucrados(partido){
     if(p.includes('fc barcelona') || p.includes('barcelona')) equipos.push('barcelona');
 
     return equipos;
+}
+
+function idHtmlJugada(id){
+    return `jugada-${String(id||'').replace(/[^a-zA-Z0-9_-]/g,'-')}`;
+}
+
+function obtenerUrlCompartirJugada(jugada){
+    const url=new URL('jugadas-polemicas.html',window.location.href);
+    url.hash=idHtmlJugada(jugada.id);
+    return url.toString();
+}
+
+async function copiarEnlaceJugada(url){
+    if(navigator.clipboard && window.isSecureContext){
+        await navigator.clipboard.writeText(url);
+        return;
+    }
+
+    const campo=document.createElement('textarea');
+    campo.value=url;
+    campo.setAttribute('readonly','');
+    campo.style.position='fixed';
+    campo.style.opacity='0';
+    document.body.appendChild(campo);
+    campo.select();
+    document.execCommand('copy');
+    campo.remove();
+}
+
+function mostrarEnlaceCopiado(boton){
+    boton.classList.add('copiado');
+    boton.setAttribute('aria-label','Enlace copiado');
+    boton.title='Enlace copiado';
+
+    setTimeout(()=>{
+        boton.classList.remove('copiado');
+        boton.setAttribute('aria-label','Compartir esta jugada');
+        boton.title='Compartir jugada';
+    },1400);
+}
+
+async function compartirJugada(jugada,boton){
+    const url=obtenerUrlCompartirJugada(jugada);
+    const datos={
+        title:'Polémica VAR',
+        text:jugada.pregunta||'Consulta esta jugada polémica',
+        url
+    };
+
+    if(navigator.share){
+        try{
+            await navigator.share(datos);
+            return;
+        }catch(e){
+            if(e?.name==='AbortError') return;
+        }
+    }
+
+    try{
+        await copiarEnlaceJugada(url);
+        mostrarEnlaceCopiado(boton);
+    }catch(e){
+        window.prompt('Copia el enlace de la jugada:',url);
+    }
+}
+
+function mostrarJugadaCompartida(){
+    const id=(window.location.hash||'').replace(/^#/,'');
+    if(!id.startsWith('jugada-')) return;
+
+    const jugada=document.getElementById(id);
+    if(!jugada) return;
+
+    requestAnimationFrame(()=>{
+        jugada.scrollIntoView({behavior:'smooth',block:'start'});
+        jugada.classList.add('jugada-compartida');
+        setTimeout(()=>jugada.classList.remove('jugada-compartida'),2400);
+    });
 }
 function limpiarSlug(v){ return (v||'').toString().trim().replace(/^['"]|['"]$/g, ''); }
 function quitarDuplicados(lista){ return [...new Set(lista.filter(Boolean))]; }
@@ -2723,6 +2883,7 @@ function createArticle(jugada){
     const article=document.createElement('section');
 
     article.className='bloque-jugada';
+    article.id=idHtmlJugada(jugada.id);
     article.dataset.id=jugada.id;
     article.dataset.jornada=extraerNumeroJornada(jugada.jornada);
     article.dataset.equipos=obtenerEquiposInvolucrados(jugada.partido).join('|');
@@ -2734,6 +2895,12 @@ function createArticle(jugada){
 
         <section class="jugada-principal">
             <div class="cabecera-jugada">
+                <button class="btn-compartir-jugada" type="button" aria-label="Compartir esta jugada" title="Compartir jugada">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M14 5l6 6-6 6"></path>
+                        <path d="M20 11H10a6 6 0 0 0-6 6v2"></path>
+                    </svg>
+                </button>
                 <h2>${escapeHtml(jugada.pregunta)}</h2>
                 <p>${escapeHtml(jugada.partido)} · Min ${escapeHtml(jugada.minuto)} · ${escapeHtml(jugada.competicion)}</p>
                 <div class="badge-categoria">${escapeHtml(cat)} · ${escapeHtml(jugada.subtipo)}</div>
@@ -2821,6 +2988,8 @@ function createArticle(jugada){
     initMedia(article);
     initVote(article,jugada);
     initComments(article,jugada);
+    const botonCompartir=article.querySelector('.btn-compartir-jugada');
+    botonCompartir.onclick=()=>compartirJugada(jugada,botonCompartir);
     return article;
 }
 function aplicarFiltros(){
@@ -2918,6 +3087,7 @@ function aplicarFiltros(){
         filtroCompeticion.value = '';
         filtroTipo.value = '';
         aplicarFiltros();
+        mostrarJugadaCompartida();
 
     }catch(e){
         console.error(e);
