@@ -1919,11 +1919,18 @@ h1,h2,h3,h4,
 
 @media(max-width:768px){
     .acciones-comentario{
-        justify-content:space-between;
+        flex-direction:column;
+        align-items:stretch;
+        justify-content:flex-start;
     }
 
     .boton-comentar{
-        flex:1;
+        flex:none;
+        width:100%;
+    }
+
+    .estado-audio{
+        width:100%;
     }
 
     .mostrar-mas-comentarios-wrap .btn-mostrar-mas{
