@@ -1608,6 +1608,180 @@ h1,h2,h3,h4,
     }
 }
 
+/* MENÚ IGUAL QUE EN EL INDEX */
+.menu a{
+    flex-direction:column !important;
+    gap:5px !important;
+    font-size:13px !important;
+    line-height:1.08 !important;
+    padding:6px 8px !important;
+}
+
+.menu-icono{
+    width:25px;
+    height:25px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.8;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    opacity:.92;
+    flex:0 0 auto;
+}
+
+/* DOS BOTONES PARA LOS FILTROS */
+.filtro-acciones{
+    grid-column:1 / -1;
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+}
+
+#btnLimpiarFiltros,
+#btnAplicarFiltros{
+    min-width:145px;
+    height:43px;
+    border:none;
+    border-radius:10px;
+    color:#fff;
+    font-family:"Roboto Condensed",Arial,sans-serif;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+    padding:0 18px;
+    transition:filter .2s ease,transform .2s ease;
+}
+
+#btnLimpiarFiltros{
+    background:#42536f;
+}
+
+#btnAplicarFiltros{
+    background:linear-gradient(135deg,#174d9c,#2567c7);
+    box-shadow:0 7px 18px rgba(0,0,0,.18);
+}
+
+#btnLimpiarFiltros:hover,
+#btnAplicarFiltros:hover{
+    filter:brightness(1.08);
+}
+
+/* COMENTARIOS IGUALES QUE EN EL INDEX, CONSERVANDO EL AUDIO */
+.seccion-comentarios,
+.comentarios-box{
+    background:#f7f9fc !important;
+    border:1px solid #d8e0ec !important;
+    border-radius:16px !important;
+    box-shadow:0 12px 28px rgba(0,0,0,.20) !important;
+    color:#1f2f49 !important;
+    overflow:hidden;
+}
+
+.cabecera-comentarios{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    gap:14px !important;
+    padding:12px 14px !important;
+    background:#f7f9fc !important;
+    border-bottom:1px solid #dde4ef !important;
+    color:#1f2f49 !important;
+}
+
+.cabecera-comentarios h3{
+    margin:0 0 2px !important;
+}
+
+.cabecera-comentarios p{
+    margin:0 !important;
+    color:#667791 !important;
+}
+
+.cabecera-comentarios .btn-mostrar-mas{
+    display:none;
+    margin:0 !important;
+    min-height:36px !important;
+    padding:7px 12px !important;
+    white-space:nowrap;
+    align-items:center;
+    justify-content:center;
+}
+
+.cuerpo-comentarios{
+    padding:12px 14px 14px !important;
+}
+
+.cuerpo-comentarios textarea{
+    margin:0 0 8px !important;
+    background:#fff !important;
+    border:1px solid #cfd8e5 !important;
+    color:#1f2f49 !important;
+}
+
+.cuerpo-comentarios textarea::placeholder{
+    color:#7b8798;
+}
+
+.audio-comment-box{
+    margin:0 0 10px !important;
+    padding:10px !important;
+    background:#eef2f8 !important;
+    border:1px solid #d8e0ec !important;
+    border-radius:10px !important;
+}
+
+.btn-audio-grabar,
+.btn-audio-parar,
+.btn-audio-enviar{
+    min-height:36px;
+    border-radius:8px !important;
+}
+
+.lista-comentarios{
+    margin-top:14px !important;
+}
+
+.comentario{
+    color:#26364f !important;
+    background:#eef2f8 !important;
+    border-left:4px solid #1f4fb0 !important;
+}
+
+@media(max-width:768px){
+    .menu a{
+        font-size:9.8px !important;
+        gap:3px !important;
+        padding:4px 2px !important;
+    }
+
+    .menu-icono{
+        width:20px;
+        height:20px;
+    }
+
+    .filtro-acciones{
+        flex-direction:row !important;
+    }
+
+    #btnLimpiarFiltros,
+    #btnAplicarFiltros{
+        min-width:0;
+        flex:1 1 0;
+        padding:0 10px;
+    }
+
+    .cabecera-comentarios{
+        align-items:flex-start !important;
+    }
+
+    .cabecera-comentarios .btn-mostrar-mas{
+        font-size:11px !important;
+        padding:7px 9px !important;
+    }
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1619,11 +1793,11 @@ h1,h2,h3,h4,
 <div class="cabecera"></div>
 
 <nav class="menu">
-    <a href="index.html"><span>INICIO</span></a>
-    <a href="jugadas-polemicas.html"><span>JUGADAS<br>POLÉMICAS</span></a>
-    <a href="resultados-var.html"><span>RESULTADOS</span></a>
-    <a href="quien-ha-sido-mas-favorecido.html"><span>EQUIPO MÁS<br>FAVORECIDO</span></a>
-    <a href="arbitros-mas-influyentes.html"><span>ÁRBITROS MÁS<br>INFLUYENTES</span></a>
+    <a href="index.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5v9a1.5 1.5 0 0 1-1.5 1.5h-5v-6h-5v6h-5A1.5 1.5 0 0 1 3 19.5z"/></svg><span>INICIO</span></a>
+    <a href="jugadas-polemicas.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg><span>JUGADAS<br>POLÉMICAS</span></a>
+    <a href="resultados-var.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v3a4 4 0 0 1-8 0zM6 5H3v2a4 4 0 0 0 4 4M18 5h3v2a4 4 0 0 1-4 4M12 11v5M8 21h8M9 16h6v5H9z"/></svg><span>RESULTADOS</span></a>
+    <a href="quien-ha-sido-mas-favorecido.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M10 20V8M15 20V4M20 20V10"/></svg><span>EQUIPO MÁS<br>FAVORECIDO</span></a>
+    <a href="arbitros-mas-influyentes.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 7-7h7l2 2v7l-7 7-9-9z"/><circle cx="16.5" cy="7.5" r="1"/></svg><span>ÁRBITROS MÁS<br>INFLUYENTES</span></a>
 
     <div class="menu-user-wrap">
         <button id="menuUserBtn" class="menu-user-btn" type="button" title="Usuario">👤</button>
@@ -1677,8 +1851,9 @@ h1,h2,h3,h4,
                 </select>
             </div>
 
-            <div class="filtro-grupo filtro-boton">
+            <div class="filtro-grupo filtro-boton filtro-acciones">
                 <button id="btnLimpiarFiltros">Ver todas</button>
+                <button id="btnAplicarFiltros">Ver filtradas</button>
             </div>
         </section>
     </details>
@@ -1735,6 +1910,7 @@ const filtroEquipo = document.getElementById("filtroEquipo");
 const filtroCompeticion = document.getElementById("filtroCompeticion");
 const filtroTipo = document.getElementById("filtroTipo");
 const btnLimpiarFiltros = document.getElementById("btnLimpiarFiltros");
+const btnAplicarFiltros = document.getElementById("btnAplicarFiltros");
 const sinResultados = document.getElementById("sinResultados");
 const contenedorJugadas = document.getElementById("contenedorJugadas");
 const menuUserBtn = document.getElementById("menuUserBtn");
@@ -2101,6 +2277,7 @@ function createInitialComments(j){
 function renderComments(article, comments, visibles){
     const list=article.querySelector('.lista-comentarios');
     const counter=article.querySelector('.cabecera-comentarios p');
+    const btnMas=article.querySelector('.btn-mostrar-mas');
     list.innerHTML='';
     counter.textContent=`${comments.length} comentarios`;
 
@@ -2126,9 +2303,7 @@ function renderComments(article, comments, visibles){
         list.appendChild(div);
     });
 
-    article.querySelector('.btn-mostrar-inicial').style.display = comments.length>0 && visibles===0 ? 'inline-block' : 'none';
-    article.querySelector('.btn-ocultar').style.display = visibles>0 ? 'inline-block' : 'none';
-    article.querySelector('.btn-mostrar-mas').style.display = visibles>0 && visibles<comments.length ? 'inline-block' : 'none';
+    btnMas.style.display = visibles < comments.length ? 'inline-flex' : 'none';
 }
 
 function updateCommentUI(article, logueado, conPerfil){
@@ -2159,7 +2334,7 @@ async function initComments(article, jugada){
         online=await getComments('jugada', jugada.id);
     }catch(e){}
 
-    let visibles=0;
+    let visibles=3;
     renderComments(article, [...online, ...initial], visibles);
 
     let logueado = false;
@@ -2291,7 +2466,7 @@ async function initComments(article, jugada){
             btnParar.disabled = true;
 
             online = await getComments('jugada', jugada.id);
-            visibles = Math.max(visibles, 5);
+            visibles = Math.max(visibles, 3);
             renderComments(article, [...online, ...initial], visibles);
         } catch (e) {
             console.error(e);
@@ -2323,7 +2498,7 @@ async function initComments(article, jugada){
             await addComment('jugada', txt, jugada.id);
             ta.value='';
             online=await getComments('jugada', jugada.id);
-            visibles=Math.max(visibles,5);
+            visibles=Math.max(visibles,3);
             renderComments(article, [...online, ...initial], visibles);
         }catch(e){
             console.error(e);
@@ -2331,18 +2506,8 @@ async function initComments(article, jugada){
         }
     };
 
-    article.querySelector('.btn-mostrar-inicial').onclick=()=>{
-        visibles=5;
-        renderComments(article, [...online, ...initial], visibles);
-    };
-
     article.querySelector('.btn-mostrar-mas').onclick=()=>{
-        visibles+=5;
-        renderComments(article, [...online, ...initial], visibles);
-    };
-
-    article.querySelector('.btn-ocultar').onclick=()=>{
-        visibles=0;
+        visibles+=3;
         renderComments(article, [...online, ...initial], visibles);
     };
 }
@@ -2468,6 +2633,30 @@ async function initVote(article, jugada){
     article.querySelector('.btn-voto-no').onclick = () => send('no');
 }
 
+function adaptarComentariosComoIndex(article){
+    const cabecera = article.querySelector('.cabecera-comentarios');
+    const titulo = document.createElement('div');
+    const heading = cabecera.querySelector('h3');
+    const contador = cabecera.querySelector('p');
+    const btnMas = article.querySelector('.btn-mostrar-mas');
+
+    titulo.append(heading, contador);
+    cabecera.replaceChildren(titulo, btnMas);
+
+    article.querySelector('.mostrar-mas-wrap')?.remove();
+    article.querySelector('.btn-mostrar-inicial')?.remove();
+    article.querySelector('.ocultar-wrap')?.remove();
+
+    const textarea = article.querySelector('.cuerpo-comentarios textarea');
+    const salto = textarea.nextElementSibling;
+    if(salto && salto.tagName === 'BR') salto.remove();
+
+    const cuerpo = article.querySelector('.cuerpo-comentarios');
+    const publicar = article.querySelector('.boton-comentar');
+    const audioBox = article.querySelector('.audio-comment-box');
+    cuerpo.insertBefore(publicar, audioBox);
+}
+
 function createArticle(jugada){
     const cat=capitalizarCategoria(jugada.categoria);
     const commentsInitial=createInitialComments(jugada);
@@ -2482,6 +2671,7 @@ function createArticle(jugada){
 
     article.innerHTML=`<div class="etiqueta-jornada">Jornada ${escapeHtml(jugada.jornada)}</div><section class="jugada-principal"><div class="cabecera-jugada"><h2>${escapeHtml(jugada.pregunta)}</h2><p>${escapeHtml(jugada.partido)} · Min ${escapeHtml(jugada.minuto)} · ${escapeHtml(jugada.competicion)}</p><div class="badge-categoria">${escapeHtml(cat)} · ${escapeHtml(jugada.subtipo)}</div><div class="meta-extra"><strong>Equipo afectado:</strong> ${escapeHtml(jugada.equipoAfectado||'')}<br><strong>Árbitro:</strong> ${escapeHtml(jugada.arbitro||'')}<br><strong>VAR:</strong> ${escapeHtml(jugada.var||'')}</div></div><div class="zona-superior"><div><div class="imagen-jugada"><div class="visor-media"></div><div class="zoom-controles"><button class="zoom-btn zoom-mas" type="button">+</button><button class="zoom-btn zoom-menos" type="button">−</button><button class="zoom-btn zoom-reset" type="button">100%</button><button class="zoom-btn zoom-expandir" type="button">Ampliar</button></div></div><div class="galeria-miniaturas" style="display:none;"></div><div class="descripcion-jugada"><strong>Tipo:</strong> ${escapeHtml(cat)}<br><strong>Decisión árbitro:</strong> ${escapeHtml(jugada.decision||'')}<br><br>${escapeHtml(jugada.descripcion||'')}</div></div><div class="panel-votacion"><div class="panel-votacion-top"><h3>Vota la jugada</h3><p>${escapeHtml((jugada.pregunta||'').trim()||'¿Te pareció correcta la decisión arbitral?')}</p></div><div class="botones-voto"><button class="btn-voto btn-voto-si" type="button">${escapeHtml(jugada.respuestaSi||'Sí')}</button><button class="btn-voto btn-voto-no" type="button">${escapeHtml(jugada.respuestaNo||'No')}</button></div><div class="mensaje-voto">Debes iniciar sesión para votar.</div><div class="resultado-box"><div class="resultado-cabecera">Sin votos todavía</div><div class="resumen-votos-bloques"><div class="resumen-voto-card incorrecto"><div class="resumen-voto-porcentaje porcentaje-incorrecto">0%</div><div class="resumen-voto-texto">Cree que se arbitró mal</div><div class="resumen-voto-detalle detalle-incorrecto">0 de 0 votos</div><div class="barra-resultado"><div class="barra-no barra-incorrecto" style="width:0%"></div></div></div><div class="resumen-voto-card correcto"><div class="resumen-voto-porcentaje porcentaje-correcto">0%</div><div class="resumen-voto-texto">Cree que se arbitró bien</div><div class="resumen-voto-detalle detalle-correcto">0 de 0 votos</div><div class="barra-resultado"><div class="barra-si barra-correcto" style="width:0%"></div></div></div></div></div></div></div></section><section class="seccion-comentarios comentarios-box"><div class="cabecera-comentarios"><h3>Comentarios</h3><p>${commentsInitial.length} comentarios</p></div><div class="cuerpo-comentarios"><textarea placeholder="Escribe tu comentario..."></textarea><br><div class="audio-comment-box" style="margin-top:10px;padding:10px;border:1px solid #d8e0ec;border-radius:10px;background:#f8faff;"><div style="font-size:12px;font-weight:bold;color:#42536f;margin-bottom:8px;">Comentario de audio</div><div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn-audio-grabar" type="button" style="background:#c62828;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-weight:bold;cursor:pointer;">Grabar</button><button class="btn-audio-parar" type="button" style="background:#555;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-weight:bold;cursor:pointer;" disabled>Parar</button><button class="btn-audio-enviar" type="button" style="background:#1f4fb0;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-weight:bold;cursor:pointer;" disabled>Enviar audio</button></div><div class="audio-comment-status" style="margin-top:8px;font-size:12px;color:#667791;">Pulsa “Grabar” para comenzar.</div><audio class="audio-comment-preview" controls style="display:none;width:100%;margin-top:8px;"></audio></div><button class="boton-comentar" type="button">Publicar comentario</button><button class="btn-mostrar-inicial" type="button">Mostrar comentarios</button><div class="lista-comentarios"></div><div class="mostrar-mas-wrap"><button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button></div><div class="ocultar-wrap"><button class="btn-ocultar" type="button">Ocultar comentarios</button></div></div></section>`;
 
+    adaptarComentariosComoIndex(article);
     initMedia(article);
     initVote(article,jugada);
     initComments(article,jugada);
@@ -2731,7 +2921,9 @@ if (supabaseClient && supabaseClient.auth && typeof supabaseClient.auth.onAuthSt
     });
 }
 
-[filtroJornada,filtroEquipo,filtroCompeticion,filtroTipo].forEach(f=>f&&f.addEventListener('change',aplicarFiltros));
+if(btnAplicarFiltros){
+    btnAplicarFiltros.onclick=aplicarFiltros;
+}
 
 if(btnLimpiarFiltros){
     btnLimpiarFiltros.onclick=()=>{
