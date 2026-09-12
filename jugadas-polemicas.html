@@ -1782,6 +1782,21 @@ h1,h2,h3,h4,
     }
 }
 
+/* AJUSTE DEFINITIVO: MISMA BARRA QUE EL INDEX */
+.menu{
+    padding:0 !important;
+    overflow:hidden !important;
+    background:rgba(7,11,18,.96);
+}
+
+@media(max-width:768px){
+    .menu{
+        padding:0 !important;
+        overflow:hidden !important;
+        background:rgba(7,11,18,.985) !important;
+    }
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1799,10 +1814,6 @@ h1,h2,h3,h4,
     <a href="quien-ha-sido-mas-favorecido.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M10 20V8M15 20V4M20 20V10"/></svg><span>EQUIPO MÁS<br>FAVORECIDO</span></a>
     <a href="arbitros-mas-influyentes.html"><svg class="menu-icono" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 11 7-7h7l2 2v7l-7 7-9-9z"/><circle cx="16.5" cy="7.5" r="1"/></svg><span>ÁRBITROS MÁS<br>INFLUYENTES</span></a>
 
-    <div class="menu-user-wrap">
-        <button id="menuUserBtn" class="menu-user-btn" type="button" title="Usuario">👤</button>
-        <div id="menuUserDropdown" class="menu-user-dropdown"></div>
-    </div>
 </nav>
 
 <div class="contenido">
@@ -1889,21 +1900,15 @@ h1,h2,h3,h4,
 <script>
 const DecisionVarAPI = window.DecisionVarData || {};
 
-const supabaseClient = DecisionVarAPI.supabase || null;
 const escapeHtml = DecisionVarAPI.escapeHtml || ((t) => String(t || ""));
 const loadDataset = DecisionVarAPI.loadDataset || (async () => ({ jugadas: [] }));
 const loadJugadasPublicas = DecisionVarAPI.loadJugadasPublicas || (async () => []);
 const getComments = DecisionVarAPI.getComments || (async () => []);
 const addComment = DecisionVarAPI.addComment || (async () => { throw new Error("No disponible"); });
-const addAudioComment = DecisionVarAPI.addAudioComment || (async () => { throw new Error("No disponible"); });
 const addVote = DecisionVarAPI.addVote || (async () => { throw new Error("No disponible"); });
+const getUserVote = DecisionVarAPI.getUserVote || (() => "");
+const setUserVote = DecisionVarAPI.setUserVote || (() => {});
 const formatDate = DecisionVarAPI.formatDate || ((v) => v || "");
-const getUsuarioActual = DecisionVarAPI.getUsuarioActual || (async () => null);
-const getPerfilActual = DecisionVarAPI.getPerfilActual || (async () => null);
-const crearPerfil = DecisionVarAPI.crearPerfil || (async () => { throw new Error("No disponible"); });
-const logout = DecisionVarAPI.logout || (async () => {});
-const getCurrentUserVote = DecisionVarAPI.getCurrentUserVote || (async () => "");
-const loginConGoogle = DecisionVarAPI.loginConGoogle || (async () => alert("Inicio de sesión no disponible"));
 
 const filtroJornada = document.getElementById("filtroJornada");
 const filtroEquipo = document.getElementById("filtroEquipo");
@@ -1913,8 +1918,6 @@ const btnLimpiarFiltros = document.getElementById("btnLimpiarFiltros");
 const btnAplicarFiltros = document.getElementById("btnAplicarFiltros");
 const sinResultados = document.getElementById("sinResultados");
 const contenedorJugadas = document.getElementById("contenedorJugadas");
-const menuUserBtn = document.getElementById("menuUserBtn");
-const menuUserDropdown = document.getElementById("menuUserDropdown");
 
 function normalizarTexto(txt){ return (txt||"").toString().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); }
 function capitalizarCategoria(v){ const n=normalizarTexto(v); if(n==='penalti') return 'Penalti'; if(n==='gol') return 'Gol'; if(n==='roja') return 'Roja'; return v||''; }
@@ -2274,56 +2277,31 @@ function createInitialComments(j){
         }));
 }
 
+function ordenarComentarios(comments){
+    return [...comments].sort((a,b)=>{
+        const fa=a.created_at ? new Date(a.created_at).getTime() : 0;
+        const fb=b.created_at ? new Date(b.created_at).getTime() : 0;
+        return fb-fa;
+    });
+}
+
 function renderComments(article, comments, visibles){
     const list=article.querySelector('.lista-comentarios');
     const counter=article.querySelector('.cabecera-comentarios p');
     const btnMas=article.querySelector('.btn-mostrar-mas');
-    list.innerHTML='';
-    counter.textContent=`${comments.length} comentarios`;
+    const ordenados=ordenarComentarios(comments);
 
-    comments.slice(0, visibles).forEach(c=>{
+    list.innerHTML='';
+    counter.textContent=`${ordenados.length} comentarios`;
+
+    ordenados.slice(0, visibles).forEach(c=>{
         const div=document.createElement('div');
         div.className='comentario visible';
-
-        const cabecera = `<div style="font-size:12px;color:#667791;font-weight:700;margin-bottom:6px;">${escapeHtml(c.autor||'Usuario')} ${c.created_at ? '· '+escapeHtml(formatDate(c.created_at)) : ''}</div>`;
-
-        let cuerpo = '';
-        if ((c.tipo || '') === 'audio' && c.audio_url) {
-            cuerpo = `
-                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-                    <span style="font-weight:700;color:#1f4fb0;">🎤 Audio</span>
-                    <audio controls preload="none" src="${escapeHtml(c.audio_url)}" style="width:min(100%,320px);"></audio>
-                </div>
-            `;
-        } else {
-            cuerpo = `${escapeHtml(c.texto||'')}`;
-        }
-
-        div.innerHTML = cabecera + cuerpo;
+        div.innerHTML=`<div style="font-size:12px;color:#667791;font-weight:700;margin-bottom:4px;">${escapeHtml(c.autor||'Usuario')} ${c.created_at ? '· '+escapeHtml(formatDate(c.created_at)) : ''}</div>${escapeHtml(c.texto||'')}`;
         list.appendChild(div);
     });
 
-    btnMas.style.display = visibles < comments.length ? 'inline-flex' : 'none';
-}
-
-function updateCommentUI(article, logueado, conPerfil){
-    const textarea = article.querySelector('textarea');
-    const boton = article.querySelector('.boton-comentar');
-
-    if(!logueado){
-        textarea.placeholder = 'Inicia sesión con Google para comentar...';
-        boton.textContent = 'Inicia sesión para comentar';
-        return;
-    }
-
-    if(!conPerfil){
-        textarea.placeholder = 'Primero crea tu nombre de usuario para comentar...';
-        boton.textContent = 'Guardar usuario antes de comentar';
-        return;
-    }
-
-    textarea.placeholder = 'Escribe tu comentario...';
-    boton.textContent = 'Publicar comentario';
+    btnMas.style.display = visibles < ordenados.length ? 'inline-flex' : 'none';
 }
 
 async function initComments(article, jugada){
@@ -2332,206 +2310,40 @@ async function initComments(article, jugada){
 
     try{
         online=await getComments('jugada', jugada.id);
-    }catch(e){}
+    }catch(e){
+        online=[];
+    }
 
     let visibles=3;
     renderComments(article, [...online, ...initial], visibles);
 
-    let logueado = false;
-    let conPerfil = false;
+    const btnPublicar = article.querySelector('.boton-comentar');
+    const btnMas = article.querySelector('.btn-mostrar-mas');
 
-    try{
-        const user = await getUsuarioActual();
-        logueado = !!user;
-        if(user){
-            const perfil = await getPerfilActual();
-            conPerfil = !!(perfil && perfil.username);
-        }
-    }catch(e){}
-
-    updateCommentUI(article, logueado, conPerfil);
-
-    let mediaRecorder = null;
-    let audioChunks = [];
-    let audioBlobFinal = null;
-    let audioDuracionSeg = 0;
-    let audioInicio = 0;
-
-    const btnGrabar = article.querySelector('.btn-audio-grabar');
-    const btnParar = article.querySelector('.btn-audio-parar');
-    const btnEnviarAudio = article.querySelector('.btn-audio-enviar');
-    const audioPreview = article.querySelector('.audio-comment-preview');
-    const audioStatus = article.querySelector('.audio-comment-status');
-
-    btnGrabar.onclick = async () => {
-        try {
-            const user = await getUsuarioActual();
-            if(!user){
-                alert('Debes iniciar sesión con Google para comentar.');
-                return;
-            }
-
-            const perfil = await getPerfilActual();
-            if(!perfil || !perfil.username){
-                alert('Antes de comentar debes elegir un nombre de usuario.');
-                await renderMenuUsuario();
-                abrirMenuUsuario();
-                return;
-            }
-
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
-            const mimeType =
-                MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus' :
-                MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' :
-                '';
-
-            mediaRecorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
-            audioChunks = [];
-            audioBlobFinal = null;
-            audioDuracionSeg = 0;
-            audioInicio = Date.now();
-
-            mediaRecorder.ondataavailable = (ev) => {
-                if (ev.data && ev.data.size > 0) audioChunks.push(ev.data);
-            };
-
-            mediaRecorder.onstop = () => {
-                audioDuracionSeg = Math.max(1, Math.round((Date.now() - audioInicio) / 1000));
-                audioBlobFinal = new Blob(audioChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
-                audioPreview.src = URL.createObjectURL(audioBlobFinal);
-                audioPreview.style.display = 'block';
-                audioStatus.textContent = `Audio grabado (${audioDuracionSeg}s). Ya puedes enviarlo.`;
-                btnEnviarAudio.disabled = false;
-                btnParar.disabled = true;
-                btnGrabar.disabled = false;
-
-                stream.getTracks().forEach(t => t.stop());
-            };
-
-            mediaRecorder.start();
-            btnGrabar.disabled = true;
-            btnParar.disabled = false;
-            btnEnviarAudio.disabled = true;
-            audioPreview.style.display = 'none';
-            audioPreview.removeAttribute('src');
-            audioStatus.textContent = 'Grabando audio...';
-        } catch (e) {
-            console.error(e);
-            alert('No se pudo acceder al micrófono');
-        }
-    };
-
-    btnParar.onclick = () => {
-        try {
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                mediaRecorder.stop();
-            }
-        } catch (e) {
-            console.error(e);
-        }
-    };
-
-    btnEnviarAudio.onclick = async () => {
-        try {
-            const user = await getUsuarioActual();
-            if(!user){
-                alert('Debes iniciar sesión con Google para comentar.');
-                return;
-            }
-
-            const perfil = await getPerfilActual();
-            if(!perfil || !perfil.username){
-                alert('Antes de comentar debes elegir un nombre de usuario.');
-                await renderMenuUsuario();
-                abrirMenuUsuario();
-                return;
-            }
-
-            if (!audioBlobFinal) {
-                alert('Primero debes grabar un audio.');
-                return;
-            }
-
-            await addAudioComment('jugada', audioBlobFinal, jugada.id, audioDuracionSeg);
-
-            audioBlobFinal = null;
-            audioDuracionSeg = 0;
-            audioPreview.pause();
-            audioPreview.removeAttribute('src');
-            audioPreview.style.display = 'none';
-            audioStatus.textContent = 'Audio enviado correctamente.';
-            btnEnviarAudio.disabled = true;
-            btnGrabar.disabled = false;
-            btnParar.disabled = true;
-
-            online = await getComments('jugada', jugada.id);
-            visibles = Math.max(visibles, 3);
-            renderComments(article, [...online, ...initial], visibles);
-        } catch (e) {
-            console.error(e);
-            alert('No se pudo enviar el audio');
-        }
-    };
-
-    article.querySelector('.boton-comentar').onclick=async()=>{
-        const ta=article.querySelector('textarea');
-        const txt=ta.value.trim();
-
-        try{
-            const user = await getUsuarioActual();
-            if(!user){
-                alert('Debes iniciar sesión con Google para comentar.');
-                return;
-            }
-
-            const perfil = await getPerfilActual();
-            if(!perfil || !perfil.username){
-                alert('Antes de comentar debes elegir un nombre de usuario.');
-                await renderMenuUsuario();
-                abrirMenuUsuario();
-                return;
-            }
-
+    if(btnPublicar){
+        btnPublicar.onclick=async()=>{
+            const ta=article.querySelector('textarea');
+            const txt=ta.value.trim();
             if(!txt) return;
 
-            await addComment('jugada', txt, jugada.id);
-            ta.value='';
-            online=await getComments('jugada', jugada.id);
-            visibles=Math.max(visibles,3);
+            try{
+                await addComment('jugada', txt, jugada.id);
+                ta.value='';
+                online=await getComments('jugada', jugada.id);
+                visibles=Math.max(visibles,3);
+                renderComments(article, [...online, ...initial], visibles);
+            }catch(e){
+                alert('No se pudo guardar el comentario');
+            }
+        };
+    }
+
+    if(btnMas){
+        btnMas.onclick=()=>{
+            visibles+=3;
             renderComments(article, [...online, ...initial], visibles);
-        }catch(e){
-            console.error(e);
-            alert('No se pudo guardar el comentario');
-        }
-    };
-
-    article.querySelector('.btn-mostrar-mas').onclick=()=>{
-        visibles+=3;
-        renderComments(article, [...online, ...initial], visibles);
-    };
-}
-
-function disableVoteButtons(article){
-    const btnSi = article.querySelector('.btn-voto-si');
-    const btnNo = article.querySelector('.btn-voto-no');
-
-    [btnSi, btnNo].forEach(btn => {
-        btn.disabled = true;
-        btn.style.opacity = '0.65';
-        btn.style.cursor = 'default';
-    });
-}
-
-function enableVoteButtons(article){
-    const btnSi = article.querySelector('.btn-voto-si');
-    const btnNo = article.querySelector('.btn-voto-no');
-
-    [btnSi, btnNo].forEach(btn => {
-        btn.disabled = false;
-        btn.style.opacity = '1';
-        btn.style.cursor = 'pointer';
-    });
+        };
+    }
 }
 
 function updateVoteUI(article, jugada){
@@ -2541,122 +2353,49 @@ function updateVoteUI(article, jugada){
     const porcentajeSi=total?Math.round(votosSi*100/total):0;
     const porcentajeNo=total?100-porcentajeSi:0;
 
-    article.querySelector('.barra-incorrecto').style.width=`${porcentajeNo}%`;
-    article.querySelector('.barra-correcto').style.width=`${porcentajeSi}%`;
+    const barraIncorrecto = article.querySelector('.barra-incorrecto');
+    const barraCorrecto = article.querySelector('.barra-correcto');
+
+    if(barraIncorrecto) barraIncorrecto.style.width=`${porcentajeNo}%`;
+    if(barraCorrecto) barraCorrecto.style.width=`${porcentajeSi}%`;
+
     article.querySelector('.porcentaje-incorrecto').textContent=`${porcentajeNo}%`;
     article.querySelector('.porcentaje-correcto').textContent=`${porcentajeSi}%`;
     article.querySelector('.detalle-incorrecto').textContent=`${votosNo} de ${total} votos`;
     article.querySelector('.detalle-correcto').textContent=`${votosSi} de ${total} votos`;
     article.querySelector('.resultado-cabecera').textContent=total?`${total} votos totales`:'Sin votos todavía';
-    article.querySelector('.mensaje-voto').textContent='Debes iniciar sesión para votar.';
+
+    const prev=getUserVote(jugada.id);
+    article.querySelector('.mensaje-voto').textContent=prev?`Has votado que se arbitró ${prev==='si'?'bien':'mal'}.`:'Tu voto ya se guarda online.';
 }
 
 async function initVote(article, jugada){
     updateVoteUI(article,jugada);
 
-    try{
-        const user = await getUsuarioActual();
-        if(!user){
-            article.querySelector('.mensaje-voto').textContent='Debes iniciar sesión con Google para votar.';
-            enableVoteButtons(article);
-            return;
-        }
-
-        const perfil = await getPerfilActual();
-        if(!perfil || !perfil.username){
-            article.querySelector('.mensaje-voto').textContent='Antes de votar debes elegir un nombre de usuario.';
-            enableVoteButtons(article);
-            return;
-        }
-
-        const votoPrevio = await getCurrentUserVote(jugada.id);
-
-        if(votoPrevio){
-            article.querySelector('.mensaje-voto').textContent=`Ya has votado que se arbitró ${votoPrevio==='si'?'bien':'mal'}.`;
-            disableVoteButtons(article);
-        }else{
-            article.querySelector('.mensaje-voto').textContent='Tu voto se guardará en tu cuenta.';
-            enableVoteButtons(article);
-        }
-    }catch(e){
-        console.error(e);
-    }
-
     async function send(v){
+        if(getUserVote(jugada.id)) {
+            alert('De momento solo se permite un voto por navegador en esta primera versión.');
+            return;
+        }
+
         try{
-            const user = await getUsuarioActual();
-
-            if(!user){
-                alert('Debes iniciar sesión con Google para votar.');
-                return;
-            }
-
-            const perfil = await getPerfilActual();
-
-            if(!perfil || !perfil.username){
-                alert('Antes de votar debes elegir un nombre de usuario.');
-                await renderMenuUsuario();
-                abrirMenuUsuario();
-                return;
-            }
-
             await addVote(jugada.id, v);
-
-            const data = await loadDataset();
-            const actual = data.jugadas.find(x => x.id === jugada.id);
+            setUserVote(jugada.id,v);
+            const data=await loadDataset();
+            const actual=data.jugadas.find(x=>x.id===jugada.id);
 
             if(actual){
                 Object.assign(jugada, actual);
-                updateVoteUI(article, jugada);
+                updateVoteUI(article,jugada);
             }
-
-            article.querySelector('.mensaje-voto').textContent =
-                `Ya has votado que se arbitró ${v === 'si' ? 'bien' : 'mal'}.`;
-
-            disableVoteButtons(article);
-
         }catch(e){
-            console.error(e);
-
-            if(e.code === '23505'){
-                alert('Ya has votado en esta jugada.');
-                article.querySelector('.mensaje-voto').textContent = 'Ya has votado en esta jugada.';
-                disableVoteButtons(article);
-                return;
-            }
-
             alert('No se pudo registrar el voto');
         }
     }
 
-    article.querySelector('.btn-voto-si').onclick = () => send('si');
-    article.querySelector('.btn-voto-no').onclick = () => send('no');
+    article.querySelector('.btn-voto-si').onclick=()=>send('si');
+    article.querySelector('.btn-voto-no').onclick=()=>send('no');
 }
-
-function adaptarComentariosComoIndex(article){
-    const cabecera = article.querySelector('.cabecera-comentarios');
-    const titulo = document.createElement('div');
-    const heading = cabecera.querySelector('h3');
-    const contador = cabecera.querySelector('p');
-    const btnMas = article.querySelector('.btn-mostrar-mas');
-
-    titulo.append(heading, contador);
-    cabecera.replaceChildren(titulo, btnMas);
-
-    article.querySelector('.mostrar-mas-wrap')?.remove();
-    article.querySelector('.btn-mostrar-inicial')?.remove();
-    article.querySelector('.ocultar-wrap')?.remove();
-
-    const textarea = article.querySelector('.cuerpo-comentarios textarea');
-    const salto = textarea.nextElementSibling;
-    if(salto && salto.tagName === 'BR') salto.remove();
-
-    const cuerpo = article.querySelector('.cuerpo-comentarios');
-    const publicar = article.querySelector('.boton-comentar');
-    const audioBox = article.querySelector('.audio-comment-box');
-    cuerpo.insertBefore(publicar, audioBox);
-}
-
 function createArticle(jugada){
     const cat=capitalizarCategoria(jugada.categoria);
     const commentsInitial=createInitialComments(jugada);
@@ -2669,112 +2408,92 @@ function createArticle(jugada){
     article.dataset.competicion=jugada.competicion;
     article.dataset.tipo=normalizarTexto(jugada.categoria);
 
-    article.innerHTML=`<div class="etiqueta-jornada">Jornada ${escapeHtml(jugada.jornada)}</div><section class="jugada-principal"><div class="cabecera-jugada"><h2>${escapeHtml(jugada.pregunta)}</h2><p>${escapeHtml(jugada.partido)} · Min ${escapeHtml(jugada.minuto)} · ${escapeHtml(jugada.competicion)}</p><div class="badge-categoria">${escapeHtml(cat)} · ${escapeHtml(jugada.subtipo)}</div><div class="meta-extra"><strong>Equipo afectado:</strong> ${escapeHtml(jugada.equipoAfectado||'')}<br><strong>Árbitro:</strong> ${escapeHtml(jugada.arbitro||'')}<br><strong>VAR:</strong> ${escapeHtml(jugada.var||'')}</div></div><div class="zona-superior"><div><div class="imagen-jugada"><div class="visor-media"></div><div class="zoom-controles"><button class="zoom-btn zoom-mas" type="button">+</button><button class="zoom-btn zoom-menos" type="button">−</button><button class="zoom-btn zoom-reset" type="button">100%</button><button class="zoom-btn zoom-expandir" type="button">Ampliar</button></div></div><div class="galeria-miniaturas" style="display:none;"></div><div class="descripcion-jugada"><strong>Tipo:</strong> ${escapeHtml(cat)}<br><strong>Decisión árbitro:</strong> ${escapeHtml(jugada.decision||'')}<br><br>${escapeHtml(jugada.descripcion||'')}</div></div><div class="panel-votacion"><div class="panel-votacion-top"><h3>Vota la jugada</h3><p>${escapeHtml((jugada.pregunta||'').trim()||'¿Te pareció correcta la decisión arbitral?')}</p></div><div class="botones-voto"><button class="btn-voto btn-voto-si" type="button">${escapeHtml(jugada.respuestaSi||'Sí')}</button><button class="btn-voto btn-voto-no" type="button">${escapeHtml(jugada.respuestaNo||'No')}</button></div><div class="mensaje-voto">Debes iniciar sesión para votar.</div><div class="resultado-box"><div class="resultado-cabecera">Sin votos todavía</div><div class="resumen-votos-bloques"><div class="resumen-voto-card incorrecto"><div class="resumen-voto-porcentaje porcentaje-incorrecto">0%</div><div class="resumen-voto-texto">Cree que se arbitró mal</div><div class="resumen-voto-detalle detalle-incorrecto">0 de 0 votos</div><div class="barra-resultado"><div class="barra-no barra-incorrecto" style="width:0%"></div></div></div><div class="resumen-voto-card correcto"><div class="resumen-voto-porcentaje porcentaje-correcto">0%</div><div class="resumen-voto-texto">Cree que se arbitró bien</div><div class="resumen-voto-detalle detalle-correcto">0 de 0 votos</div><div class="barra-resultado"><div class="barra-si barra-correcto" style="width:0%"></div></div></div></div></div></div></div></section><section class="seccion-comentarios comentarios-box"><div class="cabecera-comentarios"><h3>Comentarios</h3><p>${commentsInitial.length} comentarios</p></div><div class="cuerpo-comentarios"><textarea placeholder="Escribe tu comentario..."></textarea><br><div class="audio-comment-box" style="margin-top:10px;padding:10px;border:1px solid #d8e0ec;border-radius:10px;background:#f8faff;"><div style="font-size:12px;font-weight:bold;color:#42536f;margin-bottom:8px;">Comentario de audio</div><div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn-audio-grabar" type="button" style="background:#c62828;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-weight:bold;cursor:pointer;">Grabar</button><button class="btn-audio-parar" type="button" style="background:#555;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-weight:bold;cursor:pointer;" disabled>Parar</button><button class="btn-audio-enviar" type="button" style="background:#1f4fb0;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-weight:bold;cursor:pointer;" disabled>Enviar audio</button></div><div class="audio-comment-status" style="margin-top:8px;font-size:12px;color:#667791;">Pulsa “Grabar” para comenzar.</div><audio class="audio-comment-preview" controls style="display:none;width:100%;margin-top:8px;"></audio></div><button class="boton-comentar" type="button">Publicar comentario</button><button class="btn-mostrar-inicial" type="button">Mostrar comentarios</button><div class="lista-comentarios"></div><div class="mostrar-mas-wrap"><button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button></div><div class="ocultar-wrap"><button class="btn-ocultar" type="button">Ocultar comentarios</button></div></div></section>`;
+    article.innerHTML=`
+        <div class="etiqueta-jornada">Jornada ${escapeHtml(jugada.jornada)}</div>
 
-    adaptarComentariosComoIndex(article);
+        <section class="jugada-principal">
+            <div class="cabecera-jugada">
+                <h2>${escapeHtml(jugada.pregunta)}</h2>
+                <p>${escapeHtml(jugada.partido)} · Min ${escapeHtml(jugada.minuto)} · ${escapeHtml(jugada.competicion)}</p>
+                <div class="badge-categoria">${escapeHtml(cat)} · ${escapeHtml(jugada.subtipo)}</div>
+                <div class="meta-extra">
+                    <strong>Equipo afectado:</strong> ${escapeHtml(jugada.equipoAfectado||'')}<br>
+                    <strong>Árbitro:</strong> ${escapeHtml(jugada.arbitro||'')}<br>
+                    <strong>VAR:</strong> ${escapeHtml(jugada.var||'')}
+                </div>
+            </div>
+
+            <div class="zona-superior">
+                <div>
+                    <div class="imagen-jugada">
+                        <div class="visor-media"></div>
+                        <div class="zoom-controles">
+                            <button class="zoom-btn zoom-mas" type="button">+</button>
+                            <button class="zoom-btn zoom-menos" type="button">−</button>
+                            <button class="zoom-btn zoom-reset" type="button">100%</button>
+                            <button class="zoom-btn zoom-expandir" type="button">Ampliar</button>
+                        </div>
+                    </div>
+                    <div class="galeria-miniaturas" style="display:none;"></div>
+                    <div class="descripcion-jugada">
+                        <strong>Tipo:</strong> ${escapeHtml(cat)}<br>
+                        <strong>Decisión árbitro:</strong> ${escapeHtml(jugada.decision||'')}<br><br>
+                        ${escapeHtml(jugada.descripcion||'')}
+                    </div>
+                </div>
+
+                <div class="panel-votacion">
+                    <div class="panel-votacion-top">
+                        <h3>Vota la jugada</h3>
+                        <p>${escapeHtml((jugada.pregunta||'').trim()||'¿Te pareció correcta la decisión arbitral?')}</p>
+                    </div>
+                    <div class="botones-voto">
+                        <button class="btn-voto btn-voto-si" type="button">${escapeHtml(jugada.respuestaSi||'Sí')}</button>
+                        <button class="btn-voto btn-voto-no" type="button">${escapeHtml(jugada.respuestaNo||'No')}</button>
+                    </div>
+                    <div class="mensaje-voto">Tu voto ya se guarda online.</div>
+                    <div class="resultado-box">
+                        <div class="resultado-cabecera">Sin votos todavía</div>
+                        <div class="resumen-votos-bloques">
+                            <div class="resumen-voto-card incorrecto">
+                                <div class="resumen-voto-porcentaje porcentaje-incorrecto">0%</div>
+                                <div class="resumen-voto-texto">Cree que se arbitró mal</div>
+                                <div class="resumen-voto-detalle detalle-incorrecto">0 de 0 votos</div>
+                                <div class="barra-resultado"><div class="barra-no barra-incorrecto" style="width:0%"></div></div>
+                            </div>
+                            <div class="resumen-voto-card correcto">
+                                <div class="resumen-voto-porcentaje porcentaje-correcto">0%</div>
+                                <div class="resumen-voto-texto">Cree que se arbitró bien</div>
+                                <div class="resumen-voto-detalle detalle-correcto">0 de 0 votos</div>
+                                <div class="barra-resultado"><div class="barra-si barra-correcto" style="width:0%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="seccion-comentarios comentarios-box">
+            <div class="cabecera-comentarios">
+                <div>
+                    <h3>Comentarios</h3>
+                    <p>${commentsInitial.length} comentarios</p>
+                </div>
+                <button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button>
+            </div>
+            <div class="cuerpo-comentarios">
+                <textarea placeholder="Escribe tu comentario..."></textarea>
+                <button class="boton-comentar" type="button">Publicar comentario</button>
+                <div class="lista-comentarios"></div>
+            </div>
+        </section>
+    `;
+
     initMedia(article);
     initVote(article,jugada);
     initComments(article,jugada);
     return article;
 }
-
-function abrirMenuUsuario(){
-    menuUserDropdown.classList.add('activo');
-}
-
-function cerrarMenuUsuario(){
-    menuUserDropdown.classList.remove('activo');
-}
-
-async function renderMenuUsuario() {
-    try {
-        const user = await getUsuarioActual();
-
-        if (!user) {
-            menuUserDropdown.innerHTML = `
-                <div class="menu-user-title">Usuario</div>
-                <div class="menu-user-line">Puedes ver todo el contenido sin iniciar sesión. Para votar o comentar, entra con Google.</div>
-                <div class="menu-user-actions">
-                    <button id="btnMenuLoginGoogle" class="btn-user-primary" type="button">Iniciar sesión con Google</button>
-                </div>
-            `;
-            document.getElementById('btnMenuLoginGoogle').onclick = () => loginConGoogle();
-            return;
-        }
-
-        const perfil = await getPerfilActual();
-
-        if (perfil && perfil.username) {
-            menuUserDropdown.innerHTML = `
-                <div class="menu-user-title">Sesión iniciada</div>
-                <div class="menu-user-line">Has iniciado sesión como <strong>${escapeHtml(perfil.username)}</strong>.</div>
-                <div class="menu-user-actions">
-                    <button id="btnMenuLogout" class="btn-user-secondary" type="button">Cerrar sesión</button>
-                </div>
-            `;
-            document.getElementById('btnMenuLogout').onclick = async () => {
-                try {
-                    await logout();
-                    window.location.reload();
-                } catch (e) {
-                    console.error(e);
-                    alert('No se pudo cerrar sesión');
-                }
-            };
-            return;
-        }
-
-        menuUserDropdown.innerHTML = `
-            <div class="menu-user-title">Completa tu usuario</div>
-            <div class="menu-user-line">Ya has iniciado sesión. Ahora elige tu nombre de usuario para poder votar y comentar.</div>
-            <div class="menu-user-actions">
-                <input id="inputUsernameMenu" type="text" placeholder="Elige tu nombre de usuario">
-                <button id="btnGuardarUsernameMenu" class="btn-user-primary" type="button">Guardar nombre</button>
-                <button id="btnMenuLogout" class="btn-user-secondary" type="button">Cerrar sesión</button>
-            </div>
-        `;
-
-        document.getElementById('btnGuardarUsernameMenu').onclick = async () => {
-            const input = document.getElementById('inputUsernameMenu');
-            const username = input.value.trim();
-
-            if (!username) {
-                alert('Escribe un nombre de usuario');
-                return;
-            }
-
-            try {
-                await crearPerfil(username);
-                window.location.reload();
-            } catch (e) {
-                console.error(e);
-                if (e.code === '23505') {
-                    alert('Ese nombre de usuario ya está en uso');
-                    return;
-                }
-                alert('No se pudo guardar el nombre de usuario');
-            }
-        };
-
-        document.getElementById('btnMenuLogout').onclick = async () => {
-            try {
-                await logout();
-                window.location.reload();
-            } catch (e) {
-                console.error(e);
-                alert('No se pudo cerrar sesión');
-            }
-        };
-
-    } catch (e) {
-        console.error(e);
-        menuUserDropdown.innerHTML = `
-            <div class="menu-user-title">Usuario</div>
-            <div class="menu-user-line">No se pudo comprobar el estado de la sesión.</div>
-        `;
-    }
-}
-
 function aplicarFiltros(){
     const jornada = (filtroJornada.value || '').trim();
     const equipo = normalizarTexto((filtroEquipo.value || '').trim());
@@ -2806,41 +2525,8 @@ function aplicarFiltros(){
     sinResultados.style.display = visibles === 0 ? 'block' : 'none';
 }
 
-window.toggleMenuUsuario = async function(e){
-    if(e) e.stopPropagation();
-    try{
-        if (menuUserDropdown.classList.contains('activo')) {
-            cerrarMenuUsuario();
-        } else {
-            await renderMenuUsuario();
-            abrirMenuUsuario();
-        }
-    }catch(err){
-        console.error(err);
-        menuUserDropdown.innerHTML = `
-            <div class="menu-user-title">Usuario</div>
-            <div class="menu-user-line">No se pudo abrir el menú de usuario.</div>
-        `;
-        abrirMenuUsuario();
-    }
-};
-
-menuUserBtn.addEventListener('click', window.toggleMenuUsuario);
-
-document.addEventListener('click', (e) => {
-    if (!menuUserDropdown.contains(e.target) && !menuUserBtn.contains(e.target)) {
-        cerrarMenuUsuario();
-    }
-});
-
 (async()=>{
     try{
-        try{
-            await renderMenuUsuario();
-        }catch(e){
-            console.warn('No se pudo renderizar el menú de usuario, pero se sigue cargando la página.', e);
-        }
-
         // 1) CARGAR SIEMPRE LAS JUGADAS PÚBLICAS DESDE CSV
         let jugadas = await loadJugadasPublicasDesdeCSV();
 
@@ -2910,16 +2596,6 @@ document.addEventListener('click', (e) => {
         sinResultados.style.display='block';
     }
 })();
-
-if (supabaseClient && supabaseClient.auth && typeof supabaseClient.auth.onAuthStateChange === 'function') {
-    supabaseClient.auth.onAuthStateChange(async () => {
-        try {
-            await renderMenuUsuario();
-        } catch (e) {
-            console.error(e);
-        }
-    });
-}
 
 if(btnAplicarFiltros){
     btnAplicarFiltros.onclick=aplicarFiltros;
