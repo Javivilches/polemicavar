@@ -1940,6 +1940,34 @@ h1,h2,h3,h4,
         padding:9px 12px !important;
     }
 }
+
+/* VOTACION: misma tipografia y jerarquia visual que en index */
+.panel-votacion-top{
+    padding:14px 16px 8px !important;
+}
+
+.panel-votacion-top h3{
+    font-size:16px !important;
+    margin:0 0 2px !important;
+    color:#52627a;
+    text-transform:uppercase;
+    letter-spacing:.35px;
+}
+
+.panel-votacion-top p{
+    margin:0 !important;
+    font-family:"Oswald",Arial,sans-serif !important;
+    font-size:28px !important;
+    font-weight:700 !important;
+    line-height:1.12 !important;
+    color:#16243a !important;
+}
+
+@media(max-width:768px){
+    .panel-votacion-top p{
+        font-size:24px !important;
+    }
+}
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
