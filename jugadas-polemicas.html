@@ -1556,6 +1556,58 @@ h1,h2,h3,h4,
     .zona-superior{padding:12px;gap:13px;}
 }
 
+/* FILTROS PLEGABLES */
+.filtros-desplegables{
+    margin:0 0 24px;
+    background:linear-gradient(180deg,rgba(5,24,52,.98),rgba(4,18,40,.99));
+    border:1px solid rgba(160,194,235,.24);
+    border-radius:18px;
+    box-shadow:0 18px 40px rgba(0,0,0,.28);
+    overflow:hidden;
+}
+
+.filtros-desplegables summary{
+    padding:15px 18px;
+    color:#fff;
+    font-family:"Oswald",Arial,sans-serif;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    user-select:none;
+    list-style:none;
+}
+
+.filtros-desplegables summary::-webkit-details-marker{
+    display:none;
+}
+
+.filtros-desplegables summary::after{
+    content:"▼";
+    float:right;
+    font-size:12px;
+    transition:transform .2s ease;
+}
+
+.filtros-desplegables[open] summary::after{
+    transform:rotate(180deg);
+}
+
+.filtros-desplegables .filtros-jugadas{
+    margin:0;
+    border:0;
+    border-radius:0;
+    box-shadow:none;
+    background:transparent;
+    border-top:1px solid rgba(255,255,255,.08);
+}
+
+@media(max-width:768px){
+    .filtros-desplegables summary{
+        padding:13px 15px;
+        font-size:15px;
+    }
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1587,56 +1639,49 @@ h1,h2,h3,h4,
         <p>Ordenadas de la más reciente a la más antigua.</p>
     </section>
 
-    <section class="filtros-jugadas">
-        <div class="filtro-grupo">
-            <label for="filtroJornada">Jornada</label>
-            <select id="filtroJornada">
-                <option value="">Todas</option>
-                <option value="19">19</option>
-                <option value="20">20</option>
-                <option value="21">21</option>
-                <option value="22">22</option>
-                <option value="23">23</option>
-                <option value="24">24</option>
-                <option value="25">25</option>
-                <option value="26">26</option>
-                <option value="27">27</option>
-                <option value="28">28</option>
-            </select>
-        </div>
+    <details class="filtros-desplegables">
+        <summary>⚙ Filtrar jugadas</summary>
 
-        <div class="filtro-grupo">
-            <label for="filtroEquipo">Equipo</label>
-            <select id="filtroEquipo">
-                <option value="">Todos</option>
-                <option value="Barcelona">FC Barcelona</option>
-                <option value="Real Madrid">Real Madrid</option>
-                <option value="Celta">Celta</option>
-            </select>
-        </div>
+        <section class="filtros-jugadas">
+            <div class="filtro-grupo">
+                <label for="filtroJornada">Jornada</label>
+                <select id="filtroJornada">
+                    <option value="">Todas</option>
+                </select>
+            </div>
 
-        <div class="filtro-grupo">
-            <label for="filtroCompeticion">Competición</label>
-            <select id="filtroCompeticion">
-                <option value="">Todas</option>
-                <option value="LaLiga">LaLiga</option>
-            </select>
-        </div>
+            <div class="filtro-grupo">
+                <label for="filtroEquipo">Equipo</label>
+                <select id="filtroEquipo">
+                    <option value="">Todos</option>
+                    <option value="Barcelona">FC Barcelona</option>
+                    <option value="Real Madrid">Real Madrid</option>
+                </select>
+            </div>
 
-        <div class="filtro-grupo">
-            <label for="filtroTipo">Tipo de jugada</label>
-            <select id="filtroTipo">
-                <option value="">Todas</option>
-                <option value="penalti">Penalti</option>
-                <option value="roja">Roja</option>
-                <option value="gol">Gol</option>
-            </select>
-        </div>
+            <div class="filtro-grupo">
+                <label for="filtroCompeticion">Competición</label>
+                <select id="filtroCompeticion">
+                    <option value="">Todas</option>
+                    <option value="LaLiga">LaLiga</option>
+                </select>
+            </div>
 
-        <div class="filtro-grupo filtro-boton">
-            <button id="btnLimpiarFiltros">Ver todas</button>
-        </div>
-    </section>
+            <div class="filtro-grupo">
+                <label for="filtroTipo">Tipo de jugada</label>
+                <select id="filtroTipo">
+                    <option value="">Todas</option>
+                    <option value="penalti">Penalti</option>
+                    <option value="roja">Roja</option>
+                    <option value="gol">Gol</option>
+                </select>
+            </div>
+
+            <div class="filtro-grupo filtro-boton">
+                <button id="btnLimpiarFiltros">Ver todas</button>
+            </div>
+        </section>
+    </details>
 
     <div id="sinResultados" class="sin-resultados" style="display:none;">
         No hay jugadas que coincidan con los filtros seleccionados.
@@ -1698,6 +1743,31 @@ const menuUserDropdown = document.getElementById("menuUserDropdown");
 function normalizarTexto(txt){ return (txt||"").toString().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); }
 function capitalizarCategoria(v){ const n=normalizarTexto(v); if(n==='penalti') return 'Penalti'; if(n==='gol') return 'Gol'; if(n==='roja') return 'Roja'; return v||''; }
 function extraerNumeroJornada(v){ const m=String(v||'').match(/\d+/); return m?m[0]:''; }
+function poblarFiltroJornadas(jugadas){
+    const jornadas = [...new Set(
+        jugadas
+            .map(j => parseInt(extraerNumeroJornada(j.jornada), 10))
+            .filter(Number.isFinite)
+    )].sort((a,b) => a-b);
+
+    filtroJornada.innerHTML = '<option value="">Todas</option>';
+
+    jornadas.forEach(jornada => {
+        const option = document.createElement('option');
+        option.value = String(jornada);
+        option.textContent = `Jornada ${jornada}`;
+        filtroJornada.appendChild(option);
+    });
+}
+function obtenerEquiposInvolucrados(partido){
+    const p = normalizarTexto(partido);
+    const equipos = [];
+
+    if(p.includes('real madrid')) equipos.push('real madrid');
+    if(p.includes('fc barcelona') || p.includes('barcelona')) equipos.push('barcelona');
+
+    return equipos;
+}
 function limpiarSlug(v){ return (v||'').toString().trim().replace(/^['"]|['"]$/g, ''); }
 function quitarDuplicados(lista){ return [...new Set(lista.filter(Boolean))]; }
 function combinacionesCarpetaJornada(jornada){ const j=extraerNumeroJornada(jornada); return [`Jornada-${j}`,`Jornada ${j}`,`jornada-${j}`,`jornada ${j}`]; }
@@ -2405,8 +2475,8 @@ function createArticle(jugada){
 
     article.className='bloque-jugada';
     article.dataset.id=jugada.id;
-    article.dataset.jornada=jugada.jornada;
-    article.dataset.equipo=jugada.equipoAfectado;
+    article.dataset.jornada=extraerNumeroJornada(jugada.jornada);
+    article.dataset.equipos=obtenerEquiposInvolucrados(jugada.partido).join('|');
     article.dataset.competicion=jugada.competicion;
     article.dataset.tipo=normalizarTexto(jugada.categoria);
 
@@ -2525,12 +2595,14 @@ function aplicarFiltros(){
 
     document.querySelectorAll('.bloque-jugada').forEach(b=>{
         const jornadaItem = (b.dataset.jornada || '').trim();
-        const equipoItem = normalizarTexto(b.dataset.equipo || '');
+        const equiposItem = (b.dataset.equipos || '')
+            .split('|')
+            .map(normalizarTexto);
         const competicionItem = normalizarTexto(b.dataset.competicion || '');
         const tipoItem = normalizarTexto(b.dataset.tipo || '');
 
         const okJornada = !jornada || jornadaItem === jornada;
-        const okEquipo = !equipo || equipoItem.includes(equipo);
+        const okEquipo = !equipo || equiposItem.includes(equipo);
         const okCompeticion = !competicion || competicionItem === competicion;
         const okTipo = !tipo || tipoItem === tipo;
 
@@ -2592,6 +2664,8 @@ document.addEventListener('click', (e) => {
         }catch(e){
             console.warn('No se pudieron mezclar los votos online. Se muestran igualmente las jugadas públicas.', e);
         }
+
+        poblarFiltroJornadas(jugadas);
 
         jugadas = [...jugadas].sort((a,b)=>
             (parseInt(b.jornada)||0)-(parseInt(a.jornada)||0) ||
