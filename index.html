@@ -2657,7 +2657,8 @@ body{
         <section class="bloque-portada">
             <div class="cabecera-portada">
                 <h1>Última jornada polémica</h1>
-                            </div>
+                <p>En esta portada se muestran automáticamente todas las jugadas de la jornada más reciente registrada.</p>
+            </div>
 
             <div id="ultimasJugadasContainer">
                 <div class="caja-cargando">Cargando jugadas de la última jornada...</div>
@@ -2733,7 +2734,8 @@ function idHtmlJugada(id){
 }
 
 function obtenerUrlCompartirJugada(jugada){
-    const url=new URL('jugadas-polemicas.html',window.location.href);
+    const url=new URL('index.html',window.location.href);
+    url.searchParams.set('jugada',jugada.id);
     url.hash=idHtmlJugada(jugada.id);
     return url.toString();
 }
@@ -3258,12 +3260,25 @@ function renderMarker(bloques){
         }
 
         const ultimaJornada = Math.max(...jugadas.map(j => parseInt(j.jornada)||0));
+        const idCompartido = new URLSearchParams(window.location.search).get('jugada') ||
+            (window.location.hash.startsWith('#jugada-') ? window.location.hash.slice(8) : null);
+        const jugadaCompartida = jugadas.find(j => String(j.id) === idCompartido);
         const jugadasUltimaJornada = jugadas.filter(j => (parseInt(j.jornada)||0) === ultimaJornada);
+        if(jugadaCompartida && !jugadasUltimaJornada.includes(jugadaCompartida)){
+            jugadasUltimaJornada.unshift(jugadaCompartida);
+            document.querySelector('.cabecera-portada h1').textContent = 'Jugada compartida y última jornada polémica';
+            document.querySelector('.cabecera-portada p').textContent = 'La jugada compartida aparece primero, seguida de las jugadas de la última jornada.';
+        }
 
         ultimasJugadasContainer.innerHTML = '';
 
         for(const j of jugadasUltimaJornada){
             const article = createArticle(j);
+            article.id = idHtmlJugada(j.id);
+            ultimasJugadasContainer.appendChild(article);
+            if(jugadaCompartida === j){
+                requestAnimationFrame(()=>article.scrollIntoView({behavior:'instant',block:'start'}));
+            }
             const media = [];
 
             try{
@@ -3284,7 +3299,6 @@ function renderMarker(bloques){
                 article.cargarMedia([{tipo:'imagen',rutas:[]}]);
             }
 
-            ultimasJugadasContainer.appendChild(article);
         }
 
         renderMarker(data.resumenBloques || []);
