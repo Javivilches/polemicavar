@@ -2033,20 +2033,18 @@ h1,h2,h3,h4,
         padding:20px 78px 18px 18px;
     }
 
-.btn-compartir-jugada{
-    top:15px;
-    right:14px;
-    width:auto;
-    height:auto;
-    min-height:35px;
-    padding:7px 10px;
-    border-radius:10px;
-}
+    .btn-compartir-jugada{
+        top:15px;
+        right:14px;
+        width:50px;
+        height:50px;
+        border-radius:14px;
+    }
 
-.btn-compartir-jugada svg{
-    width:19px;
-    height:19px;
-}
+    .btn-compartir-jugada svg{
+        width:30px;
+        height:30px;
+    }
 
     .bloque-jugada{
         scroll-margin-top:170px;
@@ -2905,12 +2903,6 @@ function createArticle(jugada){
                 </button>
                 <h2>${escapeHtml(jugada.pregunta)}</h2>
                 <p>${escapeHtml(jugada.partido)} · Min ${escapeHtml(jugada.minuto)} · ${escapeHtml(jugada.competicion)}</p>
-                <div class="badge-categoria">${escapeHtml(cat)} · ${escapeHtml(jugada.subtipo)}</div>
-                <div class="meta-extra">
-                    <strong>Equipo afectado:</strong> ${escapeHtml(jugada.equipoAfectado||'')}<br>
-                    <strong>Árbitro:</strong> ${escapeHtml(jugada.arbitro||'')}<br>
-                    <strong>VAR:</strong> ${escapeHtml(jugada.var||'')}
-                </div>
             </div>
 
             <div class="zona-superior">
