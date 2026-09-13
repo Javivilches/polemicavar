@@ -2050,6 +2050,22 @@ h1,h2,h3,h4,
         scroll-margin-top:170px;
     }
 }
+
+/* Descripción en la cabecera, igual que en index */
+.descripcion-cabecera-jugada{
+    margin:12px 0 0 !important;
+    max-width:920px;
+    color:#f2f6fc !important;
+    font-size:15px !important;
+    line-height:1.5;
+}
+
+@media(max-width:768px){
+    .descripcion-cabecera-jugada{
+        font-size:14px !important;
+        line-height:1.45;
+    }
+}
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2878,7 +2894,6 @@ async function initVote(article, jugada){
     article.querySelector('.btn-voto-no').onclick=()=>send('no');
 }
 function createArticle(jugada){
-    const cat=capitalizarCategoria(jugada.categoria);
     const commentsInitial=createInitialComments(jugada);
     const article=document.createElement('section');
 
@@ -2903,6 +2918,7 @@ function createArticle(jugada){
                 </button>
                 <h2>${escapeHtml(jugada.pregunta)}</h2>
                 <p>${escapeHtml(jugada.partido)} · Min ${escapeHtml(jugada.minuto)} · ${escapeHtml(jugada.competicion)}</p>
+                <p class="descripcion-cabecera-jugada">${escapeHtml(jugada.descripcion||'')}</p>
             </div>
 
             <div class="zona-superior">
@@ -2917,11 +2933,6 @@ function createArticle(jugada){
                         </div>
                     </div>
                     <div class="galeria-miniaturas" style="display:none;"></div>
-                    <div class="descripcion-jugada">
-                        <strong>Tipo:</strong> ${escapeHtml(cat)}<br>
-                        <strong>Decisión árbitro:</strong> ${escapeHtml(jugada.decision||'')}<br><br>
-                        ${escapeHtml(jugada.descripcion||'')}
-                    </div>
                 </div>
 
                 <div class="panel-votacion">
