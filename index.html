@@ -2380,63 +2380,6 @@ body{
     border-left:4px solid #1f4fb0 !important;
 }
 
-.texto-comentario{
-    white-space:pre-wrap;
-    overflow-wrap:anywhere;
-}
-
-.acciones-item-comentario{
-    display:flex;
-    justify-content:flex-end;
-    margin-top:7px;
-}
-
-.btn-responder-comentario{
-    padding:0;
-    border:0;
-    background:transparent;
-    color:#1f4fb0;
-    font:inherit;
-    font-size:12px;
-    font-weight:800;
-    cursor:pointer;
-}
-
-.btn-responder-comentario:hover{
-    text-decoration:underline;
-}
-
-.respuesta-contexto{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    margin:0 0 8px;
-    padding:7px 9px;
-    border-radius:8px;
-    background:#e8eef9;
-    color:#344966;
-    font-size:12px;
-}
-
-.respuesta-contexto[hidden]{
-    display:none;
-}
-
-.cancelar-respuesta{
-    flex:0 0 auto;
-    width:24px;
-    height:24px;
-    padding:0;
-    border:0;
-    border-radius:50%;
-    background:#d4deef;
-    color:#243b61;
-    font-size:17px;
-    line-height:24px;
-    cursor:pointer;
-}
-
 @media (max-width:768px){
     .menu a{
         font-size:9.8px !important;
@@ -2780,9 +2723,7 @@ body{
 </div>
 
 <script>
-const { escapeHtml, loadDataset, getComments, addComment, addVote, getUserVote, setUserVote, formatDate, supabase: supabaseClient } = window.DecisionVarData;
-window.supabaseClient = supabaseClient;
-window.supabaseclient = supabaseClient;
+const { escapeHtml, loadDataset, getComments, addComment, addVote, getUserVote, setUserVote, formatDate } = window.DecisionVarData;
 const ultimasJugadasContainer = document.getElementById("ultimasJugadasContainer");
 
 function normalizarTexto(txt){ return (txt||"").toString().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); }
@@ -3053,12 +2994,10 @@ function createInitialComments(j){
 
     return items
         .filter(x => (x.texto || '').trim() !== '')
-        .map((x, index) => ({
-            id: `csv-${j.id}-${index + 1}`,
+        .map(x => ({
             texto: x.texto,
             created_at: x.fecha || null,
-            autor: (x.autor || '').trim() || 'Usuario',
-            origen: 'csv'
+            autor: (x.autor || '').trim() || 'Usuario'
         }));
 }
 
@@ -3082,21 +3021,7 @@ function renderComments(article, comments, visibles){
     ordenados.slice(0, visibles).forEach(c=>{
         const div=document.createElement('div');
         div.className='comentario visible';
-        div.dataset.comentarioId=String(c.id||'');
-        div.innerHTML=`<div style="font-size:12px;color:#667791;font-weight:700;margin-bottom:4px;">${escapeHtml(c.autor||'Usuario')} ${c.created_at ? '· '+escapeHtml(formatDate(c.created_at)) : ''}</div><div class="texto-comentario">${escapeHtml(c.texto||'')}</div>`;
-
-        const acciones=document.createElement('div');
-        acciones.className='acciones-item-comentario';
-
-        const btnResponder=document.createElement('button');
-        btnResponder.type='button';
-        btnResponder.className='btn-responder-comentario';
-        btnResponder.textContent='Responder';
-        btnResponder.dataset.autor=c.autor||'Usuario';
-        btnResponder.dataset.comentarioId=String(c.id||'');
-
-        acciones.appendChild(btnResponder);
-        div.appendChild(acciones);
+        div.innerHTML=`<div style="font-size:12px;color:#667791;font-weight:700;margin-bottom:4px;">${escapeHtml(c.autor||'Usuario')} ${c.created_at ? '· '+escapeHtml(formatDate(c.created_at)) : ''}</div>${escapeHtml(c.texto||'')}`;
         list.appendChild(div);
     });
 
@@ -3118,74 +3043,21 @@ async function initComments(article, jugada){
 
     const btnPublicar = article.querySelector('.boton-comentar');
     const btnMas = article.querySelector('.btn-mostrar-mas');
-    const list = article.querySelector('.lista-comentarios');
-    const ta = article.querySelector('textarea');
-    const respuestaContexto = article.querySelector('.respuesta-contexto');
-    const respuestaNombre = article.querySelector('.respuesta-contexto strong');
-    const btnCancelarRespuesta = article.querySelector('.cancelar-respuesta');
-    let respondiendoA=null;
-
-    function obtenerNombreAutor(){
-        try{
-            return (localStorage.getItem('polemicavar_nombre_comentarios')||'').trim()||'Usuario';
-        }catch(e){
-            return 'Usuario';
-        }
-    }
-
-    function cancelarRespuesta(limpiarPrefijo=true){
-        if(limpiarPrefijo && respondiendoA){
-            const prefijo=`@${respondiendoA.autor} `;
-            if(ta.value.startsWith(prefijo)) ta.value=ta.value.slice(prefijo.length);
-        }
-        respondiendoA=null;
-        respuestaContexto.hidden=true;
-        respuestaNombre.textContent='';
-    }
-
-    list.addEventListener('click',(e)=>{
-        const boton=e.target.closest('.btn-responder-comentario');
-        if(!boton || !list.contains(boton)) return;
-
-        const autor=(boton.dataset.autor||'Usuario').trim()||'Usuario';
-        respondiendoA={
-            id:boton.dataset.comentarioId||'',
-            autor
-        };
-
-        respuestaNombre.textContent=autor;
-        respuestaContexto.hidden=false;
-
-        const prefijo=`@${autor} `;
-        const textoActual=ta.value.trimStart();
-        ta.value=textoActual.startsWith(prefijo) ? textoActual : prefijo+textoActual;
-        ta.focus();
-        ta.setSelectionRange(ta.value.length,ta.value.length);
-    });
-
-    btnCancelarRespuesta.addEventListener('click',()=>{
-        cancelarRespuesta(true);
-        ta.focus();
-    });
 
     if(btnPublicar){
         btnPublicar.onclick=async()=>{
+            const ta=article.querySelector('textarea');
             const txt=ta.value.trim();
             if(!txt) return;
 
-            btnPublicar.disabled=true;
             try{
-                await addComment('jugada', txt, jugada.id, obtenerNombreAutor());
+                await addComment('jugada', txt, jugada.id);
                 ta.value='';
-                cancelarRespuesta(false);
                 online=await getComments('jugada', jugada.id);
                 visibles=Math.max(visibles,3);
                 renderComments(article, [...online, ...initial], visibles);
             }catch(e){
-                console.error(e);
-                alert(e?.message||'No se pudo guardar el comentario');
-            }finally{
-                btnPublicar.disabled=false;
+                alert('No se pudo guardar el comentario');
             }
         };
     }
@@ -3318,7 +3190,6 @@ function createArticle(jugada){
                     <button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button>
                 </div>
                 <div class="cuerpo-comentarios">
-                    <div class="respuesta-contexto" hidden>Respondiendo a <strong></strong><button class="cancelar-respuesta" type="button" aria-label="Cancelar respuesta" title="Cancelar respuesta">×</button></div>
                     <textarea placeholder="Escribe tu comentario..."></textarea>
                     <button class="boton-comentar" type="button">Publicar comentario</button>
                     <div class="lista-comentarios"></div>
