@@ -522,6 +522,27 @@ h1,h2,h3,h4{
     padding:10px 12px;
 }
 
+.nombre-comentario{
+    width:100%;
+    box-sizing:border-box;
+    margin:0 0 8px;
+    padding:8px;
+    border-radius:8px;
+    border:1px solid #d0d7e2;
+    font-size:13px;
+    background:#fff;
+    color:#1f2f49;
+}
+
+.nombre-comentario::placeholder{
+    color:#7b8798;
+}
+
+.mostrar-mas-comentarios-wrap{
+    text-align:center;
+    margin-top:10px;
+}
+
 textarea{
     width:100%;
     padding:8px;
@@ -3049,6 +3070,20 @@ function asegurarIdComentario(comentario,jugadaId){
     return `comentario-${hashComentario(firma)}`;
 }
 
+const NOMBRE_COMENTARIOS_STORAGE_KEY = 'polemicavar_nombre_comentarios';
+
+function obtenerNombreComentario(article){
+    const input=article.querySelector('.nombre-comentario');
+    const nombre=(input?.value||'').trim();
+    if(!nombre){
+        alert('Escribe tu nombre antes de comentar.');
+        input?.focus();
+        return '';
+    }
+    try{ localStorage.setItem(NOMBRE_COMENTARIOS_STORAGE_KEY,nombre); }catch(e){}
+    return nombre;
+}
+
 function renderComments(article, comments, visibles){
     const list=article.querySelector('.lista-comentarios');
     const counter=article.querySelector('.cabecera-comentarios p');
@@ -3106,15 +3141,16 @@ function renderComments(article, comments, visibles){
 
         const btnResponder=div.querySelector('.btn-responder-comentario');
         btnResponder.onclick=async()=>{
+            const autor=obtenerNombreComentario(article);
+            if(!autor) return;
+
             const respuesta=window.prompt(`Responder a ${c.autor||'Usuario'}:`);
             if(respuesta===null) return;
             const limpio=respuesta.trim();
             if(!limpio) return;
 
             try{
-                // Se usa exactamente la misma API que ya utiliza el index para publicar
-                // comentarios, sin usar una conexión adicional.
-                await addComment('jugada', `[RESPUESTA_A:${idComentario}] ${limpio}`, article.dataset.id);
+                await addComment('jugada', `[RESPUESTA_A:${idComentario}] ${limpio}`, article.dataset.id, autor);
                 if(typeof article._recargarComentarios==='function'){
                     await article._recargarComentarios();
                 }
@@ -3160,6 +3196,18 @@ async function initComments(article, jugada){
 
     const btnPublicar = article.querySelector('.boton-comentar');
     const btnMas = article.querySelector('.btn-mostrar-mas');
+    const inputNombre = article.querySelector('.nombre-comentario');
+
+    try{
+        inputNombre.value = localStorage.getItem(NOMBRE_COMENTARIOS_STORAGE_KEY) || '';
+    }catch(e){}
+
+    inputNombre?.addEventListener('change',()=>{
+        const nombre=(inputNombre.value||'').trim();
+        if(nombre){
+            try{ localStorage.setItem(NOMBRE_COMENTARIOS_STORAGE_KEY,nombre); }catch(e){}
+        }
+    });
 
     if(btnPublicar){
         btnPublicar.onclick=async()=>{
@@ -3167,8 +3215,11 @@ async function initComments(article, jugada){
             const txt=ta.value.trim();
             if(!txt) return;
 
+            const autor=obtenerNombreComentario(article);
+            if(!autor) return;
+
             try{
-                await addComment('jugada', txt, jugada.id);
+                await addComment('jugada', txt, jugada.id, autor);
                 ta.value='';
                 visibles=Math.max(visibles,3);
                 await recargarComentarios();
@@ -3303,12 +3354,15 @@ function createArticle(jugada){
             <section class="seccion-comentarios comentarios-box">
                 <div class="cabecera-comentarios">
                     <div><h3>Comentarios</h3><p>${commentsInitial.length} comentarios</p></div>
-                    <button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button>
                 </div>
                 <div class="cuerpo-comentarios">
+                    <input class="nombre-comentario" type="text" maxlength="40" placeholder="Tu nombre">
                     <textarea placeholder="Escribe tu comentario..."></textarea>
                     <button class="boton-comentar" type="button">Publicar comentario</button>
                     <div class="lista-comentarios"></div>
+                    <div class="mostrar-mas-comentarios-wrap">
+                        <button class="btn-mostrar-mas" type="button">Mostrar más comentarios</button>
+                    </div>
                 </div>
             </section>
         </div>
