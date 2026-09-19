@@ -3526,6 +3526,33 @@ function asegurarResponderEnTodos(article){
     });
 }
 
+function activarGarantiaResponder(article){
+    const list=article.querySelector('.lista-comentarios');
+    if(!list || list.dataset.observandoResponder==='1') return;
+    list.dataset.observandoResponder='1';
+
+    let pendiente=false;
+    const verificar=()=>{
+        if(pendiente) return;
+        pendiente=true;
+        queueMicrotask(()=>{
+            pendiente=false;
+            asegurarResponderEnTodos(article);
+        });
+    };
+
+    const observer=new MutationObserver(()=>verificar());
+    observer.observe(list,{childList:true,subtree:true});
+
+    // Varias comprobaciones iniciales por si otro código termina de pintar
+    // los primeros comentarios después del primer renderizado.
+    verificar();
+    requestAnimationFrame(verificar);
+    setTimeout(verificar,0);
+    setTimeout(verificar,120);
+    setTimeout(verificar,500);
+}
+
 function renderComments(article, comments, visibles){
     const list=article.querySelector('.lista-comentarios');
     const counter=article.querySelector('.cabecera-comentarios p');
@@ -3622,9 +3649,12 @@ async function initComments(article, jugada){
             online=[];
         }
         renderComments(article, [...online, ...initial], visibles);
+        asegurarResponderEnTodos(article);
+        requestAnimationFrame(()=>asegurarResponderEnTodos(article));
     }
 
     article._recargarComentarios=recargarComentarios;
+    activarGarantiaResponder(article);
     await recargarComentarios();
 
     const btnPublicar = article.querySelector('.boton-comentar');
