@@ -2657,7 +2657,7 @@ body{
         <section class="bloque-portada">
             <div class="cabecera-portada">
                 <h1>Última jornada polémica</h1>
-                
+                <p>En esta portada se muestran automáticamente todas las jugadas de la jornada más reciente registrada.</p>
             </div>
 
             <div id="ultimasJugadasContainer">
@@ -2994,10 +2994,12 @@ function createInitialComments(j){
 
     return items
         .filter(x => (x.texto || '').trim() !== '')
-        .map(x => ({
+        .map((x,index) => ({
+            id: `csv-${j.id}-${index + 1}`,
             texto: x.texto,
             created_at: x.fecha || null,
-            autor: (x.autor || '').trim() || 'Usuario'
+            autor: (x.autor || '').trim() || 'Usuario',
+            origen: 'csv'
         }));
 }
 
@@ -3009,37 +3011,109 @@ function ordenarComentarios(comments){
     });
 }
 
+function extraerRelacionRespuesta(comentario){
+    const directo=comentario?.parent_comment_id || comentario?.respuesta_a || comentario?.parent_id || '';
+    if(directo) return String(directo);
+    const texto=String(comentario?.texto||'');
+    const m=texto.match(/^\[RESPUESTA_A:([^\]]+)\]\s*/);
+    return m ? m[1] : '';
+}
+
+function textoComentarioLimpio(comentario){
+    return String(comentario?.texto||'').replace(/^\[RESPUESTA_A:[^\]]+\]\s*/, '');
+}
+
 function renderComments(article, comments, visibles){
     const list=article.querySelector('.lista-comentarios');
     const counter=article.querySelector('.cabecera-comentarios p');
     const btnMas=article.querySelector('.btn-mostrar-mas');
     const ordenados=ordenarComentarios(comments);
+    const porPadre=new Map();
 
+    ordenados.forEach(c=>{
+        const parentId=extraerRelacionRespuesta(c);
+        const clave=parentId || '__RAIZ__';
+        if(!porPadre.has(clave)) porPadre.set(clave,[]);
+        porPadre.get(clave).push(c);
+    });
+
+    const principales=porPadre.get('__RAIZ__') || [];
     list.innerHTML='';
     counter.textContent=`${ordenados.length} comentarios`;
 
-    ordenados.slice(0, visibles).forEach(c=>{
+    function crearNodoComentario(c,nivel=0){
+        const idComentario=String(c?.id||'');
+        const contenedor=document.createElement('div');
+        contenedor.style.marginLeft=nivel ? '22px' : '0';
+        if(nivel) contenedor.style.borderLeft='2px solid #d7deea';
+        if(nivel) contenedor.style.paddingLeft='10px';
+
         const div=document.createElement('div');
         div.className='comentario visible';
-        div.innerHTML=`<div style="font-size:12px;color:#667791;font-weight:700;margin-bottom:4px;">${escapeHtml(c.autor||'Usuario')} ${c.created_at ? '· '+escapeHtml(formatDate(c.created_at)) : ''}</div>${escapeHtml(c.texto||'')}`;
-        list.appendChild(div);
+        div.dataset.comentarioId=idComentario;
+        div.innerHTML=`<div style="font-size:12px;color:#667791;font-weight:700;margin-bottom:4px;">${escapeHtml(c.autor||'Usuario')} ${c.created_at ? '· '+escapeHtml(formatDate(c.created_at)) : ''}</div><div class="texto-comentario">${escapeHtml(textoComentarioLimpio(c))}</div>`;
+
+        const btnResponder=document.createElement('button');
+        btnResponder.type='button';
+        btnResponder.textContent='Responder';
+        btnResponder.style.border='0';
+        btnResponder.style.background='transparent';
+        btnResponder.style.color='#1f4fb0';
+        btnResponder.style.fontWeight='700';
+        btnResponder.style.fontSize='12px';
+        btnResponder.style.cursor='pointer';
+        btnResponder.style.padding='2px 0';
+        btnResponder.style.marginTop='6px';
+
+        btnResponder.onclick=async()=>{
+            if(!idComentario) return;
+            const texto=window.prompt(`Responder a ${c.autor||'Usuario'}:`);
+            if(texto===null) return;
+            const limpio=texto.trim();
+            if(!limpio) return;
+
+            try{
+                await addComment('jugada', `[RESPUESTA_A:${idComentario}] ${limpio}`, article.dataset.id);
+                if(typeof article._recargarComentarios==='function') await article._recargarComentarios();
+            }catch(e){
+                alert(e?.message || 'No se pudo guardar la respuesta');
+            }
+        };
+
+        div.appendChild(btnResponder);
+        contenedor.appendChild(div);
+
+        const hijas=porPadre.get(idComentario) || [];
+        hijas.slice().reverse().forEach(respuesta=>{
+            contenedor.appendChild(crearNodoComentario(respuesta,nivel+1));
+        });
+
+        return contenedor;
+    }
+
+    principales.slice(0,visibles).forEach(c=>{
+        list.appendChild(crearNodoComentario(c,0));
     });
 
-    btnMas.style.display = visibles < ordenados.length ? 'inline-flex' : 'none';
+    btnMas.style.display = visibles < principales.length ? 'inline-flex' : 'none';
 }
 
 async function initComments(article, jugada){
     const initial=createInitialComments(jugada);
     let online=[];
+    let visibles=3;
 
-    try{
-        online=await getComments('jugada', jugada.id);
-    }catch(e){
-        online=[];
+    async function recargarComentarios(){
+        try{
+            online=await getComments('jugada', jugada.id);
+        }catch(e){
+            online=[];
+        }
+        renderComments(article, [...online, ...initial], visibles);
     }
 
-    let visibles=3;
-    renderComments(article, [...online, ...initial], visibles);
+    article._recargarComentarios=recargarComentarios;
+    await recargarComentarios();
 
     const btnPublicar = article.querySelector('.boton-comentar');
     const btnMas = article.querySelector('.btn-mostrar-mas');
@@ -3053,11 +3127,10 @@ async function initComments(article, jugada){
             try{
                 await addComment('jugada', txt, jugada.id);
                 ta.value='';
-                online=await getComments('jugada', jugada.id);
                 visibles=Math.max(visibles,3);
-                renderComments(article, [...online, ...initial], visibles);
+                await recargarComentarios();
             }catch(e){
-                alert('No se pudo guardar el comentario');
+                alert(e?.message || 'No se pudo guardar el comentario');
             }
         };
     }
