@@ -2652,10 +2652,67 @@ body{
 .btn-publicar-respuesta:disabled{opacity:.6;cursor:wait}
 @media(max-width:768px){.respuestas-anidadas{margin-left:6px;padding-left:8px}}
 
+
+/* === MENÚ CANÓNICO - IGUAL EN TODAS LAS PÁGINAS === */
+.cabecera { height:142px !important; }
+.menu {
+  position:fixed !important; top:142px !important; left:0 !important;
+  width:100% !important; height:62px !important; min-height:62px !important;
+  display:grid !important; grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+  align-items:stretch !important; justify-content:stretch !important;
+  box-sizing:border-box !important; padding:0 !important; margin:0 !important; gap:0 !important;
+  overflow:hidden !important; z-index:999 !important;
+  background:rgba(7,11,18,.96) !important;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  box-shadow:0 10px 26px rgba(0,0,0,.28);
+}
+.menu::before,.menu::after { pointer-events:none !important; }
+.menu a {
+  position:relative !important; z-index:2 !important;
+  display:flex !important; flex-direction:column !important;
+  justify-content:center !important; align-items:center !important;
+  box-sizing:border-box !important; min-width:0 !important; width:100% !important; height:62px !important;
+  padding:5px 7px !important; margin:0 !important; gap:4px !important;
+  color:#dbe3ef !important; background:transparent !important;
+  border-radius:0 !important; text-align:center !important;
+  text-transform:uppercase !important; white-space:normal !important;
+  font:700 12px/1.08 Oswald,Arial,sans-serif !important;
+  letter-spacing:.25px !important; text-decoration:none !important;
+}
+.menu a+a{border-left:1px solid rgba(255,255,255,.055) !important;}
+.menu a:hover{background:rgba(255,255,255,.045) !important;color:#fff !important;}
+.menu a span {display:block !important; white-space:normal !important; overflow-wrap:normal !important;}
+.menu-icono {
+  display:block !important; width:25px !important; height:25px !important;
+  flex:0 0 auto !important; fill:none !important; stroke:currentColor !important;
+  stroke-width:1.8 !important; stroke-linecap:round !important; stroke-linejoin:round !important;
+}
+.menu a::after{content:none !important; display:none !important;}
+.menu a:nth-child(1){color:#fff !important;}
+.menu a:nth-child(1)::after{
+  content:"" !important; position:absolute !important; display:block !important;
+  left:22% !important; right:22% !important; bottom:0 !important;
+  height:3px !important; border-radius:99px 99px 0 0 !important;
+  background:linear-gradient(90deg,#d3123f,#f1cd79) !important;
+  box-shadow:0 0 18px rgba(211,18,63,.38) !important;
+}
+@media(max-width:768px){
+  .cabecera {height:92px !important;}
+  .menu{top:92px !important;height:64px !important;min-height:64px !important;}
+  .menu a{height:64px !important;padding:4px 2px !important;gap:3px !important;
+    font-size:9.8px !important; line-height:1.02 !important;letter-spacing:0 !important;}
+  .menu-icono{width:20px !important;height:20px !important;}
+  .menu::before,.menu::after{display:none !important;}
+}
+@media(max-width:430px){
+  .menu a{font-size:8.6px !important;}
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="decisionvar-data.js"></script>
+<script src="decisionvar-data.js?v=20261020-fix2"></script>
 </head>
 
 <body>
@@ -2742,7 +2799,24 @@ body{
 </div>
 
 <script>
-const { escapeHtml, loadDataset, getComments, addComment, addVote, getUserVote, setUserVote, formatDate } = window.DecisionVarData;
+// Compatibilidad entre las versiones del HTML y decisionvar-data.js.
+// El módulo actual no exporta getUserVote/setUserVote: los resolvemos aquí.
+const DecisionVarAPI = window.DecisionVarData || {};
+const escapeHtml = DecisionVarAPI.escapeHtml || (s => String(s ?? '').replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch])));
+const loadDataset = DecisionVarAPI.loadDataset || (async () => { throw new Error('No se ha cargado decisionvar-data.js'); });
+const getComments = DecisionVarAPI.getComments || (async () => []);
+const addComment = DecisionVarAPI.addComment || (async () => { throw new Error('No está disponible el servicio de comentarios'); });
+const addVote = DecisionVarAPI.addVote || (async () => { throw new Error('No está disponible el servicio de votos'); });
+const formatDate = DecisionVarAPI.formatDate || (s => String(s || ''));
+const VOTE_STORAGE_PREFIX = 'polemicavar_voto_';
+const getUserVote = DecisionVarAPI.getUserVote || (jugadaId => {
+    try { return localStorage.getItem(VOTE_STORAGE_PREFIX + String(jugadaId)) || ''; }
+    catch(e) { return ''; }
+});
+const setUserVote = DecisionVarAPI.setUserVote || ((jugadaId,voto) => {
+    try { localStorage.setItem(VOTE_STORAGE_PREFIX + String(jugadaId), String(voto)); }
+    catch(e) { /* Si el almacenamiento no está disponible, Supabase sigue guardando el voto. */ }
+});
 const ultimasJugadasContainer = document.getElementById("ultimasJugadasContainer");
 
 function normalizarTexto(txt){ return (txt||"").toString().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); }
@@ -3216,6 +3290,16 @@ async function initVote(article, jugada){
 
     article.querySelector('.btn-voto-si').onclick=()=>send('si');
     article.querySelector('.btn-voto-no').onclick=()=>send('no');
+    // Sincronizar el voto real de la cuenta, si se ha iniciado sesión.
+    if (typeof DecisionVarAPI.getCurrentUserVote === 'function') {
+        try {
+            const votoOnline = await DecisionVarAPI.getCurrentUserVote(jugada.id);
+            if (votoOnline === 'si' || votoOnline === 'no') {
+                setUserVote(jugada.id, votoOnline);
+                updateVoteUI(article, jugada);
+            }
+        } catch (e) { console.warn('No se pudo consultar el voto propio:', e); }
+    }
 }
 
 function createArticle(jugada){
@@ -3403,7 +3487,7 @@ function renderMarker(bloques){
         renderMarker(data.resumenBloques || []);
     }catch(e){
         console.error(e);
-        ultimasJugadasContainer.innerHTML = '<div class="caja-error">No se pudieron cargar las jugadas de la última jornada.</div>';
+        ultimasJugadasContainer.innerHTML = '<div class="caja-error">No se pudieron cargar las jugadas. Comprueba que decisionvar-data.js y jugadas.csv estén publicados en la misma carpeta que index.html.</div>';
         const box = document.getElementById("marcadorGlobal");
         if(box){
             box.outerHTML = '<div class="caja-error">No se pudo cargar el marcador global.</div>';
